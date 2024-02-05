@@ -1,0 +1,143 @@
+﻿:root {
+    --pi-back-color: white;
+    --pi-form-back-color: white;
+    --pi-label-color: black;
+    --pi-heading-color: black;
+    --pi-btn-border-width: 1px;
+    --pi-btn-dark-hover-color: white;
+    --pi-login-footer-color: rgba(108, 117, 125);
+    --pi-deselected-lable-color: rgba(33,37,71);
+    --date-icon-color: 0;
+}
+
+.dark-theme {
+    --pi-back-color: #222831;
+    --pi-form-back-color: #393E46;
+    --pi-label-color: #EEEEEE;
+    --pi-heading-color: #EEEEEE;
+    --pi-btn-border-width: 2px;
+    --pi-btn-dark-hover-color: #393E46;
+    --pi-login-footer-color: white;
+    --pi-deselected-lable-color: white;
+    --date-icon-color: 1;
+}
+
+
+
+body {
+    background-color: var(--pi-back-color) !important;
+}
+
+label {
+    color: var(--pi-label-color);
+    white-space:break-spaces;
+}
+
+h4,
+h3 {
+    color: var(--pi-heading-color);
+}
+
+.btn {
+    border-width: var(--pi-btn-border-width);
+}
+
+.modal-content {
+    background-color: var(--pi-form-back-color);
+    color: var(--pi-label-color);
+}
+
+.patientSubmitFooter {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    justify-content: end;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: black;
+    text-align: end;
+    height: 3rem;
+    padding: 1rem;
+    color: white
+}
+
+.navbar {
+    /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */
+    box-shadow: 5px 1px 18px #9b9b9b;
+    /* background-color: var(--pi-back-color); */
+}
+
+.formContainer {
+    background-color: var(--pi-form-back-color);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    border-radius: 10px;
+}
+
+.form-control {
+    background-color: var(--pi-form-back-color);
+    color: var(--pi-label-color);
+}
+
+    .form-control:focus {
+        outline: none;
+        border: 1px solid #0dcaf0 !important;
+        background-color: var(--pi-form-back-color);
+        color: var(--pi-label-color);
+        box-shadow: none !important;
+    }
+
+
+.form-floating > .form-control-plaintext ~ label::after,
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after,
+.form-floating > .form-select ~ label::after {
+    background-color: var(--pi-form-back-color);
+}
+
+.form-floating > .form-control-plaintext ~ label,
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    color: var(--pi-deselected-lable-color);
+}
+
+.form-control:focus ~ label {
+    color: #0dcaf0 !important;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(var(--date-icon-color));
+}
+
+
+input[type='tel']::placeholder {
+    color: var(--pi-heading-color);
+}
+
+input[type='file']:focus ~ label {
+    color: white !important;
+}
+
+
+.darkInfo-btn:hover {
+    border-color: #0dcaf0 !important;
+    border-width: var(--pi-btn-border-width);
+    color: #0dcaf0 !important;
+    background: var(--pi-btn-dark-hover-color) !important;
+}
+
+.lightInfo-btn:hover,
+.lightInfo-btn:hover > a > i,
+.lightInfo-btn:hover > i {
+    color: white !important;
+}
+
+::file-selector-button {
+    display: none;
+}
+
+.phoneInputDiv > div {
+    width: 100%;
+}

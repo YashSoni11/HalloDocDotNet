@@ -1,0 +1,53 @@
+﻿
+
+    <div class="container-fluid ">
+
+        <div class="row">
+
+            <div class="col-12 p-0">
+
+                @{
+                    Layout = "_NavBar";
+                }
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row justify-content-center flex-column align-items-center" style="row-gap: 1rem; margin-top: 6rem;">
+
+
+            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-7 col-8">
+
+                <a class="nav-link text-white fs-3 "  asp-controller="Home"  asp-action="PatientRequest"  >
+                <button type="button" class="btn btn-info  w-100" style="height: 4rem;">Submit Request</button>
+                </a>
+
+
+            </div>
+
+            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-7 col-8">
+                <a class="nav-link text-white fs-3"     asp-controller="Home"  asp-action="Login"   >
+                    <button type="button" class="btn w-100" style="background-color: #020072; height: 4rem; color:white;">Registered Patient</button>
+                </a>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <footer style="display: flex; column-gap: 1rem; width: 100%; color: gray; margin-top: 15rem; justify-content: center;">
+        <span>Terms Of Conditions</span>
+        <span>|</span>
+        <span>Privacy Policy</span>
+    </footer>
+
+
+
+
+   

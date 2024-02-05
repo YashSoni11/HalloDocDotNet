@@ -1,0 +1,146 @@
+﻿
+@{
+    Layout = "NavAndFooter";
+}
+
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+        <div class="d-flex col-8 justify-content-end  mb-3 mt-2">
+            <a asp-controller="Home" asp-action="PatientRequest"  class="nav-link">
+                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </button>
+            </a>
+        </div>
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
+
+
+            <form>
+                <div class="container-fluid formContainer mb-5">
+                    <div class="row mt-3">
+                        <h4 class="mt-3 mb-3">Patient Information</h4>
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" placeholder="Leave a comment here"
+                                          id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Enter Brief Details of symptoms(optional)</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Date Of Birth</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <h4 class="mb-3">Patient Contact Information</h4>
+
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Email</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3 phoneInputDiv">
+                                <input style='height: 57px;' type="tel" id='phonInput' class="form-control"
+                                       id="floatingInput" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+                                <label for="floatingInput"></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-3">
+                        <h4 class="mb-3">Patient Location</h4>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Street</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">City</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">State</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Zip Code</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Room #/ Suite (optional)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <h4 class="mb-3">(Optional) Upload Photo Or Document</h4>
+                        <div class="col-12 ">
+                            <div class="input-group mb-3">
+
+                                <input type="file" class="form-control" id="inputGroupFile02">
+                                <label class="input-group-text bg-info text-white" for="inputGroupFile02">
+                                    <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-end p-3">
+                        <div class="d-flex col-3 justify-content-end" style="column-gap: 1rem;">
+                            <button type="submit" class="btn btn-info  text-white darkInfo-btn">Submit</button>
+                            <button type="button" class="btn btn-outline-info text-info lightInfo-btn">
+                                Cancle
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+
+
+
+
+
+        </div>
+
+    </div>
+</div>
