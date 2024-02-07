@@ -1,17 +1,23 @@
-﻿using dotnetProc.Models;
+﻿using HalloDoc_DAL.Context;
+using HalloDoc_DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+
+
 
 namespace dotnetProc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly HalloDocContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(HalloDocContext context)
         {
-            _logger = logger;
+            _context = context;
         }
+
 
         public IActionResult Index()
         {
@@ -20,8 +26,36 @@ namespace dotnetProc.Controllers
 
         public IActionResult Login()
         {
+
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(User um)
+        {
+            //if (ModelState.IsValid)
+            //{
+           
+
+            //    var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == um.UserName && u.Password == um.Password);
+                   
+
+            //        if(user == null)
+            //    {
+            //        TempData["Error"] = "Invalid Attributes";
+
+            //        return View();
+            //    }
+
+            //    return RedirectToAction("FormByPatient");
+            //}
+
+            return View("Login", um);
+
+        }
+
+
+
 
         public IActionResult ForgotPass()
         {

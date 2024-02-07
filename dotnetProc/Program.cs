@@ -1,14 +1,14 @@
-using dotnetProc.Models;
+using HalloDoc_DAL.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
 var con = builder.Configuration.GetConnectionString("PSSQL");
 
-builder.Services.AddDbContext<HalloDocContext>(q => q.UseNpgsql(con));  
+builder.Services.AddDbContext<HalloDocContext>(q => q.UseNpgsql(con));
 
-builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
