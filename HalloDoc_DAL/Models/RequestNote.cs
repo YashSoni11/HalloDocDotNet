@@ -6,57 +6,65 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-public partial class RequestNote
+[Table("requestnotes")]
+public partial class Requestnote
 {
     [Key]
-    public int RequestNotesId { get; set; }
+    [Column("requestnotesid")]
+    public int Requestnotesid { get; set; }
 
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
-    [Column("strMonth")]
+    [Column("strmonth")]
     [StringLength(20)]
-    public string? StrMonth { get; set; }
+    public string? Strmonth { get; set; }
 
-    [Column("intYear")]
-    public int? IntYear { get; set; }
+    [Column("intyear")]
+    public int? Intyear { get; set; }
 
-    [Column("intDate")]
-    public int? IntDate { get; set; }
+    [Column("intdate")]
+    public int? Intdate { get; set; }
 
+    [Column("physiciannotes")]
     [StringLength(500)]
-    public string? PhysicianNotes { get; set; }
+    public string? Physiciannotes { get; set; }
 
+    [Column("adminnotes")]
     [StringLength(500)]
-    public string? AdminNotes { get; set; }
+    public string? Adminnotes { get; set; }
 
+    [Column("createdby")]
     [StringLength(128)]
-    public string CreatedBy { get; set; } = null!;
+    public string Createdby { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
+    [Column("modifiedby")]
     [StringLength(128)]
-    public string? ModifiedBy { get; set; }
+    public string? Modifiedby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
+    [Column("administrativenotes")]
     [StringLength(500)]
-    public string? AdministrativeNotes { get; set; }
+    public string? Administrativenotes { get; set; }
 
-    [ForeignKey("CreatedBy")]
-    [InverseProperty("RequestNoteCreatedByNavigations")]
-    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
+    [ForeignKey("Createdby")]
+    [InverseProperty("RequestnoteCreatedbyNavigations")]
+    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
 
-    [ForeignKey("ModifiedBy")]
-    [InverseProperty("RequestNoteModifiedByNavigations")]
-    public virtual AspNetUser? ModifiedByNavigation { get; set; }
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("RequestnoteModifiedbyNavigations")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("RequestNotes")]
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestnotes")]
     public virtual Request Request { get; set; } = null!;
 }

@@ -1,5 +1,5 @@
 ﻿
-@model HalloDoc_DAL.Models.User;
+@model HalloDoc_DAL.ViewModels.UserCred;
 
 
 
@@ -53,13 +53,13 @@
                         <div class="col-xl-4 col-lg-6 col-md-7 col-sm-9 col-10">
                             <form asp-action="Login" method="POST">
                                 <div id="iuu" class="d-flex form-floating mb-3 bg-transparent" \ style="border:1px solid #d7d7d7; border-radius: 4px;">
-                                    <input type="email" class="form-control  bg-transparent border-0 emailInput " id="floatingInput"
+                                    <input type="email" asp-for="Email" class="form-control  bg-transparent border-0 emailInput " id="floatingInput"
                                            placeholder="name@example.com" onfocus="dofocus('iuu')" onblur="doblur('iuu')">
                                     <label id="userLabel" for="floatingInput">Email address </label>
                                     <span class="" id="userLabelIcon"><i class='fs-3 bi bi-person' style="color: var( --pi-label-color);"></i></span>
                                 </div>
                                 <div id='yvy' class="d-flex form-floating bg-transparent">
-                                    <input type="password"  class="form-control bg-transparent" id="floatingPassword"
+                                    <input type="password" asp-for="Password"  class="form-control bg-transparent" id="floatingPassword"
                                            placeholder="Password">
                                     <label id='passLabel' for="floatingPassword">Password</label>
                                 </div>

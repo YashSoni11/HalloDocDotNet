@@ -7,114 +7,132 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("Request")]
+[Table("request")]
 public partial class Request
 {
     [Key]
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
-    public int RequestTypeId { get; set; }
+    [Column("requesttypeid")]
+    public int Requesttypeid { get; set; }
 
-    public int? UserId { get; set; }
+    [Column("userid")]
+    public int? Userid { get; set; }
 
+    [Column("firstname")]
     [StringLength(100)]
-    public string? FirstName { get; set; }
+    public string? Firstname { get; set; }
 
+    [Column("lastname")]
     [StringLength(100)]
-    public string? LastName { get; set; }
+    public string? Lastname { get; set; }
 
+    [Column("phonenumber")]
     [StringLength(23)]
-    public string? PhoneNumber { get; set; }
+    public string? Phonenumber { get; set; }
 
+    [Column("email")]
     [StringLength(50)]
     public string? Email { get; set; }
 
+    [Column("status")]
     public short Status { get; set; }
 
-    public int? PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int? Physicianid { get; set; }
 
+    [Column("confirmationnumber")]
     [StringLength(20)]
-    public string? ConfirmationNumber { get; set; }
+    public string? Confirmationnumber { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsDeleted { get; set; }
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray? Isdeleted { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
+    [Column("declinedby")]
     [StringLength(250)]
-    public string? DeclinedBy { get; set; }
+    public string? Declinedby { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsUrgentEmailSent { get; set; }
+    [Column("isurgentemailsent", TypeName = "bit(1)")]
+    public BitArray? Isurgentemailsent { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? LastWellnessDate { get; set; }
+    [Column("lastwellnessdate", TypeName = "timestamp without time zone")]
+    public DateTime? Lastwellnessdate { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsMobile { get; set; }
+    [Column("ismobile", TypeName = "bit(1)")]
+    public BitArray? Ismobile { get; set; }
 
-    public short? CallType { get; set; }
+    [Column("calltype")]
+    public short? Calltype { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? CompletedByPhysician { get; set; }
+    [Column("completedbyphysician", TypeName = "bit(1)")]
+    public BitArray? Completedbyphysician { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? LastReservationDate { get; set; }
+    [Column("lastreservationdate", TypeName = "timestamp without time zone")]
+    public DateTime? Lastreservationdate { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? AcceptedDate { get; set; }
+    [Column("accepteddate", TypeName = "timestamp without time zone")]
+    public DateTime? Accepteddate { get; set; }
 
+    [Column("relationname")]
     [StringLength(100)]
-    public string? RelationName { get; set; }
+    public string? Relationname { get; set; }
 
+    [Column("casenumber")]
     [StringLength(50)]
-    public string? CaseNumber { get; set; }
+    public string? Casenumber { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
+    [Column("casetag")]
     [StringLength(50)]
-    public string? CaseTag { get; set; }
+    public string? Casetag { get; set; }
 
+    [Column("casetagphysician")]
     [StringLength(50)]
-    public string? CaseTagPhysician { get; set; }
+    public string? Casetagphysician { get; set; }
 
+    [Column("patientaccountid")]
     [StringLength(128)]
-    public string? PatientAccountId { get; set; }
+    public string? Patientaccountid { get; set; }
 
-    public int? CreatedUserId { get; set; }
+    [Column("createduserid")]
+    public int? Createduserid { get; set; }
 
-    [ForeignKey("PhysicianId")]
+    [ForeignKey("Physicianid")]
     [InverseProperty("Requests")]
     public virtual Physician? Physician { get; set; }
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestBusiness> RequestBusinesses { get; } = new List<RequestBusiness>();
+    public virtual ICollection<Requestbusiness> Requestbusinesses { get; } = new List<Requestbusiness>();
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestClient> RequestClients { get; } = new List<RequestClient>();
+    public virtual ICollection<Requestclient> Requestclients { get; } = new List<Requestclient>();
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestClosed> RequestCloseds { get; } = new List<RequestClosed>();
+    public virtual ICollection<Requestclosed> Requestcloseds { get; } = new List<Requestclosed>();
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestConcierge> RequestConcierges { get; } = new List<RequestConcierge>();
+    public virtual ICollection<Requestconcierge> Requestconcierges { get; } = new List<Requestconcierge>();
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestNote> RequestNotes { get; } = new List<RequestNote>();
+    public virtual ICollection<Requestnote> Requestnotes { get; } = new List<Requestnote>();
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestStatusLog> RequestStatusLogs { get; } = new List<RequestStatusLog>();
+    public virtual ICollection<Requeststatuslog> Requeststatuslogs { get; } = new List<Requeststatuslog>();
 
     [InverseProperty("Request")]
-    public virtual ICollection<RequestWiseFile> RequestWiseFiles { get; } = new List<RequestWiseFile>();
+    public virtual ICollection<Requestwisefile> Requestwisefiles { get; } = new List<Requestwisefile>();
 
-    [ForeignKey("UserId")]
+    [ForeignKey("Userid")]
     [InverseProperty("Requests")]
     public virtual User? User { get; set; }
 }

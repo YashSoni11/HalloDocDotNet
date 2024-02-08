@@ -6,26 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("PhysicianLocation")]
-public partial class PhysicianLocation
+[Table("physicianlocation")]
+public partial class Physicianlocation
 {
     [Key]
-    public int LocationId { get; set; }
+    [Column("locationid")]
+    public int Locationid { get; set; }
 
-    public int PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int Physicianid { get; set; }
 
+    [Column("latitude")]
     [Precision(9, 6)]
     public decimal? Latitude { get; set; }
 
+    [Column("longitude")]
     [Precision(9, 6)]
     public decimal? Longitude { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime? Createddate { get; set; }
 
+    [Column("physicianname")]
     [StringLength(50)]
-    public string? PhysicianName { get; set; }
+    public string? Physicianname { get; set; }
 
+    [Column("address")]
     [StringLength(500)]
     public string? Address { get; set; }
 }

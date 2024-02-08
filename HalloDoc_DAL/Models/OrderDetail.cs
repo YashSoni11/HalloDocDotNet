@@ -6,31 +6,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-public partial class OrderDetail
+[Table("orderdetails")]
+public partial class Orderdetail
 {
     [Key]
+    [Column("id")]
     public int Id { get; set; }
 
-    public int? VendorId { get; set; }
+    [Column("vendorid")]
+    public int? Vendorid { get; set; }
 
-    public int? RequestId { get; set; }
+    [Column("requestid")]
+    public int? Requestid { get; set; }
 
+    [Column("faxnumber")]
     [StringLength(50)]
-    public string? FaxNumber { get; set; }
+    public string? Faxnumber { get; set; }
 
+    [Column("email")]
     [StringLength(50)]
     public string? Email { get; set; }
 
+    [Column("businesscontact")]
     [StringLength(100)]
-    public string? BusinessContact { get; set; }
+    public string? Businesscontact { get; set; }
 
+    [Column("prescription")]
     public string? Prescription { get; set; }
 
-    public int? NoOfRefill { get; set; }
+    [Column("noofrefill")]
+    public int? Noofrefill { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime? Createddate { get; set; }
 
+    [Column("createdby")]
     [StringLength(100)]
-    public string? CreatedBy { get; set; }
+    public string? Createdby { get; set; }
 }

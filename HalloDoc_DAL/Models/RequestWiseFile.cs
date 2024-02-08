@@ -7,55 +7,60 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("RequestWiseFile")]
-public partial class RequestWiseFile
+[Table("requestwisefile")]
+public partial class Requestwisefile
 {
     [Key]
-    [Column("RequestWiseFileID")]
-    public int RequestWiseFileId { get; set; }
+    [Column("requestwisefileid")]
+    public int Requestwisefileid { get; set; }
 
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
+    [Column("filename")]
     [StringLength(500)]
-    public string FileName { get; set; } = null!;
+    public string Filename { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
-    public int? PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int? Physicianid { get; set; }
 
-    public int? AdminId { get; set; }
+    [Column("adminid")]
+    public int? Adminid { get; set; }
 
-    public short? DocType { get; set; }
+    [Column("doctype")]
+    public short? Doctype { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsFrontSide { get; set; }
+    [Column("isfrontside", TypeName = "bit(1)")]
+    public BitArray? Isfrontside { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsCompensation { get; set; }
+    [Column("iscompensation", TypeName = "bit(1)")]
+    public BitArray? Iscompensation { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsFinalize { get; set; }
+    [Column("isfinalize", TypeName = "bit(1)")]
+    public BitArray? Isfinalize { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsDeleted { get; set; }
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray? Isdeleted { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsPatientRecords { get; set; }
+    [Column("ispatientrecords", TypeName = "bit(1)")]
+    public BitArray? Ispatientrecords { get; set; }
 
-    [ForeignKey("AdminId")]
-    [InverseProperty("RequestWiseFiles")]
+    [ForeignKey("Adminid")]
+    [InverseProperty("Requestwisefiles")]
     public virtual Admin? Admin { get; set; }
 
-    [ForeignKey("PhysicianId")]
-    [InverseProperty("RequestWiseFiles")]
+    [ForeignKey("Physicianid")]
+    [InverseProperty("Requestwisefiles")]
     public virtual Physician? Physician { get; set; }
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("RequestWiseFiles")]
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestwisefiles")]
     public virtual Request Request { get; set; } = null!;
 }

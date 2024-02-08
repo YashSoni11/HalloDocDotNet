@@ -7,24 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("HealthProfessionalType")]
-public partial class HealthProfessionalType
+[Table("healthprofessionaltype")]
+public partial class Healthprofessionaltype
 {
     [Key]
-    public int HealthProfessionalId { get; set; }
+    [Column("healthprofessionalid")]
+    public int Healthprofessionalid { get; set; }
 
+    [Column("professionname")]
     [StringLength(50)]
-    public string ProfessionName { get; set; } = null!;
+    public string Professionname { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsActive { get; set; }
+    [Column("isactive", TypeName = "bit(1)")]
+    public BitArray? Isactive { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsDeleted { get; set; }
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray? Isdeleted { get; set; }
 
     [InverseProperty("ProfessionNavigation")]
-    public virtual ICollection<HealthProfessional> HealthProfessionals { get; } = new List<HealthProfessional>();
+    public virtual ICollection<Healthprofessional> Healthprofessionals { get; } = new List<Healthprofessional>();
 }

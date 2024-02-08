@@ -7,51 +7,58 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("RequestStatusLog")]
-public partial class RequestStatusLog
+[Table("requeststatuslog")]
+public partial class Requeststatuslog
 {
     [Key]
-    public int RequestStatusLogId { get; set; }
+    [Column("requeststatuslogid")]
+    public int Requeststatuslogid { get; set; }
 
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
+    [Column("status")]
     public short Status { get; set; }
 
-    public int? PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int? Physicianid { get; set; }
 
-    public int? AdminId { get; set; }
+    [Column("adminid")]
+    public int? Adminid { get; set; }
 
-    public int? TransToPhysicianId { get; set; }
+    [Column("transtophysicianid")]
+    public int? Transtophysicianid { get; set; }
 
+    [Column("notes")]
     [StringLength(500)]
     public string? Notes { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? TransToAdmin { get; set; }
+    [Column("transtoadmin", TypeName = "bit(1)")]
+    public BitArray? Transtoadmin { get; set; }
 
-    [ForeignKey("AdminId")]
-    [InverseProperty("RequestStatusLogs")]
+    [ForeignKey("Adminid")]
+    [InverseProperty("Requeststatuslogs")]
     public virtual Admin? Admin { get; set; }
 
-    [ForeignKey("PhysicianId")]
-    [InverseProperty("RequestStatusLogPhysicians")]
+    [ForeignKey("Physicianid")]
+    [InverseProperty("RequeststatuslogPhysicians")]
     public virtual Physician? Physician { get; set; }
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("RequestStatusLogs")]
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requeststatuslogs")]
     public virtual Request Request { get; set; } = null!;
 
-    [InverseProperty("RequestStatusLog")]
-    public virtual ICollection<RequestClosed> RequestCloseds { get; } = new List<RequestClosed>();
+    [InverseProperty("Requeststatuslog")]
+    public virtual ICollection<Requestclosed> Requestcloseds { get; } = new List<Requestclosed>();
 
-    [ForeignKey("TransToPhysicianId")]
-    [InverseProperty("RequestStatusLogTransToPhysicians")]
-    public virtual Physician? TransToPhysician { get; set; }
+    [ForeignKey("Transtophysicianid")]
+    [InverseProperty("RequeststatuslogTranstophysicians")]
+    public virtual Physician? Transtophysician { get; set; }
 }

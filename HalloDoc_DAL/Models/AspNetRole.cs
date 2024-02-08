@@ -6,16 +6,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-public partial class AspNetRole
+[Table("aspnetroles")]
+public partial class Aspnetrole
 {
     [Key]
+    [Column("id")]
     [StringLength(128)]
     public string Id { get; set; } = null!;
 
+    [Column("name")]
     [StringLength(256)]
     public string Name { get; set; } = null!;
 
-    [ForeignKey("RoleId")]
+    [ForeignKey("Roleid")]
     [InverseProperty("Roles")]
-    public virtual ICollection<AspNetUser> Users { get; } = new List<AspNetUser>();
+    public virtual ICollection<Aspnetuser> Users { get; } = new List<Aspnetuser>();
 }

@@ -7,93 +7,116 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("RequestClient")]
-public partial class RequestClient
+[Table("requestclient")]
+public partial class Requestclient
 {
     [Key]
-    public int RequestClientId { get; set; }
+    [Column("requestclientid")]
+    public int Requestclientid { get; set; }
 
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
+    [Column("firstname")]
     [StringLength(100)]
-    public string FirstName { get; set; } = null!;
+    public string Firstname { get; set; } = null!;
 
+    [Column("lastname")]
     [StringLength(100)]
-    public string? LastName { get; set; }
+    public string? Lastname { get; set; }
 
+    [Column("phonenumber")]
     [StringLength(23)]
-    public string? PhoneNumber { get; set; }
+    public string? Phonenumber { get; set; }
 
+    [Column("location")]
     [StringLength(100)]
     public string? Location { get; set; }
 
+    [Column("address")]
     [StringLength(500)]
     public string? Address { get; set; }
 
-    public int? RegionId { get; set; }
+    [Column("regionid")]
+    public int? Regionid { get; set; }
 
+    [Column("notimobile")]
     [StringLength(20)]
-    public string? NotiMobile { get; set; }
+    public string? Notimobile { get; set; }
 
+    [Column("notiemail")]
     [StringLength(50)]
-    public string? NotiEmail { get; set; }
+    public string? Notiemail { get; set; }
 
+    [Column("notes")]
     [StringLength(500)]
     public string? Notes { get; set; }
 
+    [Column("email")]
     [StringLength(50)]
     public string? Email { get; set; }
 
-    [Column("strMonth")]
+    [Column("strmonth")]
     [StringLength(20)]
-    public string? StrMonth { get; set; }
+    public string? Strmonth { get; set; }
 
-    [Column("intYear")]
-    public int? IntYear { get; set; }
+    [Column("intyear")]
+    public int? Intyear { get; set; }
 
-    [Column("intDate")]
-    public int? IntDate { get; set; }
+    [Column("intdate")]
+    public int? Intdate { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsMobile { get; set; }
+    [Column("ismobile", TypeName = "bit(1)")]
+    public BitArray? Ismobile { get; set; }
 
+    [Column("street")]
     [StringLength(100)]
     public string? Street { get; set; }
 
+    [Column("city")]
     [StringLength(100)]
     public string? City { get; set; }
 
+    [Column("state")]
     [StringLength(100)]
     public string? State { get; set; }
 
+    [Column("zipcode")]
     [StringLength(10)]
-    public string? ZipCode { get; set; }
+    public string? Zipcode { get; set; }
 
-    public short? CommunicationType { get; set; }
+    [Column("communicationtype")]
+    public short? Communicationtype { get; set; }
 
-    public short? RemindReservationCount { get; set; }
+    [Column("remindreservationcount")]
+    public short? Remindreservationcount { get; set; }
 
-    public short? RemindHouseCallCount { get; set; }
+    [Column("remindhousecallcount")]
+    public short? Remindhousecallcount { get; set; }
 
-    public short? IsSetFollowupSent { get; set; }
+    [Column("issetfollowupsent")]
+    public short? Issetfollowupsent { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    public short? IsReservationReminderSent { get; set; }
+    [Column("isreservationremindersent")]
+    public short? Isreservationremindersent { get; set; }
 
+    [Column("latitude")]
     [Precision(9, 6)]
     public decimal? Latitude { get; set; }
 
+    [Column("longitude")]
     [Precision(9, 6)]
     public decimal? Longitude { get; set; }
 
-    [ForeignKey("RegionId")]
-    [InverseProperty("RequestClients")]
+    [ForeignKey("Regionid")]
+    [InverseProperty("Requestclients")]
     public virtual Region? Region { get; set; }
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("RequestClients")]
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestclients")]
     public virtual Request Request { get; set; } = null!;
 }

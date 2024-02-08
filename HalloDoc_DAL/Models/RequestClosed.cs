@@ -6,31 +6,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("RequestClosed")]
-public partial class RequestClosed
+[Table("requestclosed")]
+public partial class Requestclosed
 {
     [Key]
-    public int RequestClosedId { get; set; }
+    [Column("requestclosedid")]
+    public int Requestclosedid { get; set; }
 
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
-    public int RequestStatusLogId { get; set; }
+    [Column("requeststatuslogid")]
+    public int Requeststatuslogid { get; set; }
 
+    [Column("phynotes")]
     [StringLength(500)]
-    public string? PhyNotes { get; set; }
+    public string? Phynotes { get; set; }
 
+    [Column("clientnotes")]
     [StringLength(500)]
-    public string? ClientNotes { get; set; }
+    public string? Clientnotes { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("RequestCloseds")]
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestcloseds")]
     public virtual Request Request { get; set; } = null!;
 
-    [ForeignKey("RequestStatusLogId")]
-    [InverseProperty("RequestCloseds")]
-    public virtual RequestStatusLog RequestStatusLog { get; set; } = null!;
+    [ForeignKey("Requeststatuslogid")]
+    [InverseProperty("Requestcloseds")]
+    public virtual Requeststatuslog Requeststatuslog { get; set; } = null!;
 }

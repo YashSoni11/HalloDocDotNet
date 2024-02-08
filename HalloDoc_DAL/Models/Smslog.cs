@@ -7,41 +7,50 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("SMSLog")]
+[Table("smslog")]
 public partial class Smslog
 {
     [Key]
-    [Column("SMSLogID")]
+    [Column("smslogid")]
     [Precision(9, 0)]
-    public decimal SmslogId { get; set; }
+    public decimal Smslogid { get; set; }
 
-    [Column("SMSTemplate", TypeName = "character varying")]
+    [Column("smstemplate")]
+    [StringLength(1)]
     public string Smstemplate { get; set; } = null!;
 
+    [Column("mobilenumber")]
     [StringLength(50)]
-    public string MobileNumber { get; set; } = null!;
+    public string Mobilenumber { get; set; } = null!;
 
+    [Column("confirmationnumber")]
     [StringLength(200)]
-    public string? ConfirmationNumber { get; set; }
+    public string? Confirmationnumber { get; set; }
 
-    public int? RoleId { get; set; }
+    [Column("roleid")]
+    public int? Roleid { get; set; }
 
-    public int? AdminId { get; set; }
+    [Column("adminid")]
+    public int? Adminid { get; set; }
 
-    public int? RequestId { get; set; }
+    [Column("requestid")]
+    public int? Requestid { get; set; }
 
-    public int? PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int? Physicianid { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreateDate { get; set; }
+    [Column("createdate", TypeName = "timestamp without time zone")]
+    public DateTime Createdate { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? SentDate { get; set; }
+    [Column("sentdate", TypeName = "timestamp without time zone")]
+    public DateTime? Sentdate { get; set; }
 
-    [Column("IsSMSSent", TypeName = "bit(1)")]
-    public BitArray? IsSmssent { get; set; }
+    [Column("issmssent", TypeName = "bit(1)")]
+    public BitArray? Issmssent { get; set; }
 
-    public int SentTries { get; set; }
+    [Column("senttries")]
+    public int Senttries { get; set; }
 
+    [Column("action")]
     public int? Action { get; set; }
 }

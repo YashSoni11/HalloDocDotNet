@@ -7,71 +7,90 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("Business")]
+[Table("business")]
 public partial class Business
 {
     [Key]
-    public int BusinessId { get; set; }
+    [Column("businessid")]
+    public int Businessid { get; set; }
 
+    [Column("name")]
     [StringLength(100)]
     public string Name { get; set; } = null!;
 
+    [Column("businesstypeid")]
+    public int? Businesstypeid { get; set; }
+
+    [Column("address1")]
     [StringLength(500)]
     public string? Address1 { get; set; }
 
+    [Column("address2")]
     [StringLength(500)]
     public string? Address2 { get; set; }
 
+    [Column("city")]
     [StringLength(50)]
     public string? City { get; set; }
 
-    public int? RegionId { get; set; }
+    [Column("regionid")]
+    public int? Regionid { get; set; }
 
+    [Column("zipcode")]
     [StringLength(10)]
-    public string? ZipCode { get; set; }
+    public string? Zipcode { get; set; }
 
+    [Column("phonenumber")]
     [StringLength(20)]
-    public string? PhoneNumber { get; set; }
+    public string? Phonenumber { get; set; }
 
+    [Column("faxnumber")]
     [StringLength(20)]
-    public string? FaxNumber { get; set; }
+    public string? Faxnumber { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsRegistered { get; set; }
+    [Column("isregistered", TypeName = "bit(1)")]
+    public BitArray? Isregistered { get; set; }
 
+    [Column("createdby")]
     [StringLength(128)]
-    public string? CreatedBy { get; set; }
+    public string? Createdby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
+    [Column("modifiedby")]
     [StringLength(128)]
-    public string? ModifiedBy { get; set; }
+    public string? Modifiedby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
+    [Column("status")]
     public short? Status { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsDeleted { get; set; }
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray? Isdeleted { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [ForeignKey("CreatedBy")]
-    [InverseProperty("BusinessCreatedByNavigations")]
-    public virtual AspNetUser? CreatedByNavigation { get; set; }
+    [ForeignKey("Businesstypeid")]
+    [InverseProperty("Businesses")]
+    public virtual Businesstype? Businesstype { get; set; }
 
-    [ForeignKey("ModifiedBy")]
-    [InverseProperty("BusinessModifiedByNavigations")]
-    public virtual AspNetUser? ModifiedByNavigation { get; set; }
+    [ForeignKey("Createdby")]
+    [InverseProperty("BusinessCreatedbyNavigations")]
+    public virtual Aspnetuser? CreatedbyNavigation { get; set; }
 
-    [ForeignKey("RegionId")]
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("BusinessModifiedbyNavigations")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
+
+    [ForeignKey("Regionid")]
     [InverseProperty("Businesses")]
     public virtual Region? Region { get; set; }
 
     [InverseProperty("Business")]
-    public virtual ICollection<RequestBusiness> RequestBusinesses { get; } = new List<RequestBusiness>();
+    public virtual ICollection<Requestbusiness> Requestbusinesses { get; } = new List<Requestbusiness>();
 }

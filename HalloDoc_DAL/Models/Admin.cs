@@ -6,80 +6,97 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("Admin")]
+[Table("admin")]
 public partial class Admin
 {
     [Key]
-    public int AdminId { get; set; }
+    [Column("adminid")]
+    public int Adminid { get; set; }
 
+    [Column("aspnetuserid")]
     [StringLength(128)]
-    public string AspNetUserId { get; set; } = null!;
+    public string Aspnetuserid { get; set; } = null!;
 
+    [Column("firstname")]
     [StringLength(100)]
-    public string FirstName { get; set; } = null!;
+    public string Firstname { get; set; } = null!;
 
+    [Column("lastname")]
     [StringLength(100)]
-    public string? LastName { get; set; }
+    public string? Lastname { get; set; }
 
+    [Column("email")]
     [StringLength(50)]
     public string Email { get; set; } = null!;
 
+    [Column("mobile")]
     [StringLength(20)]
     public string? Mobile { get; set; }
 
+    [Column("address1")]
     [StringLength(500)]
     public string? Address1 { get; set; }
 
+    [Column("address2")]
     [StringLength(500)]
     public string? Address2 { get; set; }
 
+    [Column("city")]
     [StringLength(100)]
     public string? City { get; set; }
 
-    public int? RegionId { get; set; }
+    [Column("regionid")]
+    public int? Regionid { get; set; }
 
+    [Column("zip")]
     [StringLength(10)]
     public string? Zip { get; set; }
 
+    [Column("altphone")]
     [StringLength(20)]
-    public string? AltPhone { get; set; }
+    public string? Altphone { get; set; }
 
+    [Column("createdby")]
     [StringLength(128)]
-    public string CreatedBy { get; set; } = null!;
+    public string Createdby { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
+    [Column("modifiedby")]
     [StringLength(128)]
-    public string? ModifiedBy { get; set; }
+    public string? Modifiedby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
+    [Column("status")]
     public short? Status { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
-    public int? RoleId { get; set; }
-
-    [InverseProperty("Admin")]
-    public virtual ICollection<AdminRegion> AdminRegions { get; } = new List<AdminRegion>();
-
-    [ForeignKey("AspNetUserId")]
-    [InverseProperty("AdminAspNetUsers")]
-    public virtual AspNetUser AspNetUser { get; set; } = null!;
-
-    [ForeignKey("CreatedBy")]
-    [InverseProperty("AdminCreatedByNavigations")]
-    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
-
-    [ForeignKey("ModifiedBy")]
-    [InverseProperty("AdminModifiedByNavigations")]
-    public virtual AspNetUser? ModifiedByNavigation { get; set; }
+    [Column("roleid")]
+    public int? Roleid { get; set; }
 
     [InverseProperty("Admin")]
-    public virtual ICollection<RequestStatusLog> RequestStatusLogs { get; } = new List<RequestStatusLog>();
+    public virtual ICollection<Adminregion> Adminregions { get; } = new List<Adminregion>();
+
+    [ForeignKey("Aspnetuserid")]
+    [InverseProperty("AdminAspnetusers")]
+    public virtual Aspnetuser Aspnetuser { get; set; } = null!;
+
+    [ForeignKey("Createdby")]
+    [InverseProperty("AdminCreatedbyNavigations")]
+    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
+
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("AdminModifiedbyNavigations")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
 
     [InverseProperty("Admin")]
-    public virtual ICollection<RequestWiseFile> RequestWiseFiles { get; } = new List<RequestWiseFile>();
+    public virtual ICollection<Requeststatuslog> Requeststatuslogs { get; } = new List<Requeststatuslog>();
+
+    [InverseProperty("Admin")]
+    public virtual ICollection<Requestwisefile> Requestwisefiles { get; } = new List<Requestwisefile>();
 }

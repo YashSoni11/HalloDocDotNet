@@ -6,25 +6,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("RequestConcierge")]
-public partial class RequestConcierge
+[Table("requestconcierge")]
+public partial class Requestconcierge
 {
     [Key]
+    [Column("id")]
     public int Id { get; set; }
 
-    public int RequestId { get; set; }
+    [Column("requestid")]
+    public int Requestid { get; set; }
 
-    public int ConciergeId { get; set; }
+    [Column("conciergeid")]
+    public int Conciergeid { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [ForeignKey("ConciergeId")]
-    [InverseProperty("RequestConcierges")]
+    [ForeignKey("Conciergeid")]
+    [InverseProperty("Requestconcierges")]
     public virtual Concierge Concierge { get; set; } = null!;
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("RequestConcierges")]
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestconcierges")]
     public virtual Request Request { get; set; } = null!;
 }

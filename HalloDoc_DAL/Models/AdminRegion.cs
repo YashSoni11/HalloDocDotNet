@@ -6,21 +6,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("AdminRegion")]
-public partial class AdminRegion
+[Table("adminregion")]
+public partial class Adminregion
 {
     [Key]
-    public int AdminRegionId { get; set; }
+    [Column("adminregionid")]
+    public int Adminregionid { get; set; }
 
-    public int AdminId { get; set; }
+    [Column("adminid")]
+    public int Adminid { get; set; }
 
-    public int RegionId { get; set; }
+    [Column("regionid")]
+    public int Regionid { get; set; }
 
-    [ForeignKey("AdminId")]
-    [InverseProperty("AdminRegions")]
+    [ForeignKey("Adminid")]
+    [InverseProperty("Adminregions")]
     public virtual Admin Admin { get; set; } = null!;
 
-    [ForeignKey("RegionId")]
-    [InverseProperty("AdminRegions")]
+    [ForeignKey("Regionid")]
+    [InverseProperty("Adminregions")]
     public virtual Region Region { get; set; } = null!;
 }

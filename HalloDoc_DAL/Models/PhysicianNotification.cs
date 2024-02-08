@@ -7,19 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("PhysicianNotification")]
-public partial class PhysicianNotification
+[Table("physiciannotification")]
+public partial class Physiciannotification
 {
     [Key]
     [Column("id")]
     public int Id { get; set; }
 
-    public int PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int Physicianid { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray IsNotificationStopped { get; set; } = null!;
+    [Column("isnotificationstopped", TypeName = "bit(1)")]
+    public BitArray Isnotificationstopped { get; set; } = null!;
 
-    [ForeignKey("PhysicianId")]
-    [InverseProperty("PhysicianNotifications")]
+    [ForeignKey("Physicianid")]
+    [InverseProperty("Physiciannotifications")]
     public virtual Physician Physician { get; set; } = null!;
 }

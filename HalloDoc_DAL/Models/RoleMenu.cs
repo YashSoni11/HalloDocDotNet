@@ -6,21 +6,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("RoleMenu")]
-public partial class RoleMenu
+[Table("rolemenu")]
+public partial class Rolemenu
 {
     [Key]
-    public int RoleMenuId { get; set; }
+    [Column("rolemenuid")]
+    public int Rolemenuid { get; set; }
 
-    public int RoleId { get; set; }
+    [Column("roleid")]
+    public int Roleid { get; set; }
 
-    public int MenuId { get; set; }
+    [Column("menuid")]
+    public int Menuid { get; set; }
 
-    [ForeignKey("MenuId")]
-    [InverseProperty("RoleMenus")]
+    [ForeignKey("Menuid")]
+    [InverseProperty("Rolemenus")]
     public virtual Menu Menu { get; set; } = null!;
 
-    [ForeignKey("RoleId")]
-    [InverseProperty("RoleMenus")]
+    [ForeignKey("Roleid")]
+    [InverseProperty("Rolemenus")]
     public virtual Role Role { get; set; } = null!;
 }

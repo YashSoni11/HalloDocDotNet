@@ -6,80 +6,85 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-public partial class AspNetUser
+[Table("aspnetusers")]
+public partial class Aspnetuser
 {
     [Key]
+    [Column("id")]
     [StringLength(128)]
     public string Id { get; set; } = null!;
 
+    [Column("username")]
     [StringLength(256)]
-    public string UserName { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
-    [Column(TypeName = "character varying")]
-    public string? PasswordHash { get; set; }
+    [Column("passwordhash", TypeName = "character varying")]
+    public string? Passwordhash { get; set; }
 
+    [Column("email")]
     [StringLength(256)]
     public string? Email { get; set; }
 
+    [Column("phonenumber")]
     [StringLength(20)]
-    public string? PhoneNumber { get; set; }
+    public string? Phonenumber { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
-    [InverseProperty("AspNetUser")]
-    public virtual ICollection<Admin> AdminAspNetUsers { get; } = new List<Admin>();
+    [InverseProperty("Aspnetuser")]
+    public virtual ICollection<Admin> AdminAspnetusers { get; } = new List<Admin>();
 
-    [InverseProperty("CreatedByNavigation")]
-    public virtual ICollection<Admin> AdminCreatedByNavigations { get; } = new List<Admin>();
+    [InverseProperty("CreatedbyNavigation")]
+    public virtual ICollection<Admin> AdminCreatedbyNavigations { get; } = new List<Admin>();
 
-    [InverseProperty("ModifiedByNavigation")]
-    public virtual ICollection<Admin> AdminModifiedByNavigations { get; } = new List<Admin>();
+    [InverseProperty("ModifiedbyNavigation")]
+    public virtual ICollection<Admin> AdminModifiedbyNavigations { get; } = new List<Admin>();
 
-    [InverseProperty("CreatedByNavigation")]
-    public virtual ICollection<Business> BusinessCreatedByNavigations { get; } = new List<Business>();
+    [InverseProperty("CreatedbyNavigation")]
+    public virtual ICollection<Business> BusinessCreatedbyNavigations { get; } = new List<Business>();
 
-    [InverseProperty("ModifiedByNavigation")]
-    public virtual ICollection<Business> BusinessModifiedByNavigations { get; } = new List<Business>();
+    [InverseProperty("ModifiedbyNavigation")]
+    public virtual ICollection<Business> BusinessModifiedbyNavigations { get; } = new List<Business>();
 
-    [InverseProperty("CreatedByNavigation")]
-    public virtual ICollection<Physician> PhysicianCreatedByNavigations { get; } = new List<Physician>();
+    [InverseProperty("Aspnetuser")]
+    public virtual ICollection<Physician> PhysicianAspnetusers { get; } = new List<Physician>();
 
-    [InverseProperty("IdNavigation")]
-    public virtual ICollection<Physician> PhysicianIdNavigations { get; } = new List<Physician>();
+    [InverseProperty("CreatedbyNavigation")]
+    public virtual ICollection<Physician> PhysicianCreatedbyNavigations { get; } = new List<Physician>();
 
-    [InverseProperty("ModifiedByNavigation")]
-    public virtual ICollection<Physician> PhysicianModifiedByNavigations { get; } = new List<Physician>();
+    [InverseProperty("ModifiedbyNavigation")]
+    public virtual ICollection<Physician> PhysicianModifiedbyNavigations { get; } = new List<Physician>();
 
-    [InverseProperty("CreatedByNavigation")]
-    public virtual ICollection<RequestNote> RequestNoteCreatedByNavigations { get; } = new List<RequestNote>();
+    [InverseProperty("CreatedbyNavigation")]
+    public virtual ICollection<Requestnote> RequestnoteCreatedbyNavigations { get; } = new List<Requestnote>();
 
-    [InverseProperty("ModifiedByNavigation")]
-    public virtual ICollection<RequestNote> RequestNoteModifiedByNavigations { get; } = new List<RequestNote>();
+    [InverseProperty("ModifiedbyNavigation")]
+    public virtual ICollection<Requestnote> RequestnoteModifiedbyNavigations { get; } = new List<Requestnote>();
 
-    [InverseProperty("ModifiedByNavigation")]
-    public virtual ICollection<ShiftDetail> ShiftDetails { get; } = new List<ShiftDetail>();
+    [InverseProperty("ModifiedbyNavigation")]
+    public virtual ICollection<Shiftdetail> Shiftdetails { get; } = new List<Shiftdetail>();
 
-    [InverseProperty("CreatedByNavigation")]
+    [InverseProperty("CreatedbyNavigation")]
     public virtual ICollection<Shift> Shifts { get; } = new List<Shift>();
 
-    [InverseProperty("CreatedByNavigation")]
-    public virtual ICollection<User> UserCreatedByNavigations { get; } = new List<User>();
+    [InverseProperty("Aspnetuser")]
+    public virtual ICollection<User> UserAspnetusers { get; } = new List<User>();
 
-    [InverseProperty("IdNavigation")]
-    public virtual ICollection<User> UserIdNavigations { get; } = new List<User>();
+    [InverseProperty("CreatedbyNavigation")]
+    public virtual ICollection<User> UserCreatedbyNavigations { get; } = new List<User>();
 
-    [InverseProperty("ModifiedByNavigation")]
-    public virtual ICollection<User> UserModifiedByNavigations { get; } = new List<User>();
+    [InverseProperty("ModifiedbyNavigation")]
+    public virtual ICollection<User> UserModifiedbyNavigations { get; } = new List<User>();
 
-    [ForeignKey("UserId")]
+    [ForeignKey("Userid")]
     [InverseProperty("Users")]
-    public virtual ICollection<AspNetRole> Roles { get; } = new List<AspNetRole>();
+    public virtual ICollection<Aspnetrole> Roles { get; } = new List<Aspnetrole>();
 }

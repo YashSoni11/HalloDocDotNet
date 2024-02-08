@@ -7,51 +7,59 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("ShiftDetail")]
-public partial class ShiftDetail
+[Table("shiftdetail")]
+public partial class Shiftdetail
 {
     [Key]
-    public int ShiftDetailId { get; set; }
+    [Column("shiftdetailid")]
+    public int Shiftdetailid { get; set; }
 
-    public int ShiftId { get; set; }
+    [Column("shiftid")]
+    public int Shiftid { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime ShiftDate { get; set; }
+    [Column("shiftdate", TypeName = "timestamp without time zone")]
+    public DateTime Shiftdate { get; set; }
 
-    public int? RegionId { get; set; }
+    [Column("regionid")]
+    public int? Regionid { get; set; }
 
-    public TimeOnly StartTime { get; set; }
+    [Column("starttime")]
+    public TimeOnly Starttime { get; set; }
 
-    public TimeOnly EndTime { get; set; }
+    [Column("endtime")]
+    public TimeOnly Endtime { get; set; }
 
+    [Column("status")]
     public short Status { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray IsDeleted { get; set; } = null!;
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray Isdeleted { get; set; } = null!;
 
+    [Column("modifiedby")]
     [StringLength(128)]
-    public string? ModifiedBy { get; set; }
+    public string? Modifiedby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? LastRunningDate { get; set; }
+    [Column("lastrunningdate", TypeName = "timestamp without time zone")]
+    public DateTime? Lastrunningdate { get; set; }
 
+    [Column("eventid")]
     [StringLength(100)]
-    public string? EventId { get; set; }
+    public string? Eventid { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsSync { get; set; }
+    [Column("issync", TypeName = "bit(1)")]
+    public BitArray? Issync { get; set; }
 
-    [ForeignKey("ModifiedBy")]
-    [InverseProperty("ShiftDetails")]
-    public virtual AspNetUser? ModifiedByNavigation { get; set; }
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("Shiftdetails")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
 
-    [ForeignKey("ShiftId")]
-    [InverseProperty("ShiftDetails")]
+    [ForeignKey("Shiftid")]
+    [InverseProperty("Shiftdetails")]
     public virtual Shift Shift { get; set; } = null!;
 
-    [InverseProperty("ShiftDetail")]
-    public virtual ICollection<ShiftDetailRegion> ShiftDetailRegions { get; } = new List<ShiftDetailRegion>();
+    [InverseProperty("Shiftdetail")]
+    public virtual ICollection<Shiftdetailregion> Shiftdetailregions { get; } = new List<Shiftdetailregion>();
 }

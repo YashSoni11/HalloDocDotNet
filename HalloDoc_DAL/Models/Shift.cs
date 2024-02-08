@@ -7,42 +7,48 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("Shift")]
+[Table("shift")]
 public partial class Shift
 {
     [Key]
-    public int ShiftId { get; set; }
+    [Column("shiftid")]
+    public int Shiftid { get; set; }
 
-    public int PhysicianId { get; set; }
+    [Column("physicianid")]
+    public int Physicianid { get; set; }
 
-    public DateOnly StartDate { get; set; }
+    [Column("startdate")]
+    public DateOnly Startdate { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray IsRepeat { get; set; } = null!;
+    [Column("isrepeat", TypeName = "bit(1)")]
+    public BitArray Isrepeat { get; set; } = null!;
 
+    [Column("weekdays")]
     [StringLength(7)]
-    public string? WeekDays { get; set; }
+    public string? Weekdays { get; set; }
 
-    public int? RepeatUpto { get; set; }
+    [Column("repeatupto")]
+    public int? Repeatupto { get; set; }
 
+    [Column("createdby")]
     [StringLength(128)]
-    public string CreatedBy { get; set; } = null!;
+    public string Createdby { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [ForeignKey("CreatedBy")]
+    [ForeignKey("Createdby")]
     [InverseProperty("Shifts")]
-    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
+    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
 
-    [ForeignKey("PhysicianId")]
+    [ForeignKey("Physicianid")]
     [InverseProperty("Shifts")]
     public virtual Physician Physician { get; set; } = null!;
 
     [InverseProperty("Shift")]
-    public virtual ICollection<ShiftDetail> ShiftDetails { get; } = new List<ShiftDetail>();
+    public virtual ICollection<Shiftdetail> Shiftdetails { get; } = new List<Shiftdetail>();
 }

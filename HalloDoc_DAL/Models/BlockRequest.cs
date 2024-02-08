@@ -7,33 +7,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-public partial class BlockRequest
+[Table("blockrequests")]
+public partial class Blockrequest
 {
     [Key]
-    public int BlockRequestId { get; set; }
+    [Column("blockrequestid")]
+    public int Blockrequestid { get; set; }
 
+    [Column("phonenumber")]
     [StringLength(50)]
-    public string? PhoneNumber { get; set; }
+    public string? Phonenumber { get; set; }
 
+    [Column("email")]
     [StringLength(50)]
     public string? Email { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsActive { get; set; }
+    [Column("isactive", TypeName = "bit(1)")]
+    public BitArray? Isactive { get; set; }
 
-    [Column(TypeName = "character varying")]
+    [Column("reason", TypeName = "character varying")]
     public string? Reason { get; set; }
 
+    [Column("requestid")]
     [StringLength(50)]
-    public string RequestId { get; set; } = null!;
+    public string Requestid { get; set; } = null!;
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime? Createddate { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 }

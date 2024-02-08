@@ -7,36 +7,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("Role")]
+[Table("role")]
 public partial class Role
 {
     [Key]
-    public int RoleId { get; set; }
+    [Column("roleid")]
+    public int Roleid { get; set; }
 
+    [Column("name")]
     [StringLength(50)]
     public string Name { get; set; } = null!;
 
-    public short AccountType { get; set; }
+    [Column("accounttype")]
+    public short Accounttype { get; set; }
 
+    [Column("createdby")]
     [StringLength(128)]
-    public string CreatedBy { get; set; } = null!;
+    public string Createdby { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
+    [Column("modifiedby")]
     [StringLength(128)]
-    public string? ModifiedBy { get; set; }
+    public string? Modifiedby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray IsDeleted { get; set; } = null!;
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray Isdeleted { get; set; } = null!;
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
     [InverseProperty("Role")]
-    public virtual ICollection<RoleMenu> RoleMenus { get; } = new List<RoleMenu>();
+    public virtual ICollection<Rolemenu> Rolemenus { get; } = new List<Rolemenu>();
 }

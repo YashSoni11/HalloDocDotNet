@@ -7,89 +7,103 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("User")]
+[Table("user")]
 public partial class User
 {
     [Key]
-    public int UserId { get; set; }
+    [Column("userid")]
+    public int Userid { get; set; }
 
+    [Column("aspnetuserid")]
     [StringLength(128)]
-    public string? Id { get; set; }
+    public string? Aspnetuserid { get; set; }
 
+    [Column("firstname")]
     [StringLength(100)]
-    public string FirstName { get; set; } = null!;
+    public string Firstname { get; set; } = null!;
 
+    [Column("lastname")]
     [StringLength(100)]
-    public string? LastName { get; set; }
+    public string? Lastname { get; set; }
 
+    [Column("email")]
     [StringLength(50)]
     public string Email { get; set; } = null!;
 
+    [Column("mobile")]
     [StringLength(20)]
     public string? Mobile { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsMobile { get; set; }
+    [Column("ismobile", TypeName = "bit(1)")]
+    public BitArray? Ismobile { get; set; }
 
+    [Column("street")]
     [StringLength(100)]
     public string? Street { get; set; }
 
+    [Column("city")]
     [StringLength(100)]
     public string? City { get; set; }
 
+    [Column("state")]
     [StringLength(100)]
     public string? State { get; set; }
 
-    public int? RegionId { get; set; }
+    [Column("regionid")]
+    public int? Regionid { get; set; }
 
+    [Column("zipcode")]
     [StringLength(10)]
-    public string? ZipCode { get; set; }
+    public string? Zipcode { get; set; }
 
-    [Column("strMonth")]
+    [Column("strmonth")]
     [StringLength(20)]
-    public string? StrMonth { get; set; }
+    public string? Strmonth { get; set; }
 
-    [Column("intYear")]
-    public int? IntYear { get; set; }
+    [Column("intyear")]
+    public int? Intyear { get; set; }
 
-    [Column("intDate")]
-    public int? IntDate { get; set; }
+    [Column("intdate")]
+    public int? Intdate { get; set; }
 
+    [Column("createdby")]
     [StringLength(128)]
-    public string CreatedBy { get; set; } = null!;
+    public string Createdby { get; set; } = null!;
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime CreatedDate { get; set; }
+    [Column("createddate", TypeName = "timestamp without time zone")]
+    public DateTime Createddate { get; set; }
 
+    [Column("modifiedby")]
     [StringLength(128)]
-    public string? ModifiedBy { get; set; }
+    public string? Modifiedby { get; set; }
 
-    [Column(TypeName = "timestamp without time zone")]
-    public DateTime? ModifiedDate { get; set; }
+    [Column("modifieddate", TypeName = "timestamp without time zone")]
+    public DateTime? Modifieddate { get; set; }
 
+    [Column("status")]
     public short? Status { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsDeleted { get; set; }
+    [Column("isdeleted", TypeName = "bit(1)")]
+    public BitArray? Isdeleted { get; set; }
 
-    [Column("IP")]
+    [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column(TypeName = "bit(1)")]
-    public BitArray? IsRequestWithEmail { get; set; }
+    [Column("isrequestwithemail", TypeName = "bit(1)")]
+    public BitArray? Isrequestwithemail { get; set; }
 
-    [ForeignKey("CreatedBy")]
-    [InverseProperty("UserCreatedByNavigations")]
-    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
+    [ForeignKey("Aspnetuserid")]
+    [InverseProperty("UserAspnetusers")]
+    public virtual Aspnetuser? Aspnetuser { get; set; }
 
-    [ForeignKey("Id")]
-    [InverseProperty("UserIdNavigations")]
-    public virtual AspNetUser? IdNavigation { get; set; }
+    [ForeignKey("Createdby")]
+    [InverseProperty("UserCreatedbyNavigations")]
+    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
 
-    [ForeignKey("ModifiedBy")]
-    [InverseProperty("UserModifiedByNavigations")]
-    public virtual AspNetUser? ModifiedByNavigation { get; set; }
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("UserModifiedbyNavigations")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
 
     [InverseProperty("User")]
     public virtual ICollection<Request> Requests { get; } = new List<Request>();
