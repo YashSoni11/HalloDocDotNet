@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Account\DashBoard.cs" />
     <Compile Remove="Views\Home\Login.cshtml.cs" />
     <Compile Remove="Views\Home\PatientRequest.cshtml.cs" />
     <Compile Remove="Views\Shared\NavAndFooter.cs" />

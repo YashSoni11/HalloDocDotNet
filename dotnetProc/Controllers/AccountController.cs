@@ -47,7 +47,7 @@ namespace dotnetProc.Controllers
                 }
 
 
-                return RedirectToAction("FormByPatient");
+                return RedirectToAction("DashBoard","Account");
 
             }
 
@@ -60,6 +60,12 @@ namespace dotnetProc.Controllers
 
         }
 
+
+
+        public IActionResult DashBoard()
+        {
+            return View();
+        }
 
     }
 }

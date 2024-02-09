@@ -141,3 +141,11 @@ input[type='file']:focus ~ label {
 .phoneInputDiv > div {
     width: 100%;
 }
+
+
+.active {
+ 
+    color: #0dcaf0 !important;
+    border-color: white white #0dcaf0 white !important;
+}
+

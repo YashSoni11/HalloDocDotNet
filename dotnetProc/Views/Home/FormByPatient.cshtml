@@ -185,7 +185,7 @@
 
         $.ajax({
            
-                url: "/Home/ckeckEmailAvailibility",
+             url: "/Home/ckeckEmailAvailibility",
             method:"post",
             data:{email : email},
             success:function(response){
@@ -193,6 +193,8 @@
                 console.log(response)
 
                 if(response.code == 401){
+                    $(".passFields").css("display", "none")
+
                    toastr.warning(response.error)
                 }
                 else if(response.code == 402){
