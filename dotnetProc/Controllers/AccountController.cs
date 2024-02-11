@@ -3,6 +3,7 @@ using HalloDoc_DAL.ViewModels;
 using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using HalloDoc_BAL.Interface;
 
 namespace dotnetProc.Controllers
 {
@@ -10,12 +11,16 @@ namespace dotnetProc.Controllers
     {
 
 
-        private readonly HalloDocContext _context;
+        
+        private readonly IAccount _account;
+       
 
-        public AccountController(HalloDocContext context)
+        public AccountController(IAccount account)
         {
              
-             _context = context;
+           
+            _account = account;
+           
         }
 
 
@@ -28,13 +33,16 @@ namespace dotnetProc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Login(UserCred um)
+        public  IActionResult Login(UserCred um)
         {
 
 
             if(ModelState.IsValid)
             {
-                var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
+                //var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
+
+                var user =  _account.ValidateLogin(um);
+
 
 
                 if(user == null)
