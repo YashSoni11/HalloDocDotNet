@@ -136,7 +136,8 @@ namespace HalloDoc_BAL.Repositery
         {
               if(_context.Users.Any(a => a.Email == email))
             {
-                return _context.Users.FirstOrDefault(u => u.Email == email).Userid;
+                var hh = _context.Users.FirstOrDefault(u => u.Email == email).Userid;
+                return hh;
             }
 
               return 0;
@@ -192,12 +193,12 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request AddRequest(CmnInformation cm,int userId,string requestType)
+        public Request AddRequest(CmnInformation cm, int userId, string requestType)
         {
 
 
             Request request = new Request
-            {
+            { 
                 Requesttypeid = 2,
                 //Requesttypeid = _context.Requesttypes.FirstOrDefault(u => u.Name == requestType).Requesttypeid,
                 Firstname = cm.FirstName,
