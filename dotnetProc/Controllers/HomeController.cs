@@ -1,4 +1,5 @@
-﻿using HalloDoc_DAL.Context;
+﻿using HalloDoc_BAL.Interface;
+using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -11,37 +12,17 @@ namespace dotnetProc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HalloDocContext _context;
+        
+
+        private readonly IPatientReq _patientReq;
 
 
-        public HomeController(HalloDocContext context)
+        public HomeController(IPatientReq patientReq)
         {
-            _context = context;
+            _patientReq = patientReq;
         }
 
-        public static string RandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[new Random().Next(s.Length)]).ToArray());
-        }
-
-
-        public enum Months
-        {
-            January = 1,
-            February,
-            March,
-            April,
-            May,
-            June,
-            July,
-            August,
-            September,
-            October,
-            November,
-            December
-        }
+       
 
         public IActionResult Index()
         {
@@ -54,7 +35,9 @@ namespace dotnetProc.Controllers
 
             if(email != null)
             {
-                Aspnetuser exist =  _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
+                //Aspnetuser exist =  _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
+
+                var exist = _patientReq.CheckEmail(email);
 
                 if(exist != null)
                 {
@@ -102,70 +85,11 @@ namespace dotnetProc.Controllers
 
 
 
-        public async Task<IActionResult> FormByPatient(PatientReq pr)
+        public IActionResult FormByPatient(PatientReq pr)
         {
 
 
-            Aspnetuser aspNetUser = await _context.Aspnetusers.FirstOrDefaultAsync(u => u.Email == pr.Email);
-
-            if (aspNetUser == null)
-            {
-
-                Aspnetuser aspNetUser1 = new Aspnetuser
-                {
-                    Id = RandomString(5),
-                    Username = pr.FirstName + "_" + pr.LastName,
-                    Email = pr.Email,
-                    Passwordhash = pr.FirstName,
-                    Phonenumber = pr.Phonenumber,
-                    Createddate = DateTime.Now
-                };
-
-                _context.Aspnetusers.Add(aspNetUser1);
-                aspNetUser = aspNetUser1;
-
-
-
-            }
-
-
-            User user = new User
-            {
-                Firstname = pr.FirstName,
-                Lastname = pr.LastName,
-                Email = pr.Email,
-                Mobile = pr.Phonenumber,
-                Zipcode = pr.Location.ZipCode,
-                State = pr.Location.State,
-                City = pr.Location.City,
-                Street = pr.Location.Street,
-                Intdate = pr.BirthDate.Day,
-                Intyear = pr.BirthDate.Year,
-                Strmonth = ((Months)pr.BirthDate.Month).ToString(),
-                Createddate = DateTime.Now,
-                CreatedbyNavigation = aspNetUser,
-                Aspnetuser = aspNetUser
-               
-            };
-
-            _context.Users.Add(user);
-
-            Request request = new Request
-            {
-                Requesttypeid = 3,
-                Firstname = pr.FirstName,
-                Lastname = pr.LastName,
-                Phonenumber = pr.Phonenumber,
-                Email = pr.Email,
-                Createddate = DateTime.Now,
-                Status = 1,
-                User = user
-            };
-
-
-            _context.Requests.Add(request);
-            _context.SaveChanges();
-
+           _patientReq.AddPatientReq(pr);
 
             return RedirectToAction("Login");
 
@@ -174,18 +98,57 @@ namespace dotnetProc.Controllers
 
 
 
+        [HttpGet]
         public IActionResult FormByFamily()
         {
 
             return View();
         }
 
+        [HttpPost]
+        public IActionResult FormByFamily(FamilyFriendModel familyFriendModel)
+        {
+
+            int user = _patientReq.GetUserIdByEmail(familyFriendModel.PatientInfo.Email);
+
+            Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, user,"Family");
+
+            bool response = _patientReq.AddRequestClient(familyFriendModel.PatientInfo, patientRequest.Requestid, familyFriendModel.patientLocation);
+
+            return RedirectToAction("Login", "Account");
+
+          
+        }
+
+        [HttpGet]
         public IActionResult FormByConciearge()
         {
 
             return View();
         }
 
+        [HttpPost]
+        public IActionResult FormByConciearge(ConcieargeModel concieargeModel)
+        {
+
+            int user = _patientReq.GetUserIdByEmail(concieargeModel.PatinentInfo.Email);
+
+            Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
+
+            bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
+
+            Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
+
+            bool response2 = _patientReq.AddConciergeRequest(concierge.Conciergeid, patientRequest.Requestid);
+
+
+
+            return RedirectToAction("Login", "Account");
+
+        }
+
+
+        [HttpGet]
         public IActionResult FormByBusinessPartner()
         {
 
@@ -195,7 +158,23 @@ namespace dotnetProc.Controllers
 
 
 
+        [HttpPost]
+        public IActionResult FormByBusinessPartner(BusinessReqModel businessReqModel)
+        {
 
+            int user = _patientReq.GetUserIdByEmail(businessReqModel.PatientIfo.Email);
+
+            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, user, "Business");
+
+            bool response = _patientReq.AddRequestClient(businessReqModel.PatientIfo, patientRequest.Requestid, businessReqModel.PatinentLocaiton);
+
+            Business business = _patientReq.AddBusiness(businessReqModel.BusinessInfo, businessReqModel.PatinentLocaiton);
+
+            bool response2 = _patientReq.AddBusinessRequest(business.Businessid, patientRequest.Requestid);
+
+            return RedirectToAction("Login", "Account");
+
+        }
         public IActionResult Privacy()
         {
             return View();

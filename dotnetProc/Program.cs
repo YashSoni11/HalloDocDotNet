@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using dotnetProc.Controllers;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
+using HalloDoc_BAL.Interface;
+using HalloDoc_BAL.Repositery;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<HalloDocContext>()
-        .AddDefaultTokenProviders();
+    
 builder.Services.AddControllersWithViews();
 var con = builder.Configuration.GetConnectionString("PSSQL");
 
 builder.Services.AddDbContext<HalloDocContext>(q => q.UseNpgsql(con));
+builder.Services.AddScoped<IAccount, Account>();
+builder.Services.AddScoped<IPatientReq,PatientRequest>();
 
 
 var app = builder.Build();

@@ -1,9 +1,10 @@
 ﻿@model HalloDoc_DAL.ViewModels.PatientReq;
 
-
 @{
     Layout = "NavAndFooter";
 }
+
+
 
 
 <div class="container-fluid mt-3">
@@ -176,39 +177,41 @@
 </div>
 
 <script>
+    console.log(3)
+
 
     $(".reg-nav").remove();
 
-    const checkEmailAvailibility = () =>{
-         
-          
-        var email  = $(".emailInp").val();
-        console.log(email,44)
+    const checkEmailAvailibility = () => {
+
+
+        var email = $(".emailInp").val();
+        console.log(email, 44)
 
         $.ajax({
-           
-             url: "/Home/ckeckEmailAvailibility",
-            method:"post",
-            data:{email : email},
-            success:function(response){
-                 
+
+            url: "/Home/ckeckEmailAvailibility",
+            method: "post",
+            data: { email: email },
+            success: function (response) {
+
                 console.log(response)
 
-                if(response.code == 401){
+                if (response.code == 401) {
                     $(".passFields").css("display", "none")
 
-                   toastr.warning(response.error)
+                    toastr.warning(response.error)
                 }
-                else if(response.code == 402){
+                else if (response.code == 402) {
 
-                    $(".passFields").css("display","block")
+                    $(".passFields").css("display", "block")
                 }
 
 
 
             },
-            error : function(){
-                console.log(2,email);
+            error: function () {
+                console.log(2, email);
             }
 
         })
@@ -221,4 +224,3 @@
 
 </script>
 
-         
