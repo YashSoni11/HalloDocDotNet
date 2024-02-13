@@ -9,7 +9,8 @@ using HalloDoc_BAL.Repositery;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-    
+
+builder.Services.AddSession();
 builder.Services.AddControllersWithViews();
 var con = builder.Configuration.GetConnectionString("PSSQL");
 
@@ -32,6 +33,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

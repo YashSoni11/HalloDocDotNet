@@ -69,6 +69,7 @@ namespace dotnetProc.Controllers
 
 
 
+        [HttpGet]
         public IActionResult FormByPatient()
         {
 
@@ -82,16 +83,34 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-
-
         public IActionResult FormByPatient(PatientReq pr)
         {
 
 
-           _patientReq.AddPatientReq(pr);
+            int user = _patientReq.GetUserIdByEmail(pr.Email);
 
-            return RedirectToAction("Login");
+            if(user == 0)
+            {
+                Aspnetuser asp1 = _patientReq.AddAspNetUser(pr, pr.Password);
+
+                user = _patientReq.AddUser(asp1.Id, pr, pr.Location);
+            }
+
+            CmnInformation patientInfo = new CmnInformation
+            {
+                FirstName = pr.FirstName,
+                LastName = pr.LastName,
+                Email = pr.Email,
+                PhoneNumber = pr.Phonenumber
+            };
+
+
+            Request patientRequest = _patientReq.AddRequest(patientInfo, user, "Patient");
+
+            bool response =  _patientReq.AddRequestClient(pr, patientRequest.Requestid,pr.Location);
+
+
+            return RedirectToAction("Login","Account");
 
         }
 
@@ -175,6 +194,39 @@ namespace dotnetProc.Controllers
             return RedirectToAction("Login", "Account");
 
         }
+
+
+
+        [HttpGet]
+        [Route("/Account/DashBoard/PatientForm")]
+        public IActionResult PatientForm()
+        {
+
+            int userId = (int)HttpContext.Session.GetInt32("LoginId");
+
+            User user = _patientReq.GetUserDataById(userId);
+
+            PatientReq newReq = new PatientReq();
+
+            newReq.FirstName = user.Firstname;
+            newReq.LastName = user.Lastname;
+            newReq.Email = user.Email;
+            newReq.Phonenumber = user.Mobile;
+
+
+
+            return View(newReq);
+        }
+
+
+
+        [HttpGet]
+        [Route("/Account/DashBoard/OthersForm")]
+        public IActionResult FormForOthers()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

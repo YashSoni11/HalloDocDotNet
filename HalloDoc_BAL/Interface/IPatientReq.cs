@@ -36,6 +36,8 @@ namespace HalloDoc_BAL.Interface
         public Concierge Addconciearge(AddressModel concieargeLocation, string name);
 
         public bool AddConciergeRequest(int conciergeId, int reqId);
+
+        public User GetUserDataById(int userId);
     }
 }
 

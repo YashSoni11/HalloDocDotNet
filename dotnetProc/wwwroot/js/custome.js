@@ -84,3 +84,12 @@ const changeTheme = () => {
 
 
 }
+
+
+const setUrl = (string url, string id) => {
+
+    console.log(url, id);
+
+
+
+}

@@ -41,11 +41,11 @@ namespace dotnetProc.Controllers
             {
                 //var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
 
-                var user =  _account.ValidateLogin(um);
+                Aspnetuser aspuser =  _account.ValidateLogin(um);
 
 
 
-                if(user == null)
+                if(aspuser == null)
                 {
 
                     TempData["Error"] = "Invalid Attributes";
@@ -53,9 +53,19 @@ namespace dotnetProc.Controllers
                     return View();
                      
                 }
+                else
+                {
+
+                    User user = _account.GetUserByAspNetId(aspuser.Id);
+
+                    HttpContext.Session.SetInt32("LoginId", user.Userid);
+
+                    HttpContext.Session.SetString("UserName", user.Firstname);
+
+                   return RedirectToAction("DashBoard","Account");
+                }
 
 
-                return RedirectToAction("DashBoard","Account");
 
             }
 
@@ -69,10 +79,18 @@ namespace dotnetProc.Controllers
         }
 
 
-
+        [HttpGet]
         public IActionResult DashBoard()
         {
-            return View();
+
+
+            int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
+
+            var userRequests = _account.GetUserRequests(LoginId);
+
+            TempData["UserName"] = HttpContext.Session.GetString("UserName");
+
+            return View(userRequests);
         }
 
     }

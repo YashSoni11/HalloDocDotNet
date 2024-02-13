@@ -26,6 +26,12 @@ namespace HalloDoc_DAL.ViewModels
         [EmailAddress(ErrorMessage ="Email is Required!")]
         public string Email { get; set; }
 
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }
 
         public string Phonenumber { get; set; }
 

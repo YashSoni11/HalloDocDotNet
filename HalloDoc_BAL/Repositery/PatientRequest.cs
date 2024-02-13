@@ -198,9 +198,9 @@ namespace HalloDoc_BAL.Repositery
 
 
             Request request = new Request
-            { 
-                Requesttypeid = 2,
-                //Requesttypeid = _context.Requesttypes.FirstOrDefault(u => u.Name == requestType).Requesttypeid,
+            {
+
+                Requesttypeid = _context.Requesttypes.FirstOrDefault(u => u.Name == requestType).Requesttypeid,
                 Firstname = cm.FirstName,
                 Lastname = cm.LastName,
                 Phonenumber = cm.PhoneNumber,
@@ -325,6 +325,14 @@ namespace HalloDoc_BAL.Repositery
             _context.SaveChanges();
 
             return concierge;
+        }
+
+
+        public User GetUserDataById(int userId)
+        {
+              User user = _context.Users.FirstOrDefault(u=>u.Userid == userId);
+
+            return user;
         }
     }
 }
