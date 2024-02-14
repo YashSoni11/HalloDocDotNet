@@ -16,11 +16,15 @@ namespace HalloDoc_BAL.Interface
     public User GetUserByAspNetId(string aspnetuserid);
 
 
-        public Object GetUserRequests(int userid);
+        public List<Request> GetUserRequests(int userid);
 
-
+        public User GetUserByUserId(int userid);
 
         public string GetHashedPassword(string password);
-      
+
+
+        public User UpdateUserByUserId(UserInformation um,int userId);
+
+
     }
 }

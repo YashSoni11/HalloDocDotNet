@@ -86,11 +86,53 @@ namespace dotnetProc.Controllers
 
             int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
 
-            var userRequests = _account.GetUserRequests(LoginId);
+            User user = _account.GetUserByUserId(LoginId);
+
+              List<Request> userRequests = _account.GetUserRequests(LoginId);
+
+            UserInformation userinfo = new UserInformation
+            {
+                UserRequests = userRequests,
+                User = user
+
+            };
 
             TempData["UserName"] = HttpContext.Session.GetString("UserName");
 
-            return View(userRequests);
+            return View(userinfo);
+        }
+
+
+
+        [HttpPost]
+        public IActionResult DashBoard(UserInformation Um)
+        {
+
+
+
+
+            int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
+
+
+            User newUser = _account.UpdateUserByUserId(Um,LoginId);
+
+
+
+            List<Request> userRequests = _account.GetUserRequests(LoginId);
+
+            UserInformation userinfo = new UserInformation
+            {
+                UserRequests = userRequests,
+                User = newUser
+
+            };
+
+
+
+
+
+            return View(userinfo);
+              
         }
 
     }

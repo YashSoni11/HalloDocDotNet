@@ -1,5 +1,6 @@
 ﻿using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,9 @@ namespace HalloDoc_BAL.Interface
         public bool AddConciergeRequest(int conciergeId, int reqId);
 
         public User GetUserDataById(int userId);
+
+        public bool UploadFile(IFormFile file,int request);
+
     }
 }
 

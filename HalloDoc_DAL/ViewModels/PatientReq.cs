@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -36,6 +37,8 @@ namespace HalloDoc_DAL.ViewModels
         public string Phonenumber { get; set; }
 
         public AddressModel Location { get; set; }
+
+        public IFormFile FileUpload { get; set; }
 
 
     }

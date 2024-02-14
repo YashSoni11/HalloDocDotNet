@@ -86,7 +86,7 @@ const changeTheme = () => {
 }
 
 
-const setUrl = (string url, string id) => {
+const setUrl = ( url,  id) => {
 
     console.log(url, id);
 

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -55,17 +56,41 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+        public User GetUserByUserId(int  userId)
+        {
+             User user = _context.Users.FirstOrDefault(u=>u.Userid == userId);
 
-        public Object GetUserRequests(int userid)
+            return user;
+        }
+
+        public List<Request> GetUserRequests(int userid)
         {
              
-            var requests = _context.Requests.Where(u=>u.Userid == userid).ToList();
+            List<Request> requests = _context.Requests.Where(u=>u.Userid == userid).ToList();
 
             return requests;
         }
 
 
+        public  User UpdateUserByUserId(UserInformation um,int UserId)
+        {
 
+        
+
+            User curUser = _context.Users.FirstOrDefault(u => u.Userid == UserId);
+
+            if(curUser != null)
+            {
+
+                curUser.Firstname = um.User.Firstname;
+
+                 _context.Users.Update(curUser);
+                _context.SaveChanges();
+                 
+            }
+
+            return curUser;
+        }
 
     }
 }

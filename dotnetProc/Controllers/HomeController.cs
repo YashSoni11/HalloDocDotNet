@@ -109,6 +109,8 @@ namespace dotnetProc.Controllers
 
             bool response =  _patientReq.AddRequestClient(pr, patientRequest.Requestid,pr.Location);
 
+            bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
+
 
             return RedirectToAction("Login","Account");
 
@@ -133,6 +135,9 @@ namespace dotnetProc.Controllers
             Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, user,"Family");
 
             bool response = _patientReq.AddRequestClient(familyFriendModel.PatientInfo, patientRequest.Requestid, familyFriendModel.patientLocation);
+
+
+            bool response1 = _patientReq.UploadFile(familyFriendModel.PatientInfo.FileUpload,patientRequest.Requestid);
 
             return RedirectToAction("Login", "Account");
 

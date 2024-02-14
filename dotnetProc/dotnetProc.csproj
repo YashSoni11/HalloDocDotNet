@@ -39,4 +39,8 @@
     <ProjectReference Include="..\HalloDoc_DAL\HalloDoc_DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Upload\" />
+  </ItemGroup>
+
 </Project>

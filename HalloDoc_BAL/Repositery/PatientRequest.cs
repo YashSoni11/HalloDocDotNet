@@ -2,6 +2,7 @@
 using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -333,6 +334,51 @@ namespace HalloDoc_BAL.Repositery
               User user = _context.Users.FirstOrDefault(u=>u.Userid == userId);
 
             return user;
+        }
+
+
+        public bool UploadFile(IFormFile file,int requestid)
+        {
+
+            string path = "";
+            bool iscopied = false;
+
+            Requestwisefile requestwisefile = new Requestwisefile
+            {
+                Requestid = requestid,
+                Filename = file.FileName,
+                Doctype = 1,
+                Createddate = DateTime.Now,
+            };
+
+
+            try
+            {
+                if (file.Length > 0)
+                {
+                    string filename = file.FileName;
+                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\Upload\\";
+                    using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                    {
+                        file.CopyTo(filestream);
+                    }
+                    _context.Requestwisefiles.Add(requestwisefile);
+                    _context.SaveChanges();
+                    iscopied = true;
+                }
+                else
+                {
+                    iscopied = false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return iscopied;
+
+
+
         }
     }
 }
