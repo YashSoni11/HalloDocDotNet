@@ -173,13 +173,23 @@ namespace dotnetProc.Controllers
         }
 
 
-        //[HttpPost]
-        //public IActionResult ViewDocuments(IFormFile formFile)
-        //{
-        //      _account
-        //}
+        [HttpPost]
+        public IActionResult ViewDocuments(IFormFile formFile)
+        {
+
+            string path = HttpContext.Request.Path;
+
+            string[] paths = path.Split('/');
+
+            int requestId = int.Parse(paths[paths.Length - 1]);
 
 
-    
+            return View();
+
+             
+        }
+
+
+
     }
 }
