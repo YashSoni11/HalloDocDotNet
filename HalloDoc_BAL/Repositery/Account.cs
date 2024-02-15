@@ -20,6 +20,22 @@ namespace HalloDoc_BAL.Repositery
         {
              _context = context;
         }
+
+        public enum Months
+        {
+            January = 1,
+            February,
+            March,
+            April,
+            May,
+            June,
+            July,
+            August,
+            September,
+            October,
+            November,
+            December
+        }
         public string GetHashedPassword(string password)
         {
              
@@ -58,21 +74,30 @@ namespace HalloDoc_BAL.Repositery
 
         public User GetUserByUserId(int  userId)
         {
-             User user = _context.Users.FirstOrDefault(u=>u.Userid == userId);
+            User user = _context.Users.FirstOrDefault(u => u.Userid == userId);
+ 
 
+      
             return user;
         }
 
-        public List<Request> GetUserRequests(int userid)
+        public List<DashBoardRequests> GetUserRequests(int userid)
         {
-             
-            List<Request> requests = _context.Requests.Where(u=>u.Userid == userid).ToList();
+
+            List<DashBoardRequests> requests = _context.Requests.Where(u => u.Userid == userid).Select(r => new DashBoardRequests
+            {
+                requestid = r.Requestid,
+                createDate = r.Createddate,
+                Status = r.Status,
+                totalDocuments = _context.Requestwisefiles.Where(u => u.Requestid == r.Requestid).Count(),
+                providerName = _context.Physicians.FirstOrDefault(u => u.Physicianid == r.Physicianid).Firstname,
+            }).ToList();
 
             return requests;
         }
 
 
-        public  User UpdateUserByUserId(UserInformation um,int UserId)
+        public  UserProfile UpdateUserByUserId(UserInformation um,int UserId)
         {
 
         
@@ -82,14 +107,102 @@ namespace HalloDoc_BAL.Repositery
             if(curUser != null)
             {
 
+
                 curUser.Firstname = um.User.Firstname;
+                curUser.Lastname = um.User.Lastname;
+                curUser.Email = um.User.Email;
+                curUser.Mobile = um.User.Phonnumber;
+                curUser.Intdate = um.User.Birthdate.Day;
+                curUser.Intyear = um.User.Birthdate.Year;
+                curUser.Strmonth = ((Months)um.User.Birthdate.Month).ToString();
+                curUser.Street = um.User.Address.Street;
+                curUser.City = um.User.Address.City;
+                curUser.State = um.User.Address.State;
+                curUser.Zipcode = um.User.Address.ZipCode;
 
                  _context.Users.Update(curUser);
                 _context.SaveChanges();
-                 
-            }
 
-            return curUser;
+                AddressModel newAddress = new AddressModel
+                {
+                    State = um.User.Address.State,
+                    City = um.User.Address.City,
+                    Street = um.User.Address.Street,
+                    ZipCode = um.User.Address.ZipCode,
+                };
+
+                UserProfile updatedUser = new UserProfile
+                {
+                    Firstname = um.User.Firstname,
+                    Lastname = um.User.Lastname,
+                    Email = um.User.Email,
+                    Birthdate = um.User.Birthdate,
+                    Phonnumber = um.User.Phonnumber,
+                    Address = newAddress,
+
+                };
+            return updatedUser;
+
+            }
+            return new UserProfile();
+        }
+
+
+        public List<ViewDocument> GetDocumentsByRequestId(int requestId)
+        {
+
+            List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId).Select(r => new ViewDocument
+            {
+                filename = r.Filename,
+                uploader = _context.Requests.FirstOrDefault(u => u.Requestid == requestId).Firstname,
+                uploadDate = r.Createddate
+            }).ToList();
+
+             return documents;
+        }
+
+        public bool UploadFile(IFormFile file, int requestid)
+        {
+
+            string path = "";
+            bool iscopied = false;
+
+            Requestwisefile requestwisefile = new Requestwisefile
+            {
+                Requestid = requestid,
+                Filename = file.FileName,
+                Doctype = 1,
+                Createddate = DateTime.Now,
+            };
+
+
+            try
+            {
+                if (file.Length > 0)
+                {
+                    string filename = file.FileName;
+                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\Upload\\";
+                    using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                    {
+                        file.CopyTo(filestream);
+                    }
+                    _context.Requestwisefiles.Add(requestwisefile);
+                    _context.SaveChanges();
+                    iscopied = true;
+                }
+                else
+                {
+                    iscopied = false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return iscopied;
+
+
+
         }
 
     }

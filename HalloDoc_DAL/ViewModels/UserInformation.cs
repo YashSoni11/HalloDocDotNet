@@ -10,9 +10,9 @@ namespace HalloDoc_DAL.ViewModels
     public class UserInformation
     {
 
-       public List<Request> UserRequests { get; set; }
+       public List<DashBoardRequests> UserRequests { get; set; }
 
-       public  User User { get; set; }
+       public  UserProfile User { get; set; }
 
     }
 }

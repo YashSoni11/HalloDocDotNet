@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace HalloDoc_BAL.Interface
 {
@@ -16,15 +17,17 @@ namespace HalloDoc_BAL.Interface
     public User GetUserByAspNetId(string aspnetuserid);
 
 
-        public List<Request> GetUserRequests(int userid);
+        public List<DashBoardRequests> GetUserRequests(int userid);
 
         public User GetUserByUserId(int userid);
 
         public string GetHashedPassword(string password);
 
 
-        public User UpdateUserByUserId(UserInformation um,int userId);
+        public UserProfile UpdateUserByUserId(UserInformation um,int userId);
 
+        public List<ViewDocument> GetDocumentsByRequestId(int requestid);
 
+        public bool UploadFile(IFormFile file, int requestId);
     }
 }

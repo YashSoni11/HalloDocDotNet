@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-
+@using HalloDoc_DAL.ViewModels;
 @model HalloDoc_DAL.ViewModels.UserInformation;
 
 
@@ -26,24 +26,21 @@
                 <div class="d-flex  justify-content-center" style="column-gap:1rem;">
 
 
-                   @* <a asp-controller="Home" asp-action="PatientForm" class="nav-link">*@
-                    <button type="button" id="me" class="btn btn-info  text-white darkInfo-btn" onclick="setUrl('/Account/DashBoard/PatientForm','me')">Me</button>
-
-                    @*</a>*@
-
-                    <a asp-controller="Home" asp-action="FormForOthers" class="nav-link">
-
-                    <button id="Other" type="button" class="btn btn-outline-info lightInfo-btn"
-                                onclick="setUrl('/Account/DashBoard/FormForOthers','Other')">
+                    <input class="form-check-input rdInput" type="radio" value="" name="exampleRadios" id="exampleRadios1" style="display:none" onclick="makeBold('exampleRadios1')">
+                    <label class="form-check-label rdLabel" for="exampleRadios1" style="width:6rem;height:2rem;display:flex;justify-content:center;align-items:center;border:1px solid #0dcaf0;border-radius:4px;white-space:unset;color:#0dcaf0">
+                        ME
+                    </label>
+                    <input class="form-check-input rdInput " type="radio" value="" name="exampleRadios" id="exampleRadios2" style="display:none" onclick="makeBold('exampleRadios2')">
+                    <label class="form-check-label rdLabel" for="exampleRadios2" style="width:14rem;height:2rem;display:flex;justify-content:center;align-items:center;border:1px solid #0dcaf0;border-radius:4px;white-space:unset;color:#0dcaf0">
                         Some One Else
-                    </button>
-                    </a>
+                    </label>
 
+               
                 </div>
                 
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-info  text-white darkInfo-btn">Continue</button>
+                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="changepage('exampleRadios1','exampleRadios2')">Continue</button>
 
                 <button type="button" class="btn btn-outline-info lightInfo-btn"
                         onclick="">
@@ -100,7 +97,7 @@
 
 <nav class="p-3">
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active tab-btn " id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Dashboard</button>
+        <button  class="nav-link active tab-btn " id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Dashboard</button>
         <button class="nav-link tab-btn" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
     </div>
 </nav>
@@ -135,17 +132,18 @@
                 </tr>
             </thead>
             <tbody>
-                    @foreach (Request request in Model.UserRequests)
+                    @foreach (DashBoardRequests request in Model.UserRequests)
                     {
                     <tr>
-                    <th scope="row">@request.Createddate.ToString("MMM dd, yyyy")</th>
+                    <th scope="row">@request.createDate.ToString("MMM dd, yyyy")</th>
                     <td>@request.Status</td>
                             <td>
-                                <button type="button" class="btn btn-outline-info lightInfo-btn"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">
-                                    Documents
+                                <a class="nav-link" asp-route-id="@request.requestid" asp-action="ViewDocuments" asp-controller="Account">
+
+                                <button type="button" class="btn btn-outline-info lightInfo-btn">
+                                   (@request.totalDocuments) Documents
                                 </button>
+                                </a>
                             </td>
                 </tr>
                         
@@ -173,11 +171,11 @@
                 </div>
 
                 <div class="d-flex col-4 justify-content-end  mb-3 mt-2">
-                    <a asp-controller="Home" asp-action="PatientRequest" class="nav-link">
-                        <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                  
+                        <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
                             <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
                         </button>
-                    </a>
+                   
                 </div>
                 <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
@@ -197,14 +195,14 @@
                                 </div>
                                 <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="@Model.User.Firstname" value="@Model.User.Firstname" type="text" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Lastname"  type="text" class="form-control tbDisabled" id="floatingInput"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">Last Name</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input type="date" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Birthdate" type="date" class="form-control tbDisabled" id="floatingInput"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">Date Of Birth</label>
                                     </div>
@@ -228,14 +226,14 @@
 
                                 <div class="col-xl-4 col-sm-5 col-6">
                                     <div class="form-floating mb-3 phoneInputDiv">
-                                        <input style='height: 57px;' type="tel" id='phonInput' class="form-control tbDisabled"
+                                        <input asp-for="@Model.User.Phonnumber" style='height: 57px;' type="tel" id='phonInput' class="form-control tbDisabled"
                                                id="floatingInput">
                                         <label for="floatingInput"></label>
                                     </div>
                                 </div>
                                 <div class="col-xl-5 col-sm-5 col-12">
                                     <div class="form-floating mb-3">
-                                        <input type="email" class="form-control emailInp tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Email" type="email" class="form-control emailInp tbDisabled" id="floatingInput"
                                                placeholder="name@example.com" onblur="checkEmailAvailibility()">
                                         <label for="floatingInput">Email</label>
                                     </div>
@@ -248,30 +246,38 @@
                                 <h4 class="mb-3">Location Information</h4>
                                 <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Address.Street" type="text" class="form-control tbDisabled" id="street"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">Street</label>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Address.City" type=" text" class="form-control tbDisabled" id="city"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">City</label>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Address.State"  type=" text" class="form-control tbDisabled" id="state"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">State</label>
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
-                                        <input type="number" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@Model.User.Address.ZipCode" type=" number" class="form-control tbDisabled" id="zip"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">Zip Code</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-2 col-sm-4 col-6 d-flex  align-content-center">
+                                    <div class="form-floating mb-3 d-flex justify-content-center align-content-center">
+                                        <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="showLocation()">
+                                            <i id='themeIcon' class="bi bi-geo-alt text-info fs-3"></i>
+                                        </button>
                                     </div>
                                 </div>
  
@@ -321,11 +327,67 @@
 
 <script>
 
+  const changeTab =  () =>{
+
+        $('#nav-home-tab').click();
+  }
+
+    const showLocation = () =>{
+
+
+        
+            
+           
+            var zip = $("#zip").val();
+            var city = $("#city").val();
+            var state = $("#state").val();
+            var street = $("#street").val();
+
+            console.log(address)
+
+            var address = street+','+city+','+state+','+zip
+           
+            var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
+
+              
+            window.open(mapsUrl, "_blank");
+    }
+
     $(document).ready(function(){
           
          $(".tbDisabled").attr("disabled","true")
     })
       
+    const makeBold = (id) =>{
+
+
+
+
+
+        $('.rdLabel').css({ 'background-color': 'white', 'color': '#0dcaf0'})
+
+
+        if ($(`#${id}`)[0].checked){
+        $(`#${id}`).next('label').css({'background-color':'#0dcaf0','color':'white'})
+
+        }
+         
+
+       
+    }
+
+    const changepage = (id1,id2) =>{
+         console.log(id1)
+        console.log($(`#${id1}`)[0].checked)
+
+         if($(`#${id1}`)[0].checked){
+            window.location.href = '/Account/DashBoard/PatientForm';
+        } else if ($(`#${id2}`)[0].checked){
+            window.location.href = '/Account/DashBoard/OthersForm';
+        }else{
+            toastr.warning("Please Select One Option!")
+        }
+    }
 
     const editDetails = () => {
         console.log("iuhio")

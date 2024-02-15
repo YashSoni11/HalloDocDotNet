@@ -4,6 +4,7 @@ using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using HalloDoc_BAL.Interface;
+using static HalloDoc_BAL.Repositery.PatientRequest;
 
 namespace dotnetProc.Controllers
 {
@@ -86,14 +87,37 @@ namespace dotnetProc.Controllers
 
             int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
 
-            User user = _account.GetUserByUserId(LoginId);
+            User  user = _account.GetUserByUserId(LoginId);
 
-              List<Request> userRequests = _account.GetUserRequests(LoginId);
+
+            AddressModel address = new AddressModel
+            {
+                State = user.State,
+                City = user.City,
+                Street = user.Street,
+                ZipCode = user.Zipcode
+            };
+
+            UserProfile userProfile = new UserProfile
+            {
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
+                Birthdate = new DateOnly(user.Intyear ?? 0, (int)(Months)Enum.Parse(typeof(Months), user.Strmonth), user.Intdate ?? 0),
+                Email = user.Email,
+                Phonnumber = user.Mobile,
+                Address = address,
+
+            };
+
+
+           
+
+              List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
 
             UserInformation userinfo = new UserInformation
             {
                 UserRequests = userRequests,
-                User = user
+                User = userProfile
 
             };
 
@@ -114,11 +138,11 @@ namespace dotnetProc.Controllers
             int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
 
 
-            User newUser = _account.UpdateUserByUserId(Um,LoginId);
+            UserProfile newUser = _account.UpdateUserByUserId(Um,LoginId);
 
 
 
-            List<Request> userRequests = _account.GetUserRequests(LoginId);
+            List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
 
             UserInformation userinfo = new UserInformation
             {
@@ -134,6 +158,28 @@ namespace dotnetProc.Controllers
             return View(userinfo);
               
         }
+
+        [HttpGet]
+        [Route("/Account/ViewDocuments/{id}")]
+        public  IActionResult ViewDocuments(int id)
+        {
+            List<ViewDocument> docs = _account.GetDocumentsByRequestId(id);
+
+
+
+
+
+            return View(docs);
+        }
+
+
+        [HttpPost]
+        public IActionResult ViewDocuments(IFormFile formFile)
+        {
+              _account
+        }
+
+
 
     }
 }
