@@ -12,16 +12,16 @@ namespace dotnetProc.Controllers
     {
 
 
-        
+
         private readonly IAccount _account;
-       
+
 
         public AccountController(IAccount account)
         {
-             
-           
+
+
             _account = account;
-           
+
         }
 
 
@@ -34,25 +34,25 @@ namespace dotnetProc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public  IActionResult Login(UserCred um)
+        public IActionResult Login(UserCred um)
         {
 
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 //var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
 
-                Aspnetuser aspuser =  _account.ValidateLogin(um);
+                Aspnetuser aspuser = _account.ValidateLogin(um);
 
 
 
-                if(aspuser == null)
+                if (aspuser == null)
                 {
 
                     TempData["Error"] = "Invalid Attributes";
 
                     return View();
-                     
+
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace dotnetProc.Controllers
 
                     HttpContext.Session.SetString("UserName", user.Firstname);
 
-                   return RedirectToAction("DashBoard","Account");
+                    return RedirectToAction("DashBoard", "Account");
                 }
 
 
@@ -74,8 +74,8 @@ namespace dotnetProc.Controllers
 
             return View("Login", um);
 
-              
-             
+
+
 
         }
 
@@ -87,7 +87,7 @@ namespace dotnetProc.Controllers
 
             int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
 
-            User  user = _account.GetUserByUserId(LoginId);
+            User user = _account.GetUserByUserId(LoginId);
 
 
             AddressModel address = new AddressModel
@@ -110,9 +110,9 @@ namespace dotnetProc.Controllers
             };
 
 
-           
 
-              List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
+
+            List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
 
             UserInformation userinfo = new UserInformation
             {
@@ -138,7 +138,7 @@ namespace dotnetProc.Controllers
             int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
 
 
-            UserProfile newUser = _account.UpdateUserByUserId(Um,LoginId);
+            UserProfile newUser = _account.UpdateUserByUserId(Um, LoginId);
 
 
 
@@ -156,12 +156,12 @@ namespace dotnetProc.Controllers
 
 
             return View(userinfo);
-              
+
         }
 
         [HttpGet]
         [Route("/Account/ViewDocuments/{id}")]
-        public  IActionResult ViewDocuments(int id)
+        public IActionResult ViewDocuments(int id)
         {
             List<ViewDocument> docs = _account.GetDocumentsByRequestId(id);
 
@@ -173,13 +173,13 @@ namespace dotnetProc.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult ViewDocuments(IFormFile formFile)
-        {
-              _account
-        }
+        //[HttpPost]
+        //public IActionResult ViewDocuments(IFormFile formFile)
+        //{
+        //      _account
+        //}
 
 
-
+    
     }
 }
