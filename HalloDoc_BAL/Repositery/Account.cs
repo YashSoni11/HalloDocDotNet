@@ -181,7 +181,7 @@ namespace HalloDoc_BAL.Repositery
                 if (file.Length > 0)
                 {
                     string filename = file.FileName;
-                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\Upload\\";
+                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
                     using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
                     {
                         file.CopyTo(filestream);

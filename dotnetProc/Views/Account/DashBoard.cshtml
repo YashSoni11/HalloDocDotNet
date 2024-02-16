@@ -54,43 +54,7 @@
 
 
 
-
-
-
-<nav class="navbar" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;">
-    <div class="container-fluid">
-
-        
-
-      
-
-        <img class="img-fluid"  style="height: 5rem;" src="~/images/trans_logo.png" />
-  
-
-
-        <div class="col-7 d-flex justify-content-end align-items-center" style="column-gap:2rem;" >
-
-        <h6>Welcome,@TempData["UserName"]</h6>
-        <button  type="button" class="btn btn-outline-info lightInfo-btn"
-                onclick="">
-            Logout
-        </button>
-        <button style="width: 3rem; height: 3rem;" type="button" class="btn btn-outline-info lightInfo-btn "
-                onclick="changeTheme()">
-            <i id='themeIcon' class="bi bi-moon text-info"></i>
-        </button>
-
-        </div>
-       
-    </div>
-</nav>
-
-
-
-
-
-
-
+<partial name="_DashNavbar" />
 
 
 
@@ -123,7 +87,43 @@
 
   <div class="container-fluid">
 
-        <table class="table mt-5">
+            @{
+                int i = 0;
+
+            <div class="accordion" id="accordionExample">
+                @foreach (DashBoardRequests request in Model.UserRequests)
+                {
+
+                     
+                <div class="accordion-item mt-3">
+                    <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@i" aria-expanded="true" aria-controls="collapse_@i">
+                                    @request.createDate.ToString("MMM dd, yyyy")
+                             </button>
+                    </h2>
+                            <div id="collapse_@i" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                        <div class="accordion-body d-flex align-content-center justify-content-between">
+                                    <h5>Status : @request.Status</h5>
+                                    <a class="nav-link mx-3" asp-route-id="@request.requestid" asp-action="ViewDocuments" asp-controller="Account">
+
+                                        <button type="button" class="btn btn-outline-info lightInfo-btn">
+                                            (@request.totalDocuments) Documents
+                                        </button>
+                                    </a>
+                        </div>
+                    </div>
+                </div>
+
+                    i++;
+                }
+             </div>
+
+      }
+
+
+
+
+             <table class="table mt-5 reqTable">
             <thead class="table-secondary">
                 <tr>                   
                     <th scope="col">Created Date</th>
@@ -157,9 +157,13 @@
  
 
     </div>
-    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-        
-        
+
+
+
+
+
+
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">  
         
         
         
@@ -319,13 +323,16 @@
 
 
 
-<footer class="patientSubmitFooter" style="position: relative;">
+@*<footer class="patientSubmitFooter" style="position: absolute;">
     <span>Terms and Conditions</span>
     <span>|</span>
     <span>Privacy Policy</span>
-</footer>
+</footer>*@
 
 <script>
+
+
+
 
   const changeTab =  () =>{
 
@@ -383,7 +390,7 @@
          if($(`#${id1}`)[0].checked){
             window.location.href = '/Account/DashBoard/PatientForm';
         } else if ($(`#${id2}`)[0].checked){
-            window.location.href = '/Account/DashBoard/OthersForm';
+            window.location.href = '/Account/DashBoard/FormForOther';
         }else{
             toastr.warning("Please Select One Option!")
         }

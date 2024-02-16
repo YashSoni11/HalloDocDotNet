@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = "_Layout";
+}
+
+
+
+
+
+
+    <nav class="navbar" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;">
+        <div class="container-fluid">
+
+
+
+
+
+            <img class="img-fluid" id="navLogo"  style="height: 5rem;" src="~/images/trans_logo.png" />
+        <button type="button" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
+                onclick="">
+            Logout
+        </button>
+           
+
+
+            <div class="col-7 d-flex justify-content-end align-items-center" style="column-gap:2rem;">
+
+                <h6 id="username">Welcome,@TempData["UserName"]</h6>
+            <button type="button" id="innerLogout" class="btn btn-outline-info lightInfo-btn"
+                        onclick="">
+                    Logout
+                </button>
+                <button style="width: 3rem; height: 3rem;" type="button" class="btn btn-outline-info lightInfo-btn "
+                        onclick="changeTheme()">
+                    <i id='themeIcon' class="bi bi-moon text-info"></i>
+                </button>
+
+            </div>
+
+        </div>
+    </nav>
+
+
+
+

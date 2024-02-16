@@ -225,11 +225,78 @@ namespace dotnetProc.Controllers
 
 
 
+        [HttpPost]
+        [Route("/Account/DashBoard/PatientForm")]
+        public IActionResult PatientForm(PatientReq pr)
+        {
+
+            int userId = (int)HttpContext.Session.GetInt32("LoginId");
+
+            User user = _patientReq.GetUserDataById(userId);
+
+            CmnInformation patientInfo = new CmnInformation
+            {
+                FirstName = pr.FirstName,
+                LastName = pr.LastName,
+                Email = pr.Email,
+                PhoneNumber = pr.Phonenumber
+            };
+
+
+            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, "Patient");
+
+            bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
+
+            bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
+
+
+
+
+            return RedirectToAction("DashBoard", "Account");
+        }
+
+
+
+
+
+
+
         [HttpGet]
-        [Route("/Account/DashBoard/OthersForm")]
+        [Route("/Account/DashBoard/FormForOther")]
         public IActionResult FormForOthers()
         {
             return View();
+        }
+
+        [HttpPost]
+        [Route("/Account/DashBoard/FormForOther")]
+        public IActionResult FormForOthers(PatientReq pr)
+        {
+
+            int userId = (int)HttpContext.Session.GetInt32("LoginId");
+
+            User user = _patientReq.GetUserDataById(userId);
+
+            CmnInformation patientInfo = new CmnInformation
+            {
+                FirstName = user.Firstname,
+                LastName = user.Lastname,
+                Email = user.Email,
+                PhoneNumber = user.Mobile
+            };
+
+
+            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, pr.Relation);
+
+            bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
+
+            bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
+
+
+
+
+
+            return RedirectToAction("DashBoard","Account");
         }
 
         public IActionResult Privacy()

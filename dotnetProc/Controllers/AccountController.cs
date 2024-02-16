@@ -166,15 +166,19 @@ namespace dotnetProc.Controllers
             List<ViewDocument> docs = _account.GetDocumentsByRequestId(id);
 
 
+            Documents documents = new Documents
+            {
+                ViewDocuments = docs,
+                FormFile = null
+            };
 
 
-
-            return View(docs);
+            return View(documents);
         }
 
 
         [HttpPost]
-        public IActionResult ViewDocuments(IFormFile formFile)
+        public IActionResult ViewDocuments(Documents docs)
         {
 
             string path = HttpContext.Request.Path;
@@ -184,7 +188,11 @@ namespace dotnetProc.Controllers
             int requestId = int.Parse(paths[paths.Length - 1]);
 
 
-            return View();
+            bool response = _account.UploadFile(docs.FormFile, requestId);
+
+            
+
+            return RedirectToAction("ViewDocuments",requestId);
 
              
         }

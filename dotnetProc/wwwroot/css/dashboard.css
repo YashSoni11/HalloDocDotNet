@@ -1,0 +1,43 @@
+﻿
+
+
+
+#outerLogout {
+    display: none;
+}
+
+.accordion{
+    display:none;
+}
+
+
+
+@media only screen and (max-width: 550px) {
+    #innerLogout{
+
+        display:none;
+
+    }
+
+    #outerLogout{
+        display: block;
+    }
+
+    #username{
+        display:none;
+    }
+
+    #navLogo{
+        display:none;
+    }
+
+    .accordion{
+        display:block;
+    }
+
+    .reqTable {
+        display: none;
+    }
+  
+
+}

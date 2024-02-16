@@ -42,6 +42,9 @@ namespace HalloDoc_BAL.Interface
 
         public bool UploadFile(IFormFile file,int request);
 
+
+        
+
     }
 }
 

@@ -40,6 +40,6 @@ namespace HalloDoc_DAL.ViewModels
 
         public IFormFile FileUpload { get; set; }
 
-
+        public string Relation { get; set; }
     }
 }
