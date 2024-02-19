@@ -14,9 +14,11 @@ namespace HalloDoc_BAL.Interface
 
        public Aspnetuser ValidateLogin(UserCred um);
 
-    public User GetUserByAspNetId(string aspnetuserid);
+         public User GetUserByAspNetId(string aspnetuserid);
 
+        public Aspnetuser GetAspnetuserByEmail(string email);
 
+        public Aspnetuser UpdateAspnetuserPassByEmail(string Email,string Newpassword);
         public List<DashBoardRequests> GetUserRequests(int userid);
 
         public User GetUserByUserId(int userid);

@@ -1,6 +1,11 @@
 ﻿
 
 
+#nav-home-tab, #nav-profile-tab {
+    color: var(--pi-label-color);
+    background-color: var(--pi-back-color);
+    border-color: var(--pi-back-color) var(--pi-back-color) var(--tab-border-color) var(--pi-back-color) !important;
+}
 
 #outerLogout {
     display: none;

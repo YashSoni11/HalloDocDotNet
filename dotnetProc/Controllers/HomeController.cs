@@ -54,10 +54,7 @@ namespace dotnetProc.Controllers
        
 
 
-        public IActionResult ForgotPass()
-        {
-            return View();
-        }
+      
 
 
         public IActionResult PatientRequest()

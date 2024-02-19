@@ -5,8 +5,7 @@
 }
 
 
-
-
+@model HalloDoc_DAL.ViewModels.UserEmail;
 
 
 <div class="backgroundImg">
@@ -39,24 +38,23 @@
 
 
 
-            <div class="d-flex col-12 flex-column align-items-center " style="margin-top: 8rem; row-gap: 2rem;">
-                <div style="width: 20rem;" class="d-flex  justify-content-start"><a class="align-items-center fs-5 text-info"><i class="bi bi-chevron-left text-info"></i> Back</a></div>
+            <div class="d-flex col-12 flex-column align-items-center " style="margin-top: 8rem;">
                 <h3> Reset Your Password </h3>
             </div>
 
 
             <div class="container-fluid mt-5">
                 <div class="row justify-content-center">
-                    <div class="col-xl-3 col-lg-4 col-md-5">
-                        <form>
+                    <div class="col-xl-6 col-lg-5 col-md-4">
+                        <form asp-action="ForgotPass" method="post">
                             <div class="d-flex form-floating mb-3 bg-transparent" style="border:1px solid #d7d7d7; border-radius: 4px;">
-                                <input type="email" class="form-control  bg-transparent border-0 emailInput " id="floatingInput"
-                                       placeholder="name@example.com" onfocus="dofocus('iuu')" onblur="doblur('iuu')">
+                                <input type="email" asp-for="Email" class="form-control  bg-transparent border-0 emailInput " id="resetEmail"
+                                       placeholder="name@example.com"/>
                                 <label id="userLabel" for="floatingInput">Username</label>
                                 <span class="" id="userLabelIcon"><i class='fs-3 bi bi-person' style="color: var( --pi-label-color);"></i></span>
                             </div>
 
-                            <button style='width: 100%;' type="submit" class="btn btn-info mt-3 text-white">Reset Password</button>
+                            <button style='width: 100%;' type="submit" class="btn btn-info mt-3 text-white">Send Reset Password Link</button>
                         </form>
                     </div>
                 </div>
@@ -65,7 +63,7 @@
 
             <div class="d-flex container-fluid mt-3 justify-content-center align-items-center">
                 <i class="bi bi-chevron-left text-info"></i>
-                <a class='nav-link text-info fs-5' asp-controller="Home" asp-action="Login">Back To Login</a>
+                <a class='nav-link text-info fs-5' asp-controller="Account" asp-action="Login">Back To Login</a>
             </div>
 
 
@@ -80,15 +78,11 @@
     </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
 </div>
+
+<script>
+
+
+   
+
+</script>

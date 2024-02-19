@@ -62,7 +62,14 @@ namespace HalloDoc_BAL.Repositery
             return user;
         }
 
+        public Aspnetuser GetAspnetuserByEmail(string email)
+        {
 
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u=>u.Email == email);
+
+            return aspnetuser;
+
+        }
         public User GetUserByAspNetId(string id)
         {
              
@@ -79,6 +86,23 @@ namespace HalloDoc_BAL.Repositery
 
       
             return user;
+        }
+
+        public Aspnetuser UpdateAspnetuserPassByEmail(string Email,string Newpassword)
+        {
+             Aspnetuser aspnetuser= _context.Aspnetusers.FirstOrDefault(u=>u.Email == Email);
+
+            if(aspnetuser!=null)
+            {
+                 aspnetuser.Passwordhash = GetHashedPassword(Newpassword);
+                 aspnetuser.Modifieddate = DateTime.Now;
+                  
+                 _context.Aspnetusers.Update(aspnetuser);
+                _context.SaveChanges();
+
+            }
+
+            return aspnetuser;
         }
 
         public List<DashBoardRequests> GetUserRequests(int userid)

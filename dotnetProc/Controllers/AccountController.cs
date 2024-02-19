@@ -14,14 +14,14 @@ namespace dotnetProc.Controllers
 
 
         private readonly IAccount _account;
+        private readonly IEmailService _emailService;
 
-
-        public AccountController(IAccount account)
+        public AccountController(IAccount account, IEmailService emailService)
         {
 
 
             _account = account;
-
+            _emailService = emailService;
         }
 
 
@@ -76,6 +76,106 @@ namespace dotnetProc.Controllers
 
 
 
+
+        }
+
+        [HttpGet]
+        [Route("/Account/ForgotPass")]
+        public IActionResult ForgotPass()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/Account/ForgotPass")]
+
+        public IActionResult ForgotPass(UserEmail um)
+        {
+
+            string resetid = Guid.NewGuid().ToString();
+
+            HttpContext.Session.SetString("resetid", resetid);
+            HttpContext.Session.SetString("resetEmail", um.Email);
+
+            string subject = "Password Reset";
+
+            string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+
+            string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
+
+            _emailService.SendEmail(um.Email, subject, body);
+
+            return RedirectToAction("Login", "Account");
+        }
+
+
+        [HttpGet]
+        [Route("ResetPassword/{resetid}")]
+        public IActionResult ResetPassword(string resetid)
+        {
+
+            string ri = HttpContext.Session.GetString("resetid");
+            
+
+      
+                if(ri == resetid)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+        }
+
+
+        [HttpPost]
+        [Route("ResetPassword/{resetid}")]
+
+        public IActionResult ResetPassword(ForgotPassword fr)
+        {
+
+            string email = HttpContext.Session.GetString("resetEmail");
+
+            if (fr.NewPassword != fr.ConfirmPassword)
+            {
+                TempData["ErrorPassword"] = "Passwords Do Not Match!";
+
+                return View();
+            }
+
+            if (email != null)
+            {
+
+                Aspnetuser user = _account.UpdateAspnetuserPassByEmail(email, fr.NewPassword);
+
+            }
+
+
+            return RedirectToAction("Login", "Account");
+
+        }
+
+
+
+
+        public IActionResult GiveResetLink(string email)
+        {
+
+            string resetid = Guid.NewGuid().ToString();
+
+            HttpContext.Session.SetString("resetid", resetid);
+
+            string subject = "Password Reset";
+
+            string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+
+            string body = "Please click on <a asp-route-id='"+resetid+"' href='"+resetLink+"'+>ResetPassword</a> to reset your password";
+
+            _emailService.SendEmail(email, subject, body);
+
+            return RedirectToAction("Login", "Account");
 
         }
 
