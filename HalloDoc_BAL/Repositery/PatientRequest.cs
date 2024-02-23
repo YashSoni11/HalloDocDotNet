@@ -3,12 +3,14 @@ using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -48,6 +50,22 @@ namespace HalloDoc_BAL.Repositery
 
 
 
+        public string GetHashedPassword(string password)
+        {
+
+            SHA256 hash = SHA256.Create();
+
+            byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i]);
+            }
+            return builder.ToString();
+
+        }
         public void AddPatientReq(PatientReq pr)
         {
 
@@ -154,7 +172,7 @@ namespace HalloDoc_BAL.Repositery
                 Id = Guid.NewGuid().ToString(),
                 Username = pr.FirstName + "_" + pr.LastName,
                 Email = pr.Email,
-                Passwordhash = password.GetHashCode().ToString(),
+                Passwordhash = GetHashedPassword(password),
                 Phonenumber = pr.Phonenumber,
                 Createddate = DateTime.Now
             };
@@ -326,6 +344,20 @@ namespace HalloDoc_BAL.Repositery
             _context.SaveChanges();
 
             return concierge;
+        }
+
+        public void AddConcieargeData(ConcieargeModel concieargeModel,int user)
+        {
+            Request patientRequest = AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
+
+            bool response = AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
+
+            Concierge concierge = Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
+
+            bool response2 = AddConciergeRequest(concierge.Conciergeid, patientRequest.Requestid);
+
+            return;
+
         }
 
 

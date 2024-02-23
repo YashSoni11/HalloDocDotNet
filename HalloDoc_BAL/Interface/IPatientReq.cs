@@ -43,7 +43,9 @@ namespace HalloDoc_BAL.Interface
         public bool UploadFile(IFormFile file,int request);
 
 
-        
+        public void AddConcieargeData(ConcieargeModel concieargeModel,int userid);
+
+        public string GetHashedPassword(string password);
 
     }
 }

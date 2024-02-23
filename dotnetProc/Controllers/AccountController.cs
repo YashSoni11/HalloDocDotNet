@@ -5,6 +5,7 @@ using HalloDoc_DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using HalloDoc_BAL.Interface;
 using static HalloDoc_BAL.Repositery.PatientRequest;
+using Newtonsoft.Json;
 
 namespace dotnetProc.Controllers
 {
@@ -15,13 +16,69 @@ namespace dotnetProc.Controllers
 
         private readonly IAccount _account;
         private readonly IEmailService _emailService;
+        private readonly IPatientReq _patientReq;
 
-        public AccountController(IAccount account, IEmailService emailService)
+        public AccountController(IAccount account, IEmailService emailService,IPatientReq patientReq)
         {
 
 
             _account = account;
             _emailService = emailService;
+            _patientReq = patientReq;
+        }
+
+
+        [HttpGet]
+        [Route("Createaccount/{createid}")]
+        public IActionResult Createaccount(string createid)
+        {
+
+            string createId = HttpContext.Session.GetString("createid");
+
+            if(createId == createid)
+            { 
+
+            return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+        }
+
+
+        [HttpPost]
+        [Route("Createaccount/{createid}")]
+        public IActionResult Createaccount(UserCred user,string createid)
+        {
+
+            
+
+            if (user.Password == user.Confirmpassword)
+            {
+
+
+                var formdata = HttpContext.Session.GetString("PatientData");
+
+
+                 ConcieargeModel concieargeData = JsonConvert.DeserializeObject<ConcieargeModel>(formdata);
+
+                 Aspnetuser aspnetuser = _patientReq.AddAspNetUser(concieargeData.PatinentInfo, concieargeData.UserCred.Password);
+
+                int userid = _patientReq.AddUser(aspnetuser.Id, concieargeData.PatinentInfo, concieargeData.PatinentInfo.Location);
+
+                 _patientReq.AddConcieargeData(concieargeData, userid);
+
+                return RedirectToAction("Login", "Account");
+
+            }
+            else
+            {
+                TempData["ErrorPassword"] = "Password Do not Match!";
+                return RedirectToAction("Createaccount", "Account");
+            }
+
         }
 
 
@@ -38,8 +95,8 @@ namespace dotnetProc.Controllers
         {
 
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 //var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
 
                 Aspnetuser aspuser = _account.ValidateLogin(um);
@@ -68,11 +125,11 @@ namespace dotnetProc.Controllers
 
 
 
-            }
+            //}
 
 
 
-            return View("Login", um);
+            //return View("Login", um);
 
 
 
@@ -97,11 +154,13 @@ namespace dotnetProc.Controllers
             HttpContext.Session.SetString("resetid", resetid);
             HttpContext.Session.SetString("resetEmail", um.Email);
 
+
             string subject = "Password Reset";
 
             string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
 
             string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
+
 
             _emailService.SendEmail(um.Email, subject, body);
 
@@ -160,24 +219,24 @@ namespace dotnetProc.Controllers
 
 
 
-        public IActionResult GiveResetLink(string email)
-        {
+        //public IActionResult GiveResetLink(string email)
+        //{
 
-            string resetid = Guid.NewGuid().ToString();
+        //    string resetid = Guid.NewGuid().ToString();
 
-            HttpContext.Session.SetString("resetid", resetid);
+        //    HttpContext.Session.SetString("resetid", resetid);
 
-            string subject = "Password Reset";
+        //    string subject = "Password Reset";
 
-            string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+        //    string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
 
-            string body = "Please click on <a asp-route-id='"+resetid+"' href='"+resetLink+"'+>ResetPassword</a> to reset your password";
+        //    string body = "Please click on <a asp-route-id='"+resetid+"' href='"+resetLink+"'+>ResetPassword</a> to reset your password";
 
-            _emailService.SendEmail(email, subject, body);
+        //    _emailService.SendEmail(email, subject, body);
 
-            return RedirectToAction("Login", "Account");
+        //    return RedirectToAction("Login", "Account");
 
-        }
+        //}
 
 
         [HttpGet]

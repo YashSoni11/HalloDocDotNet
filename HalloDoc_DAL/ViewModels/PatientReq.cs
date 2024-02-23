@@ -11,9 +11,10 @@ namespace HalloDoc_DAL.ViewModels
 {
     public  class PatientReq
     {
-
+        [Required(ErrorMessage ="nakh ne bhai")]
         public string Symptoms { get; set; }
 
+        [Required(ErrorMessage = "nakh ne bhai")]
         public string FirstName { get; set; }
 
 

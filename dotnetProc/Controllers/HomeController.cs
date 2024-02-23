@@ -5,8 +5,8 @@ using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-
-
+using Newtonsoft.Json;
+using MailKit.Net.Smtp;
 
 namespace dotnetProc.Controllers
 {
@@ -15,11 +15,12 @@ namespace dotnetProc.Controllers
         
 
         private readonly IPatientReq _patientReq;
+        private readonly IEmailService _emailService;
 
-
-        public HomeController(IPatientReq patientReq)
+        public HomeController(IPatientReq patientReq,IEmailService emailService)
         {
             _patientReq = patientReq;
+            _emailService = emailService;
         }
 
        
@@ -83,6 +84,9 @@ namespace dotnetProc.Controllers
         public IActionResult FormByPatient(PatientReq pr)
         {
 
+            if (ModelState.IsValid)
+            {
+
 
             int user = _patientReq.GetUserIdByEmail(pr.Email);
 
@@ -110,7 +114,12 @@ namespace dotnetProc.Controllers
 
 
             return RedirectToAction("Login","Account");
-
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(PatientReq.Symptoms), "Nakh A Loda");
+            }
+            return View(pr);
         }
 
 
@@ -154,6 +163,9 @@ namespace dotnetProc.Controllers
 
             int user = _patientReq.GetUserIdByEmail(concieargeModel.PatinentInfo.Email);
 
+
+            if(user != 0)
+            {
             Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
 
             bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
@@ -162,7 +174,27 @@ namespace dotnetProc.Controllers
 
             bool response2 = _patientReq.AddConciergeRequest(concierge.Conciergeid, patientRequest.Requestid);
 
+           
+            }else if(user == 0)
+            {
+                 HttpContext.Session.SetString("PatientData",JsonConvert.SerializeObject(concieargeModel));
 
+                string createid = Guid.NewGuid().ToString();
+
+                HttpContext.Session.SetString("createid", createid);
+                HttpContext.Session.SetString("createEmail", concieargeModel.PatinentInfo.Email);
+
+
+                string subject = "Create Account";
+
+                string creatlink = "https://localhost:7008/CreateAccount/" + createid;
+
+                string body = "Please click on <a asp-route-id='" + createid + "' href='" + creatlink + "'+>Create Account</a> to create your account";
+
+
+                    _emailService.SendEmail(concieargeModel.PatinentInfo.Email, subject, body);
+
+            }
 
             return RedirectToAction("Login", "Account");
 

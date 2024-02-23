@@ -36,6 +36,29 @@ namespace HalloDoc_BAL.Repositery
             November,
             December
         }
+
+        // public var GiveResetPasswordLinkObject(string resetid)
+        //{
+            
+
+        //    string subject = "Password Reset";
+
+        //    string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+
+        //    string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
+
+        //    var resetLinkObj = new
+        //    {
+        //        subject,
+        //        resetLink,
+        //        body
+        //    };
+
+        //    return resetLinkObj;
+
+
+        //}
+
         public string GetHashedPassword(string password)
         {
              
@@ -57,7 +80,9 @@ namespace HalloDoc_BAL.Repositery
         public Aspnetuser ValidateLogin(UserCred um)
         {
 
-                Aspnetuser user  =   _context.Aspnetusers.FirstOrDefault(u=>um.Email == u.Email && GetHashedPassword(um.Password) == u.Passwordhash);
+            string pass = GetHashedPassword(um.Password);
+
+                Aspnetuser user  =   _context.Aspnetusers.FirstOrDefault(u=>um.Email == u.Email && pass == u.Passwordhash);
 
             return user;
         }
