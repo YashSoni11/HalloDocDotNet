@@ -20,7 +20,7 @@
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
 
-            <form asp-action="FormByPatient" method="post" enctype="multipart/form-data">
+            <form asp-action="FormByPatient" method="post" enctype="multipart/form-data" >
                 <div class="container-fluid formContainer mb-5">
                     <div class="row mt-3">
                         <h4 class="mt-3 mb-3">Patient Information</h4>
@@ -34,7 +34,8 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="FirstName" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="FirstName"
+                                type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">First Name</label>
                                 <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -52,10 +53,10 @@
                         </div>
                         <div class="col-6">
                             <div class="form-floating mb-3">
-                                <input asp-for="BirthDate" type="date" class="form-control" id="floatingInput"
+                                <input asp-for="BirthDate" type="date" class="form-control BirthdateInp" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Date Of Birth</label>
-                                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                                <span   id="BirthdayError" class="text-danger"></span>
 
                             </div>
                         </div>
@@ -70,7 +71,14 @@
                                        placeholder="name@example.com" onblur="checkEmailAvailibility()">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="Email" class="text-danger"></span>
+                                @{
+                                    if (TempData["IsEmailExist"] != null)
+                                    {
 
+                                        <span class="text-danger">@TempData["IsEmailExist"]</span>
+
+                                    }
+                                }
                             </div>
                         </div>
                 
@@ -146,9 +154,10 @@
                         </div>
                         <div class="col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Location.RoomNo" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="Location.RoomNo" type="text"  class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Room #/ Suite (optional)</label>
+                                
 
                             </div>
                         </div>
@@ -180,8 +189,8 @@
 
                     <div class="row justify-content-end p-3">
                         <div class="d-flex col-3 justify-content-end" style="column-gap: 1rem;">
-                            <button type="submit" class="btn btn-info  text-white darkInfo-btn">Submit</button>
-                            <button type="button" class="btn btn-outline-info text-info lightInfo-btn">
+                            <button type="submit" class="btn btn-info  text-white darkInfo-btn" >Submit</button>
+                            <button type="button" class="btn btn-outline-info text-info lightInfo-btn" onclick="window.location.reload() ">
                                 Cancle
                             </button>
                         </div>
@@ -200,16 +209,37 @@
     </div>
 </div>
 
-@*@section Scripts{
+@section Scripts{
 
      @{<partial name="_ValidationScriptsPartial"/>}
-}*@
+}
 
 <script>
     console.log(3)
 
 
     $(".reg-nav").remove();
+
+  const ValidateForm = () =>{
+       
+    
+
+        let birthdate = $('.BirthdateInp').val()
+
+       
+
+        let currenttime = new Date().toISOString().split('T')[0]
+      
+        if(birthdate == null || birthdate>currenttime){
+            console.log(09)
+
+
+           document.getElementById('BirthdayError').textContent = "Please Enter Valid Birthdate"
+
+            return;
+        }
+        
+    }
 
     const checkEmailAvailibility = () => {
 

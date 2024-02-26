@@ -16,12 +16,12 @@ namespace HalloDoc_BAL.Interface
 
       public Object CheckEmail(string email);
 
-
-       public Aspnetuser GetAspNetUserByEmail(string email);
+        public bool IsEmailExistance(string email);
+        public Aspnetuser GetAspNetUserByEmail(string email);
 
         public int GetUserIdByEmail (string email);
 
-        public Aspnetuser AddAspNetUser(PatientReq pr,string Password);
+        public Aspnetuser AddAspNetUser(PatientReq pr, string Password);
 
         public int AddUser(string AspNetUserId, PatientReq pr, AddressModel Location);
 

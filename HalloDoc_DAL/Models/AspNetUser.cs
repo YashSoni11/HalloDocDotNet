@@ -39,6 +39,12 @@ public partial class Aspnetuser
     [Column("modifieddate", TypeName = "timestamp without time zone")]
     public DateTime? Modifieddate { get; set; }
 
+    [Column("resettoken", TypeName = "character varying")]
+    public string? Resettoken { get; set; }
+
+    [Column("toekenexpire", TypeName = "timestamp without time zone")]
+    public DateTime? Toekenexpire { get; set; }
+
     [InverseProperty("Aspnetuser")]
     public virtual ICollection<Admin> AdminAspnetusers { get; } = new List<Admin>();
 

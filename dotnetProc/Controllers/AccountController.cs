@@ -55,30 +55,30 @@ namespace dotnetProc.Controllers
 
             
 
-            if (user.Password == user.Confirmpassword)
-            {
+            //if (user.Password == user.Confirmpassword)
+            //{
 
 
-                var formdata = HttpContext.Session.GetString("PatientData");
+            //    var formdata = HttpContext.Session.GetString("PatientData");
 
 
-                 ConcieargeModel concieargeData = JsonConvert.DeserializeObject<ConcieargeModel>(formdata);
+            //     ConcieargeModel concieargeData = JsonConvert.DeserializeObject<ConcieargeModel>(formdata);
 
-                 Aspnetuser aspnetuser = _patientReq.AddAspNetUser(concieargeData.PatinentInfo, concieargeData.UserCred.Password);
+            //     Aspnetuser aspnetuser = _patientReq.AddAspNetUser(concieargeData.PatinentInfo, concieargeData.UserCred.Password);
 
-                int userid = _patientReq.AddUser(aspnetuser.Id, concieargeData.PatinentInfo, concieargeData.PatinentInfo.Location);
+            //    int userid = _patientReq.AddUser(aspnetuser.Id, concieargeData.PatinentInfo, concieargeData.PatinentInfo.Location);
 
-                 _patientReq.AddConcieargeData(concieargeData, userid);
+            //     _patientReq.AddConcieargeData(concieargeData, userid);
 
-                return RedirectToAction("Login", "Account");
+            //    return RedirectToAction("Login", "Account");
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
+            //}
+
                 TempData["ErrorPassword"] = "Password Do not Match!";
                 return RedirectToAction("Createaccount", "Account");
-            }
-
         }
 
 
@@ -151,8 +151,11 @@ namespace dotnetProc.Controllers
 
             string resetid = Guid.NewGuid().ToString();
 
-            HttpContext.Session.SetString("resetid", resetid);
-            HttpContext.Session.SetString("resetEmail", um.Email);
+            string hashedresetid = _account.GetHashedPassword(resetid);
+
+            DateTime expiretime = DateTime.Now.AddMinutes(60);
+
+             _account.StoreResetid(hashedresetid, expiretime,um.Email);
 
 
             string subject = "Password Reset";
@@ -169,22 +172,43 @@ namespace dotnetProc.Controllers
 
 
         [HttpGet]
+        [Route("Account/Error")]
+        public IActionResult Error()
+        {
+            return View();
+        }
+
+        [HttpGet]
         [Route("ResetPassword/{resetid}")]
         public IActionResult ResetPassword(string resetid)
         {
 
-            string ri = HttpContext.Session.GetString("resetid");
-            
+            string hashedresetid = _account.GetHashedPassword(resetid);
 
-      
-                if(ri == resetid)
+          Aspnetuser aspnetuser = _account.GetAspnetuserByResetId(hashedresetid);
+
+
+
+
+            if (aspnetuser == null)
             {
-                return View();
+
+                TempData["IsValidResetLink"] = "Not a Valid Link.";
+
+                return RedirectToAction("Error", "Account");
+            }
+            else if (DateTime.Now > aspnetuser.Toekenexpire)
+            {
+                TempData["IsValidResetLink"] = "Your Link is expired.";
+
+                return RedirectToAction("Error", "Account");
             }
             else
             {
-                return RedirectToAction("Login", "Account");
+                return View();
             }
+
+
 
         }
 
@@ -192,24 +216,31 @@ namespace dotnetProc.Controllers
         [HttpPost]
         [Route("ResetPassword/{resetid}")]
 
-        public IActionResult ResetPassword(ForgotPassword fr)
+        public IActionResult ResetPassword(ForgotPassword fr,string resetid)
         {
+             string hashedresetid = _account.GetHashedPassword(resetid);
 
-            string email = HttpContext.Session.GetString("resetEmail");
+            Aspnetuser aspnetuser = _account.GetAspnetuserByResetId(hashedresetid);
 
-            if (fr.NewPassword != fr.ConfirmPassword)
+            if (aspnetuser == null)
+            {
+                TempData["IsValidResetLink"] = "Not a Valid Link!";
+                return RedirectToAction("Error", "Account");
+            }
+            else if(fr.NewPassword != fr.ConfirmPassword)
             {
                 TempData["ErrorPassword"] = "Passwords Do Not Match!";
 
                 return View();
-            }
 
-            if (email != null)
+
+            }
+            else
             {
-
-                Aspnetuser user = _account.UpdateAspnetuserPassByEmail(email, fr.NewPassword);
+                   Aspnetuser user = _account.UpdateAspnetuserPassByEmail(aspnetuser.Email, fr.NewPassword);
 
             }
+
 
 
             return RedirectToAction("Login", "Account");

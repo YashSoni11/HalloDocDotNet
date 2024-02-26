@@ -11,11 +11,12 @@ namespace HalloDoc_DAL.ViewModels
     {
 
         [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Password is required.")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "Passwords do not match!")]
-
+        [Required(ErrorMessage = "Confirm password is required.")]
         public string ConfirmPassword { get; set; }
 
     }

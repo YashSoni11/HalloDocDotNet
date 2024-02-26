@@ -11,36 +11,47 @@ namespace HalloDoc_DAL.ViewModels
 {
     public  class PatientReq
     {
-        [Required(ErrorMessage ="nakh ne bhai")]
+        [Required(ErrorMessage ="Symptoms is Required.")]
+        [MaxLength(500,ErrorMessage ="Could Not Enter More Than 500 Charachters.")]
         public string Symptoms { get; set; }
 
-        [Required(ErrorMessage = "nakh ne bhai")]
+        [Required(ErrorMessage = "FirstName is Required.")]
+        [MaxLength(30,ErrorMessage ="Could Not Enter More Than 30 Charachters.")]
+        [RegularExpression(@"^[a-zA-Z]+$",ErrorMessage ="Only Alphabets are Allowed.")]
         public string FirstName { get; set; }
 
-
+        [Required(ErrorMessage = "Lastname is Required.")]
+        [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
         public string LastName { get; set; }
 
 
+        [Required(ErrorMessage ="Birthdate is Required.")]
         public DateOnly BirthDate { get; set; }
 
 
         [DataType(DataType.EmailAddress)]
-        [EmailAddress(ErrorMessage ="Email is Required!")]
+        [EmailAddress(ErrorMessage ="Please Enter Valid Email.")]
         public string Email { get; set; }
 
-        [DataType(DataType.Password)]
+  
+        [Required(ErrorMessage ="Password is required.")]
         public string Password { get; set; }
 
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "The password and confirm password do not match.")]
+        [Required(ErrorMessage = "Confirmpassword is required.")]
         public string ConfirmPassword { get; set; }
 
+        [Required(ErrorMessage ="Phonenumber is required.")]
+        [DataType(DataType.PhoneNumber)]
+        [Phone(ErrorMessage ="Please Enter Valid Phonenumber")]
         public string Phonenumber { get; set; }
 
+        
         public AddressModel Location { get; set; }
 
-        public IFormFile FileUpload { get; set; }
+        public IFormFile? FileUpload { get; set; } = null;
 
-        public string Relation { get; set; }
+        public string? Relation { get; set; } = null;
     }
 }

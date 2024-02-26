@@ -12,13 +12,16 @@ namespace HalloDoc_BAL.Interface
     public interface IAccount
     {
 
-       public Aspnetuser ValidateLogin(UserCred um);
+        public Aspnetuser ValidateLogin(UserCred um);
 
-         public User GetUserByAspNetId(string aspnetuserid);
+        public User GetUserByAspNetId(string aspnetuserid);
 
+        public void StoreResetid(string resetid, DateTime expirationTime, string email);
+
+        public Aspnetuser GetAspnetuserByResetId(string resetid);
         public Aspnetuser GetAspnetuserByEmail(string email);
 
-        public Aspnetuser UpdateAspnetuserPassByEmail(string Email,string Newpassword);
+        public Aspnetuser UpdateAspnetuserPassByEmail(string Email, string Newpassword);
         public List<DashBoardRequests> GetUserRequests(int userid);
 
         public User GetUserByUserId(int userid);
@@ -32,6 +35,6 @@ namespace HalloDoc_BAL.Interface
 
         public bool UploadFile(IFormFile file, int requestId);
 
-        //public var GiveResetPasswordLinkObject(string resetid);
+        public Object GiveResetPasswordLinkObject(string resetid);
     }
 }

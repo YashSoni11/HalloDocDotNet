@@ -84,7 +84,17 @@ namespace dotnetProc.Controllers
         public IActionResult FormByPatient(PatientReq pr)
         {
 
-            if (ModelState.IsValid)
+
+             bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
+            
+            if(isemailexist == true)
+            {
+                TempData["IsEmailExist"] = "Account with this email already created.";
+
+                return View(pr);
+            }
+
+          else  if (ModelState.IsValid)
             {
 
 
@@ -117,9 +127,9 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                ModelState.AddModelError(nameof(PatientReq.Symptoms), "Nakh A Loda");
+               return View(pr);
+                
             }
-            return View(pr);
         }
 
 

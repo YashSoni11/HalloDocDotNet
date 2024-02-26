@@ -66,11 +66,18 @@ namespace HalloDoc_BAL.Repositery
             return builder.ToString();
 
         }
+
+        public bool IsEmailExistance(string email)
+        {
+             bool response  = _context.Aspnetusers.Any(x => x.Email == email);
+
+            return response;
+        }
         public void AddPatientReq(PatientReq pr)
         {
 
 
-            Aspnetuser? aspNetUser =  _context.Aspnetusers.FirstOrDefault(u => u.Email == pr.Email);
+            Aspnetuser? aspNetUser = _context.Aspnetusers.FirstOrDefault(u => u.Email == pr.Email);
 
             if (aspNetUser == null)
             {
@@ -144,7 +151,7 @@ namespace HalloDoc_BAL.Repositery
 
         public Aspnetuser GetAspNetUserByEmail(string email)
         {
-             
+
             Aspnetuser user = _context.Aspnetusers.FirstOrDefault(a => a.Email == email);
 
             return user;
@@ -164,7 +171,7 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-        public Aspnetuser AddAspNetUser(PatientReq pr,string password)
+        public Aspnetuser AddAspNetUser(PatientReq pr, string password)
         {
 
             Aspnetuser aspNetUser1 = new Aspnetuser
@@ -372,6 +379,7 @@ namespace HalloDoc_BAL.Repositery
         public bool UploadFile(IFormFile file,int requestid)
         {
 
+            if(file == null) return false;
             string path = "";
             bool iscopied = false;
 

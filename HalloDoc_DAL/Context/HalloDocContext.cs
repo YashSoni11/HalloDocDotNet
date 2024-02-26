@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using HalloDoc_DAL.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Context;
 
@@ -13,7 +12,7 @@ public partial class HalloDocContext : DbContext
     }
 
     public HalloDocContext(DbContextOptions<HalloDocContext> options)
-        : base(options) 
+        : base(options)
     {
     }
 

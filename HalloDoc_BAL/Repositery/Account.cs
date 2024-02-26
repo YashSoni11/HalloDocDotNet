@@ -37,27 +37,27 @@ namespace HalloDoc_BAL.Repositery
             December
         }
 
-        // public var GiveResetPasswordLinkObject(string resetid)
-        //{
-            
-
-        //    string subject = "Password Reset";
-
-        //    string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
-
-        //    string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
-
-        //    var resetLinkObj = new
-        //    {
-        //        subject,
-        //        resetLink,
-        //        body
-        //    };
-
-        //    return resetLinkObj;
+        public Object GiveResetPasswordLinkObject(string resetid)
+        {
 
 
-        //}
+            string subject = "Password Reset";
+
+            string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+
+            string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
+
+            var resetLinkObj = new
+            {
+                subject,
+                resetLink,
+                body
+            };
+
+            return resetLinkObj;
+
+
+        }
 
         public string GetHashedPassword(string password)
         {
@@ -76,13 +76,33 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+        public void StoreResetid(string resetid, DateTime expirationtime, string email)
+        {
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q => q.Email == email);
+
+            if (aspnetuser != null)
+            {
+                aspnetuser.Resettoken = resetid;
+                aspnetuser.Toekenexpire = expirationtime;
+            }
+
+            _context.Aspnetusers.Update(aspnetuser);
+            _context.SaveChanges();
+        }
+
+        public Aspnetuser GetAspnetuserByResetId(string resetid)
+        {
+            Aspnetuser aspnetuser = _context.Aspnetusers.Where(q => q.Resettoken == resetid).FirstOrDefault();
+
+            return aspnetuser;
+        }
 
         public Aspnetuser ValidateLogin(UserCred um)
         {
 
             string pass = GetHashedPassword(um.Password);
 
-                Aspnetuser user  =   _context.Aspnetusers.FirstOrDefault(u=>um.Email == u.Email && pass == u.Passwordhash);
+            Aspnetuser user = _context.Aspnetusers.FirstOrDefault(u => um.Email == u.Email && pass == u.Passwordhash);
 
             return user;
         }
@@ -90,7 +110,7 @@ namespace HalloDoc_BAL.Repositery
         public Aspnetuser GetAspnetuserByEmail(string email)
         {
 
-            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u=>u.Email == email);
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
 
             return aspnetuser;
 
@@ -113,16 +133,16 @@ namespace HalloDoc_BAL.Repositery
             return user;
         }
 
-        public Aspnetuser UpdateAspnetuserPassByEmail(string Email,string Newpassword)
+        public Aspnetuser UpdateAspnetuserPassByEmail(string Email, string Newpassword)
         {
-             Aspnetuser aspnetuser= _context.Aspnetusers.FirstOrDefault(u=>u.Email == Email);
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == Email);
 
-            if(aspnetuser!=null)
+            if (aspnetuser != null)
             {
-                 aspnetuser.Passwordhash = GetHashedPassword(Newpassword);
-                 aspnetuser.Modifieddate = DateTime.Now;
-                  
-                 _context.Aspnetusers.Update(aspnetuser);
+                aspnetuser.Passwordhash = GetHashedPassword(Newpassword);
+                aspnetuser.Modifieddate = DateTime.Now;
+
+                _context.Aspnetusers.Update(aspnetuser);
                 _context.SaveChanges();
 
             }
