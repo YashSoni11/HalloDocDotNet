@@ -33,52 +33,68 @@ namespace dotnetProc.Controllers
         public IActionResult Createaccount(string createid)
         {
 
-            string createId = HttpContext.Session.GetString("createid");
-
-            if(createId == createid)
-            { 
-
+        
             return View();
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
+            
         }
 
 
         [HttpPost]
         [Route("Createaccount/{createid}")]
-        public IActionResult Createaccount(UserCred user,string createid)
+        public IActionResult Createaccount(UserCred user)
         {
+
+
+
+
+
+            if (user.Password == user.Confirmpassword)
+            {
+                Requestclient requestclient = _patientReq.GetRequestClientByEmail(user.Email);
+
+
+
+                PatientReq patientReq = new PatientReq
+                {
+
+                    FirstName = requestclient.Firstname,
+                    LastName = requestclient.Lastname,
+                    Email = requestclient.Email,
+                    Password = user.Password,
+                    Phonenumber = requestclient.Phonenumber,
+
+                };
+
+                AddressModel addressModel = new AddressModel
+                {
+                    State = requestclient.State,
+                    Street = requestclient.Street,
+                    City = requestclient.City,
+                    ZipCode = requestclient.Zipcode
+                };
+
+
+                Aspnetuser aspnetuser = _patientReq.AddAspNetUser(patientReq, user.Password);
+
+                int userid = _patientReq.AddUser(aspnetuser.Id, patientReq, addressModel);
+
+                Request request = _patientReq.UpdateRequestByRequestId(requestclient.Requestid,userid);
 
             
 
-            //if (user.Password == user.Confirmpassword)
-            //{
+            
 
 
-            //    var formdata = HttpContext.Session.GetString("PatientData");
 
+                return RedirectToAction("Login", "Account");
 
-            //     ConcieargeModel concieargeData = JsonConvert.DeserializeObject<ConcieargeModel>(formdata);
-
-            //     Aspnetuser aspnetuser = _patientReq.AddAspNetUser(concieargeData.PatinentInfo, concieargeData.UserCred.Password);
-
-            //    int userid = _patientReq.AddUser(aspnetuser.Id, concieargeData.PatinentInfo, concieargeData.PatinentInfo.Location);
-
-            //     _patientReq.AddConcieargeData(concieargeData, userid);
-
-            //    return RedirectToAction("Login", "Account");
-
-            //}
-            //else
-            //{
-            //}
-
+            }
+            else
+            {
                 TempData["ErrorPassword"] = "Password Do not Match!";
                 return RedirectToAction("Createaccount", "Account");
+            }
+
         }
 
 
@@ -165,7 +181,7 @@ namespace dotnetProc.Controllers
             string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
 
 
-            _emailService.SendEmail(um.Email, subject, body);
+            //_emailService.SendEmail(um.Email, subject, body);
 
             return RedirectToAction("Login", "Account");
         }

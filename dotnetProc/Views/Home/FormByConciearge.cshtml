@@ -16,7 +16,7 @@
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
 
-            <form asp-controller="Home" asp-action="FormByConciearge" enctype="multipart/form-data">
+            <form asp-controller="Home" asp-action="FormByConciearge" >
                 <div class="container-fluid  formContainer  mb-5">
                     <!-- Concierge Information Input Group -->
 
@@ -28,6 +28,7 @@
                                 <input asp-for="concieargeInformation.FirstName" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Your First Name</label>
+                                <span asp-validation-for="concieargeInformation.FirstName"  class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -35,6 +36,8 @@
                                 <input asp-for="concieargeInformation.LastName" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Your Last Name</label>
+                                <span asp-validation-for="concieargeInformation.LastName" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -42,6 +45,8 @@
                                 <input asp-for="concieargeInformation.PhoneNumber" type="tel" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Phone</label>
+                                <span asp-validation-for="concieargeInformation.PhoneNumber" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -49,6 +54,8 @@
                                 <input asp-for="concieargeInformation.Email" type="email" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Your Email</label>
+                                <span asp-validation-for="concieargeInformation.Email" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -72,6 +79,8 @@
                                 <input asp-for="concieargeLocation.Street" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Street</label>
+                                <span asp-validation-for="concieargeLocation.Street" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -79,6 +88,8 @@
                                 <input asp-for="concieargeLocation.City" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">City</label>
+                                <span asp-validation-for="concieargeLocation.City" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -86,6 +97,8 @@
                                 <input asp-for="concieargeLocation.State" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">State</label>
+                                <span asp-validation-for="concieargeLocation.State" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -93,6 +106,8 @@
                                 <input asp-for="concieargeLocation.ZipCode" type="number" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Zip Code</label>
+                                <span asp-validation-for="concieargeLocation.ZipCode" class="text-danger"></span>
+
                             </div>
                         </div>
                     </div>
@@ -107,6 +122,8 @@
                                 <textarea asp-for="PatinentInfo.Symptoms" class="form-control" placeholder="Leave a comment here"
                                           id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Enter Brief Details of symptoms(optional)</label>
+                                <span asp-validation-for="PatinentInfo.Symptoms" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -114,6 +131,8 @@
                                 <input asp-for="PatinentInfo.FirstName" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">First Name</label>
+                                <span asp-validation-for="PatinentInfo.FirstName" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -121,6 +140,8 @@
                                 <input asp-for="PatinentInfo.LastName" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Last Name</label>
+                                <span asp-validation-for="PatinentInfo.LastName" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-12">
@@ -128,6 +149,8 @@
                                 <input asp-for="PatinentInfo.BirthDate" type="date" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Date Of Birth</label>
+                                <span asp-validation-for="PatinentInfo.BirthDate" class="text-danger"></span>
+
                             </div>
                         </div>
                     </div>
@@ -142,6 +165,8 @@
                                 <input asp-for="PatinentInfo.Email" type="email" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Email</label>
+                                <span asp-validation-for="PatinentInfo.Email" class="text-danger"></span>
+
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -149,6 +174,8 @@
                                 <input asp-for="PatinentInfo.Phonenumber" style='height: 57px;' type="tel" id='phonInput' class="form-control"
                                        id="floatingInput">
                                 <label for="floatingInput"></label>
+                                <span asp-validation-for="PatinentInfo.Phonenumber" class="text-danger"></span>
+
                             </div>
                         </div>
 
@@ -164,6 +191,7 @@
                                 <input asp-for="patientRoomNo" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Room #/ Suite (optional)</label>
+
                             </div>
                         </div>
                     </div>
@@ -188,6 +216,14 @@
 
     </div>
 </div>
+
+
+@section Scripts{
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
 
 <script>
     $(".reg-nav").remove();

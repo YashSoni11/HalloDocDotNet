@@ -176,23 +176,25 @@ namespace dotnetProc.Controllers
 
             if(user != 0)
             {
-            Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
 
-            bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
+                TempData["IsAccountExist"] = "Account Already Exist !";
 
-            Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
-
-            bool response2 = _patientReq.AddConciergeRequest(concierge.Conciergeid, patientRequest.Requestid);
+                return View(concieargeModel);
 
            
             }else if(user == 0)
             {
-                 HttpContext.Session.SetString("PatientData",JsonConvert.SerializeObject(concieargeModel));
+            Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
+            Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
+
+            bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
+
+
+            bool response2 = _patientReq.AddConciergeRequest(concierge.Conciergeid, patientRequest.Requestid);
+       
 
                 string createid = Guid.NewGuid().ToString();
 
-                HttpContext.Session.SetString("createid", createid);
-                HttpContext.Session.SetString("createEmail", concieargeModel.PatinentInfo.Email);
 
 
                 string subject = "Create Account";
@@ -202,7 +204,7 @@ namespace dotnetProc.Controllers
                 string body = "Please click on <a asp-route-id='" + createid + "' href='" + creatlink + "'+>Create Account</a> to create your account";
 
 
-                    _emailService.SendEmail(concieargeModel.PatinentInfo.Email, subject, body);
+                    //_emailService.SendEmail(concieargeModel.PatinentInfo.Email, subject, body);
 
             }
 

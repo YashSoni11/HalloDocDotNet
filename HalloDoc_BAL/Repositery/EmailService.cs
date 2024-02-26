@@ -1,6 +1,7 @@
 ﻿using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Models;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace HalloDoc_BAL.Repositery
 {
     public class EmailService : IEmailService
     {
-           
+
 
         public Object SendEmail(string uemail, string subject, string body)
         {
@@ -32,18 +33,18 @@ namespace HalloDoc_BAL.Repositery
             smtp.Send(email);
             smtp.Disconnect(true);
 
-            //var client = new SmtpClient("smtp-mail.outlook.com", 587);
 
-            //Task gg = client.SendMailAsync(
-            //    new MailMessage(
-            //          from: "Yash@gmail.com",
-            //         to: email,
-            //         subject: subject,
-            //         body: body));
 
             return smtp;
-        }
 
+
+
+
+
+
+
+
+        }
 
     }
 }

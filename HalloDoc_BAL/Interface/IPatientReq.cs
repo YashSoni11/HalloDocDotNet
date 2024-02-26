@@ -47,6 +47,11 @@ namespace HalloDoc_BAL.Interface
 
         public string GetHashedPassword(string password);
 
+
+       public Requestclient GetRequestClientByEmail(string email);
+
+        public Request UpdateRequestByRequestId(int requestId,int userId);
+
     }
 }
 

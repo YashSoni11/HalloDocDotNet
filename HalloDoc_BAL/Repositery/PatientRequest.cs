@@ -232,7 +232,7 @@ namespace HalloDoc_BAL.Repositery
                 Phonenumber = cm.PhoneNumber,
                 Createddate = DateTime.Now,
                 Status = 1,
-                Userid = userId,
+                Userid = userId == 0?null:userId,
             };
 
             _context.Requests.Add(request);
@@ -373,6 +373,27 @@ namespace HalloDoc_BAL.Repositery
               User user = _context.Users.FirstOrDefault(u=>u.Userid == userId);
 
             return user;
+        }
+
+        public Requestclient GetRequestClientByEmail(string email)
+        {
+            Requestclient requestclient = _context.Requestclients.FirstOrDefault(q=>q.Email == email);
+
+            return requestclient;
+        }
+
+        public Request UpdateRequestByRequestId(int requestId,int userId)
+        {
+
+             Request request = _context.Requests.FirstOrDefault(q=>q.Requestid == requestId);
+
+            request.Userid = userId;
+
+            _context.Requests.Update(request);
+
+            _context.SaveChanges();
+
+            return request; 
         }
 
 
