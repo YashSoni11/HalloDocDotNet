@@ -116,7 +116,7 @@ namespace dotnetProc.Controllers
             };
 
 
-            Request patientRequest = _patientReq.AddRequest(patientInfo, user, "Patient");
+            Request patientRequest = _patientReq.AddRequest(patientInfo, user, "Patient",pr.Location.State);
 
             bool response =  _patientReq.AddRequestClient(pr, patientRequest.Requestid,pr.Location);
 
@@ -148,7 +148,7 @@ namespace dotnetProc.Controllers
 
             int user = _patientReq.GetUserIdByEmail(familyFriendModel.PatientInfo.Email);
 
-            Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, user,"Family");
+            Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, user,"Family",familyFriendModel.patientLocation.State);
 
             bool response = _patientReq.AddRequestClient(familyFriendModel.PatientInfo, patientRequest.Requestid, familyFriendModel.patientLocation);
 
@@ -184,7 +184,7 @@ namespace dotnetProc.Controllers
            
             }else if(user == 0)
             {
-            Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
+            Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State);
             Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
 
             bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
@@ -229,7 +229,7 @@ namespace dotnetProc.Controllers
 
             int user = _patientReq.GetUserIdByEmail(businessReqModel.PatientIfo.Email);
 
-            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, user, "Business");
+            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, user, "Business",businessReqModel.PatinentLocaiton.State);
 
             bool response = _patientReq.AddRequestClient(businessReqModel.PatientIfo, patientRequest.Requestid, businessReqModel.PatinentLocaiton);
 
@@ -284,7 +284,7 @@ namespace dotnetProc.Controllers
             };
 
 
-            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, "Patient");
+            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, "Patient", pr.Location.State);
 
             bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
 
@@ -327,7 +327,7 @@ namespace dotnetProc.Controllers
             };
 
 
-            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, pr.Relation);
+            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, pr.Relation,pr.Location.State);
 
             bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
 
