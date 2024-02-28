@@ -25,7 +25,7 @@ namespace HalloDoc_BAL.Interface
 
         public int AddUser(string AspNetUserId, PatientReq pr, AddressModel Location);
 
-        public Request AddRequest(CmnInformation cm, int userId, string requestType);
+        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state);
 
         public bool AddRequestClient(PatientReq patientReq,int requestId, AddressModel Location);
 
@@ -51,6 +51,8 @@ namespace HalloDoc_BAL.Interface
        public Requestclient GetRequestClientByEmail(string email);
 
         public Request UpdateRequestByRequestId(int requestId,int userId);
+
+        public bool  IsRegionAvailable(string  region);
 
     }
 }

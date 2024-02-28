@@ -6,6 +6,7 @@
 
 
 
+<partial name="_RegionModal"/>
 
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
@@ -75,7 +76,7 @@
                                     if (TempData["IsEmailExist"] != null)
                                     {
 
-                                        <span class="text-danger">@TempData["IsEmailExist"]</span>
+                                            <span class="text-danger">@TempData["IsEmailExist"]</span>
 
                                     }
                                 }
@@ -136,9 +137,16 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Location.State" type="text" class="form-control" id="floatingInput"
+
+                                <select asp-for="Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onblur="chekcRegionAvailibility()">
+                                    <option selected="">Region</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Maharastra">Maharastra</option>
+                                    <option value="Punjab">Punjab</option>
+                                </select>
+                                @*<input asp-for="Location.State" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
-                                <label for="floatingInput">State</label>
+                                <label for="floatingInput">State</label>*@
                                 <span asp-validation-for="Location.State" class="text-danger"></span>
 
                             </div>
@@ -276,6 +284,32 @@
         })
 
 
+
+    }
+
+
+    const chekcRegionAvailibility = () =>{
+
+
+        let region = $("#regionInp").val();
+
+
+        $.ajax({
+
+            url: "/Home/CheckRegionAvailibility",
+            method: "post",
+            data: { region: region },
+            success: function (response) {
+                console.log(response)
+                if(response.response == false){
+                    $("#regionModalBtn").click();
+                }
+            },
+            error: function () {
+                console.log(2, email);
+            }
+
+        })
 
     }
 

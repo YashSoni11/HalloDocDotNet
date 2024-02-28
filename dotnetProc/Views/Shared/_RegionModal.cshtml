@@ -1,0 +1,29 @@
+﻿
+
+<!-- Button trigger modal -->
+<button style="display: none;" type="button" id='regionModalBtn' class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#regionModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="regionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" data-backdrop="true">
+        <div style="border-radius: 20px;" class="modal-content">
+            <div style='border:none;' class="modal-header  d-flex justify-content-center flex-column">
+                <!-- <i style="color: yellow;" class="bi bi-exclamation-circle-fill"></i> -->
+                <img style="width: 5rem;" src="~/images/abort-icon.svg" />
+                <h4 class="mt-4">Alert</h4>
+            </div>
+            <div style='text-align: center;' class="modal-body text-align-center">
+
+                Currently We Are Not Servicing In your Provided Region !!
+
+            </div>
+            <div style='border:none;' class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-info text-white" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
