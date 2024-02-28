@@ -204,7 +204,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="@Model.User.Birthdate" type="date" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@(Model.User.Birthdate.ToString("yyyy-MM-dd"))"  type="date" class="form-control tbDisabled" id="floatingInput"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">Date Of Birth</label>
                                     </div>

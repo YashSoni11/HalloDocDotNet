@@ -181,7 +181,7 @@ namespace dotnetProc.Controllers
             string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
 
 
-            //_emailService.SendEmail(um.Email, subject, body);
+            _emailService.SendEmail(um.Email, subject, body);
 
             return RedirectToAction("Login", "Account");
         }
