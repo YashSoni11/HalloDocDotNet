@@ -67,6 +67,34 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+
+        public int GetCurrentRequestsCount()
+        {
+            int currentDate = DateTime.Now.Day;
+
+            int count = _context.Requests.Where(r=>r.Createddate.Day == currentDate).Count();
+
+            return count;
+        }
+
+        public string GetConfirmationNumber(string Firstname,string Lastname,string State)
+        {
+
+            string Region = State.Substring(0, 2).ToUpperInvariant();
+
+            string NameAbbr = Lastname.Substring(0, 2).ToUpperInvariant() + Firstname.Substring(0, 2).ToUpperInvariant();
+
+            string date = DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Year.ToString();
+
+            int requestsCount = GetCurrentRequestsCount();
+
+            string newRequestCount = requestsCount.ToString();
+
+            string ConfirmationNumber = Region+date+NameAbbr+newRequestCount;
+
+            return ConfirmationNumber;
+        }
+
         public bool IsEmailExistance(string email)
         {
              bool response  = _context.Aspnetusers.Any(x => x.Email == email);
@@ -219,8 +247,11 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request AddRequest(CmnInformation cm, int userId, string requestType)
+        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state)
         {
+
+
+            string confirmatinumber = GetConfirmationNumber(cm.FirstName, cm.LastName, state);
 
 
             Request request = new Request
@@ -233,6 +264,8 @@ namespace HalloDoc_BAL.Repositery
                 Createddate = DateTime.Now,
                 Status = 1,
                 Userid = userId == 0?null:userId,
+                Confirmationnumber = confirmatinumber,
+                Email = cm.Email,
             };
 
             _context.Requests.Add(request);
@@ -271,6 +304,7 @@ namespace HalloDoc_BAL.Repositery
                 City = patientAddress?.City,
                 State = patientAddress?.State,
                 Zipcode = patientAddress.ZipCode,
+                Notes = pr.Symptoms,
             };
 
             _context.Requestclients.Add(requestclient);
@@ -355,7 +389,7 @@ namespace HalloDoc_BAL.Repositery
 
         public void AddConcieargeData(ConcieargeModel concieargeModel,int user)
         {
-            Request patientRequest = AddRequest(concieargeModel.concieargeInformation, user, "Concierge");
+            Request patientRequest = AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State);
 
             bool response = AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
 
