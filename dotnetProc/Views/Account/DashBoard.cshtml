@@ -204,7 +204,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="@(Model.User.Birthdate.ToString("yyyy-MM-dd"))"  type="date" class="form-control tbDisabled" id="floatingInput"
+                                        <input asp-for="@(Model.User.Birthdate)"  type="date" class="form-control tbDisabled" id="floatingInput"
                                                placeholder="name@example.com">
                                         <label for="floatingInput">Date Of Birth</label>
                                     </div>
@@ -262,9 +262,14 @@
                                 </div>
                                 <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
-                                        <input asp-for="@Model.User.Address.State"  type=" text" class="form-control tbDisabled" id="state"
-                                               placeholder="name@example.com">
-                                        <label for="floatingInput">State</label>
+                                        <select id="sl" asp-for="@Model.User.Address.State" class="form-select tbDisabled" aria-label="Default select example" style="height:3rem;padding:13px;" onchange="GetPhysicianByRegions()">
+                                            <option selected="">@Model.User.Address.State</option>
+                                            @foreach (Region region in Model.Regions)
+                                            {
+                                                <option value="@region.Regionid">@region.Name</option>
+                                            }
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-sm-6 col-12">

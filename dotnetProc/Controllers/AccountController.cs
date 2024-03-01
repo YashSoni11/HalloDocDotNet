@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using HalloDoc_BAL.Interface;
 using static HalloDoc_BAL.Repositery.PatientRequest;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace dotnetProc.Controllers
 {
@@ -308,7 +309,7 @@ namespace dotnetProc.Controllers
             {
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
-                Birthdate = new DateOnly(user.Intyear ?? 0, (int)(Months)Enum.Parse(typeof(Months), user.Strmonth), user.Intdate ?? 0),
+                Birthdate = new DateTime((user.Intyear ?? 0) == 0 ? 1 : (int)(user.Intyear ?? 0), DateTime.ParseExact(user.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (user.Intdate ?? 0) == 0 ? 1 : (int)(user.Intdate ?? 0)),
                 Email = user.Email,
                 Phonnumber = user.Mobile,
                 Address = address,
@@ -319,11 +320,13 @@ namespace dotnetProc.Controllers
 
 
             List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
+            List<Region> regions = _account.GetAllRegions();
 
             UserInformation userinfo = new UserInformation
             {
                 UserRequests = userRequests,
-                User = userProfile
+                User = userProfile,
+                Regions = regions
 
             };
 
@@ -339,8 +342,6 @@ namespace dotnetProc.Controllers
         {
 
 
-
-
             int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
 
 
@@ -350,10 +351,13 @@ namespace dotnetProc.Controllers
 
             List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
 
+          
+
             UserInformation userinfo = new UserInformation
             {
                 UserRequests = userRequests,
-                User = newUser
+                User = newUser,
+              
 
             };
 

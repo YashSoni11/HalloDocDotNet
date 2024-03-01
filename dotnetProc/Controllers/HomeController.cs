@@ -30,19 +30,41 @@ namespace dotnetProc.Controllers
             return View();
         }
 
-     
+        public IActionResult CheckNumberAvailibility(string Phone)
+        {
+
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(Phone);
+
+            return Json(new {IsPhone = IsPhoneBlocked,ModalMsg="Request With Provided Phonenumber Is Blocked!"});
+        }
+
+
+
         public  IActionResult ckeckEmailAvailibility(string email)
         {
 
             if(email != null)
             {
-                //Aspnetuser exist =  _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
+       
+
+                bool IsEmailBlocked = _patientReq.IsEmailBlocked(email);
+
+                if (IsEmailBlocked)
+                {
+                   
+
+                    return Json(new { IsEmailBLocked = true,ModalMsg= "Request With Provided Email Is Blocked !" });
+                }
 
                 var exist = _patientReq.CheckEmail(email);
 
+
+
+
                 if(exist != null)
                 {
-                    
+            
+
                     return Json(new { Error = "Account Already Exist!" ,code = 401});
                 }
 
@@ -86,15 +108,30 @@ namespace dotnetProc.Controllers
 
 
              bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.Location.State);
             
-            if(isemailexist == true)
+            if(isemailexist == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
             {
-                TempData["IsEmailExist"] = "Account with this email already created.";
+
+                TempData["IsEmailExist"] = isemailexist == true?  "Account with this email already created.": TempData["IsEmailExist"] = "Account with this email is blocked.";
+
+
+
+                if (IsPhoneBlocked)
+                {
+                  TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked."; 
+                }
+
+                if (IsregionAvailable == false)
+                {
+                    TempData["IsRegionAvailable"] = "Region is not available.";
+                }
 
                 return View(pr);
             }
-
-          else  if (ModelState.IsValid)
+            else  if (ModelState.IsValid)
             {
 
 
@@ -344,7 +381,9 @@ namespace dotnetProc.Controllers
         {
             bool isExists = _patientReq.IsRegionAvailable(region);
 
-            return Json(new { Response = isExists });
+      
+
+            return Json(new { Response = isExists,ModalMsg= "Currently We Are Not Servicing In your Provided Region !" });
         }
         public IActionResult Privacy()
         {

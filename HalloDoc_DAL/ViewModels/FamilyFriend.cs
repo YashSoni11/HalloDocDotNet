@@ -18,6 +18,7 @@ namespace HalloDoc_DAL.ViewModels
 
         public AddressModel patientLocation { get; set; }
 
+        public bool ValidEmail { get; set; }
 
     }
 }

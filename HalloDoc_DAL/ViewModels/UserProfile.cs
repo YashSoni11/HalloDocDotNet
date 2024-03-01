@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HalloDoc_DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,8 @@ namespace HalloDoc_DAL.ViewModels
 
         public AddressModel Address { get; set; }
 
-        public DateOnly Birthdate { get; set; }
+        public DateTime Birthdate { get; set; }
+
+       
     }
 }

@@ -54,6 +54,10 @@ namespace HalloDoc_BAL.Interface
 
         public bool  IsRegionAvailable(string  region);
 
+        public bool  IsEmailBlocked(string email);
+
+        public bool IsPhoneBlocked(string phone);
+
     }
 }
 

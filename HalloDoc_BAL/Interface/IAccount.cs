@@ -36,5 +36,8 @@ namespace HalloDoc_BAL.Interface
         public bool UploadFile(IFormFile file, int requestId);
 
         public Object GiveResetPasswordLinkObject(string resetid);
+
+        public List<Region> GetAllRegions();
+
     }
 }

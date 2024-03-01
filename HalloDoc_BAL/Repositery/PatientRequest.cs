@@ -101,6 +101,18 @@ namespace HalloDoc_BAL.Repositery
 
             return response;
         }
+
+        public bool IsEmailBlocked(string email)
+        {
+            return _context.Blockrequests.Any(x => x.Email == email);   
+        }
+
+        public bool IsPhoneBlocked(string phone)
+        {
+            return _context.Blockrequests.Any(x=>x.Phonenumber == phone);
+        }
+
+
         public void AddPatientReq(PatientReq pr)
         {
 

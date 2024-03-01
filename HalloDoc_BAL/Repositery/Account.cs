@@ -84,10 +84,10 @@ namespace HalloDoc_BAL.Repositery
             {
                 aspnetuser.Resettoken = resetid;
                 aspnetuser.Toekenexpire = expirationtime;
-            }
-
             _context.Aspnetusers.Update(aspnetuser);
             _context.SaveChanges();
+            }
+
         }
 
         public Aspnetuser GetAspnetuserByResetId(string resetid)
@@ -122,6 +122,13 @@ namespace HalloDoc_BAL.Repositery
 
             return user;
 
+        }
+
+        public List<Region> GetAllRegions()
+        {
+            List<Region> regions = _context.Regions.ToList();
+
+            return regions;
         }
 
         public User GetUserByUserId(int  userId)

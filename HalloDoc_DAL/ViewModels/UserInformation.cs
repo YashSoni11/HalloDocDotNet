@@ -14,5 +14,7 @@ namespace HalloDoc_DAL.ViewModels
 
        public  UserProfile User { get; set; }
 
+        public List<Region> Regions { get; set; }
+
     }
 }

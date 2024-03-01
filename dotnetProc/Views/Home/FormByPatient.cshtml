@@ -86,9 +86,17 @@
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3 phoneInputDiv">
                                 <input asp-for="Phonenumber" style='height: 57px;' type="tel" id='phonInput' class="form-control"
-                                       id="floatingInput" >
+                                       id="floatingInput" onblur="checkPhoneNumberAvailibility()">
                                 <label for="floatingInput"></label>
                                 <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                                @{
+                                    if (TempData["IsPhoneBlocked"] != null)
+                                    {
+
+                                        <span class="text-danger">@TempData["IsPhoneBlocked"]</span>
+
+                                    }
+                                }
 
                             </div>
                         </div>
@@ -138,7 +146,7 @@
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
 
-                                <select asp-for="Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onblur="chekcRegionAvailibility()">
+                                <select id="regionInp" asp-for="Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onblur="chekcRegionAvailibility()">
                                     <option selected="">Region</option>
                                     <option value="Gujarat">Gujarat</option>
                                     <option value="Maharastra">Maharastra</option>
@@ -148,6 +156,14 @@
                                        placeholder="name@example.com">
                                 <label for="floatingInput">State</label>*@
                                 <span asp-validation-for="Location.State" class="text-danger"></span>
+                                @{
+                                    if (TempData["IsRegionAvailable"] != null)
+                                    {
+
+                                        <span class="text-danger">@TempData["IsRegionAvailable"]</span>
+
+                                    }
+                                }
 
                             </div>
                         </div>
@@ -253,7 +269,9 @@
 
 
         var email = $(".emailInp").val();
-        console.log(email, 44)
+        if(email == '')
+        return;
+    
 
         $.ajax({
 
@@ -263,6 +281,12 @@
             success: function (response) {
 
                 console.log(response)
+
+                if (response.isEmailBLocked) {
+                    $("#AlertModalContent").text(response.modalMsg)
+                    $(".passFields").css("display", "none")
+                    $("#regionModalBtn").click();
+                }
 
                 if (response.code == 401) {
                     $(".passFields").css("display", "none")
@@ -288,10 +312,47 @@
     }
 
 
+    const checkPhoneNumberAvailibility = () => {
+
+
+        let phoneNumber = $("#phonInput").val();
+     console.log(098)
+        if (phoneNumber == "") {
+            return;
+        }
+
+
+        $.ajax({
+
+            url: "/Home/CheckNumberAvailibility",
+            method: "post",
+            data: { Phone: phoneNumber },
+            success: function (response) {
+                console.log(response)
+                if (response.isPhone == true) {
+
+                    $("#AlertModalContent").text(response.modalMsg)
+
+                    $("#regionModalBtn").click();
+                }
+            },
+            error: function () {
+                console.log(2, email);
+            }
+
+        })
+
+    }
+
+
     const chekcRegionAvailibility = () =>{
 
 
         let region = $("#regionInp").val();
+        console.log(region)
+        if(region == "Region"){
+          return;
+        }
 
 
         $.ajax({
@@ -302,6 +363,9 @@
             success: function (response) {
                 console.log(response)
                 if(response.response == false){
+                  
+                    $("#AlertModalContent").text(response.modalMsg)
+
                     $("#regionModalBtn").click();
                 }
             },
