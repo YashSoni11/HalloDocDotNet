@@ -1,0 +1,52 @@
+﻿@model HalloDoc_DAL.AdminViewModels.AdminBlockCase;
+
+<form id="BlockCaseForm" mthod="post" asp-action="PostBlockCase" asp-controller="Admindashboard" asp-route-requestId="@Model.RequestId">
+    <div class="modal fade" id="BlockCaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="CancleCaseContent">
+                <div class="modal-header bg-info">
+                    <h1 class="modal-title fs-5 text-white" id="staticBackdropLabel">Confirm Block</h1>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body container-fluid ">
+
+                    <p>Patient Name : @Model.PatientName </p>
+
+
+                    <div class="row  justify-content-center" style="column-gap:1rem;">
+
+                     
+
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <textarea asp-for="ReasonForBlocking" class="form-control" placeholder="Leave a comment here"
+                                          id="floatingTextarea2" style="height: 115px"></textarea>
+                                <label for="floatingTextarea2">Reason For Block Request</label>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info  text-white darkInfo-btn">Confirm</button>
+
+                    <button type="button" onclick="ClearForm()" class="btn btn-outline-info lightInfo-btn">
+                          
+                        Cancle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+ const ClearForm =  () =>{
+
+        document.getElementById("BlockCaseForm").reset();
+    }
+
+</script>
+

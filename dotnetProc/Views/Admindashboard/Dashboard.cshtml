@@ -1,0 +1,379 @@
+﻿
+@using HalloDoc_DAL.Models;
+@using HalloDoc_DAL.ViewModels;
+@model HalloDoc_DAL.AdminViewModels.AdminDashboard;
+
+@{
+    Layout = "_Layout";
+}
+
+<div id="CancleCasePopup">
+</div>
+
+<partial  name="_DashNavbar" />
+
+
+<partial name="_Dashtabs"/>
+
+
+
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+        
+        
+        
+
+        <div class="container-fluid" >
+
+           <div class="row">
+
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
+                    <button id="big-btn1" type="button" class="btn btn-outline-primary big-btn w-100 ActiveStatus " style="background-color:#c6e5ff" onclick="getStatusWiseRequests(['1'],'big-btn1','New')">
+                        <h6><i class="bi bi-envelope-open"></i>New</h6>
+                        <h4 class="mt-1 text-primary">@Model.RequestTypeCounts.Newrequestcount</h4>
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
+                    <button id="big-btn2" type="button" class="btn btn-outline-info big-btn w-100 " style="background-color:#dcf9ff" onclick="getStatusWiseRequests(['2'],'big-btn2','Unpaid')">
+                        <h6><i class="bi bi-wallet2 mx-2"></i>Unpaid</h6>
+                        <h4 class="mt-1 text-info" style="">@Model.RequestTypeCounts.Unpaidrequestcount</h4>
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4  mt-2">
+                    <button id="big-btn3" type="button" class="btn  big-btn w-100 " style="background-color:#e4f5ed;border:1px solid #198754" onclick="getStatusWiseRequests(['3','4'],'big-btn3','Active')">
+                        <h6 style="color:#198754"><i class="bi bi-check2-circle"></i>Active</h6>
+                        <h4 style="color:#198754" class="mt-1 text-success">@Model.RequestTypeCounts.Activerequestcount</h4>
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2 ">
+                    <button id="big-btn4" type="button" class="btn big-btn w-100 " style="background-color:#f7ecf7;border:1px solid #f92cf3" onclick="getStatusWiseRequests(['5'],'big-btn4','Conclude')">
+                        <h6 style="color:#f92cf3"><i class="bi bi-arrow-counterclockwise"></i>Conclude</h6>
+                        <h4 style="color:#f92cf3" class="mt-1">@Model.RequestTypeCounts.Concluderequestcount</h4>
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2 ">
+                    <button id="big-btn5" type="button" class="btn big-btn w-100 " style="background-color:#e4f5ff;border:1px solid #43baff" onclick="getStatusWiseRequests(['6','7','8'],'big-btn5','To Close')">
+                        <h6 style="color:#43baff"><i class="bi bi-calendar2-check-fill"></i>To Close</h6>
+                        <h4 style="color:#43baff" class="mt-1">@Model.RequestTypeCounts.Tocloserequestcount</h4>
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
+                    <button id="big-btn6" type="button" class="btn  big-btn w-100 " style="background-color:#f0e6f3;border:1px solid #6506a1" onclick="getStatusWiseRequests(['9'],'big-btn6','Pending')">
+
+                        <h6 style="color:#6506a1"><i class="bi bi-hourglass-top"></i>Pending</h6>
+                        <h4 style="color:#6506a1" class="mt-1">@Model.RequestTypeCounts.Pendingrequestcount</h4>
+
+                    </button>
+                </div>
+
+           </div>
+          
+
+           
+          <div class="row justify-content-between" style="margin-top:2rem; align-items:center;">
+
+
+                 <div class="col-xl-4 col-lg-4 col-md-3 col-sm-2 col-2">
+
+                    <h3 class="Req-Heading1" >Patients <span class="StatusName">(New)</span></h3>
+                    <h6 class="Req-Heading2" style="display:none;">Patients <span class="StatusName">(New)</span></h6>
+
+
+                 </div>
+
+
+                 <div class="col-xl-7 col-lg-7 col-md-8 col-sm-9 col-10 d-flex ReqHandleBtnContainer">
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-send mx-1"></i><span class="text-vanish">Send Link</span></button>
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-file-text mx-1"></i><span class="text-vanish">Create Request</span></button>
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-share mx-1"></i><span class ="text-vanish">Export</span></button>
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-box-arrow-up-right mx-1"></i><span class="text-vanish">Export All</span></button>
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-person-workspace mx-1 "></i><span class="text-vanish">Request DTY Support</span></button>
+
+                 </div>  
+               
+          </div>
+            
+  
+
+          </div>
+
+
+        <div class="container-fluid mt-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;padding:1rem;">
+
+              <div class="row justify-content-between">
+
+                     <div class="col-xl-5 col-lg-5 col-md-12 col-12  align-content-center">
+                         <div class="container-fluid">
+                             <div class="row">
+
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12">
+                            @*<form asp-action="Dashboard" method="post">*@
+                        <div id="iuu" class="d-flex form-floating mb-3 bg-transparent"  style="border:1px solid #d7d7d7; border-radius: 4px;">
+                            <input type="search" asp-for="Searchstring" class="form-control  bg-transparent border-0 emailInput " id="searchinp"
+                                   placeholder="name@example.com">
+                            <label id="userLabel" for="searchinp">Search Patient</label>
+                                    <span class="" style="align-self:center;" id="userLabelIcon"><button class="btn" type="submit"><i class=' bi bi-search' style="color: var( --pi-label-color);" onclick="GetFiltteredRequests()"></i></button></span>
+
+                        </div>
+                            @*</form>*@
+                     </div>
+                        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 mx-xl-5 mx-lg-5">
+                                <select id="DashRegionSelector" class="form-select form-control" aria-label="Default select example" style="height:59px;padding:13px;" onchange="GetFiltteredRequests()">
+
+                                    <option selected>All Regions</option>
+                                    @foreach(Region region in Model.Regions)
+                                    {
+
+                                        <option value="@region.Regionid">@region.Name</option>
+
+
+                                    }
+                                 
+                            </select>
+
+                      </div>
+                                   
+                             </div>
+
+                         </div>
+
+
+                     </div>
+
+                <div  class="col-xl-7 col-lg-7 col-md-12 col-12 d-flex justify-content-evenly  mt-md-3 mt-3" style="align-items:center;">
+
+                    <button id="ReqType-Heading0" class="btn btn-outline-dark text-vanish ReqType-Heading" onclick="GetFiltteredRequests('0')">All</button>
+                    <button id="ReqType-Heading1" onclick="GetFiltteredRequests('1')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-success"></i> Patient</button>
+                    <button id="ReqType-Heading2" onclick="GetFiltteredRequests('2')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-warning"></i> Family/Freind</button>
+                    <button id="ReqType-Heading3" onclick="GetFiltteredRequests('3')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-primary"></i> Concierge</button>
+                    <button id="ReqType-Heading4" onclick="GetFiltteredRequests('4')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill" style="color:pink;"></i> Business</button>
+                                
+                      </div>
+
+                         
+                   
+
+
+
+              </div>
+
+               <div class="row table-responsive" id="tableContainer" style="justify-content:center">
+
+                     <partial name="_Requeststable"/>
+
+               </div>
+
+
+
+          </div>
+
+
+ 
+    
+    </div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">.qf..</div>
+    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">..qfw.</div>
+    <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">.fwq..</div>
+    <div class="tab-pane fade" id="pills-provider" role="tabpanel" aria-labelledby="pills-provider-tab" tabindex="0">.fwq..</div>
+    <div class="tab-pane fade" id="pills-partners" role="tabpanel" aria-labelledby="pills-partners-tab" tabindex="0">.fwq..</div>
+    <div class="tab-pane fade" id="pills-Access" role="tabpanel" aria-labelledby="pills-Access-tab" tabindex="0">.fwq..</div>
+    <div class="tab-pane fade" id="pills-Records" role="tabpanel" aria-labelledby="pills-Records-tab" tabindex="0">.fwq..</div>
+</div>
+
+<script>
+
+
+    const getStatusWiseRequests = (statusarray,id,Statusname) =>{
+
+
+        $("#searchinp").val('');
+        $("#DashRegionSelector").val('All Regions');
+
+      
+         var newstring  = "(" + Statusname + ")"
+         $(".StatusName").text(newstring)
+
+
+
+        
+        let i = 1;
+        $('.big-btn').each(function () {
+
+            var borderColor = $(this).removeClass(`big-btn${i}`);
+            $(this).children().removeClass(`big-btn${i}`);
+
+            $(this).removeClass("ActiveStatus");
+
+            i++;
+
+        });
+        $(`#${id}`).addClass(`${id}`);
+
+        $(`#${id}`).children().addClass(`${id}`);
+
+
+
+
+        $.ajax({
+            method:"post",
+            url: "/Admindashboard/GetStatuswiseRequests",
+            data: { StatusArray: statusarray },
+            success:function(response){
+                
+
+                $("#tableContainer").html(response);
+                localStorage.setItem("CurrentStatusType", Statusname);
+                $(`#${id}`).addClass('ActiveStatus');
+
+
+            },
+            error:function(err){
+                console.log(err)
+            }
+        })
+
+    }
+
+
+
+    //const getRequestorTypeWiseRequests = (type) => {
+
+    //    let region = $("#DashRegionSelector").val();
+    //    let searchString = $("#searchinp").val();
+
+    //    let statusarray = [];
+    //    let currentStatus = localStorage.getItem("CurrentStatusType");
+    //    if (currentStatus == "New") {
+    //        statusarray = ['1'];
+    //    } else if (currentStatus == "Unpaid") {
+    //        statusarray = ['2']
+    //    } else if (currentStatus == "Active") {
+    //        statusarray = ['3', '4'];
+    //    } else if (currentStatus == "Conclude") {
+    //        statusarray = ['5']
+    //    } else if (currentStatus == "To Close") {
+    //        statusarray = ['6', '7', '8']
+    //    } else if (currentStatus == "Pending") {
+    //        statusarray = ['9']
+    //    }
+
+
+    //    $.ajax({
+    //        method: "post",
+    //        url: "Home/GetRequestorTypeWiseRequests",
+    //        data: { type: type, StatusArray: statusarray },
+    //        success: function (response) {
+
+
+    //            $("#tableContainer").html(response);
+
+    //            localStorage.setItem("CurrentRequestorType", type)
+    //        },
+    //        error: function (err) {
+    //            console.log(err)
+    //        }
+    //    })
+
+
+    //}
+
+    const GetFiltteredRequests = (type = '') => {
+
+        let region = $("#DashRegionSelector").val();
+
+        if (region == "All Regions"){
+            region = ''
+        }
+
+        let searchString = $("#searchinp").val();
+        let statusarray = [];
+        let StatusBtns = $(".big-btn");
+
+        for(let i = 1;i<StatusBtns.length+1;i++){
+
+         
+
+                if ($(`#big-btn${i}`).hasClass('ActiveStatus')){
+
+               
+
+                if (i == 1) {                     /*New*/  
+                    statusarray = ['1'];
+                } else if (i == 2) {              /*Unpaid*/
+                    statusarray = ['2']
+                } else if (i == 3) {              /*Active*/
+                    statusarray = ['3', '4'];
+                } else if (i == 4) {              /*Conclude*/
+                    statusarray = ['5']
+                } else if (i == 5) {               /*ToClose*/
+                    statusarray = ['6', '7', '8']
+                } else if (i == 6) {                /*Pending*/
+                    statusarray = ['9']
+                }
+
+                 break;
+             }
+
+        
+
+
+
+        }
+
+        let RequestorTypeBtns = $(".ReqType-Heading");
+       
+
+        if(type != ''){
+            for (let i = 0; i<RequestorTypeBtns.length; i++) {
+
+                $(`#ReqType-Heading${i}`).removeClass("ActiveRequestorType")
+     
+
+            }
+            $(`#ReqType-Heading${type}`).addClass("ActiveRequestorType")
+        }
+        else{
+
+
+
+           for (let i = 0; i < RequestorTypeBtns.length;i++){
+
+            
+                if ($(`#ReqType-Heading${i}`).hasClass('ActiveRequestorType')) {        
+                     
+                       type = i;
+                       break;
+                
+                }
+
+        }
+
+        }
+  
+      
+
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/GetRequestorTypeWiseRequests",
+             data: { type: type, StatusArray: statusarray, region: region, Name: searchString },
+            success: function (response) {
+
+           
+                $("#tableContainer").html(response);
+
+                
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+
+    }
+
+
+</script>
+
+    

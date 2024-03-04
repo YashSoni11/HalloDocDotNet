@@ -1,0 +1,206 @@
+﻿
+@using HalloDoc_DAL.ViewModels;
+@model HalloDoc_DAL.ViewModels.Documents;
+@{
+    Layout = "_Layout";
+}
+
+
+
+
+ <div class="container-fluid mt-3 ">
+    <div class="row justify-content-center">
+        <div class="d-flex col-8 justify-content-end  mb-3 mt-2">
+            <a class="nav-link" asp-controller="Admindashboard" asp-action="DashBoard">
+                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </button>
+            </a>
+        </div>
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
+
+
+            <form asp-action="ViewUploads" asp-controller="Admindashboard" method="post" enctype="multipart/form-data">
+                <div class="container-fluid  formContainer mb-5">
+
+               
+                    <!-- File Upload Input Group -->
+
+                    <div class="row mt-3">
+
+                        <div class="col-12 d-flex justify-content-start flex-column p-4">
+
+                            <p>Patient Name</p>
+
+                         <div class="d-flex align-items-center" >
+
+                             <h3 class="text-info ">Tester</h3>
+                              <h6 class="mx-2">(MD9878978)</h6>
+                         </div>
+
+                        <p>Check here for any files that you or the doctors of your subsequents requestors have attached for you to review. </p>
+
+                        </div>
+
+
+                        @*<h4 class="mb-3">(Optional) Upload Photo Or Document</h4>*@
+
+
+
+
+                       <div class="col-12 ">
+                            <div class="input-group mb-3">
+
+
+                                <input type="file"  asp-for="FormFile" class="form-control" id="inputGroupFile02" onchange="uploadFile()" multiple>
+
+                                <label class="input-group-text bg-info text-white" for="inputGroupFile02">
+                                    <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons  -->
+
+                    <div class="row  p-3">
+                        <div class="col-6">
+                           
+                            <h4>Documnets</h4>
+                        </div>
+                        <div class=" d-flex col-6 justify-content-end " style="column-gap:1rem;">
+                            <button type="button"
+                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="downloadChekedFiles()">
+                               Download All
+                            </button><button type="button"
+                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="">
+                               Delete All
+                            </button><button type="button"
+                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="">
+                               Send Mail
+                            </button>
+                        </div>
+                        
+                    </div>
+
+                    <div class="container-fluid">
+
+                        <table class="table ">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th scope="col"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" onchange="checkAll()"></th>
+                                    <th>Name</th>
+                                    <th scope="col">Upload Date <span>&uarr;</span></th>
+                                    <th scope="col">Actions</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ( ViewDocument doc in Model.ViewDocuments)
+                                {
+                                    
+                                    <tr>
+                                        <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
+                                        <td>@doc.filename</td>
+                                        <td>@doc.uploadDate</td>
+                                        <td class="d-flex" style="column-gap:10px;">
+                                            <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                                <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
+                                            </a>
+                                            <form method="post" asp-action="DeleteFileById" asp-controller="Admindashboard" asp-route-id="@doc.FileId">
+                                               <button type="submit" class="btn @doc.filename.Replace(" ","")"  style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                                <i id='themeIcon' class="bi bi-trash text-info"></i>
+                                                </button>
+                                                </form>
+                                            
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<footer class="patientSubmitFooter" style="position:absolute;">
+    <span>Terms and Conditions</span>
+    <span>|</span>
+    <span>Privacy Policy</span>
+</footer>
+
+
+
+
+<script>
+
+
+    const checkAll = () =>{
+
+         
+      var chkecks =   $(".fileCheckBox")
+
+        for (let i = 0; i < chkecks.length;i++){
+
+            
+            chkecks[i].click();
+        }
+
+    }
+
+
+    const downloadChekedFiles = () =>{
+
+        var chkecks = $(".fileCheckBox")
+
+
+        for (let i = 0; i < chkecks.length; i++) {
+
+            if (chkecks[i].checked){
+
+                let ide = chkecks[i].id;
+
+               document.getElementsByClassName(`${ide}`)[0].click()
+                 
+            }
+           
+        }
+        
+    }
+
+    const uploadFile = () =>{
+
+          $('form').submit();
+    }
+
+    const DeletFile = (id) =>{
+       
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/DeleteFileById",
+            data: { id: id },
+            success: function (response) {
+
+                console.log(response)
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    }
+
+    $('.reg-nav').remove();
+    $('.modal').remove();
+
+</script>

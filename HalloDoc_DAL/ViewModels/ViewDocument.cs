@@ -8,7 +8,7 @@ namespace HalloDoc_DAL.ViewModels
 {
     public class ViewDocument
     {
-
+        public int FileId { get; set; }
         public string filename { get; set; }
 
         public string uploader { get; set; }    

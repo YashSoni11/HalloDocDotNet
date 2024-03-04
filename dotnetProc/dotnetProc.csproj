@@ -45,4 +45,11 @@
     <Folder Include="Upload\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\Admindashboard\Dashboard.cshtml" />
+    <None Include="Views\Admindashboard\Privacy.cshtml" />
+    <None Include="Views\Admindashboard\ViewRequest.cshtml" />
+    <None Include="Views\Admindashboard\ViewUploads.cshtml" />
+  </ItemGroup>
+
 </Project>

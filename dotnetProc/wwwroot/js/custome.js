@@ -35,16 +35,16 @@ $(document).ready(function () {
 })
 
 
-const dofocus = (id) => {
-    console.log(id)
-    $('.emailInput').css('border-color', 'transparent')
-    $(`#${id}`).css('border', '1px solid #0dcaf0')
-}
+//const dofocus = (id) => {
+//    console.log(id)
+//    $('.emailInput').css('border-color', 'transparent')
+//    $(`#${id}`).css('border', '1px solid #0dcaf0')
+//}
 
-const doblur = (id) => {
+//const doblur = (id) => {
 
-    $(`#${id}`).css('border', '1px solid #dee2e6')
-}
+//    $(`#${id}`).css('border', '1px solid #dee2e6')
+//}
 
 const showModal = () => {
 

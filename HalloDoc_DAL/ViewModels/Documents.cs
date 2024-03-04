@@ -10,9 +10,10 @@ namespace HalloDoc_DAL.ViewModels
     public class Documents
     {
 
+       
        public  List<ViewDocument> ViewDocuments {  get; set; }
 
-     public   IFormFile FormFile { get; set; }
+     public   List<IFormFile> FormFile { get; set; }
 
 
     }

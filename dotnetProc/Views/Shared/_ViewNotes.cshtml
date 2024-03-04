@@ -1,0 +1,151 @@
+﻿
+
+
+@using HalloDoc_DAL.ViewModels;
+@model HalloDoc_DAL.AdminViewModels.AdminDashboard;
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h2>Notes</h2>
+            <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </a>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
+
+
+            <form asp-controller="Account" asp-action="DashBoard" method="post">
+
+
+                <div class="container-fluid formContainer mb-5">
+                    <div class="row mt-3">
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="container-fluid mb-3">
+                                <div class="row mt-5 NotesContainer " style="align-items: center;padding: 1rem;">
+                                         
+                                       <div class="col-2">
+                                        <i class="bi bi-arrow-left-right fs-3"></i>
+                                       </div>
+                                       <div class="col-10">
+
+                                            <h6>Tranfer Notes</h6>
+                                            <p>@(Model.requestnotes?.TranferNotes != null ? Model.requestnotes.TranferNotes : "Not Available" )</p>
+
+                                       </div>
+
+                                   </div>                               
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="container-fluid mb-3">
+                                <div class="row mt-5 NotesContainer" style="align-items: center;padding: 1rem;">
+
+                                    <div class="col-2">
+                                        <i class="bi bi-person fs-3"></i>
+                                    </div>
+                                    <div class="col-10">
+
+                                        <h6>Admin Notes</h6>
+                                        <p>@(Model.requestnotes?.AdminNotes != null ? Model.requestnotes.AdminNotes : "Not Available")</p>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="container-fluid mb-3">
+                                <div class="row mt-5 NotesContainer" style="align-items: center;padding: 1rem;">
+
+                                    <div class="col-2">
+                                        <i class="bi bi-person  fs-3"></i>
+                                    </div>
+                                    <div class="col-10">
+
+                                        <h6>Physician Notes</h6>
+                                        <p>@(Model.requestnotes?.PhysicianNotes != null ? Model.requestnotes.PhysicianNotes : "Not Available")</p>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-5">
+                            <div class="form-floating mb-3 ">
+                                <textarea asp-for="@Model.requestnotes.AddtionalNotes" rows="10" id="floatingInput"  class="form-control" style="height:140px;"> </textarea>
+                                <label for="floatingInput">Additional Notes</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row justify-content-end p-3">
+                        <div class="d-flex col-4 justify-content-end" style="column-gap: 1rem;">
+                            <button type="submit" class="btn btn-info  text-white darkInfo-btn" onclick="()">Save Changes</button>
+                        </div>
+                    </div>
+               </div>
+            </form>
+            
+        </div>
+        </div>
+        </div>
+
+
+
+
+
+
+<script>
+
+    const showLocation = () => {
+
+
+
+
+
+        var zip = $("#zip").val();
+        var city = $("#city").val();
+        var state = $("#state").val();
+        var street = $("#street").val();
+
+        console.log(address)
+
+        var address = street + ',' + city + ',' + state + ',' + zip
+
+        var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
+
+
+        window.open(mapsUrl, "_blank");
+    }
+</script>
