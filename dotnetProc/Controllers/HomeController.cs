@@ -111,8 +111,10 @@ namespace dotnetProc.Controllers
             bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
             bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.Phonenumber);
             bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.Location.State);
+
+           
             
-            if(isemailexist == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            if(isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
             {
 
                 TempData["IsEmailExist"] = isemailexist == true?  "Account with this email already created.": TempData["IsEmailExist"] = "Account with this email is blocked.";
@@ -183,6 +185,37 @@ namespace dotnetProc.Controllers
         public IActionResult FormByFamily(FamilyFriendModel familyFriendModel)
         {
 
+
+            bool isemailexist = _patientReq.IsEmailExistance(familyFriendModel.PatientInfo.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(familyFriendModel.PatientInfo.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(familyFriendModel.PatientInfo.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(familyFriendModel.patientLocation.State);
+
+
+
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            {
+
+                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+
+
+
+                if (IsPhoneBlocked)
+                {
+                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                }
+
+                if (IsregionAvailable == false)
+                {
+                    TempData["IsRegionAvailable"] = "Region is not available.";
+                }
+
+                return View(familyFriendModel);
+            }
+
+           else if (ModelState.IsValid)
+            {
+
             int user = _patientReq.GetUserIdByEmail(familyFriendModel.PatientInfo.Email);
 
             Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, user,"Family",familyFriendModel.patientLocation.State);
@@ -193,7 +226,9 @@ namespace dotnetProc.Controllers
             bool response1 = _patientReq.UploadFile(familyFriendModel.PatientInfo.FileUpload,patientRequest.Requestid);
 
             return RedirectToAction("Login", "Account");
+            }
 
+            return View(familyFriendModel);
           
         }
 
@@ -207,21 +242,36 @@ namespace dotnetProc.Controllers
         [HttpPost]
         public IActionResult FormByConciearge(ConcieargeModel concieargeModel)
         {
+            bool isemailexist = _patientReq.IsEmailExistance(concieargeModel.PatinentInfo.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(concieargeModel.PatinentInfo.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(concieargeModel.PatinentInfo.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(concieargeModel.concieargeLocation.State);
 
-            int user = _patientReq.GetUserIdByEmail(concieargeModel.PatinentInfo.Email);
-
-
-            if(user != 0)
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
             {
 
-                TempData["IsAccountExist"] = "Account Already Exist !";
+                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+
+
+
+                if (IsPhoneBlocked)
+                {
+                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                }
+
+                if (IsregionAvailable == false)
+                {
+                    TempData["IsRegionAvailable"] = "Region is not available.";
+                }
 
                 return View(concieargeModel);
+            }
 
-           
-            }else if(user == 0)
+            else if(ModelState.IsValid)
             {
-            Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State);
+                int user = _patientReq.GetUserIdByEmail(concieargeModel.PatinentInfo.Email);
+
+                Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State);
             Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
 
             bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
@@ -243,10 +293,10 @@ namespace dotnetProc.Controllers
 
                     //_emailService.SendEmail(concieargeModel.PatinentInfo.Email, subject, body);
 
+            return RedirectToAction("Login", "Account");
             }
 
-            return RedirectToAction("Login", "Account");
-
+            return View(concieargeModel);
         }
 
 
@@ -263,6 +313,32 @@ namespace dotnetProc.Controllers
         [HttpPost]
         public IActionResult FormByBusinessPartner(BusinessReqModel businessReqModel)
         {
+            bool isemailexist = _patientReq.IsEmailExistance(businessReqModel.PatientIfo.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(businessReqModel.PatientIfo.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(businessReqModel.PatientIfo.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(businessReqModel.PatinentLocaiton.State);
+
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            {
+
+                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+
+
+
+                if (IsPhoneBlocked)
+                {
+                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                }
+
+                if (IsregionAvailable == false)
+                {
+                    TempData["IsRegionAvailable"] = "Region is not available.";
+                }
+
+                return View(businessReqModel);
+            }
+            else if (ModelState.IsValid)
+            {
 
             int user = _patientReq.GetUserIdByEmail(businessReqModel.PatientIfo.Email);
 
@@ -275,7 +351,9 @@ namespace dotnetProc.Controllers
             bool response2 = _patientReq.AddBusinessRequest(business.Businessid, patientRequest.Requestid);
 
             return RedirectToAction("Login", "Account");
+            }
 
+            return View(businessReqModel);
         }
 
 
@@ -307,6 +385,34 @@ namespace dotnetProc.Controllers
         [Route("/Account/DashBoard/PatientForm")]
         public IActionResult PatientForm(PatientReq pr)
         {
+            bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.Location.State);
+
+
+
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            {
+
+                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+
+
+
+                if (IsPhoneBlocked)
+                {
+                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                }
+
+                if (IsregionAvailable == false)
+                {
+                    TempData["IsRegionAvailable"] = "Region is not available.";
+                }
+
+                return View(pr);
+            }
+            else if (ModelState.IsValid)
+            {
 
             int userId = (int)HttpContext.Session.GetInt32("LoginId");
 
@@ -327,10 +433,10 @@ namespace dotnetProc.Controllers
 
             bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
 
-
-
-
             return RedirectToAction("DashBoard", "Account");
+            }
+
+            return View(pr);
         }
 
 
@@ -350,7 +456,34 @@ namespace dotnetProc.Controllers
         [Route("/Account/DashBoard/FormForOther")]
         public IActionResult FormForOthers(PatientReq pr)
         {
+            bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.Location.State);
 
+
+
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            {
+
+                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+
+
+
+                if (IsPhoneBlocked)
+                {
+                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                }
+
+                if (IsregionAvailable == false)
+                {
+                    TempData["IsRegionAvailable"] = "Region is not available.";
+                }
+
+                return View(pr);
+            }
+            else if (ModelState.IsValid)
+            {
             int userId = (int)HttpContext.Session.GetInt32("LoginId");
 
             User user = _patientReq.GetUserDataById(userId);
@@ -370,11 +503,12 @@ namespace dotnetProc.Controllers
 
             bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
 
-
-
-
-
             return RedirectToAction("DashBoard","Account");
+
+            }
+
+            return View(pr);
+
         }
 
         public IActionResult CheckRegionAvailibility(string region)
