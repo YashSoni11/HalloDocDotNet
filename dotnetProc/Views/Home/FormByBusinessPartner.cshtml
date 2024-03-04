@@ -126,20 +126,34 @@
 
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="PatientIfo.Email" type="email" class="form-control" id="floatingInput"
-                                       placeholder="name@example.com">
+                                <input asp-for="PatientIfo.Email" type="email" class="form-control emailInp" id="floatingInput"
+                                       placeholder="name@example.com"onblur="checkEmailAvailibility()">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="PatientIfo.Email" class="text-danger"></span>
+                                @{
+                                    if (TempData["IsEmailExist"] != null)
+                                    {
 
+                                        <span class="text-danger">@TempData["IsEmailExist"]</span>
+
+                                    }
+                                }
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3 phoneInputDiv">
                                 <input asp-for="PatientIfo.Phonenumber" style='height: 57px;' type="tel" id='phonInput' class="form-control"
-                                       id="floatingInput">
+                                       id="floatingInput" onblur="checkPhoneNumberAvailibility()">
                                 <label for="floatingInput"></label>
                                 <span asp-validation-for="PatientIfo.Phonenumber" class="text-danger"></span>
+                                @{
+                                    if (TempData["IsPhoneBlocked"] != null)
+                                    {
 
+                                        <span class="text-danger">@TempData["IsPhoneBlocked"]</span>
+
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -169,17 +183,21 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="PatinentLocaiton.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
+                                <select id="regionInp" asp-for="PatinentLocaiton.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
                                     <option selected="">Region</option>
                                     <option value="Gujarat">Gujarat</option>
                                     <option value="Maharastra">Maharastra</option>
                                     <option value="Punjab">Punjab</option>
                                 </select>
-                               @* <input asp-for="PatinentLocaiton.State" type="text" class="form-control" id="floatingInput"
-                                       placeholder="name@example.com">
-                                <label for="floatingInput">State</label>*@
                                 <span asp-validation-for="PatinentLocaiton.State" class="text-danger"></span>
+                                @{
+                                    if (TempData["IsRegionAvailable"] != null)
+                                    {
 
+                                        <span class="text-danger">@TempData["IsRegionAvailable"]</span>
+
+                                    }
+                                }
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">

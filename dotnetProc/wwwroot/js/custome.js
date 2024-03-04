@@ -93,3 +93,142 @@ const setUrl = ( url,  id) => {
 
 
 }
+
+const checkEmailAvailibility = () => {
+
+
+    var email = $(".emailInp").val();
+    if (email == '')
+        return;
+
+
+    $.ajax({
+
+        url: "/Home/ckeckEmailAvailibility",
+        method: "post",
+        data: { email: email },
+        success: function (response) {
+
+            console.log(response)
+
+            if (response.isEmailBLocked) {
+                $("#AlertModalContent").text(response.modalMsg)
+                $(".passFields").css("display", "none")
+                $("#regionModalBtn").click();
+            }
+
+            if (response.code == 401) {
+                $(".passFields").css("display", "none")
+
+                toastr.warning(response.error)
+            }
+            else if (response.code == 402) {
+
+                $(".passFields").css("display", "block")
+            }
+
+
+
+        },
+        error: function () {
+            console.log(2, email);
+        }
+
+    })
+
+
+
+}
+
+
+const ValidateForm = () => {
+
+
+
+    let birthdate = $('.BirthdateInp').val()
+
+
+
+    let currenttime = new Date().toISOString().split('T')[0]
+
+    if (birthdate == null || birthdate > currenttime) {
+        console.log(09)
+
+
+        document.getElementById('BirthdayError').textContent = "Please Enter Valid Birthdate"
+
+        return;
+    }
+
+}
+
+
+
+
+
+const checkPhoneNumberAvailibility = () => {
+
+
+    let phoneNumber = $("#phonInput").val();
+    console.log(098)
+    if (phoneNumber == "") {
+        return;
+    }
+
+
+    $.ajax({
+
+        url: "/Home/CheckNumberAvailibility",
+        method: "post",
+        data: { Phone: phoneNumber },
+        success: function (response) {
+            console.log(response)
+            if (response.isPhone == true) {
+
+                $("#AlertModalContent").text(response.modalMsg)
+
+                $("#regionModalBtn").click();
+            }
+        },
+        error: function () {
+            console.log(2, email);
+        }
+
+    })
+
+}
+
+
+const chekcRegionAvailibility = () => {
+
+
+    let region = $("#regionInp").val();
+    console.log(region)
+    if (region == "Region") {
+        return;
+    }
+
+
+    $.ajax({
+
+        url: "/Home/CheckRegionAvailibility",
+        method: "post",
+        data: { region: region },
+        success: function (response) {
+            console.log(response)
+            if (response.response == false) {
+
+                $("#AlertModalContent").text(response.modalMsg)
+
+                $("#regionModalBtn").click();
+            }
+        },
+        error: function () {
+            console.log(2, email);
+        }
+
+    })
+
+}
+
+

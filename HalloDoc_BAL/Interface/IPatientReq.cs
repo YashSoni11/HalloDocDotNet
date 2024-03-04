@@ -58,6 +58,9 @@ namespace HalloDoc_BAL.Interface
 
         public bool IsPhoneBlocked(string phone);
 
+
+        public object GetInfoValidation(string email, string phone, string region);
+
     }
 }
 

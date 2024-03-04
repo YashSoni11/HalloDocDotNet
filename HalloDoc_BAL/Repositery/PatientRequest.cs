@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 
 namespace HalloDoc_BAL.Repositery
@@ -65,6 +66,25 @@ namespace HalloDoc_BAL.Repositery
             }
             return builder.ToString();
 
+        }
+
+        public object GetInfoValidation(string email, string phone, string region)
+        {
+            bool isemailexist =  IsEmailExistance(email);
+            bool isemailblocked =  IsEmailBlocked(email);
+            bool IsPhoneBlock =  IsPhoneBlocked(phone);
+            bool IsregionAvailable = IsRegionAvailable(region);
+
+            var result = new
+            {
+                isemailexist,
+                isemailblocked,
+                IsPhoneBlock,
+                IsregionAvailable
+
+            };
+
+            return result;
         }
 
 
