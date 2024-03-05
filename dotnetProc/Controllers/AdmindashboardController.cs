@@ -275,11 +275,14 @@ namespace dotnetProc.Controllers
         public IActionResult ViewUploads(int id)
         {
 
+            TempData["requestId"] = id;
+
             List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
 
 
             Documents documents = new Documents
             {
+                requestId = id,
                 ViewDocuments = docs,
                 FormFile = null
             };
@@ -288,40 +291,71 @@ namespace dotnetProc.Controllers
             return View(documents);
         }
 
-        [Route("Admindashboard/Viewdocuments/{id}")]
+        [Route("Admindashboard/Uploaddocuments/{id}")]
         [HttpPost]
-        public IActionResult ViewUploads(Documents docs)
+        public IActionResult UploadDocuments(Documents docs,int id)
         {
 
-            string path = HttpContext.Request.Path;
+            //string path = HttpContext.Request.Path;
 
-            string[] paths = path.Split('/');
+            //string[] paths = path.Split('/');
 
-            int requestId = int.Parse(paths[paths.Length - 1]);
+            //int requestId = int.Parse(paths[paths.Length - 1]);
+
+
 
             bool response = true;
 
             for(int i = 0; i < docs.FormFile.Count; i++)
             {
               
-                 response &= _account.UploadFile(docs.FormFile[i], requestId);
+                 response &= _account.UploadFile(docs.FormFile[i], id);
 
             }
 
 
 
-            return RedirectToAction("ViewUploads", requestId);
+            return RedirectToAction("ViewUploads", new { id = id });
 
 
         }
+
+        [Route("Admindashboard/Deletedocuments/{id}")]
 
         [HttpPost]
         public IActionResult DeleteFileById(int id)
         {
             _dashboard.DeleteFile(id);
 
-            return RedirectToAction("ViewUploads", id);
+            int requestid = (int)TempData["requestId"];
 
+            return RedirectToAction("ViewUploads",new { id = requestid });
+
+
+        }
+
+
+        [Route("Admindashboard/DeleteAllDoc")]
+        [HttpPost]
+
+        public IActionResult DeleteAllFiles(string[] deleteIds)
+        {
+
+            var array = JsonConvert.DeserializeObject<string[]>(deleteIds[0]);
+
+            int[] newarray = new int[array.Length];
+
+            for(int i = 0; i < array.Length; i++)
+            {
+                newarray[i] = int.Parse(array[i]);
+            }
+
+
+            _dashboard.DeleteAllFiles(newarray);
+
+            int requestid = (int)TempData["requestId"];
+
+            return RedirectToAction("ViewUploads", new { id = requestid });
 
         }
 

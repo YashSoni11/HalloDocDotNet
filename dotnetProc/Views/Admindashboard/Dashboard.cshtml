@@ -19,7 +19,7 @@
 
 
 <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0" style="background-color: var(--pi-form-back-color);">
         
         
         
@@ -99,7 +99,7 @@
           </div>
 
 
-        <div class="container-fluid mt-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;padding:1rem;">
+        <div class="container-fluid mt-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;padding:1rem;background-color: var(--pi-back-color);">
 
               <div class="row justify-content-between">
 
@@ -119,7 +119,7 @@
                             @*</form>*@
                      </div>
                         <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 mx-xl-5 mx-lg-5">
-                                <select id="DashRegionSelector" class="form-select form-control" aria-label="Default select example" style="height:59px;padding:13px;" onchange="GetFiltteredRequests()">
+                                <select id="DashRegionSelector" class="form-select form-control" aria-label="Default select example" style="height:59px;padding:13px;background-color:var(--pi-back-color);" onchange="GetFiltteredRequests()">
 
                                     <option selected>All Regions</option>
                                     @foreach(Region region in Model.Regions)
@@ -148,7 +148,12 @@
                     <button id="ReqType-Heading2" onclick="GetFiltteredRequests('2')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-warning"></i> Family/Freind</button>
                     <button id="ReqType-Heading3" onclick="GetFiltteredRequests('3')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-primary"></i> Concierge</button>
                     <button id="ReqType-Heading4" onclick="GetFiltteredRequests('4')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill" style="color:pink;"></i> Business</button>
-                                
+                    <select id="rowsperpage" class="form-select" aria-label="Default select example" onchange="changeRowsPerPage(event.target)" style="width:6rem;">
+                        <option selected value="5">Rows</option>
+                        <option value="2">2</option>
+                        <option value="10">10</option>
+                        <option value="50">50</option>
+                    </select>
                       </div>
 
                          
@@ -184,194 +189,9 @@
 <script>
 
 
-    const getStatusWiseRequests = (statusarray,id,Statusname) =>{
 
 
-        $("#searchinp").val('');
-        $("#DashRegionSelector").val('All Regions');
-
-      
-         var newstring  = "(" + Statusname + ")"
-         $(".StatusName").text(newstring)
-
-
-
-        
-        let i = 1;
-        $('.big-btn').each(function () {
-
-            var borderColor = $(this).removeClass(`big-btn${i}`);
-            $(this).children().removeClass(`big-btn${i}`);
-
-            $(this).removeClass("ActiveStatus");
-
-            i++;
-
-        });
-        $(`#${id}`).addClass(`${id}`);
-
-        $(`#${id}`).children().addClass(`${id}`);
-
-
-
-
-        $.ajax({
-            method:"post",
-            url: "/Admindashboard/GetStatuswiseRequests",
-            data: { StatusArray: statusarray },
-            success:function(response){
-                
-
-                $("#tableContainer").html(response);
-                localStorage.setItem("CurrentStatusType", Statusname);
-                $(`#${id}`).addClass('ActiveStatus');
-
-
-            },
-            error:function(err){
-                console.log(err)
-            }
-        })
-
-    }
-
-
-
-    //const getRequestorTypeWiseRequests = (type) => {
-
-    //    let region = $("#DashRegionSelector").val();
-    //    let searchString = $("#searchinp").val();
-
-    //    let statusarray = [];
-    //    let currentStatus = localStorage.getItem("CurrentStatusType");
-    //    if (currentStatus == "New") {
-    //        statusarray = ['1'];
-    //    } else if (currentStatus == "Unpaid") {
-    //        statusarray = ['2']
-    //    } else if (currentStatus == "Active") {
-    //        statusarray = ['3', '4'];
-    //    } else if (currentStatus == "Conclude") {
-    //        statusarray = ['5']
-    //    } else if (currentStatus == "To Close") {
-    //        statusarray = ['6', '7', '8']
-    //    } else if (currentStatus == "Pending") {
-    //        statusarray = ['9']
-    //    }
-
-
-    //    $.ajax({
-    //        method: "post",
-    //        url: "Home/GetRequestorTypeWiseRequests",
-    //        data: { type: type, StatusArray: statusarray },
-    //        success: function (response) {
-
-
-    //            $("#tableContainer").html(response);
-
-    //            localStorage.setItem("CurrentRequestorType", type)
-    //        },
-    //        error: function (err) {
-    //            console.log(err)
-    //        }
-    //    })
-
-
-    //}
-
-    const GetFiltteredRequests = (type = '') => {
-
-        let region = $("#DashRegionSelector").val();
-
-        if (region == "All Regions"){
-            region = ''
-        }
-
-        let searchString = $("#searchinp").val();
-        let statusarray = [];
-        let StatusBtns = $(".big-btn");
-
-        for(let i = 1;i<StatusBtns.length+1;i++){
-
-         
-
-                if ($(`#big-btn${i}`).hasClass('ActiveStatus')){
-
-               
-
-                if (i == 1) {                     /*New*/  
-                    statusarray = ['1'];
-                } else if (i == 2) {              /*Unpaid*/
-                    statusarray = ['2']
-                } else if (i == 3) {              /*Active*/
-                    statusarray = ['3', '4'];
-                } else if (i == 4) {              /*Conclude*/
-                    statusarray = ['5']
-                } else if (i == 5) {               /*ToClose*/
-                    statusarray = ['6', '7', '8']
-                } else if (i == 6) {                /*Pending*/
-                    statusarray = ['9']
-                }
-
-                 break;
-             }
-
-        
-
-
-
-        }
-
-        let RequestorTypeBtns = $(".ReqType-Heading");
-       
-
-        if(type != ''){
-            for (let i = 0; i<RequestorTypeBtns.length; i++) {
-
-                $(`#ReqType-Heading${i}`).removeClass("ActiveRequestorType")
-     
-
-            }
-            $(`#ReqType-Heading${type}`).addClass("ActiveRequestorType")
-        }
-        else{
-
-
-
-           for (let i = 0; i < RequestorTypeBtns.length;i++){
-
-            
-                if ($(`#ReqType-Heading${i}`).hasClass('ActiveRequestorType')) {        
-                     
-                       type = i;
-                       break;
-                
-                }
-
-        }
-
-        }
-  
-      
-
-
-        $.ajax({
-            method: "post",
-            url: "/Admindashboard/GetRequestorTypeWiseRequests",
-             data: { type: type, StatusArray: statusarray, region: region, Name: searchString },
-            success: function (response) {
-
-           
-                $("#tableContainer").html(response);
-
-                
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        })
-
-
-    }
+    
 
 
 </script>

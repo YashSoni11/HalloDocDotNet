@@ -18,8 +18,8 @@
     {
         int j = 1;
            <table class="table ReqtableContainer">
-        <thead class="table-light">
-            <tr>
+            <thead >
+                <tr style="background-color:#f1f1f1;">
                 <th scope="col">Name</th>
                 <th scope="col">Date Of Birth</th>
                 <th scope="col">Requestor</th>
@@ -98,7 +98,7 @@
 
         </tbody>
         </table>
-        <nav aria-label="Page navigation example">
+        <nav  aria-label="Page navigation example">
             <ul class="pagination justify-content-end PageNumbers">
             </ul>
         </nav>
@@ -256,121 +256,14 @@
     }
 }
 
+
 <script>
 
-    var allrows;
-    let start_idx;
-    let end_idx;
     $("document").ready(function () {
-        $("tr").addClass("Same");
 
-        allrows = $(".Same");
-
-        $("tbody").empty();
-
-        start_idx = 0;
-        end_idx = allrows.length > 10 ? 9 : allrows.length;
-        console.log($(".Currentpage").val())
-
-        diPlayIntialRows(allrows, start_idx, end_idx);
-
-
-        disPlayPageNumbers(10);
+        DisPlayPagination();
 
     })
-
-    const disPlayPageNumbers = (RowsPerPage) => {
-
-        let pages = allrows.length / RowsPerPage;
-
-        if (allrows.length % RowsPerPage != 0) {
-            pages += 1;
-        }
-
-        $(".PageNumbers").append("<li class='page-item'> <a class='page-link' onclick='GetPreviousRows()'>Previous</a></li>")
-
-        for (let i = 1; i <= pages; i++) {
-
-            $(".PageNumbers").append("<li value='" + i + "' class='page-item'><a class='page-link' onclick=\"GetNumberedRows('" + i + "')\">" + i + "</a></li>");
-
-        }
-
-        $(".PageNumbers").append("<li class='page-item'> <a class='page-link' onclick='GetNextRows()'>Next</a></li>")
-
-
-    }
-
-    const diPlayIntialRows = (allrows, start_idx, end_idx) => {
-
-
-        for (let i = start_idx; i <= end_idx; i++) {
-
-            $("tbody").append(allrows[i]);
-        }
-
-    }
-
-
-    const GetNextRows = () => {
-
-        $("tbody").empty();
-
-        start_idx = end_idx + 1;
-        end_idx = allrows.length - start_idx + 1 > 10 ? start_idx + 9 : allrows.length;
-
-
-        for (let i = start_idx; i <= end_idx; i++) {
-
-            $("tbody").append(allrows[i]);
-        }
-
-
-    }
-
-
-    const GetPreviousRows = () => {
-
-        $("tbody").empty();
-
-
-        end_idx = start_idx - 1;
-        start_idx = start_idx - 10 < 0 ? 0 : start_idx - 10;
-
-
-
-        for (let i = start_idx; i <= end_idx; i++) {
-
-            $("tbody").append(allrows[i]);
-        }
-
-    }
-
-
-    const GetNumberedRows = (numb) => {
-
-        $("tbody").empty();
-
-
-        let numbint = parseInt(numb);
-
-        if (numbint == 1) {
-            start_idx = 0
-
-        } else {
-
-            start_idx = (numbint - 1) * 10;
-        }
-        console.log(start_idx)
-        end_idx = start_idx + 9 > allrows.length ? allrows.length : start_idx + 9;
-
-
-        for (let i = start_idx; i <= end_idx; i++) {
-
-            $("tbody").append(allrows[i]);
-        }
-
-
-    }
 
 
     const GetCancleCase  = (id) =>{
@@ -390,7 +283,7 @@
 
                 $("#CancleCaseModal").addClass("show");
                 $("#CancleCaseModal").css({"display":"block","backdrop-filter":"brightness(0.5)"});
-                console.log(09890)
+               
 
             },
             error: function (err) {

@@ -10,7 +10,7 @@ namespace HalloDoc_DAL.ViewModels
     public class Documents
     {
 
-       
+       public int requestId { get; set; }
        public  List<ViewDocument> ViewDocuments {  get; set; }
 
      public   List<IFormFile> FormFile { get; set; }
