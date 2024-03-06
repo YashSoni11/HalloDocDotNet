@@ -7,6 +7,8 @@ using HalloDoc_BAL.Interface;
 using static HalloDoc_BAL.Repositery.PatientRequest;
 using Newtonsoft.Json;
 using System.Globalization;
+using HalloDoc_BAL.Repositery;
+
 
 namespace dotnetProc.Controllers
 {
@@ -18,14 +20,15 @@ namespace dotnetProc.Controllers
         private readonly IAccount _account;
         private readonly IEmailService _emailService;
         private readonly IPatientReq _patientReq;
-
-        public AccountController(IAccount account, IEmailService emailService,IPatientReq patientReq)
+        public readonly IJwtServices _jwtServices;
+        public AccountController(IAccount account, IEmailService emailService,IPatientReq patientReq,IJwtServices jwtServices)
         {
 
 
             _account = account;
             _emailService = emailService;
             _patientReq = patientReq;
+            _jwtServices = jwtServices;
         }
 
 
@@ -133,9 +136,9 @@ namespace dotnetProc.Controllers
 
                     User user = _account.GetUserByAspNetId(aspuser.Id);
 
-                    HttpContext.Session.SetInt32("LoginId", user.Userid);
+                var jwtToken = _jwtServices.GenerateJWTAuthetication(user);
 
-                    HttpContext.Session.SetString("UserName", user.Firstname);
+                Response.Cookies.Append("jwt", jwtToken);
 
                     return RedirectToAction("DashBoard", "Account");
                 }
@@ -151,6 +154,16 @@ namespace dotnetProc.Controllers
 
 
 
+        }
+
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+
+            TempData["ShowPositiveNotification"] = "Logged Out Successfully";
+
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
@@ -286,15 +299,21 @@ namespace dotnetProc.Controllers
 
         //}
 
-
+        [AuthManager("Patient")]
         [HttpGet]
         public IActionResult DashBoard()
         {
 
 
-            int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
+            LoggedInUser loggedInUser = SessionUtils.GetLoggedInUser(HttpContext.Session);
 
-            User user = _account.GetUserByUserId(LoginId);
+
+            //var token = request.Cookies["jwt"]
+
+            //int userId = 
+
+
+            User user = _account.GetUserByUserId(loggedInUser.UserId);
 
 
             AddressModel address = new AddressModel
@@ -319,7 +338,7 @@ namespace dotnetProc.Controllers
 
 
 
-            List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
+            List<DashBoardRequests> userRequests = _account.GetUserRequests(loggedInUser.UserId);
             List<Region> regions = _account.GetAllRegions();
 
             UserInformation userinfo = new UserInformation
@@ -330,7 +349,10 @@ namespace dotnetProc.Controllers
 
             };
 
-            TempData["UserName"] = HttpContext.Session.GetString("UserName");
+            TempData["UserName"] = loggedInUser.Firstname;
+            TempData["ShowPositiveNotification"] = "Logged In Successfully";
+
+
 
             return View(userinfo);
         }

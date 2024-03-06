@@ -95,3 +95,19 @@
     </div>
 
 
+<script>
+
+     
+    $(document).ready(function(){
+
+        console.log('@TempData["ShowPositiveNotification"]',"iugu");
+
+
+           if('@TempData["ShowPositiveNotification"]' != '' ){
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+           }
+    })
+
+
+</script>

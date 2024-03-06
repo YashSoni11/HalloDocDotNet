@@ -9,7 +9,8 @@
     --pi-deselected-lable-color: rgba(33,37,71);
     --date-icon-color: 0;
     --label-disabled: #EEEEEE;
-    --tab-border-color:#dee2e6;
+    --tab-border-color: #dee2e6;
+    --admindash-nav-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
 .dark-theme {
@@ -24,6 +25,7 @@
     --date-icon-color: 1;
     --label-disabled: #222831;
     --tab-border-color: #EEEEEE;
+    --admindash-nav-shadow:rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
 }
 
 
@@ -154,7 +156,8 @@ input[type='file']:focus ~ label {
 }
 
 
-.active {
+
+/*.active {
     color: #0dcaf0 !important;
     border-color: white white #0dcaf0 white !important;
-}
+}*/

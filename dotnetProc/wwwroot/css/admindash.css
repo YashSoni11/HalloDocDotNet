@@ -155,6 +155,32 @@ h2 {
     color: white;
 }
 
+.ReqType-Heading {
+    color: var( --pi-label-color);
+}
+
+    .ReqType-Heading:hover {
+       /* border: 1px solid transparent;*/
+        color: var(--pi-label-color);
+    }
+
+
+.tab-link {
+    border-color: transparent;
+    color: var( --pi-label-color);
+}
+
+    .tab-link.nav-link:hover {
+        color: var( --pi-label-color) !important;
+        cursor:pointer;
+    }
+
+.tab-link.active {
+    border-width: 1px;
+    border-color: transparent transparent #0dcaf0 transparent;
+    color: #0dcaf0;
+    transition: 0.4s;
+}
 
 @media only screen and (max-width: 550px) {
     /*  #innerLogout{
@@ -239,4 +265,9 @@ h2 {
     #SideDashBar {
         display: block;
     }
+}
+
+.page-link {
+    border: 1px solid #0dcaf0 !important;
+    color: #0dcaf0 !important;
 }

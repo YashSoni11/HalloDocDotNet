@@ -46,5 +46,7 @@ namespace HalloDoc_BAL.Interface
         public List<ViewDocument> GetDocumentsByRequestId(int requestid);
 
         public void DeleteFile(int id);
+
+        public void DeleteAllFiles(int[] IdArray);
     }
 }

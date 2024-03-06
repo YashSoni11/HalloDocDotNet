@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using MailKit.Net.Smtp;
+using dotnetProc.Utils;
 
 namespace dotnetProc.Controllers
 {
@@ -363,7 +364,9 @@ namespace dotnetProc.Controllers
         public IActionResult PatientForm()
         {
 
-            int userId = (int)HttpContext.Session.GetInt32("LoginId");
+            LoggedInUser loggedInUser = SessionUtils.GetLoogedInUser(HttpContext.Session);
+
+            int userId = loggedInUser.UserId;
 
             User user = _patientReq.GetUserDataById(userId);
 

@@ -432,6 +432,19 @@ namespace HalloDoc_BAL.Repositery
             return;
         }
 
+
+        public void DeleteAllFiles(int[] IdArray)
+        {
+             
+               for(int i = 0;i< IdArray.Length; i++)
+            {
+                DeleteFile(IdArray[i]);
+            }
+
+            return;
+        }
+
+
     }
 
 

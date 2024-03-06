@@ -227,7 +227,7 @@ namespace HalloDoc_BAL.Repositery
         public List<ViewDocument> GetDocumentsByRequestId(int requestId)
         {
 
-            List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId).Select(r => new ViewDocument
+            List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId && u.Isdeleted != true).Select(r => new ViewDocument
             {
                 filename = r.Filename,
                 uploader = _context.Requests.FirstOrDefault(u => u.Requestid == requestId).Firstname,

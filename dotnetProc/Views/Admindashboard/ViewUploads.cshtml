@@ -20,7 +20,6 @@
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
 
-            <form asp-action="ViewUploads" asp-controller="Admindashboard" method="post" enctype="multipart/form-data">
                 <div class="container-fluid  formContainer mb-5">
 
                
@@ -47,6 +46,7 @@
 
 
 
+            <form id="DocForm" asp-action="UploadDocuments" asp-controller="Admindashboard" asp-route-id="@Model.requestId" method="post" enctype="multipart/form-data">
 
                        <div class="col-12 ">
                             <div class="input-group mb-3">
@@ -59,8 +59,8 @@
                                 </label>
                             </div>
                         </div>
+            </form>
                     </div>
-
                     <!-- Submit Buttons  -->
 
                     <div class="row  p-3">
@@ -72,10 +72,15 @@
                             <button type="button"
                                     class="btn btn-outline-info text-info lightInfo-btn" onclick="downloadChekedFiles()">
                                Download All
-                            </button><button type="button"
-                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="">
+                            </button>
+                            <form id="DeleteAllForm" asp-action="DeleteAllFiles" asp-controller="Admindashboard" asp-route-id="@Model.requestId">
+                            <input hidden name="deleteIds" id="DataArray" value="" />
+                            <button type="button"
+                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="DeleteAllFiles()">
                                Delete All
-                            </button><button type="button"
+                            </button>
+                            </form>
+                            <button type="button"
                                     class="btn btn-outline-info text-info lightInfo-btn" onclick="">
                                Send Mail
                             </button>
@@ -101,7 +106,7 @@
                                     
                                     <tr>
                                         <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
-                                        <td>@doc.filename</td>
+                                    <td class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
                                         <td>@doc.uploadDate</td>
                                         <td class="d-flex" style="column-gap:10px;">
                                             <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
@@ -123,7 +128,7 @@
                     </div>
 
                 </div>
-            </form>
+        
         </div>
 
     </div>
@@ -144,6 +149,44 @@
 
 <script>
 
+    const DeleteAllFiles = () =>{
+
+
+
+        var chkecks = $(".fileCheckBox")
+
+        var DeleteFileIdArray = [];
+
+        for (let i = 0; i < chkecks.length; i++) {
+
+            if (chkecks[i].checked) {
+
+                let ide = chkecks[i].id;
+
+                let deleteId = document.getElementsByClassName(`${ide}`)[0].id;
+              console.log(deleteId)
+
+              DeleteFileIdArray.push(deleteId);
+
+               
+
+            }
+
+        }
+        console.log(DeleteFileIdArray)
+        var serielizedData = JSON.stringify(DeleteFileIdArray)
+
+        $("#DataArray").val(serielizedData);
+
+        console.log($("#DataArray").val())
+
+        $("#DeleteAllForm").submit();
+
+    }
+
+    const uploadFile = () =>{
+        $("#DocForm").submit();
+    }
 
     const checkAll = () =>{
 
@@ -178,10 +221,7 @@
         
     }
 
-    const uploadFile = () =>{
-
-          $('form').submit();
-    }
+  
 
     const DeletFile = (id) =>{
        
