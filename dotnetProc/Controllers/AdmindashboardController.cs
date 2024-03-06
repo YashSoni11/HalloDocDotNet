@@ -359,6 +359,15 @@ namespace dotnetProc.Controllers
 
         }
 
+        [Route("Admindashboard/sendorder/{id}")]
+        [HttpGet]
+
+
+        public IActionResult SendOrder()
+        {
+            return View();
+        }
+
 
     }
 }

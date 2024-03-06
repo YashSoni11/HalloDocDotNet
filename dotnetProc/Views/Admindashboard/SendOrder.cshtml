@@ -1,0 +1,131 @@
+﻿@{
+    Layout = "_Layout";
+
+}
+
+
+
+@model HalloDoc_DAL.AdminViewModels.Order;
+
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+
+<div class="container-fluid mt-3 ">
+    <div class="row justify-content-center">
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between mb-3 mt-2">
+            <h2>Send Order</h2>
+            <a class="nav-link" asp-controller="Home" asp-action="PatientRequest">
+                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </button>
+            </a>
+        </div>
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
+
+
+            <form asp-action="FormByFamily" asp-controller="Home" method="post" enctype="multipart/form-data">
+                <div class="container-fluid  formContainer mb-5 p-4">
+
+
+                    <!-- Family/Frineds Information Input Group -->
+
+
+                    <div class="row mt-3">       
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating">
+                                <select asp-for="Profession" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <label for="floatingSelect">Select Profession</label>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Business" type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Business</label>
+                                @*<span asp-validation-for="FamilyFriendsIfo.LastName" class="text-danger"></span>*@
+
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="BusinessContact" type="tel" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Business contact</label>
+                                @*<span asp-validation-for="FamilyFriendsIfo.PhoneNumber" class="text-danger"></span>*@
+
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Email" type="email" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Email</label>
+                                @*<span asp-validation-for="FamilyFriendsIfo.Email" class="text-danger"></span>*@
+
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="FaxNumber" type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Fax Number</label>
+                                @*<span asp-validation-for="FamilyFriendsIfo.Relation" class="text-danger"></span>*@
+
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <textarea asp-for="Prescription" class="form-control" placeholder="Leave a comment here"
+                                          id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Prescription or Order details</label>
+                                @*<span asp-validation-for="PatientInfo" class="text-danger"></span>*@
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-sm-6 col-12">
+                            <div class="form-floating">
+                                <select asp-for="RefillNumber" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <label for="floatingSelect">Number Of Refill</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Submit Buttons  -->
+
+                    <div class="row justify-content-end p-3">
+                        <div class="d-flex col-3 justify-content-end" style="column-gap: 1rem;">
+                            <button type="submit" class="btn btn-info  text-white darkInfo-btn">Submit</button>
+                            <button type="submit"
+                                    class="btn btn-outline-info text-info lightInfo-btn">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+

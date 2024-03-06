@@ -12,20 +12,19 @@
 
 
             <img class="img-fluid" id="navLogo"  style="height: 5rem;" src="~/images/trans_logo.png" />
-        <button type="button" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
-                onclick="">
+        <a asp-action="Logout" asp-controller="Account" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
+               >
             Logout
-        </button>
+        </a>
            
 
 
             <div class="col-7 d-flex justify-content-end align-items-center" style="column-gap:2rem;">
 
                 <h6 id="username">Welcome,@TempData["UserName"]</h6>
-            <button type="button" id="innerLogout" class="btn btn-outline-info lightInfo-btn"
-                        onclick="">
-                    Logout
-                </button>
+            <a asp-action="Logout" asp-controller="Account"  class="btn btn-outline-info lightInfo-btn">
+                Logout
+            </a>
                 <button style="width: 3rem; height: 3rem;" type="button" class="btn btn-outline-info lightInfo-btn "
                         onclick="changeTheme()">
                     <i id='themeIcon' class="bi bi-moon text-info"></i>

@@ -10,7 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(60000);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddControllersWithViews();
 var con = builder.Configuration.GetConnectionString("PSSQL");
 
@@ -19,6 +24,7 @@ builder.Services.AddScoped<IAccount, Account>();
 builder.Services.AddScoped<IAdmindashboard, Admindashboard>();
 builder.Services.AddScoped<IPatientReq,PatientRequest>();
 builder.Services.AddTransient<IEmailService,EmailService>();
+builder.Services.AddTransient<IJwtServices, JwtServices>();
 
 
 var app = builder.Build();

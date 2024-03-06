@@ -88,6 +88,7 @@
                                     <li><a class=" btn dropdown-item" asp-action="ViewRequest" asp-route-requestid="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-eye mx-1"></i>View Case</a></li>
                                     <li><button class="dropdown-item" onclick="GetViewnotes(@dr.Requestid)" ><i class="bi bi-journal-text mx-1"></i>View Notes</button></li>
                                     <li><a class="dropdown-item" asp-action="ViewUploads" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-journal-text mx-1"></i>View Uploads</a></li>
+                                    <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-file-earmark"></i>Orders</a></li>
                                     <li><button class="dropdown-item"  onclick="GetBlockCasePopup(@dr.Requestid)"  href="#"><img src="~/images//ban.svg" class="mx-1"/>Block Patient</button></li>
                                 </ul>
                             </div>

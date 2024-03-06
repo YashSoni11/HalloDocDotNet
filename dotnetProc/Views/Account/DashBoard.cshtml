@@ -366,8 +366,13 @@
     $(document).ready(function(){
           
          $(".tbDisabled").attr("disabled","true")
+
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
     })
-      
+       
     const makeBold = (id) =>{
 
 
