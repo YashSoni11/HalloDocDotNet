@@ -15,8 +15,6 @@ namespace HalloDoc_DAL.ViewModels
 
         public DateTime uploadDate { get; set; }
 
-        
-
-
+       
     }
 }

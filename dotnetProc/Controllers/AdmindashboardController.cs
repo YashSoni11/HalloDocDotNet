@@ -315,7 +315,8 @@ namespace dotnetProc.Controllers
 
         }
 
-        [HttpPost]
+       
+
         public IActionResult DeleteFileById(int id)
         {
             _dashboard.DeleteFile(id);
