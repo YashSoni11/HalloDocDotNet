@@ -105,8 +105,14 @@
 
            if('@TempData["ShowPositiveNotification"]' != '' ){
 
+               toastr.remove();
             toastr.success('@TempData["ShowPositiveNotification"]');
            }
+           else if('@TempData["ShowNegativeNotification"]' != ''){
+               toastr.remove();
+            toastr.error('@TempData["ShowNegativeNotification"]')
+           }
+           
     })
 
 

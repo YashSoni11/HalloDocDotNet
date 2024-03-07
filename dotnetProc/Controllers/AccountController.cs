@@ -8,6 +8,7 @@ using static HalloDoc_BAL.Repositery.PatientRequest;
 using Newtonsoft.Json;
 using System.Globalization;
 using HalloDoc_BAL.Repositery;
+using System.IdentityModel.Tokens.Jwt;
 
 
 namespace dotnetProc.Controllers
@@ -101,9 +102,16 @@ namespace dotnetProc.Controllers
 
         }
 
+        [HttpGet]
 
-        public IActionResult Login()
+        public IActionResult Login(string msg)
         {
+
+            if(msg != null || msg != "")
+            {
+                TempData["ShowNegativeNotification"] = msg;
+            }
+
             return View();
         }
 
@@ -136,9 +144,9 @@ namespace dotnetProc.Controllers
 
                     User user = _account.GetUserByAspNetId(aspuser.Id);
 
-                var jwtToken = _jwtServices.GenerateJWTAuthetication(user);
+                 var jwtToken = _jwtServices.GenerateJWTAuthetication(user);
 
-                Response.Cookies.Append("jwt", jwtToken);
+                 Response.Cookies.Append("jwt", jwtToken);
 
                     return RedirectToAction("DashBoard", "Account");
                 }
@@ -159,8 +167,9 @@ namespace dotnetProc.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
 
+
+            Response.Cookies.Delete("jwt");
             TempData["ShowPositiveNotification"] = "Logged Out Successfully";
 
             return RedirectToAction("Login");
@@ -305,15 +314,17 @@ namespace dotnetProc.Controllers
         {
 
 
-            LoggedInUser loggedInUser = SessionUtils.GetLoggedInUser(HttpContext.Session);
 
 
-            //var token = request.Cookies["jwt"]
+            var token = Request.Cookies["jwt"];
 
-            //int userId = 
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
 
+            int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
+            string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
 
-            User user = _account.GetUserByUserId(loggedInUser.UserId);
+            User user = _account.GetUserByUserId(userId);
 
 
             AddressModel address = new AddressModel
@@ -338,7 +349,7 @@ namespace dotnetProc.Controllers
 
 
 
-            List<DashBoardRequests> userRequests = _account.GetUserRequests(loggedInUser.UserId);
+            List<DashBoardRequests> userRequests = _account.GetUserRequests(userId);
             List<Region> regions = _account.GetAllRegions();
 
             UserInformation userinfo = new UserInformation
@@ -349,7 +360,7 @@ namespace dotnetProc.Controllers
 
             };
 
-            TempData["UserName"] = loggedInUser.Firstname;
+            TempData["UserName"] =  Firstname;
             TempData["ShowPositiveNotification"] = "Logged In Successfully";
 
 

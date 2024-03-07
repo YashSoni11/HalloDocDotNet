@@ -44,7 +44,8 @@ namespace HalloDoc_BAL.Repositery
            
 
              if (token == null || !_jwtServices.ValidateToken(token, out JwtSecurityToken jwtSecurityToken)){
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login" }));
+                
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login",msg= "Your need to login!" }));
                 return;
             }
 

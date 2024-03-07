@@ -282,7 +282,7 @@ namespace dotnetProc.Controllers
 
             Documents documents = new Documents
             {
-                requestId = id,
+                //requestId = id,
                 ViewDocuments = docs,
                 FormFile = null
             };
@@ -351,7 +351,7 @@ namespace dotnetProc.Controllers
             }
 
 
-            _dashboard.DeleteAllFiles(newarray);
+            //_dashboard.DeleteAllFiles(newarray);
 
             int requestid = (int)TempData["requestId"];
 
