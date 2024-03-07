@@ -4,6 +4,8 @@ using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using HalloDoc_DAL.AdminViewModels;
 using Newtonsoft.Json;
+using HalloDoc_BAL.Repositery;
+using System.IdentityModel.Tokens.Jwt;
 
 
 
@@ -31,7 +33,7 @@ namespace dotnetProc.Controllers
 
 
 
-
+        [AuthManager("Admin")]
         [HttpGet]
         [Route("Admindashboard/Dashboard")]
         public IActionResult Dashboard()
@@ -98,11 +100,24 @@ namespace dotnetProc.Controllers
         {
             //int statusint = int.Parse(status);
 
-            List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            return PartialView("_Requeststable", adminDashboard);
+            if (istokenExpired)
+            {
+                TempData["ShowNegativeNotification"] = "You need to login!";
+                return Json(new { code = 401 });
+            }
+            else
+            {
+              List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
+
+              AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+
+               return PartialView("_Requeststable", adminDashboard);
+
+            }
 
 
         }
@@ -110,17 +125,29 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetRequestorTypeWiseRequests(string type, string[] StatusArray, string region, string Name)
         {
-            int IntType = 0;
-            if (type != null)
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
             {
-                IntType = int.Parse(type);
+                return Json(new { code = 401 });
             }
+            else
+            {
 
-            List<DashboardRequests> dashboardRequests = _dashboard.GetRequestsFromRequestorType(IntType, StatusArray, region, Name);
+                int IntType = 0;
+                if (type != null)
+                {
+                    IntType = int.Parse(type);
+                }
 
-            AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+                List<DashboardRequests> dashboardRequests = _dashboard.GetRequestsFromRequestorType(IntType, StatusArray, region, Name);
 
-            return PartialView("_Requeststable", adminDashboard);
+                AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+
+                return PartialView("_Requeststable", adminDashboard);
+            }
         }
 
 
@@ -156,17 +183,19 @@ namespace dotnetProc.Controllers
             return PartialView("_ViewNotes", adminDashboard);
         }
 
+        [AuthManager("Admin")]
         [HttpGet]
         [Route("Admindashboard/Viewrequest/{requestid}")]
         public IActionResult ViewRequest(string requestid)
         {
 
 
-            int newrequestid = int.Parse(requestid);
+                int newrequestid = int.Parse(requestid);
 
-            ClientRequest requestclient = _dashboard.GetUserInfoFromRequestId(newrequestid);
+                ClientRequest requestclient = _dashboard.GetUserInfoFromRequestId(newrequestid);
 
-            return View(requestclient);
+                return View(requestclient);
+            
         }
 
         [HttpPost]
@@ -184,25 +213,51 @@ namespace dotnetProc.Controllers
         public IActionResult GetCancleCaseView(string id)
         {
 
-            int newrequestid = int.Parse(id);
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            string name = _dashboard.GetPatientName(newrequestid);
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            AdminCancleCase adminCancleCase = new AdminCancleCase
+            if (istokenExpired)
             {
-                PatientName = name,
-                requestId = newrequestid,
-            };
+                return Json(new { code = 401 });
+            }
+            else
+            {
 
-            return PartialView("_CancleCaseModel", adminCancleCase);
+                int newrequestid = int.Parse(id);
 
+                string name = _dashboard.GetPatientName(newrequestid);
+
+                AdminCancleCase adminCancleCase = new AdminCancleCase
+                {
+                    PatientName = name,
+                    requestId = newrequestid,
+                };
+
+                return PartialView("_CancleCaseModel", adminCancleCase);
+            }
         }
 
         public IActionResult PostCancleRequest(AdminCancleCase adminCancleCase, int requestId)
         {
-            Request request = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            return RedirectToAction("Dashboard", "Admindashboard");
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                //TempData["ShowNegativeNotification"] = "You need to login!";
+
+                return RedirectToAction("Login", "Account", new {message="You need to Login!"});
+            }
+            else
+            {
+
+
+                Request request = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
+
+                return RedirectToAction("Dashboard", "Admindashboard");
+            }
         }
 
         public IActionResult GetPhysicianByRegion(int regionId)
@@ -219,20 +274,30 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetAssginCaseView(int requestId)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
 
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            List<Region> regions = _dashboard.GetAllRegions();
-
-            List<Physician> physicians = _dashboard.GetAllPhysician();
-
-            AdminAssignCase adminAssignCase = new AdminAssignCase()
+            if (istokenExpired)
             {
-                Regions = regions,
-                Physicians = physicians,
-                RequestId = requestId
-            };
+                return Json(new { code = 401 });
+            }
+            else
+            {
 
-            return PartialView("_AssignCaseModal", adminAssignCase);
+                List<Region> regions = _dashboard.GetAllRegions();
+
+                List<Physician> physicians = _dashboard.GetAllPhysician();
+
+                AdminAssignCase adminAssignCase = new AdminAssignCase()
+                {
+                    Regions = regions,
+                    Physicians = physicians,
+                    RequestId = requestId
+                };
+
+                return PartialView("_AssignCaseModal", adminAssignCase);
+            }
         }
 
 
@@ -246,18 +311,28 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetBlockCaseView(AdminBlockCase adminBlockCase, string requestId)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            int newrequestid = int.Parse(requestId);
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            string name = _dashboard.GetPatientName(newrequestid);
-
-            AdminBlockCase adminBlockCase1 = new AdminBlockCase
+            if (istokenExpired)
             {
-                PatientName = name,
-                RequestId = newrequestid,
-            };
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                int newrequestid = int.Parse(requestId);
 
-            return PartialView("_BlockCaseModal", adminBlockCase1);
+                string name = _dashboard.GetPatientName(newrequestid);
+
+                AdminBlockCase adminBlockCase1 = new AdminBlockCase
+                {
+                    PatientName = name,
+                    RequestId = newrequestid,
+                };
+
+                return PartialView("_BlockCaseModal", adminBlockCase1);
+            }
         }
 
 
@@ -274,21 +349,33 @@ namespace dotnetProc.Controllers
         [HttpGet]
         public IActionResult ViewUploads(int id)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            TempData["requestId"] = id;
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
-
-
-            Documents documents = new Documents
+            if (istokenExpired)
             {
-                //requestId = id,
-                ViewDocuments = docs,
-                FormFile = null
-            };
+                TempData["ShowNegativeNotification"] = "You need to login!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+
+                TempData["requestId"] = id;
+
+                List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
 
 
-            return View(documents);
+                Documents documents = new Documents
+                {
+                    //requestId = id,
+                    ViewDocuments = docs,
+                    FormFile = null
+                };
+
+
+                return View(documents);
+            }
         }
 
         [Route("Admindashboard/Uploaddocuments/{id}")]
@@ -361,12 +448,60 @@ namespace dotnetProc.Controllers
 
         [Route("Admindashboard/sendorder/{id}")]
         [HttpGet]
-
-
-        public IActionResult SendOrder()
+        public IActionResult SendOrder(string id)
         {
-            return View();
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                TempData["ShowNegativeNotification"] = "You need to login!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                Order order = new Order();
+                order.RequestId = id;
+
+                return View(order);
+            }
         }
+
+
+        [Route("Admindashboard/postorder/{id}")]
+        [HttpPost]
+
+        public IActionResult PostOrder(Order order,string id)
+        {
+
+            if(ModelState.IsValid)
+            {
+
+            int requestId = int.Parse(id);
+
+             bool response =   _dashboard.PostOrderById(requestId, order);
+             
+
+             if(response == true)
+            {
+                TempData["ShowPositiveNotification"] = "Order Sent Succesfully.";
+
+
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+
+            }
+                return RedirectToAction("Dashboard");
+            }
+
+            return View(order);
+
+        }
+
 
 
     }

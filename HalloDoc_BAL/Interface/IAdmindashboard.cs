@@ -48,5 +48,7 @@ namespace HalloDoc_BAL.Interface
         public void DeleteFile(int id);
 
         public void DeleteAllFiles(int[] IdArray);
+
+        public bool PostOrderById(int id, Order order);
     }
 }

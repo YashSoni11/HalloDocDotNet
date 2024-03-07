@@ -16,6 +16,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+
 builder.Services.AddControllersWithViews();
 var con = builder.Configuration.GetConnectionString("PSSQL");
 

@@ -17,6 +17,7 @@ namespace HalloDoc_BAL.Repositery
     {
 
         private readonly IConfiguration configuration;
+     
 
         public JwtServices(IConfiguration configuration)
         {
@@ -24,14 +25,15 @@ namespace HalloDoc_BAL.Repositery
             this.configuration = configuration;
         }
 
-        public  string GenerateJWTAuthetication(User user)
+        public  string GenerateJWTAuthetication(LoggedInUser user)
         {
             var claims = new List<Claim>
             {
             
-                new Claim(ClaimTypes.Role, "Patient"),
-                new Claim("UserId", user.Userid.ToString()),
+                new Claim("Role", user.Role),
+                new Claim("UserId", user.UserId.ToString()),
                 new Claim("Firstname", user.Firstname),
+               
 
             };
 
@@ -41,7 +43,7 @@ namespace HalloDoc_BAL.Repositery
 
             var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires =  DateTime.UtcNow.AddMinutes(5);
+            var expires =  DateTime.UtcNow.AddSeconds(10);
                    
 
             var token = new JwtSecurityToken(

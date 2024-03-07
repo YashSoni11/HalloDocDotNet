@@ -1,10 +1,12 @@
 ﻿using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -44,13 +46,26 @@ namespace HalloDoc_BAL.Repositery
            
 
              if (token == null || !_jwtServices.ValidateToken(token, out JwtSecurityToken jwtSecurityToken)){
-                
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login",msg= "Your need to login!" }));
-                return;
+
+
+                //if (context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                //{
+                //    context.Result = new JsonResult(new { code = 401 });
+                //    return;
+                //}
+                //else
+                //{
+                     
+                     
+                    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login",message="You need to login!"}));
+                    return;
+                //}
+                //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { Controller = "Home", Action = "Index" }));
+
             }
 
 
-             var roleClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role);
+             var roleClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "Role");
 
             if (roleClaim == null)
             {
@@ -59,10 +74,15 @@ namespace HalloDoc_BAL.Repositery
 
             if (string.IsNullOrWhiteSpace(_role) || roleClaim.Value != _role)
             {
-                
-                    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
-                
-            }
+
+
+
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "AccessDenied" }));
+
+
+                return;
+
+            } 
         }
     }
 }

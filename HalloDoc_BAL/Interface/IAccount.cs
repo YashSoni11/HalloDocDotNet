@@ -16,6 +16,7 @@ namespace HalloDoc_BAL.Interface
 
         public User GetUserByAspNetId(string aspnetuserid);
 
+        public Admin GetAdminByAspNetId(string aspnetuserid);
         public void StoreResetid(string resetid, DateTime expirationTime, string email);
 
         public Aspnetuser GetAspnetuserByResetId(string resetid);
@@ -38,6 +39,12 @@ namespace HalloDoc_BAL.Interface
         public Object GiveResetPasswordLinkObject(string resetid);
 
         public List<Region> GetAllRegions();
+
+        public string GetAspNetUserRoleById(string aspnetuserid);
+
+        public LoggedInUser GetLoggedInUserFromJwt(string token);
+
+        public bool IsTokenExpired(string token);
 
     }
 }

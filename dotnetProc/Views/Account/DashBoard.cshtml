@@ -334,7 +334,13 @@
 
 <script>
 
-
+    $(document).ready(function(){
+         
+          if('@TempData["ShowNegativeNotification"]' != ''){
+              toastr.remove();
+            toastr.error('@TempData["ShowNegativeNotification"]')
+          }
+    })
 
 
   const changeTab =  () =>{
@@ -368,8 +374,11 @@
          $(".tbDisabled").attr("disabled","true")
 
         if ('@TempData["ShowPositiveNotification"]' != '') {
-
+            toastr.remove();
             toastr.success('@TempData["ShowPositiveNotification"]');
+        } else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.remove();
+            toastr.error('@TempData["ShowNegativeNotification"]')
         }
     })
        

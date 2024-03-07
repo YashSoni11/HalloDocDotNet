@@ -3,6 +3,7 @@ using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using HalloDoc_DAL.AdminViewModels;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Web.Mvc;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -442,6 +444,36 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return;
+        }
+
+
+        public bool PostOrderById(int id, Order order)
+        {
+         
+          
+            try
+            {
+
+               
+               Orderdetail orderdetail = new Orderdetail();
+
+                orderdetail.Requestid = id;
+                orderdetail.Faxnumber = order.FaxNumber;
+                orderdetail.Businesscontact = order.BusinessContact;
+                orderdetail.Noofrefill = int.Parse(order.RefillNumber);
+                orderdetail.Prescription = order.Prescription;
+                orderdetail.Createddate = DateTime.Now;
+                orderdetail.Email = order.Email;
+
+                _context.Orderdetails.Add(orderdetail);
+                _context.SaveChanges();
+
+                return true;
+
+            }catch (Exception ex) 
+            {
+                return false;
+            }
         }
 
 

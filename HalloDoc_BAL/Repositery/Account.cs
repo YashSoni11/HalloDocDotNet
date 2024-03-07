@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -90,6 +92,71 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+        public string GetAspNetUserRoleById(string aspnetuserid)
+        {
+             
+              string role = _context.Aspnetroles.Where(q=>q.Id == aspnetuserid).Select(r=>r.Name).FirstOrDefault();
+
+              return role;
+        }
+
+
+        public LoggedInUser GetLoggedInUserFromJwt(string token)
+        {
+           
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
+            string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
+            string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
+
+            LoggedInUser loggedInUser = new LoggedInUser()
+            {
+                UserId = userId,
+                Firstname = Firstname,
+                Role = Role,
+            };
+
+            return loggedInUser;
+        }
+
+        public bool IsTokenExpired(string token)
+        {
+
+            
+
+            if (string.IsNullOrEmpty(token))
+            {
+           
+                return true;
+            }
+
+           
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var decodedToken = tokenHandler.ReadJwtToken(token);
+
+            
+            if (!decodedToken.Payload.TryGetValue("exp", out object expirationObj))
+            {
+                return true;
+            }
+
+           
+            long expirationTimeUnix = Convert.ToInt64(expirationObj);
+            var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expirationTimeUnix).UtcDateTime;
+
+         
+            if (expirationTime <= DateTime.UtcNow)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
         public Aspnetuser GetAspnetuserByResetId(string resetid)
         {
             Aspnetuser aspnetuser = _context.Aspnetusers.Where(q => q.Resettoken == resetid).FirstOrDefault();
@@ -123,6 +190,14 @@ namespace HalloDoc_BAL.Repositery
             return user;
 
         }
+
+        public Admin GetAdminByAspNetId(string aspnetuserid)
+        {
+            Admin user = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspnetuserid);
+
+            return user;
+        }
+
 
         public List<Region> GetAllRegions()
         {

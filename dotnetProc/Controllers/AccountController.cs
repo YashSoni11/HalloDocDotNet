@@ -104,12 +104,12 @@ namespace dotnetProc.Controllers
 
         [HttpGet]
 
-        public IActionResult Login(string msg)
+        public IActionResult Login(string message)
         {
 
-            if(msg != null || msg != "")
+            if(!string.IsNullOrEmpty(message))
             {
-                TempData["ShowNegativeNotification"] = msg;
+                TempData["ShowNegativeNotification"] = message;
             }
 
             return View();
@@ -128,7 +128,7 @@ namespace dotnetProc.Controllers
                 //var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
 
                 Aspnetuser aspuser = _account.ValidateLogin(um);
-
+               
 
 
                 if (aspuser == null)
@@ -141,26 +141,67 @@ namespace dotnetProc.Controllers
                 }
                 else
                 {
+                        
+                   string userRole = _account.GetAspNetUserRoleById(aspuser.Id);
 
                     User user = _account.GetUserByAspNetId(aspuser.Id);
 
-                 var jwtToken = _jwtServices.GenerateJWTAuthetication(user);
 
-                 Response.Cookies.Append("jwt", jwtToken);
+                     if (user != null)
+                     {
 
-                    return RedirectToAction("DashBoard", "Account");
+
+                        LoggedInUser loggedInUser = new LoggedInUser();
+
+                       loggedInUser.UserId = user.Userid;
+                       loggedInUser.Firstname = user.Firstname;
+                       loggedInUser.Role = userRole;
+
+
+                         var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
+
+                         Response.Cookies.Append("jwt", jwtToken);
+
+                           return RedirectToAction("DashBoard", "Account");
+                     }
+                     else
+                     {
+                         Admin admin = _account.GetAdminByAspNetId(aspuser.Id);
+
+                         if(admin != null)
+                         {
+
+                           LoggedInUser loggedInUser = new LoggedInUser();
+
+                           loggedInUser.UserId = admin.Adminid;
+                           loggedInUser.Firstname = admin.Firstname;
+                           loggedInUser.Role = userRole;
+
+
+                            var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
+
+                             Response.Cookies.Append("jwt", jwtToken);
+
+                           
+                             return RedirectToAction("Dashboard", "Admindashboard");
+
+                         }
+                         else
+                         {
+                          TempData["Error"] = "Invalid Attributes";
+
+                          return View();
+
+                         }
+
+                     }
+                    
+
+
+
                 }
-
-
-
-            //}
-
-
-
-            //return View("Login", um);
-
-
-
+               
+                
 
         }
 
@@ -310,10 +351,13 @@ namespace dotnetProc.Controllers
 
         [AuthManager("Patient")]
         [HttpGet]
-        public IActionResult DashBoard()
+        public IActionResult DashBoard(string message)
         {
 
-
+            if (!string.IsNullOrEmpty(message))
+            {
+                TempData["ShowNegativeNotification"] = message;
+            }
 
 
             var token = Request.Cookies["jwt"];
@@ -440,6 +484,13 @@ namespace dotnetProc.Controllers
              
         }
 
+
+        [HttpGet]
+        [Route("Accessdenied")]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
 
 
     }

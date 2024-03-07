@@ -13,7 +13,7 @@ namespace HalloDoc_BAL.Interface
     {
 
 
-        public  string GenerateJWTAuthetication(User loggedInUser);
+        public  string GenerateJWTAuthetication(LoggedInUser loggedInUser);
 
         public bool ValidateToken(string token,out JwtSecurityToken jwtSecurityToken);
 

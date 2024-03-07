@@ -17,11 +17,13 @@ namespace dotnetProc.Controllers
 
         private readonly IPatientReq _patientReq;
         private readonly IEmailService _emailService;
+        private readonly IAccount _account;
 
-        public HomeController(IPatientReq patientReq,IEmailService emailService)
+        public HomeController(IPatientReq patientReq,IEmailService emailService,IAccount account)
         {
             _patientReq = patientReq;
             _emailService = emailService;
+            _account = account;
         }
 
        
@@ -363,8 +365,10 @@ namespace dotnetProc.Controllers
         [Route("/Account/DashBoard/PatientForm")]
         public IActionResult PatientForm()
         {
+            string token = Request.Cookies["jwt"];
 
-            LoggedInUser loggedInUser = SessionUtils.GetLoogedInUser(HttpContext.Session);
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
             int userId = loggedInUser.UserId;
 
@@ -417,9 +421,13 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-            int userId = (int)HttpContext.Session.GetInt32("LoginId");
+                string token = Request.Cookies["jwt"];
 
-            User user = _patientReq.GetUserDataById(userId);
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+         
+
+                User user = _patientReq.GetUserDataById(loggedInUser.UserId);
 
             CmnInformation patientInfo = new CmnInformation
             {
@@ -430,7 +438,7 @@ namespace dotnetProc.Controllers
             };
 
 
-            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, "Patient", pr.Location.State);
+            Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, "Patient", pr.Location.State);
 
             bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
 
@@ -487,9 +495,11 @@ namespace dotnetProc.Controllers
             }
             else if (ModelState.IsValid)
             {
-            int userId = (int)HttpContext.Session.GetInt32("LoginId");
+                string token = Request.Cookies["jwt"];
 
-            User user = _patientReq.GetUserDataById(userId);
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                User user = _patientReq.GetUserDataById(loggedInUser.UserId);
 
             CmnInformation patientInfo = new CmnInformation
             {
@@ -500,7 +510,7 @@ namespace dotnetProc.Controllers
             };
 
 
-            Request patientRequest = _patientReq.AddRequest(patientInfo, userId, pr.Relation,pr.Location.State);
+            Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, pr.Relation,pr.Location.State);
 
             bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
 

@@ -3,6 +3,12 @@
 
 // Write your JavaScript code.
 
+const  preventNavigation = () => {
+    history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+}
 
 $(document).ready(function () {
     var theme = localStorage.getItem('currentTheme')
@@ -401,12 +407,17 @@ const getStatusWiseRequests = (statusarray, id, Statusname) => {
         data: { StatusArray: statusarray },
         success: function (response) {
 
+            if (response.code == 401) {
 
-            $("#tableContainer").html(response);
+               location.reload();
+            } else {
+   
+             $("#tableContainer").html(response);
             localStorage.setItem("CurrentStatusType", Statusname);
             $(`#${id}`).addClass('ActiveStatus');
-
             DisPlayPagination()
+            }
+
         },
         error: function (err) {
             console.log(err)
@@ -498,10 +509,14 @@ const GetFiltteredRequests = (type = '') => {
         data: { type: type, StatusArray: statusarray, region: region, Name: searchString },
         success: function (response) {
 
+            if (response.code == 401) {
 
-            $("#tableContainer").html(response);
-            DisPlayPagination()
+                location.reload();
+            } else {
 
+                $("#tableContainer").html(response);
+                DisPlayPagination()
+            }
         },
         error: function (err) {
             console.log(err)

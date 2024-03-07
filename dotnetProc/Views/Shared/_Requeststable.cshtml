@@ -279,12 +279,16 @@
             data: { id: id },
             success: function (response) {
 
+                if (response.code == 401) {
+
+                    location.reload();
+                } else {
 
                 $("#CancleCasePopup").html(response);
 
                 $("#CancleCaseModal").addClass("show");
                 $("#CancleCaseModal").css({"display":"block","backdrop-filter":"brightness(0.5)"});
-               
+            }
 
             },
             error: function (err) {
@@ -302,13 +306,16 @@
             url: "/Admindashboard/GetAssginCaseView",
             data: { requestId: id },
             success: function (response) {
+                if (response.code == 401) {
 
+                    location.reload();
+                } else {
 
                 $("#CancleCasePopup").html(response);
 
                 $("#AssignCasePopUp").modal("show");
 
-
+                }
 
             },
             error: function (err) {
@@ -327,12 +334,16 @@
             data: { requestId: id },
             success: function (response) {
 
+                if (response.code == 401) {
+
+                    location.reload();
+                } else {
 
                 $("#CancleCasePopup").html(response);
 
                 $("#BlockCaseModal").modal("show");
 
-
+                }
 
             },
             error: function (err) {
@@ -373,6 +384,7 @@
             url: "/Admindashboard/GetRequestClientInfoFromRequestId",
             data: { id: id },
             success: function (response) {
+
 
 
                 $("#pills-home").html(response);

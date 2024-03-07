@@ -189,7 +189,16 @@
 <script>
 
 
+   $(document).ready(function(){
 
+         if('@TempData["ShowPositiveNotification"]' != ''){
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+         }
+         else if('@TempData["ShowNegativeNotification"]' != ''){
+            toastr.error('@TempData["ShowNegativeNotification"]')
+         }
+   })
 
     
 
