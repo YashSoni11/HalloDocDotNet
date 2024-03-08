@@ -39,22 +39,36 @@ namespace dotnetProc.Controllers
         public IActionResult Dashboard()
         {
 
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            List<DashboardRequests> requests = _dashboard.GetAllRequests();
-            RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
-            List<Region> regions = _dashboard.GetAllRegions();
-
-            AdminDashboard adminDashboard = new AdminDashboard
+            if(token == null)
             {
-                Requests = requests,
-                RequestTypeCounts = requestTypeCounts,
-                Regions = regions,
-            };
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                string adminname = _dashboard.GetAdminUsername(loggedInUser.UserId);
+                TempData["UserName"] = adminname;
+               
+                List<DashboardRequests> requests = _dashboard.GetAllRequests();
+                RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
+                List<Region> regions = _dashboard.GetAllRegions();
+
+                AdminDashboard adminDashboard = new AdminDashboard
+                {
+                  Requests = requests,
+                  RequestTypeCounts = requestTypeCounts,
+                  Regions = regions,
+                };
 
 
 
 
-            return View(adminDashboard);
+                  return View(adminDashboard);
+            }
         }
 
 
@@ -461,7 +475,11 @@ namespace dotnetProc.Controllers
             }
             else
             {
+               
+
+                List<Healthprofessionaltype> healthprofessionaltypes = _dashboard.GetOrderDetails();
                 Order order = new Order();
+                order.healthprofessionaltypes = healthprofessionaltypes;
                 order.RequestId = id;
 
                 return View(order);
@@ -478,31 +496,124 @@ namespace dotnetProc.Controllers
             if(ModelState.IsValid)
             {
 
-            int requestId = int.Parse(id);
+               int requestId = int.Parse(id);
 
-             bool response =   _dashboard.PostOrderById(requestId, order);
-             
-
-             if(response == true)
-            {
-                TempData["ShowPositiveNotification"] = "Order Sent Succesfully.";
+                bool response =   _dashboard.PostOrderById(requestId, order);
 
 
+                if (response == true)
+                {
+                    TempData["ShowPositiveNotification"] = "Order Sent Succesfully.";
+
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+
+                }
+                return RedirectToAction("Dashboard");
             }
             else
             {
-                TempData["ShowNegativeNotification"] = "Something Went Wrong!";
 
+                List<Healthprofessionaltype> healthprofessionaltypes = _dashboard.GetOrderDetails();
+                order.healthprofessionaltypes = healthprofessionaltypes;
+                return View("SendOrder", order);
 
             }
-                return RedirectToAction("Dashboard");
-            }
-
-            return View(order);
 
         }
 
+        public IActionResult GetVendorsByProfession(string id)
+        {
 
+             int newid = int.Parse(id);
+
+            List<Healthprofessional> healthprofessionals = _dashboard.GetHealthProfessionalsByProfessionId(newid);
+
+            string response = JsonConvert.SerializeObject(healthprofessionals);
+
+            return Json(response);
+
+
+        }
+
+        public IActionResult GetVendorDetails(string id)
+        {
+            int newid = int.Parse (id);
+
+            Healthprofessional healthprofessional = _dashboard.GetVendorByVendorId(newid);
+
+            return Json(healthprofessional);
+        }
+
+
+
+       public IActionResult GetTransferCaseView(string id)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+        
+
+                List<Region> regions = _dashboard.GetAllRegions();
+
+                List<Physician> physicians = _dashboard.GetAllPhysician();
+
+                AdminAssignCase adminAssignCase = new AdminAssignCase()
+                {
+                    Regions = regions,
+                    Physicians = physicians,
+                    RequestId = int.Parse(id),
+                   
+                };
+
+                return PartialView("_TransferCaseModal", adminAssignCase);
+            }
+
+
+        }
+
+        public IActionResult PostTransferCase(AdminAssignCase adminAssignCase, int requestId)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            Request request = _dashboard.TransferRequest(adminAssignCase, requestId,loggedInUser.UserId);
+
+            if(request != null) {
+
+                TempData["ShowPositiveNotification"] = "Request Transfered Successfully.";
+             }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something Went wrong!";
+            }
+               return RedirectToAction("Dashboard", "Admindashboard");
+        }
+
+
+        public IActionResult SendDocumentViaMail(string DocFiles)
+        {
+
+            var Data = JsonConvert.DeserializeObject(DocFiles);
+
+           
+
+            return Json(Data);
+
+        }
 
     }
 }

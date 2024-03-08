@@ -81,6 +81,14 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+        public string GetAdminUsername(int id)
+        {
+            string name = _context.Admins.Where(q=>q.Adminid == id).Select(r=>r.Firstname).FirstOrDefault();
+
+            return name;
+        }
+
+
         public List<Region> GetAllRegions()
         {
             List<Region> regions = _context.Regions.ToList();
@@ -446,6 +454,30 @@ namespace HalloDoc_BAL.Repositery
             return;
         }
 
+        public List<Healthprofessionaltype> GetOrderDetails()
+        {
+       
+
+            List<Healthprofessionaltype> healthprofessionaltypes  = _context.Healthprofessionaltypes.ToList();
+
+
+            return healthprofessionaltypes;
+        }
+        public List<Healthprofessional> GetHealthProfessionalsByProfessionId(int id)
+        {
+            List<Healthprofessional> healthprofessionals = _context.Healthprofessionals.Where(q=>q.Profession == id).ToList();
+
+            return healthprofessionals;
+        }
+
+        public Healthprofessional GetVendorByVendorId(int id)
+        {
+            Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q=>q.Vendorid == id);
+
+            return healthprofessional;
+        }
+
+
 
         public bool PostOrderById(int id, Order order)
         {
@@ -476,6 +508,45 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+
+        public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId,int adminId)
+        {
+
+
+            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+
+             if(request != null)
+            {
+                request.Physicianid = int.Parse(adminAssignCase.SelectedPhycisianId);
+                request.Modifieddate = DateTime.Now;
+
+            }
+
+
+            Requeststatuslog requeststatuslog = new Requeststatuslog()
+            {
+                Requestid = requestId,
+                Status = 9,
+                Transtophysicianid = int.Parse(adminAssignCase.SelectedPhycisianId),
+                Notes = adminAssignCase.Description,
+                Createddate = DateTime.Now,
+                Adminid = adminId
+            };
+
+            try
+            {
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.Requests.Update(request);
+                _context.SaveChanges();
+
+                return request;
+            }
+            catch (Exception err)
+            {
+                return new Request();
+            }
+
+        }
 
     }
 

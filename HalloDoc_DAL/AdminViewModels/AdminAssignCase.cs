@@ -21,5 +21,7 @@ namespace HalloDoc_DAL.AdminViewModels
         public string Description { get; set; }
 
         public int RequestId { get; set; }
+
+         
     }
 }

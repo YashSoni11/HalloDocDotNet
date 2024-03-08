@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HalloDoc_DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +10,9 @@ namespace HalloDoc_DAL.AdminViewModels
 {
     public class Order
     {
-        public string RequestId { get; set; }
+
+        public List<Healthprofessionaltype> healthprofessionaltypes = null;
+        public string RequestId = null;
 
 
         [Required(ErrorMessage = "Profession is Required.")]

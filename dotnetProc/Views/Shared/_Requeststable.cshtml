@@ -4,8 +4,20 @@
 
 
 
-
-
+@* public enum Status
+        {
+            Unassigned = 1,
+            Unpaid,
+            MDEnRoute,
+            MDOnSite,
+            Conclude,
+            Cancelled,
+            CancelledByPatient,
+            Closed,
+            Accepted,
+            Clear,
+        }
+*@
 
 
 
@@ -13,6 +25,7 @@
 
     string[] colors = { "#74d36e", "#ffb545", "#75ccff", "#e9aee7" };
     string[] requestorType = { "Patient", "Family/Friend", "Concierge", "Business"};
+    string[] status = {"", "New", "Unpaid", "Active", "Active", "Conclude", "Conclude", "Conclude", "Toclose", "Pending",""};
 
     if(Model.Requests.Count != 0)
     {
@@ -71,25 +84,74 @@
                                     <i class="bi bi-person mx-1"></i> Action
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <button class="dropdown-item" onclick="GetAssginCasePopup(@dr.Requestid)">
-                                            <i class="bi bi-card-checklist mx-1">
-                                       </i> Assign Case
-                                       </button>
-                                    </li>
-                                    <li>
-                                        <button class="dropdown-item"
 
-                                                onclick="GetCancleCase(@dr.Requestid)"
-                                        >
-                                            <i class="bi bi-x-circle mx-1"></i>Cancel Case
-                                        </button>
-                                    </li>
-                                    <li><a class=" btn dropdown-item" asp-action="ViewRequest" asp-route-requestid="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-eye mx-1"></i>View Case</a></li>
-                                    <li><button class="dropdown-item" onclick="GetViewnotes(@dr.Requestid)" ><i class="bi bi-journal-text mx-1"></i>View Notes</button></li>
-                                    <li><a class="dropdown-item" asp-action="ViewUploads" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-journal-text mx-1"></i>View Uploads</a></li>
-                                    <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-file-earmark"></i>Orders</a></li>
-                                    <li><button class="dropdown-item"  onclick="GetBlockCasePopup(@dr.Requestid)"  href="#"><img src="~/images//ban.svg" class="mx-1"/>Block Patient</button></li>
+                                    @{
+                                        if(status[dr.status] == "New")
+                                        {
+                                            <li>
+                                                <button class="dropdown-item" onclick="GetAssginCasePopup(@dr.Requestid)">
+                                                    <i class="bi bi-card-checklist mx-1">
+                                                    </i> Assign Case
+                                                </button>
+                                            </li>
+                                        }
+                                        if (status[dr.status] == "New" || status[dr.status] == "Toclose")
+                                        {
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        onclick="GetCancleCase(@dr.Requestid)">
+                                                    <i class="bi bi-x-circle mx-1"></i>Cancel Case
+                                                </button>
+                                            </li>
+                                        }
+                                        if (status[dr.status] == "New" || status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose" || status[dr.status] == "Unpaid")
+                                        {
+                                            <li><a class=" btn dropdown-item" asp-action="ViewRequest" asp-route-requestid="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-eye mx-1"></i>View Case</a></li>
+                                        }
+                                        if (status[dr.status] == "New" || status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose" || status[dr.status] == "Unpaid")
+                                        {
+                                            <li><button class="dropdown-item" onclick="GetViewnotes(@dr.Requestid)"><i class="bi bi-journal-text mx-1"></i>View Notes</button></li>
+                                        }
+                                        if(status[dr.status] == "New")
+                                        {
+                                            <li><button class="dropdown-item" onclick="GetBlockCasePopup(@dr.Requestid)" href="#"><img src="~/images//ban.svg" class="mx-1" />Block Patient</button></li>
+                                        }
+                                        if(status[dr.status] == "Pending")
+                                        {
+                                            <li><button class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard" onclick="GetTransferCasePopup(@dr.Requestid)"><i class="bi bi-journal-arrow-up mx-1"></i>Transfer</button></li>
+                                        }
+                                        if(status[dr.status] == "Pending")
+                                        {
+                                            <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-journal-check mx-1"></i>Send Aggrement</a></li>
+                                        }
+                                        if (status[dr.status] == "Pending" || status[dr.status] == "Toclose")
+                                        {
+                                            <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-x-circle mx-1"></i>Clear Case</a></li>
+                                        }
+                                        if (status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Unpaid" || status[dr.status] == "Toclose")
+                                        {
+                                            <li><a class="dropdown-item" asp-action="ViewUploads" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-journal-text mx-1"></i>View Uploads</a></li>
+                                        }
+                                        if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
+                                        {
+                                            <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-file-earmark mx-1"></i>Orders</a></li>
+                                        }
+                                        if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
+                                        {
+                                            <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-file-earmark-text mx-1"></i>Encounter</a></li>
+                                        }
+                                    }
+                                  
+                                
+                                   
+                                  
+                                    
+                                   
+                                    
+                                    
+                                    
+                                   
+                                   
                                 </ul>
                             </div>
                         </td>
@@ -417,5 +479,33 @@ const GetViewnotes = (id) =>{
             }
         })
 }
+
+
+    const GetTransferCasePopup = (id) =>{
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/GetTransferCaseView",
+            data: { id: id },
+            success: function (response) {
+
+                if (response.code == 401) {
+
+                    location.reload();
+                } else {
+
+                    $("#CancleCasePopup").html(response);
+
+                    $("#TransferCaseModal").modal("show");
+
+                }
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+    }
 
 </script>

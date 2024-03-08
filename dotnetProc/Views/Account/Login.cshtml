@@ -101,23 +101,24 @@
     $(document).ready(function(){
 
         preventNavigation();
+        toastr.remove();
 
         console.log('@TempData["ShowPositiveNotification"]',"iugu");
 
 
-           if('@TempData["ShowPositiveNotification"]' != '' ){
+        if ('@TempData["ShowPositiveNotification"]' != '') {
 
-               toastr.remove();
-               toastr.success('@TempData["ShowPositiveNotification"]');
+           
+            toastr.success('@TempData["ShowPositiveNotification"]');
+  
            }
-           else if('@TempData["ShowNegativeNotification"]' != '' && localStorage.getItem("NotiShow") == null) {
-               toastr.remove();
+           else if('@TempData["ShowNegativeNotification"]' != '') {
+             
+              
                toastr.error('@TempData["ShowNegativeNotification"]')
-               localStorage.setItem("NotiShow",true);
+         
            }
-           else{
-            localStorage.getItem("NotiShow") == null? return :localStorage.setItem("NotiShow", false);
-           }
+           
     })
 
 

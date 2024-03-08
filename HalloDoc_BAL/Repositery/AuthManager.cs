@@ -55,9 +55,9 @@ namespace HalloDoc_BAL.Repositery
                 //}
                 //else
                 //{
-                     
-                     
-                    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login",message="You need to login!"}));
+
+                context.HttpContext.Response.Cookies.Append("LoginMsg", "true");     
+                    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login"}));
                     return;
                 //}
                 //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { Controller = "Home", Action = "Index" }));

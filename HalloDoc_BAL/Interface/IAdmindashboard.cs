@@ -50,5 +50,15 @@ namespace HalloDoc_BAL.Interface
         public void DeleteAllFiles(int[] IdArray);
 
         public bool PostOrderById(int id, Order order);
+
+        public string GetAdminUsername(int id);
+
+        public List<Healthprofessionaltype> GetOrderDetails();
+
+        public List<Healthprofessional> GetHealthProfessionalsByProfessionId(int id);
+
+        public Healthprofessional GetVendorByVendorId(int id);
+
+        public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId,int adminId);
     }
 }

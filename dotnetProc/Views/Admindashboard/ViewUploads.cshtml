@@ -1,5 +1,4 @@
-﻿
-@using HalloDoc_DAL.ViewModels;
+﻿@using HalloDoc_DAL.ViewModels;
 @model HalloDoc_DAL.ViewModels.Documents;
 @{
     Layout = "_Layout";
@@ -8,7 +7,7 @@
 
 
 
- <div class="container-fluid mt-3 ">
+<div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
         <div class="d-flex col-8 justify-content-end  mb-3 mt-2">
             <a class="nav-link" asp-controller="Admindashboard" asp-action="DashBoard">
@@ -20,115 +19,120 @@
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
 
-                <div class="container-fluid  formContainer mb-5">
+            <div class="container-fluid  formContainer mb-5">
 
-               
-                    <!-- File Upload Input Group -->
 
-                    <div class="row mt-3">
+                <!-- File Upload Input Group -->
 
-                        <div class="col-12 d-flex justify-content-start flex-column p-4">
+                <div class="row mt-3">
 
-                            <p>Patient Name</p>
+                    <div class="col-12 d-flex justify-content-start flex-column p-4">
 
-                         <div class="d-flex align-items-center" >
+                        <p>Patient Name</p>
 
-                             <h3 class="text-info ">Tester</h3>
-                              <h6 class="mx-2">(MD9878978)</h6>
-                         </div>
+                        <div class="d-flex align-items-center">
+
+                            <h3 class="text-info ">Tester</h3>
+                            <h6 class="mx-2">(MD9878978)</h6>
+                        </div>
 
                         <p>Check here for any files that you or the doctors of your subsequents requestors have attached for you to review. </p>
 
-                        </div>
+                    </div>
 
 
-                        @*<h4 class="mb-3">(Optional) Upload Photo Or Document</h4>*@
+                    @*<h4 class="mb-3">(Optional) Upload Photo Or Document</h4>*@
 
 
 
-            <form id="DocForm" asp-action="UploadDocuments" asp-controller="Admindashboard" asp-route-id="@Model.requestId" method="post" enctype="multipart/form-data">
+                    <form id="DocForm" asp-action="UploadDocuments" asp-controller="Admindashboard" asp-route-id="@Model.requestId" method="post" enctype="multipart/form-data">
 
-                       <div class="col-12 ">
+                        <div class="col-12 ">
                             <div class="input-group mb-3">
 
 
-                                <input type="file"  asp-for="FormFile" class="form-control" id="inputGroupFile02" onchange="uploadFile()" multiple>
+                                <input type="file" asp-for="FormFile" class="form-control" id="inputGroupFile02" onchange="uploadFile()" multiple>
 
                                 <label class="input-group-text bg-info text-white" for="inputGroupFile02">
                                     <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                                 </label>
                             </div>
                         </div>
-            </form>
-                    </div>
-                    <!-- Submit Buttons  -->
+                    </form>
+                </div>
+                <!-- Submit Buttons  -->
 
-                    <div class="row  p-3">
-                        <div class="col-6">
-                           
-                            <h4>Documnets</h4>
-                        </div>
-                        <div class=" d-flex col-6 justify-content-end " style="column-gap:1rem;">
-                            <button type="button"
-                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="downloadChekedFiles()">
-                               Download All
-                            </button>
-                            <form id="DeleteAllForm" asp-action="DeleteAllFiles" asp-controller="Admindashboard" asp-route-id="@Model.requestId">
+                <div class="row  p-3">
+                    <div class="col-6">
+
+                        <h4>Documnets</h4>
+                    </div>
+                    <div class=" d-flex col-6 justify-content-end " style="column-gap:1rem;">
+                        <button type="button"
+                                class="btn btn-outline-info text-info lightInfo-btn" onclick="downloadChekedFiles()">
+                            Download All
+                        </button>
+                        <form id="DeleteAllForm" asp-action="DeleteAllFiles" asp-controller="Admindashboard" asp-route-id="@Model.requestId">
                             <input hidden name="deleteIds" id="DataArray" value="" />
                             <button type="button"
                                     class="btn btn-outline-info text-info lightInfo-btn" onclick="DeleteAllFiles()">
-                               Delete All
+                                Delete All
                             </button>
-                            </form>
-                            <button type="button"
-                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="">
-                               Send Mail
-                            </button>
-                        </div>
-                        
-                    </div>
+                        </form>
+                        <form id="SendMailForm" asp-action="SendDocumentViaMail" asp-controller="Admindashboard" asp-route-id="@Model.requestId">
 
-                    <div class="container-fluid">
+                            <input hidden name="DocFiles" id="FilesArray" value="" />
 
-                        <table class="table ">
-                            <thead class="table-secondary">
-                                <tr>
-                                    <th scope="col"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" onchange="checkAll()"></th>
-                                    <th>Name</th>
-                                    <th scope="col">Upload Date <span>&uarr;</span></th>
-                                    <th scope="col">Actions</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ( ViewDocument doc in Model.ViewDocuments)
-                                {
-                                    
-                                    <tr>
-                                        <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
-                                    <td class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
-                                        <td>@doc.uploadDate</td>
-                                        <td class="d-flex" style="column-gap:10px;">
-                                            <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
-                                                <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
-                                            </a>
-                                            <form method="post" asp-action="DeleteFileById" asp-controller="Admindashboard" asp-route-id="@doc.FileId">
-                                               <button type="submit" class="btn @doc.filename.Replace(" ","")"  style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
-                                                <i id='themeIcon' class="bi bi-trash text-info"></i>
-                                                </button>
-                                                </form>
-                                            
-                                        </td>
-                                    </tr>
-
-                                }
-                            </tbody>
-                        </table>
-
+                        <button type="button"
+                                class="btn btn-outline-info text-info lightInfo-btn" onclick="SendFilesViaEmail()">
+                            Send Mail
+                        </button>
+                        </form>
                     </div>
 
                 </div>
-        
+
+                <div class="container-fluid">
+
+                    <table class="table ">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th scope="col"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" onchange="checkAll()"></th>
+                                <th>Name</th>
+                                <th scope="col">Upload Date <span>&uarr;</span></th>
+                                <th scope="col">Actions</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ViewDocument doc in Model.ViewDocuments)
+                            {
+
+                                <tr>
+                                    <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
+                                    <td id="Docfiles" class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
+                                    <td>@doc.uploadDate</td>
+                                    <td class="d-flex" style="column-gap:10px;">
+                                        <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                            <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
+                                        </a>
+                                        <form method="post" asp-action="DeleteFileById" asp-controller="Admindashboard" asp-route-id="@doc.FileId">
+                                            <button type="submit" class="btn @doc.filename.Replace(" ","")" style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                                <i id='themeIcon' class="bi bi-trash text-info"></i>
+                                            </button>
+                                        </form>
+
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
@@ -149,7 +153,46 @@
 
 <script>
 
-    const DeleteAllFiles = () =>{
+    const SendFilesViaEmail = () => {
+
+
+
+            var files = [];
+
+        var filenames = $("#Docfiles");
+
+        //console.log(filenames)
+
+        for(let i = 0;i<filenames.length;i++){
+
+            let filename = filenames[i].textContent
+
+            files.push(filename)
+
+        }
+
+
+        let mail = "yash.soni@etatvasoft.com";
+
+        var dataobject = {
+            fileArray: files,
+            UserMail:mail
+        }
+
+        console.log(dataobject)
+
+        var serielizedData = JSON.stringify(dataobject)
+
+        console.log(serielizedData)
+
+        $("#FilesArray").val(serielizedData);
+
+        $("#SendMailForm").submit();
+
+        
+    }
+
+    const DeleteAllFiles = () => {
 
 
 
@@ -164,11 +207,11 @@
                 let ide = chkecks[i].id;
 
                 let deleteId = document.getElementsByClassName(`${ide}`)[0].id;
-              console.log(deleteId)
+                console.log(deleteId)
 
-              DeleteFileIdArray.push(deleteId);
+                DeleteFileIdArray.push(deleteId);
 
-               
+
 
             }
 
@@ -184,47 +227,47 @@
 
     }
 
-    const uploadFile = () =>{
+    const uploadFile = () => {
         $("#DocForm").submit();
     }
 
-    const checkAll = () =>{
+    const checkAll = () => {
 
-         
-      var chkecks =   $(".fileCheckBox")
 
-        for (let i = 0; i < chkecks.length;i++){
+        var chkecks = $(".fileCheckBox")
 
-            
+        for (let i = 0; i < chkecks.length; i++) {
+
+
             chkecks[i].click();
         }
 
     }
 
 
-    const downloadChekedFiles = () =>{
+    const downloadChekedFiles = () => {
 
         var chkecks = $(".fileCheckBox")
 
 
         for (let i = 0; i < chkecks.length; i++) {
 
-            if (chkecks[i].checked){
+            if (chkecks[i].checked) {
 
                 let ide = chkecks[i].id;
 
-               document.getElementsByClassName(`${ide}`)[0].click()
-                 
+                document.getElementsByClassName(`${ide}`)[0].click()
+
             }
-           
+
         }
-        
+
     }
 
-  
 
-    const DeletFile = (id) =>{
-       
+
+    const DeletFile = (id) => {
+
 
         $.ajax({
             method: "post",

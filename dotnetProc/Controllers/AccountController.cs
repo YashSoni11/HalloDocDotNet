@@ -112,6 +112,14 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = message;
             }
 
+            string LoginMsg = HttpContext.Request.Cookies["LoginMsg"];
+
+            if(!string.IsNullOrEmpty(LoginMsg) && LoginMsg == "true")
+            {
+                TempData["ShowNegativeNotification"] = "You need to login!";
+                HttpContext.Response.Cookies.Delete("LoginMsg");
+            }
+
             return View();
         }
 
@@ -134,7 +142,7 @@ namespace dotnetProc.Controllers
                 if (aspuser == null)
                 {
 
-                    TempData["Error"] = "Invalid Attributes";
+                    TempData["ShowNegativeNotification"] = "Invalid Credentialse!";
 
                     return View();
 
@@ -162,7 +170,9 @@ namespace dotnetProc.Controllers
 
                          Response.Cookies.Append("jwt", jwtToken);
 
-                           return RedirectToAction("DashBoard", "Account");
+                        TempData["UserName"] = loggedInUser.Firstname;
+                        TempData["ShowPositiveNotification"] = "Logged In Successfully";
+                    return RedirectToAction("DashBoard", "Account");
                      }
                      else
                      {
@@ -182,13 +192,18 @@ namespace dotnetProc.Controllers
 
                              Response.Cookies.Append("jwt", jwtToken);
 
-                           
-                             return RedirectToAction("Dashboard", "Admindashboard");
+
+
+
+                         
+                           TempData["UserName"] = loggedInUser.Firstname;
+                           TempData["ShowPositiveNotification"] = "Logged In Successfully";
+                           return RedirectToAction("Dashboard", "Admindashboard");
 
                          }
                          else
                          {
-                          TempData["Error"] = "Invalid Attributes";
+                          TempData["ShowNegativeNotification"] = "Something went wrong!";
 
                           return View();
 
@@ -404,8 +419,7 @@ namespace dotnetProc.Controllers
 
             };
 
-            TempData["UserName"] =  Firstname;
-            TempData["ShowPositiveNotification"] = "Logged In Successfully";
+          
 
 
 
