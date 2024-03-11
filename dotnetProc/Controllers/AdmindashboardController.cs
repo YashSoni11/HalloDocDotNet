@@ -6,6 +6,7 @@ using HalloDoc_DAL.AdminViewModels;
 using Newtonsoft.Json;
 using HalloDoc_BAL.Repositery;
 using System.IdentityModel.Tokens.Jwt;
+using System.Globalization;
 
 
 
@@ -18,11 +19,13 @@ namespace dotnetProc.Controllers
 
         private readonly IAdmindashboard _dashboard;
         private readonly IAccount _account;
+        private readonly IEmailService _emailService;
 
-         public AdmindashboardController(IAdmindashboard dashboard, IAccount account)
+        public AdmindashboardController(IAdmindashboard dashboard, IAccount account, IEmailService emailService)
         {
             _dashboard = dashboard;
             _account = account;
+            _emailService = emailService;
         }
 
 
@@ -41,7 +44,7 @@ namespace dotnetProc.Controllers
 
             string token = HttpContext.Request.Cookies["jwt"];
 
-            if(token == null)
+            if (token == null)
             {
                 TempData["ShowNegativeNotification"] = "Something went wrong!";
                 return RedirectToAction("Login", "Account");
@@ -52,22 +55,22 @@ namespace dotnetProc.Controllers
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 string adminname = _dashboard.GetAdminUsername(loggedInUser.UserId);
                 TempData["UserName"] = adminname;
-               
+
                 List<DashboardRequests> requests = _dashboard.GetAllRequests();
                 RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
                 List<Region> regions = _dashboard.GetAllRegions();
 
                 AdminDashboard adminDashboard = new AdminDashboard
                 {
-                  Requests = requests,
-                  RequestTypeCounts = requestTypeCounts,
-                  Regions = regions,
+                    Requests = requests,
+                    RequestTypeCounts = requestTypeCounts,
+                    Regions = regions,
                 };
 
 
 
 
-                  return View(adminDashboard);
+                return View(adminDashboard);
             }
         }
 
@@ -125,11 +128,11 @@ namespace dotnetProc.Controllers
             }
             else
             {
-              List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
+                List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
 
-              AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+                AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
 
-               return PartialView("_Requeststable", adminDashboard);
+                return PartialView("_Requeststable", adminDashboard);
 
             }
 
@@ -204,12 +207,12 @@ namespace dotnetProc.Controllers
         {
 
 
-                int newrequestid = int.Parse(requestid);
+            int newrequestid = int.Parse(requestid);
 
-                ClientRequest requestclient = _dashboard.GetUserInfoFromRequestId(newrequestid);
+            ClientRequest requestclient = _dashboard.GetUserInfoFromRequestId(newrequestid);
 
-                return View(requestclient);
-            
+            return View(requestclient);
+
         }
 
         [HttpPost]
@@ -262,7 +265,7 @@ namespace dotnetProc.Controllers
             {
                 //TempData["ShowNegativeNotification"] = "You need to login!";
 
-                return RedirectToAction("Login", "Account", new {message="You need to Login!"});
+                return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
             }
             else
             {
@@ -394,7 +397,7 @@ namespace dotnetProc.Controllers
 
         [Route("Admindashboard/Uploaddocuments/{id}")]
         [HttpPost]
-        public IActionResult UploadDocuments(Documents docs,int id)
+        public IActionResult UploadDocuments(Documents docs, int id)
         {
 
             //string path = HttpContext.Request.Path;
@@ -407,10 +410,10 @@ namespace dotnetProc.Controllers
 
             bool response = true;
 
-            for(int i = 0; i < docs.FormFile.Count; i++)
+            for (int i = 0; i < docs.FormFile.Count; i++)
             {
-              
-                 response &= _account.UploadFile(docs.FormFile[i], id);
+
+                response &= _account.UploadFile(docs.FormFile[i], id);
 
             }
 
@@ -430,7 +433,7 @@ namespace dotnetProc.Controllers
 
             int requestid = (int)TempData["requestId"];
 
-            return RedirectToAction("ViewUploads",new { id = requestid });
+            return RedirectToAction("ViewUploads", new { id = requestid });
 
 
         }
@@ -446,7 +449,7 @@ namespace dotnetProc.Controllers
 
             int[] newarray = new int[array.Length];
 
-            for(int i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 newarray[i] = int.Parse(array[i]);
             }
@@ -475,7 +478,7 @@ namespace dotnetProc.Controllers
             }
             else
             {
-               
+
 
                 List<Healthprofessionaltype> healthprofessionaltypes = _dashboard.GetOrderDetails();
                 Order order = new Order();
@@ -490,15 +493,15 @@ namespace dotnetProc.Controllers
         [Route("Admindashboard/postorder/{id}")]
         [HttpPost]
 
-        public IActionResult PostOrder(Order order,string id)
+        public IActionResult PostOrder(Order order, string id)
         {
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 
-               int requestId = int.Parse(id);
+                int requestId = int.Parse(id);
 
-                bool response =   _dashboard.PostOrderById(requestId, order);
+                bool response = _dashboard.PostOrderById(requestId, order);
 
 
                 if (response == true)
@@ -529,7 +532,7 @@ namespace dotnetProc.Controllers
         public IActionResult GetVendorsByProfession(string id)
         {
 
-             int newid = int.Parse(id);
+            int newid = int.Parse(id);
 
             List<Healthprofessional> healthprofessionals = _dashboard.GetHealthProfessionalsByProfessionId(newid);
 
@@ -542,7 +545,7 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetVendorDetails(string id)
         {
-            int newid = int.Parse (id);
+            int newid = int.Parse(id);
 
             Healthprofessional healthprofessional = _dashboard.GetVendorByVendorId(newid);
 
@@ -551,7 +554,7 @@ namespace dotnetProc.Controllers
 
 
 
-       public IActionResult GetTransferCaseView(string id)
+        public IActionResult GetTransferCaseView(string id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -563,7 +566,7 @@ namespace dotnetProc.Controllers
             }
             else
             {
-        
+
 
                 List<Region> regions = _dashboard.GetAllRegions();
 
@@ -574,7 +577,7 @@ namespace dotnetProc.Controllers
                     Regions = regions,
                     Physicians = physicians,
                     RequestId = int.Parse(id),
-                   
+
                 };
 
                 return PartialView("_TransferCaseModal", adminAssignCase);
@@ -590,30 +593,273 @@ namespace dotnetProc.Controllers
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-            Request request = _dashboard.TransferRequest(adminAssignCase, requestId,loggedInUser.UserId);
+            Request request = _dashboard.TransferRequest(adminAssignCase, requestId, loggedInUser.UserId);
 
-            if(request != null) {
+            if (request != null)
+            {
 
                 TempData["ShowPositiveNotification"] = "Request Transfered Successfully.";
-             }
+            }
             else
             {
                 TempData["ShowNegativeNotification"] = "Something Went wrong!";
             }
-               return RedirectToAction("Dashboard", "Admindashboard");
+            return RedirectToAction("Dashboard", "Admindashboard");
         }
 
 
-        public IActionResult SendDocumentViaMail(string DocFiles)
+        public IActionResult SendDocumentViaMail(string DocFiles, string id)
         {
 
-            var Data = JsonConvert.DeserializeObject(DocFiles);
+            dynamic Data = JsonConvert.DeserializeObject(DocFiles);
 
-           
 
-            return Json(Data);
+
+            bool response = _dashboard.SendDocumentsViaEmail(Data);
+
+
+            if (response == true)
+            {
+                TempData["ShowPositiveNotification"] = "Documents sent successfully.";
+
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+            }
+
+            return RedirectToAction("ViewUploads", new { id = int.Parse(id) });
 
         }
+
+        [HttpPost]
+
+        public IActionResult GetClearCaseModal(string id)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+
+                AdminAssignCase adminAssignCase = new AdminAssignCase()
+                {
+
+                    RequestId = int.Parse(id),
+
+                };
+
+                return PartialView("_ClearCaseModal", adminAssignCase);
+            }
+        }
+
+
+
+
+        [HttpPost]
+        public IActionResult ClearRequest(string requestId)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                bool response = _dashboard.ClearCaseByRequestid(requestId, loggedInUser.UserId);
+
+                if (response == true)
+                {
+
+                    TempData["ShowPositiveNotification"] = "Request Cleared Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something went wrong!";
+                }
+
+                return RedirectToAction("Dashboard");
+
+            }
+
+        }
+
+        [HttpGet]
+        [Route("Reviewagreement/{id}")]
+        public IActionResult ReviewAgreement(string id)
+        {
+
+            return View();
+
+        }
+
+        public IActionResult GetCancleAgreementPopup(string id)
+        {
+
+            CancleAgreement cancleAgreement = new CancleAgreement()
+            {
+                requestId = id,
+
+            };
+
+            return PartialView("_CancleAgreementModal", cancleAgreement);
+        }
+
+        public IActionResult PostCancleAgreement(CancleAgreement cancleAgreement,string requestId)
+        {
+            bool response = _dashboard.CancleAgrrementByRequstId(cancleAgreement,requestId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Agreement canceled successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult PostAgreeAgrement(string requestId)
+        {
+            bool response = _dashboard.AgreeAgreementByRequestId(requestId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Agreement accepeted successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+
+        public IActionResult GetSendAgreementModal(string requestId)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                SendAgreement sendAgreement = _dashboard.GetSendAgreementpopupInfo(requestId);
+
+                return PartialView("_SendAgreementModal", sendAgreement);
+            }
+
+             
+              
+        }
+
+        public IActionResult SendAgrrementLink(SendAgreement sendAgreement,string requestId)
+        {
+
+            string subject = "Service Agreement";
+
+            string link = "https://localhost:7008/Reviewagreement/" + requestId;
+
+            string body = "Please click on <a asp-route-id='" + requestId + "' href='" + link + "'+>Agreement</a> to view agreement ";
+
+
+           bool  response =  _emailService.SendEmail(sendAgreement.Email, subject, body);
+
+            if(response)
+            {
+                TempData["ShowPositiveNotification"] = "Agreement Sent Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+            }
+
+            return RedirectToAction("Dashboard");
+        }
+
+
+        public IActionResult GetSendLinkView()
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                return PartialView("_SendLink");
+            }
+
+
+        }
+
+        [HttpPost]
+        public IActionResult PostSendLink(SendLink sendLink)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else 
+            { 
+                 if(ModelState.IsValid)
+                {
+                    string subject = "Request Link";
+                  
+
+                    string link = "https://localhost:7008/Home/patientform/";
+
+                    string body = "Dear" + " " + sendLink.Firstname + " " + sendLink.Lastname + ",/n";
+
+                    body += "Please click on <a href='" + link + "'+>Agreement</a> to submit request ";
+
+
+                    bool response = _emailService.SendEmail(sendLink.Email, subject, body);
+
+                    if(response)
+                    {
+                        TempData["ShowPositiveNotifiction"] = "Link Sent Successfully.";
+                    }
+                    else
+                    {
+                        TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+                    }
+
+                    return RedirectToAction("Dashboard");
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Not Valid Information!";
+                }
+
+                    return RedirectToAction("Dashboard");
+            }
+
+
+        }
+
 
     }
 }

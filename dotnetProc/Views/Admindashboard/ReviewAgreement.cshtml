@@ -1,0 +1,94 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+
+<partial name="_NavBar"/>
+
+
+
+
+<div id="CamcleAgreementModaldiv">
+
+</div>
+
+
+
+
+<div class="container-fluid mt-5">
+
+    <div class="row justify-content-center p-3">
+        <div class="col-4">
+            <p style="color:var( --pi-label-color);">
+                To provide best medical service, we cannot determine the cost right away.
+                If you agree to our service, so we will provide care and follow-up until all care is completed.
+                So with this points, if you like us to provide care to you click on "Agree" and we'll get started immediately,
+                if you do not agree simply click "Cancel".
+            </p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center p-3 ">
+        <div class="col-4 d-flex justify-content-between">
+            <form id="AgreementAgreeForm" asp-action="PostAgreeAgrement" asp-controller="Admindashboard">
+                <input value="" id="AgreementRequestIdInp" name="requestId" hidden />
+             <button type="button" class="btn btn-success  text-white darkInfo-btn" onclick="Agreeagreement()">Agree</button>
+            </form>
+            <button type="button" class="btn btn-danger  text-white darkInfo-btn" onclick="GetCancleAggreementPopup()">Cancle</button>
+        </div>
+       
+    </div>
+
+</div>
+
+
+
+<script>
+
+    const Agreeagreement = () =>{
+        var paths = window.location.href.split("/");
+
+        let id = paths[paths.length - 1];
+
+        $("#AgreementRequestIdInp").val(id);
+
+        $("#AgreementAgreeForm").submit();
+
+          
+    }
+
+    const GetCancleAggreementPopup = () =>{
+
+        var paths = window.location.href.split("/");
+
+        let id = paths[paths.length-1];
+
+            $.ajax({
+                method: "post",
+                url: "/Admindashboard/GetCancleAgreementPopup",
+                data: { id: id },
+                success: function (response) {
+
+                    if (response.code == 401) {
+
+                        location.reload();
+                    } else {
+
+                    $("#CamcleAgreementModaldiv").html(response);
+
+                    $("#CancleAgreementModal").modal("show");
+
+                    }
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+
+        
+    }
+</script>

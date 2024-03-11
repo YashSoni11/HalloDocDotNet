@@ -19,7 +19,7 @@ namespace HalloDoc_BAL.Repositery
     {
 
 
-        public Object SendEmail(string uemail, string subject, string body)
+        public bool SendEmail(string uemail, string subject, string body)
         {
 
             //var email = new MimeMessage();
@@ -39,27 +39,30 @@ namespace HalloDoc_BAL.Repositery
 
             MailMessage message = new MailMessage();
             message.From = new MailAddress("yash.soni@etatvasoft.com");
-            message.Subject = "Forgot Password";
+            message.Subject = subject;
             message.To.Add(new MailAddress(uemail));
             message.Body = body;
             message.IsBodyHtml = true;
-            using (var smtpClient = new SmtpClient("mail.etatvasoft.com"))
+
+
+            try
             {
-                smtpClient.Port = 587;
-                smtpClient.Credentials = new NetworkCredential("yash.soni@etatvasoft.com", "kaX9Bjj8Sho");
-                smtpClient.EnableSsl = true;
 
-                smtpClient.Send(message);
+                using (var smtpClient = new SmtpClient("mail.etatvasoft.com"))
+                {
+                    smtpClient.Port = 587;
+                    smtpClient.Credentials = new NetworkCredential("yash.soni@etatvasoft.com", "kaX9Bjj8Sho");
+                    smtpClient.EnableSsl = true;
+
+                    smtpClient.Send(message);
+
+                    return true;
+                }
             }
-
-
-
-
-            return new object();
-            
-
-            
-
+            catch (Exception ex)
+            {
+                return false;
+            }
 
 
 

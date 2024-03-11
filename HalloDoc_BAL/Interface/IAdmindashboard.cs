@@ -60,5 +60,15 @@ namespace HalloDoc_BAL.Interface
         public Healthprofessional GetVendorByVendorId(int id);
 
         public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId,int adminId);
+
+        public bool SendDocumentsViaEmail(dynamic data);
+
+        public bool ClearCaseByRequestid(string id,int adminId);
+
+        public bool  CancleAgrrementByRequstId(CancleAgreement cancleAgreement,string requestId);
+
+        public bool AgreeAgreementByRequestId(string requestId);
+
+        public SendAgreement GetSendAgreementpopupInfo(string requestId);   
     }
 }

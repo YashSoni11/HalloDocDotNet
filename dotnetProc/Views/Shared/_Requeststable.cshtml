@@ -118,15 +118,15 @@
                                         }
                                         if(status[dr.status] == "Pending")
                                         {
-                                            <li><button class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard" onclick="GetTransferCasePopup(@dr.Requestid)"><i class="bi bi-journal-arrow-up mx-1"></i>Transfer</button></li>
+                                            <li><button class="dropdown-item" onclick="GetTransferCasePopup(@dr.Requestid)"><i class="bi bi-journal-arrow-up mx-1"></i>Transfer</button></li>
                                         }
                                         if(status[dr.status] == "Pending")
                                         {
-                                            <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-journal-check mx-1"></i>Send Aggrement</a></li>
+                                            <li><button class="dropdown-item" onclick="GetSendAgreementView(@dr.Requestid)"><i class="bi bi-journal-check mx-1"></i>Send Aggrement</button></li>
                                         }
                                         if (status[dr.status] == "Pending" || status[dr.status] == "Toclose")
                                         {
-                                            <li><a class="dropdown-item" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-x-circle mx-1"></i>Clear Case</a></li>
+                                            <li><button class="dropdown-item" onclick="GetClearCasePopup(@dr.Requestid)"><i class="bi bi-x-circle mx-1"></i>Clear Case</button></li>
                                         }
                                         if (status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Unpaid" || status[dr.status] == "Toclose")
                                         {
@@ -329,6 +329,35 @@
     })
 
 
+    const GetSendAgreementView = (id) =>{
+
+      
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/GetSendAgreementModal",
+            data: { requestId: id },
+            success: function (response) {
+
+                if (response.code == 401) {
+
+                    location.reload();
+                } else {
+
+                    $("#CancleCasePopup").html(response);
+
+                    $("#SendAgreementPopup").modal("show");
+                }
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+
+    }
+
+
     const GetCancleCase  = (id) =>{
         
        
@@ -497,6 +526,33 @@ const GetViewnotes = (id) =>{
                     $("#CancleCasePopup").html(response);
 
                     $("#TransferCaseModal").modal("show");
+
+                }
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+    }
+
+    const GetClearCasePopup = (id) =>{
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/GetClearCaseModal",
+            data: { id: id },
+            success: function (response) {
+
+                if (response.code == 401) {
+
+                    location.reload();
+                } else {
+
+                    $("#CancleCasePopup").html(response);
+
+                    $("#ClearCasePopup").modal("show");
 
                 }
 

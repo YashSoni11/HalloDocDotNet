@@ -9,7 +9,7 @@ namespace HalloDoc_BAL.Interface
     public interface IEmailService
     {
 
-        public Object SendEmail(string email,string subject,string body);
+        public bool SendEmail(string email,string subject,string body);
 
     }
 }

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
-
+using Microsoft.IdentityModel.Tokens;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -63,6 +63,10 @@ namespace HalloDoc_BAL.Repositery
 
         public string GetHashedPassword(string password)
         {
+            if (password.IsNullOrEmpty())
+            {
+                return "";
+            }
              
             SHA256 hash = SHA256.Create();
 

@@ -153,6 +153,18 @@
 
 <script>
 
+    $(document).ready(function(){
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
     const SendFilesViaEmail = () => {
 
 
@@ -183,7 +195,7 @@
 
         var serielizedData = JSON.stringify(dataobject)
 
-        console.log(serielizedData)
+        //console.log(serielizedData)
 
         $("#FilesArray").val(serielizedData);
 

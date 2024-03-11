@@ -1,0 +1,67 @@
+﻿@using HalloDoc_DAL.Models;
+@model HalloDoc_DAL.AdminViewModels.AdminAssignCase;
+
+<form mthod="post" id="ClearCaseForm" asp-action="ClearRequest" asp-controller="Admindashboard" asp-route-requestId="@Model.RequestId">
+    <div class="modal fade" id="ClearCasePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" data-backdrop="true">
+            <div style="border-radius: 20px;" class="modal-content">
+                <div style='border:none;' class="modal-header  d-flex justify-content-center flex-column">
+                    <!-- <i style="color: yellow;" class="bi bi-exclamation-circle-fill"></i> -->
+                    <img style="width: 5rem;" src="~/images/exclamation-circle-fill.svg" />
+                    <h4 class="mt-4">Confirmation for clear case</h4>
+                </div>
+                <div style='text-align: center;' class="modal-body text-align-center">
+                    Are you sure you want to clear this request? Once clearing this request you will not be able to see this request again.
+                </div>
+                <div style='border:none;' class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn btn-info  text-white darkInfo-btn" >Clear</button>
+                    <button type="button" class="btn btn-outline-info lightInfo-btn " data-bs-dismiss="modal">Cancle</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+<script>
+
+   
+    const ClearCase = () => {
+
+
+        let requestId = $("#ClearCaseReqId").val();
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/ClearRequest",
+            data: { id: requestId },
+            success: function (response) {
+
+                if (response.code == 401)
+                {
+                    location.reload();
+                } 
+                else 
+                {
+
+                    toastr.remove();
+
+                    if ('@TempData["ShowPositiveNotification"]' != '') {
+                        toastr.success('@TempData["ShowPositiveNotification"]');
+                    }
+                    else if ('@TempData["ShowNegativeNotification"]' != '') {
+                        toastr.error('@TempData["ShowNegativeNotification"]')
+                    }
+                }
+
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    }
+
+
+</script>

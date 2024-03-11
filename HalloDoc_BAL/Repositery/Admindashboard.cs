@@ -12,6 +12,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Web.Mvc;
+using System.Net.Mail;
+using MailKit;
+//using MailKit.Net.Smtp;
+using System.Net;
+using System.Web.Helpers;
+//using MimeKit;
+//using MailKit.Net.Smtp;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -83,7 +90,7 @@ namespace HalloDoc_BAL.Repositery
 
         public string GetAdminUsername(int id)
         {
-            string name = _context.Admins.Where(q=>q.Adminid == id).Select(r=>r.Firstname).FirstOrDefault();
+            string name = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Firstname).FirstOrDefault();
 
             return name;
         }
@@ -410,7 +417,7 @@ namespace HalloDoc_BAL.Repositery
 
         public List<ViewDocument> GetDocumentsByRequestId(int requestId)
         {
-           
+
 
 
             List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId && u.Isdeleted != true).Select(r => new ViewDocument
@@ -445,8 +452,8 @@ namespace HalloDoc_BAL.Repositery
 
         public void DeleteAllFiles(int[] IdArray)
         {
-             
-               for(int i = 0;i< IdArray.Length; i++)
+
+            for (int i = 0; i < IdArray.Length; i++)
             {
                 DeleteFile(IdArray[i]);
             }
@@ -456,23 +463,23 @@ namespace HalloDoc_BAL.Repositery
 
         public List<Healthprofessionaltype> GetOrderDetails()
         {
-       
 
-            List<Healthprofessionaltype> healthprofessionaltypes  = _context.Healthprofessionaltypes.ToList();
+
+            List<Healthprofessionaltype> healthprofessionaltypes = _context.Healthprofessionaltypes.ToList();
 
 
             return healthprofessionaltypes;
         }
         public List<Healthprofessional> GetHealthProfessionalsByProfessionId(int id)
         {
-            List<Healthprofessional> healthprofessionals = _context.Healthprofessionals.Where(q=>q.Profession == id).ToList();
+            List<Healthprofessional> healthprofessionals = _context.Healthprofessionals.Where(q => q.Profession == id).ToList();
 
             return healthprofessionals;
         }
 
         public Healthprofessional GetVendorByVendorId(int id)
         {
-            Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q=>q.Vendorid == id);
+            Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
 
             return healthprofessional;
         }
@@ -481,13 +488,13 @@ namespace HalloDoc_BAL.Repositery
 
         public bool PostOrderById(int id, Order order)
         {
-         
-          
+
+
             try
             {
 
-               
-               Orderdetail orderdetail = new Orderdetail();
+
+                Orderdetail orderdetail = new Orderdetail();
 
                 orderdetail.Requestid = id;
                 orderdetail.Faxnumber = order.FaxNumber;
@@ -502,20 +509,21 @@ namespace HalloDoc_BAL.Repositery
 
                 return true;
 
-            }catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
 
-        public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId,int adminId)
+        public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId, int adminId)
         {
 
 
             Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
 
-             if(request != null)
+            if (request != null)
             {
                 request.Physicianid = int.Parse(adminAssignCase.SelectedPhycisianId);
                 request.Modifieddate = DateTime.Now;
@@ -546,6 +554,198 @@ namespace HalloDoc_BAL.Repositery
                 return new Request();
             }
 
+        }
+
+
+        public bool SendDocumentsViaEmail(dynamic data)
+        {
+            var files = data["fileArray"];
+            string uemail = data["UserMail"];
+
+            var message = new MailMessage();
+            message.From = new MailAddress("yash.soni@etatvasoft.com");
+            message.Subject = "Documents";
+            message.Body = "Please Find the attached documents.";
+            message.IsBodyHtml = true;
+
+            foreach (string file in files)
+            {
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", file);
+                message.Attachments.Add(new Attachment(path));
+            }
+
+            message.To.Add(new MailAddress(uemail));
+
+
+            try
+            {
+                using (var smtpClient = new SmtpClient("mail.etatvasoft.com"))
+                {
+                    smtpClient.Port = 587;
+                    smtpClient.Credentials = new NetworkCredential("yash.soni@etatvasoft.com", "kaX9Bjj8Sho");
+                    smtpClient.EnableSsl = true;
+
+                    smtpClient.Send(message);
+
+                    return true;
+                }
+
+            }
+            catch (Exception er)
+            {
+                return false;
+            }
+        }
+
+
+        public bool ClearCaseByRequestid(string id, int adminId)
+        {
+            int newId = int.Parse(id);
+
+
+
+            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == newId);
+
+            if (request != null)
+            {
+                request.Status = 10;
+                request.Modifieddate = DateTime.Now;
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = newId,
+                    Status = request.Status,
+                    Createddate = DateTime.Now,
+                    Adminid = adminId
+
+                };
+
+                try
+                {
+                    _context.Requests.Update(request);
+                    _context.Requeststatuslogs.Add(requeststatuslog);
+                    _context.SaveChanges();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public bool AgreeAgreementByRequestId(string requestId)
+        {
+            int newId = int.Parse(requestId);
+
+
+
+            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == newId);
+
+            if (request != null)
+            {
+                request.Status = 3;
+                request.Modifieddate = DateTime.Now;
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = newId,
+                    Status = request.Status,
+                    Createddate = DateTime.Now,
+
+                };
+
+                try
+                {
+                    _context.Requests.Update(request);
+                    _context.Requeststatuslogs.Add(requeststatuslog);
+                    _context.SaveChanges();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool CancleAgrrementByRequstId(CancleAgreement cancleAgreement, string requestId)
+        {
+
+
+            int newId = int.Parse(requestId);
+
+
+
+            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == newId);
+
+            if (request != null)
+            {
+                request.Status = 8;
+                request.Modifieddate = DateTime.Now;
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = newId,
+                    Status = request.Status,
+                    Createddate = DateTime.Now,
+                    Notes = cancleAgreement.CanclationReason
+
+                };
+
+                try
+                {
+                    _context.Requests.Update(request);
+                    _context.Requeststatuslogs.Add(requeststatuslog);
+                    _context.SaveChanges();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public SendAgreement GetSendAgreementpopupInfo(string requestId)
+        {
+             
+             int newId = int.Parse(requestId);
+
+            SendAgreement? data = _context.Requestclients.Where(q => q.Requestid == newId).Select(r => new SendAgreement
+            {
+                Phonenumber = r.Phonenumber,
+                Email = r.Email,
+
+            }).FirstOrDefault();
+
+            int requestorType = _context.Requests.Where(q => q.Requestid == newId).Select(r => r.Requesttypeid).FirstOrDefault();
+
+            data.Requestor = requestorType;
+
+            data.requestId = requestId;
+
+            return data;
+             
         }
 
     }

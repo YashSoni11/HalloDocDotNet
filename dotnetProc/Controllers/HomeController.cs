@@ -93,6 +93,7 @@ namespace dotnetProc.Controllers
 
 
         [HttpGet]
+        [Route("Home/patientform")]
         public IActionResult FormByPatient()
         {
 
