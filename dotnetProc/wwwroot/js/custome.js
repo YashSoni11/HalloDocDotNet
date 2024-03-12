@@ -527,3 +527,465 @@ const GetFiltteredRequests = (type = '') => {
 }
 
 
+//Action Url Functions
+
+const GetEncounterCaseView = (id) => {
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetEncounterFormStatus",
+        data: { requestId: id },
+        success: function (response) {
+            console.log(response)
+            if (response.isfinelized) {
+
+
+                $("#EncounterCaseModal").modal("show");
+                $("#EncounterCaseModalRequestInp").val(id);
+
+            } else {
+
+                //window.location.href = `https://localhost:7008/Admindashboard/encounterform/${id}`
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+
+}
+
+const GetSendAgreementView = (id) => {
+
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetSendAgreementModal",
+        data: { requestId: id },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#SendAgreementPopup").modal("show");
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+
+}
+
+
+const GetCancleCase = (id) => {
+
+
+
+
+    console.log(id)
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetCancleCaseView",
+        data: { id: id },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#CancleCaseModal").addClass("show");
+                $("#CancleCaseModal").css({ "display": "block", "backdrop-filter": "brightness(0.5)" });
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+const GetAssginCasePopup = (id) => {
+
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetAssginCaseView",
+        data: { requestId: id },
+        success: function (response) {
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#AssignCasePopUp").modal("show");
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+const GetBlockCasePopup = (id) => {
+
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetBlockCaseView",
+        data: { requestId: id },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#BlockCaseModal").modal("show");
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+const GetViewCase = (id) => {
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetRequestClientInfoFromRequestId",
+        data: { id: id },
+        success: function (response) {
+
+
+
+            $("#pills-home").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+
+const GetViewnotes = (id) => {
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetRequestNotes",
+        data: { id: id },
+        success: function (response) {
+
+
+            $("#pills-home").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
+
+
+const GetTransferCasePopup = (id) => {
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetTransferCaseView",
+        data: { id: id },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#TransferCaseModal").modal("show");
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+const GetClearCasePopup = (id) => {
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetClearCaseModal",
+        data: { id: id },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#ClearCasePopup").modal("show");
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+const ClearCase = () => {
+
+
+    let requestId = $("#ClearCaseReqId").val();
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/ClearRequest",
+        data: { id: requestId },
+        success: function (response) {
+
+            if (response.code == 401) {
+                location.reload();
+            }
+            else {
+
+                toastr.remove();
+
+                if ('@TempData["ShowPositiveNotification"]' != '') {
+                    toastr.success('@TempData["ShowPositiveNotification"]');
+                }
+                else if ('@TempData["ShowNegativeNotification"]' != '') {
+                    toastr.error('@TempData["ShowNegativeNotification"]')
+                }
+            }
+
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
+
+//const toggleActionsUrls = (bodyId, btnId) => {
+
+
+//    var collapseButton = document.getElementById(`${btnId}`);
+//    var collapseExample = document.getElementById(`${bodyId}`);
+
+
+//    console.log(collapseButton.getAttribute("aria-expanded"))
+
+//    if (collapseButton.getAttribute("aria-expanded") == "true") {
+//        console.log(1)
+//        collapseExample.classList.remove("show");
+//        collapseButton.setAttribute("aria-expanded", "false");
+//    } else {
+//        console.log(2)
+//        collapseExample.classList.add("show");
+//        collapseButton.setAttribute("aria-expanded", "true");
+//    }
+
+
+
+
+//}
+
+
+//Dashboard Buttons Functions
+const GetSendLinkPopUp = () => {
+
+
+
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetSendLinkView",
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+
+
+            } else {
+
+                $("#CancleCasePopup").html(response);
+
+                $("#SendLinkPopUp").modal("show");
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+
+}
+const SendRequstLink = () => {
+
+
+    $("#SendLinkForm").validate();
+
+    var response = $("#SendLinkForm").valid();
+    console.log(response)
+    if (response == false) {
+        console.log(90)
+        return;
+    }
+}
+
+
+//Common functions
+
+const GetPhysicianByRegions = () => {
+
+
+    let regionId = $("#sl").val();
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetPhysicianByRegion",
+        data: { regionId: regionId },
+        success: function (response) {
+
+
+            var PhysicianData = JSON.parse(response);
+
+
+
+            let PhysicianDropdown = $("#PhysicianInp")
+
+            PhysicianDropdown.empty();
+
+            PhysicianDropdown.append($("<option></option>").text("Physicians").attr("selected", "true"));
+
+
+            $.each(PhysicianData, function (index, physician) {
+                PhysicianDropdown.append($("<option></option>").text(physician.Firstname + " " + physician.Lastname).val(physician.Physicianid));
+            })
+
+
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
+
+const GetVendors = (target) => {
+
+
+    console.log(target)
+
+    let professsionId = $("#ProfessionInp").val();
+
+    console.log(professsionId);
+
+    $.ajax({
+
+        method: "post",
+        url: "/Admindashboard/GetVendorsByProfession",
+        data: { id: professsionId },
+        success: function (response) {
+
+
+
+            var VendorsData = JSON.parse(response);
+
+            console.log(VendorsData);
+
+            let BusinessDropdown = $("#BusinessInp")
+
+
+
+            BusinessDropdown.empty();
+
+
+
+
+            $.each(VendorsData, function (index, vendor) {
+                BusinessDropdown.append($("<option></option>").text(vendor.Vendorname).val(vendor.Vendorid));
+            })
+
+
+        },
+        error: function () {
+            console.log("Error Inside Order Page!");
+        }
+
+
+    })
+}
+
+
+const GetVendorDetails = () => {
+
+
+    let vendorId = $("#BusinessInp").val();
+
+
+    $.ajax({
+
+        method: "post",
+        url: "/Admindashboard/GetVendorDetails",
+        data: { id: vendorId },
+        success: function (response) {
+
+
+
+
+            $("#BusinessContact").val(response.businesscontact)
+            $("#VendorEmail").val(response.email)
+            $("#VendorFax").val(response.faxnumber)
+
+
+
+
+        },
+        error: function () {
+            console.log("Error Inside Order Page!");
+        }
+
+
+    })
+
+
+}

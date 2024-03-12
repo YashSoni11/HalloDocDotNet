@@ -5,6 +5,7 @@ using dotnetProc.Controllers;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using HalloDoc_BAL.Interface;
 using HalloDoc_BAL.Repositery;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddScoped<IAdmindashboard, Admindashboard>();
 builder.Services.AddScoped<IPatientReq,PatientRequest>();
 builder.Services.AddTransient<IEmailService,EmailService>();
 builder.Services.AddTransient<IJwtServices, JwtServices>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 
 var app = builder.Build();

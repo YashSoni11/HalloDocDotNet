@@ -17,8 +17,4 @@ public partial class Aspnetrole
     [Column("name")]
     [StringLength(256)]
     public string Name { get; set; } = null!;
-
-    [ForeignKey("Roleid")]
-    [InverseProperty("Roles")]
-    public virtual ICollection<Aspnetuser> Users { get; } = new List<Aspnetuser>();
 }

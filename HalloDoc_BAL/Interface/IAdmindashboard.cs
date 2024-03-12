@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Utilities;
 
 namespace HalloDoc_BAL.Interface
 {
@@ -69,6 +70,14 @@ namespace HalloDoc_BAL.Interface
 
         public bool AgreeAgreementByRequestId(string requestId);
 
-        public SendAgreement GetSendAgreementpopupInfo(string requestId);   
+        public SendAgreement GetSendAgreementpopupInfo(string requestId);
+
+        public byte[] GeneratePdf(Encounterform encounterform);
+
+        public bool SaveEncounterForm(Encounterform encounterform);
+
+        public Encounterform GetEncounterFormByRequestId(string id);
+
+        public bool? IsEncounterFormFinlized(int id);
     }
 }

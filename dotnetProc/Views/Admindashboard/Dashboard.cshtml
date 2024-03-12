@@ -190,7 +190,7 @@
 @section Scripts{
 
     @{
-        Console.WriteLine("ofewif");
+       
         <partial name="_ValidationScriptsPartial" />
     }
 }
@@ -210,37 +210,7 @@
          }
    })
 
-    const GetSendLinkPopUp = () =>{
-
     
-
-
-
-
-          
-            $.ajax({
-                method: "post",
-                url: "/Admindashboard/GetSendLinkView",
-                success: function (response) {
-
-                    if (response.code == 401) {
-
-                        location.reload();
-                    } else {
-
-                        $("#CancleCasePopup").html(response);
-
-                        $("#SendLinkPopUp").modal("show");
-                    }
-
-                },
-                error: function (err) {
-                    console.log(err)
-                }
-            })
-
-        
-    }
 
 
     

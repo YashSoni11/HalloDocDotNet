@@ -831,16 +831,16 @@ namespace dotnetProc.Controllers
 
                     string link = "https://localhost:7008/Home/patientform/";
 
-                    string body = "Dear" + " " + sendLink.Firstname + " " + sendLink.Lastname + ",/n";
+                    string body = "Dear" + " " + sendLink.Firstname + " " + sendLink.Lastname + ",<br/>";
 
-                    body += "Please click on <a href='" + link + "'+>Agreement</a> to submit request ";
+                    body += "Please click on <a href='" + link + "'+>Request Link</a> to submit request ";
 
 
                     bool response = _emailService.SendEmail(sendLink.Email, subject, body);
 
                     if(response)
                     {
-                        TempData["ShowPositiveNotifiction"] = "Link Sent Successfully.";
+                        TempData["ShowPositiveNotification"] = "Link Sent Successfully.";
                     }
                     else
                     {
@@ -860,6 +860,67 @@ namespace dotnetProc.Controllers
 
         }
 
+        [HttpGet]
+        [Route("Admindashboard/encounterform/{id}")]
+        public IActionResult EncounterForm(string id)
+        {
 
+            Encounterform encounterform1 = _dashboard.GetEncounterFormByRequestId(id);
+            
+            if (encounterform1 == null)
+            {
+                encounterform1 = new Encounterform();
+                encounterform1.Requestid = int.Parse(id);
+               
+            }
+
+            return View(encounterform1);
+        }
+
+        [HttpPost]
+        
+        public IActionResult SaveEncounterForm(Encounterform encounterform,string requestId)
+        {
+
+
+            encounterform.Requestid = int.Parse(requestId);
+
+            bool response = _dashboard.SaveEncounterForm(encounterform);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Data Saved Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+            }
+
+            return RedirectToAction("EncounterForm",  new { id = requestId });
+        }
+
+
+        [HttpPost]
+        public IActionResult DownLoadForm(string requestid)
+        {
+            
+
+            Encounterform encounterForm = _dashboard.GetEncounterFormByRequestId(requestid);
+
+            byte[] pdfBytes = _dashboard.GeneratePdf(encounterForm);
+
+            return File(pdfBytes, "application/pdf", "encounterform.pdf");
+
+        }
+
+
+        public IActionResult GetEncounterFormStatus(string requestId)
+        {
+            int newid = int.Parse(requestId);
+
+            bool? response = _dashboard.IsEncounterFormFinlized(newid);
+
+             return Json(new {isfinelized = response});
+        }
     }
 }

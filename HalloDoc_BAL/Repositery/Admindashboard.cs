@@ -17,8 +17,9 @@ using MailKit;
 //using MailKit.Net.Smtp;
 using System.Net;
 using System.Web.Helpers;
-//using MimeKit;
-//using MailKit.Net.Smtp;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
+using AutoMapper;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -27,11 +28,12 @@ namespace HalloDoc_BAL.Repositery
 
 
         private readonly HalloDocContext _context;
+        private readonly IMapper _mapper;
 
-
-        public Admindashboard(HalloDocContext context)
+        public Admindashboard(HalloDocContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -747,6 +749,251 @@ namespace HalloDoc_BAL.Repositery
             return data;
              
         }
+
+
+        public byte[] GeneratePdf(Encounterform encounterform)
+        {
+            using (var document = new PdfDocument())
+            {
+                var page = document.AddPage();
+                var gfx = XGraphics.FromPdfPage(page);
+                var font = new XFont("Arial", 12);
+
+               
+                double x = 50; 
+                double y = 50;
+
+                double oneby3x = 270;       
+                     
+                double leftx = 290;
+             
+                double lineHeight = 30;
+
+                gfx.DrawString("Medical Report of"+" "+encounterform.Firstname+" "+encounterform.Lastname, font, XBrushes.Cyan, new XPoint(200, y));
+                y += lineHeight;
+
+
+
+                gfx.DrawString("First Name:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Firstname != null ? encounterform.Firstname : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+           
+
+                gfx.DrawString("Last Name:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Lastname != null ? encounterform.Lastname : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));
+
+                y += lineHeight;
+
+                gfx.DrawString("Location:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Location != null ? encounterform.Location : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+                y += lineHeight;
+
+                gfx.DrawString("Date Of Birth:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Dob.ToString() != null ? encounterform.Dob.ToString() : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+             
+
+                gfx.DrawString("Created At:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Createdat.ToString() != null? encounterform.Createdat.ToString() : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));;
+
+                y += lineHeight;
+
+                gfx.DrawString("PhoneNumber:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Phonnumber != null ? encounterform.Phonnumber : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
+             
+
+                gfx.DrawString("Email:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Email != null ? encounterform.Email : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));
+
+                y += lineHeight;
+
+                gfx.DrawString("History of patinet illness Or Injury:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.History != null?encounterform.History:"Not Available", font, XBrushes.Black, new XPoint(x + 220, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Medical History:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.MedicalHistory != null ? encounterform.MedicalHistory : "Not Available", font, XBrushes.Black, new XPoint(x + 90, y));
+                y += lineHeight;
+
+                gfx.DrawString("Medications:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Medications != null ? encounterform.Medications : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+         
+
+                gfx.DrawString("Allergies:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Allergies != null ? encounterform.Allergies : "Not Available", font, XBrushes.Black, new XPoint(leftx +  80, y));
+                y += lineHeight;
+
+                gfx.DrawString("Temp:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Temperature != null ? encounterform.Temperature : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
+               
+
+                gfx.DrawString("HR:", font, XBrushes.Black, new XPoint(oneby3x, y));
+                gfx.DrawString(encounterform.Hr != null ? encounterform.Hr : "Not Available", font, XBrushes.Black, new XPoint(oneby3x + 35, y));
+              
+
+                gfx.DrawString("RR:", font, XBrushes.Black, new XPoint(oneby3x+100, y));
+                gfx.DrawString(encounterform.Rr != null ? encounterform.Rr : "Not Available", font, XBrushes.Black, new XPoint(oneby3x + 130, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Blood Pressure1:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.BloodPressure1 != null ? encounterform.BloodPressure1 : "Not Available", font, XBrushes.Black, new XPoint(x + 95, y));
+            
+                gfx.DrawString("Blood Pressure2:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.BloodPressure2 != null ? encounterform.BloodPressure2 : "Not Available", font, XBrushes.Black, new XPoint(leftx + 95, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("O2:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.O2 != null ? encounterform.O2 : "Not Available", font, XBrushes.Black, new XPoint(x+35, y));
+            
+
+
+                gfx.DrawString("Pain:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Pain != null ? encounterform.Pain : "Not Available", font, XBrushes.Black, new XPoint(leftx+35, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Heent:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Heent != null ? encounterform.Heent : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+              
+
+                gfx.DrawString("CV:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Cv != null ? encounterform.Cv : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Chest:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Chest != null ? encounterform.Chest : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+             
+
+                gfx.DrawString("ABD:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Abd != null ? encounterform.Abd : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Extr:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Extr != null ? encounterform.Extr : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+              
+
+                gfx.DrawString("Skin:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Skin != null ? encounterform.Skin : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Neuro:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Neuro != null ? encounterform.Neuro : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+              
+
+                gfx.DrawString("Other:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Other != null ? encounterform.Other : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Diognosis:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Diognosis != null ? encounterform.Diognosis : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
+              
+
+                gfx.DrawString("Treatment Plan:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Treatmentplan != null ? encounterform.Treatmentplan : "Not Available", font, XBrushes.Black, new XPoint(leftx + 100, y));
+                y += lineHeight;
+
+                gfx.DrawString("Medications Dispensed:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.MedicationsDispesnsed != null ? encounterform.MedicationsDispesnsed : "Not Available", font, XBrushes.Black, new XPoint(x + 150, y));
+          
+
+                gfx.DrawString("Procedures:", font, XBrushes.Black, new XPoint(leftx, y));
+                gfx.DrawString(encounterform.Procedures != null ? encounterform.Procedures : "Not Available", font, XBrushes.Black, new XPoint(leftx + 80, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Followup:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Followup != null ? encounterform.Followup : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
+                y += lineHeight;
+
+
+                using (var ms = new MemoryStream())
+                {
+                    document.Save(ms, false);
+                    return ms.ToArray();
+                }
+            }
+        }
+
+        public  bool SaveEncounterForm(Encounterform encounterform)
+        {
+             Encounterform encounterform1 = _context.Encounterforms.Where(q=>q.Requestid ==  encounterform.Requestid).FirstOrDefault();
+
+            if(encounterform1 != null)
+            {
+                try
+                {
+
+                    encounterform1.Lastname = encounterform.Lastname;
+                    encounterform1.Firstname = encounterform.Firstname;
+                    encounterform1.Location = encounterform.Location;
+                    encounterform1.Dob = encounterform.Dob;
+                    encounterform1.Createdat = encounterform.Createdat;
+                    encounterform1.Email = encounterform.Email;
+                    encounterform1.Phonnumber = encounterform.Phonnumber;
+                    encounterform1.MedicalHistory = encounterform.MedicalHistory;
+                    encounterform1.History = encounterform.History;
+                    encounterform1.Medications = encounterform.Medications;
+                    encounterform1.Allergies = encounterform.Allergies;
+                    encounterform1.Temperature = encounterform.Temperature;
+                    encounterform1.Hr = encounterform.Hr;
+                    encounterform1.Rr = encounterform.Rr;
+                    encounterform1.BloodPressure1 = encounterform.BloodPressure1;
+                    encounterform1.BloodPressure2 = encounterform.BloodPressure2;
+                    encounterform1.O2 = encounterform.O2;
+                    encounterform1.Pain = encounterform.Pain;
+                    encounterform1.Heent = encounterform.Heent;
+                    encounterform1.Cv = encounterform.Cv;
+                    encounterform1.Chest = encounterform.Chest;
+                    encounterform1.Abd = encounterform.Abd;
+                    encounterform1.Extr = encounterform.Extr;
+                    encounterform1.Skin = encounterform.Skin;
+                    encounterform1.Neuro = encounterform.Neuro;
+                    encounterform1.Other = encounterform.Other;
+                    encounterform1.Diognosis = encounterform.Diognosis;
+                    encounterform1.Treatmentplan = encounterform.Treatmentplan;
+                    encounterform1.MedicationsDispesnsed = encounterform.MedicationsDispesnsed;
+                    encounterform1.Procedures = encounterform.Procedures;
+                    encounterform1.Followup = encounterform.Followup;
+
+                    _context.Encounterforms.Update(encounterform1);
+                    _context.SaveChanges();
+                    return true;
+                }catch(Exception er)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    encounterform.IsFinelized = false;
+                    _context.Encounterforms.Add(encounterform);
+                    _context.SaveChanges();
+                    return true;
+                }
+                catch (Exception er)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public Encounterform GetEncounterFormByRequestId(string id)
+        {
+            int newid = int.Parse(id);
+
+            return _context.Encounterforms.FirstOrDefault(q => q.Requestid == newid);
+        }
+
+        public bool? IsEncounterFormFinlized(int id)
+        {
+            return _context.Encounterforms.Where(q => q.Requestid == id).Select(r => r.IsFinelized).FirstOrDefault();
+
+
+        }
+
 
     }
 

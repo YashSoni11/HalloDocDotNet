@@ -27,41 +27,7 @@
 <script>
 
    
-    const ClearCase = () => {
-
-
-        let requestId = $("#ClearCaseReqId").val();
-
-        $.ajax({
-            method: "post",
-            url: "/Admindashboard/ClearRequest",
-            data: { id: requestId },
-            success: function (response) {
-
-                if (response.code == 401)
-                {
-                    location.reload();
-                } 
-                else 
-                {
-
-                    toastr.remove();
-
-                    if ('@TempData["ShowPositiveNotification"]' != '') {
-                        toastr.success('@TempData["ShowPositiveNotification"]');
-                    }
-                    else if ('@TempData["ShowNegativeNotification"]' != '') {
-                        toastr.error('@TempData["ShowNegativeNotification"]')
-                    }
-                }
-
-
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        })
-    }
+  
 
 
 </script>

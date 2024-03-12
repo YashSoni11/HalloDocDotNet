@@ -7,7 +7,7 @@
             <div class="modal-content" id="CancleCaseContent">
                 <div class="modal-header bg-info">
                     <h1 class="modal-title fs-5 text-white" id="staticBackdropLabel">Assign Request</h1>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" onclick="CloseCancleCase()" aria-label="Close"></button>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body container-fluid ">
 
@@ -61,7 +61,7 @@
                     <button type="submit" class="btn btn-info  text-white darkInfo-btn">Submit</button>
 
                     <button type="button"  class="btn btn-outline-info lightInfo-btn"
-                            onclick="ClearForm(this)">
+                            onclick="document.getElementById('AssignCaseForm').reset()">
                         Cancle
                     </button>
                 </div>
@@ -73,46 +73,8 @@
 
 <script>
 
-    const ClearForm =  () =>{
-
-        document.getElementById("AssignCaseForm").reset();
-    }
     
-    const GetPhysicianByRegions = () =>{
-
-
-         let regionId =  $("#sl").val();
-
-        $.ajax({
-            method: "post",
-            url: "/Admindashboard/GetPhysicianByRegion",
-            data: { regionId: regionId },
-            success: function (response) {
-
-
-                var PhysicianData = JSON.parse(response);
-              
-              
-
-              let PhysicianDropdown =   $("#PhysicianInp")
-
-                PhysicianDropdown.empty();
-
-                PhysicianDropdown.append($("<option></option>").text("Physicians").attr("selected", "true"));
-
-
-                $.each(PhysicianData, function (index,physician) {                
-                    PhysicianDropdown.append($("<option></option>").text(physician.Firstname + " " + physician.Lastname).val(physician.Physicianid));
-                })
-
-              
-
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        })
-    }
+    
 
 
 </script>

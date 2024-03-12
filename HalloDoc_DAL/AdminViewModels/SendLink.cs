@@ -22,10 +22,10 @@ namespace HalloDoc_DAL.AdminViewModels
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
         public string Lastname { get; set; }
 
-        [Required(ErrorMessage = "Phonenumber is required.")]
-        [DataType(DataType.PhoneNumber)]
-        [Phone(ErrorMessage = "Please Enter Valid Phonenumber")]
-        public string Phonenumber { get; set; }
+        //[Required(ErrorMessage = "Phonenumber is required.")]
+        //[DataType(DataType.PhoneNumber)]
+        //[Phone(ErrorMessage = "Please Enter Valid Phonenumber")]
+        //public string Phonenumber { get; set; }
 
         [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "Please Enter Valid Email.")]

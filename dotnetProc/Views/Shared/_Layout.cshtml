@@ -39,12 +39,12 @@
             crossorigin="anonymous"></script>*@
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
     <script asp-append-version="true" src="~/js/custome.js"></script>
-    <script>
+  @*  <script>
         const input = document.querySelector("#phonInput");
         window.intlTelInput(input, {
             utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
         });
-    </script>
+    </script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

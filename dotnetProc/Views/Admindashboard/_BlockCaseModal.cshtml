@@ -31,7 +31,7 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-info  text-white darkInfo-btn">Confirm</button>
 
-                    <button type="button" onclick="ClearForm()" class="btn btn-outline-info lightInfo-btn">
+                    <button type="button" onclick="document.getElementById('BlockCaseForm').reset()" class="btn btn-outline-info lightInfo-btn">
                           
                         Cancle
                     </button>
@@ -43,10 +43,7 @@
 
 <script>
 
- const ClearForm =  () =>{
 
-        document.getElementById("BlockCaseForm").reset();
-    }
 
 </script>
 
