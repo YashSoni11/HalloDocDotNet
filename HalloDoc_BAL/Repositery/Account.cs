@@ -63,22 +63,24 @@ namespace HalloDoc_BAL.Repositery
 
         public string GetHashedPassword(string password)
         {
-            if (password.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(password))
             {
                 return "";
             }
-             
-            SHA256 hash = SHA256.Create();
 
-            byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-
-            StringBuilder builder = new StringBuilder();
-
-            for(int i = 0;i< bytes.Length; i++)
+            using (SHA256 hash = SHA256.Create())
             {
-                builder.Append(bytes[i]);
+                byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2")); // Convert byte to hexadecimal string
+                }
+
+                return builder.ToString();
             }
-            return builder.ToString();
 
         }
 

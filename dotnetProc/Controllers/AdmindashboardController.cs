@@ -1192,5 +1192,13 @@ namespace dotnetProc.Controllers
                 
             }
         }
+
+        //[AuthManager("Admin")]
+        [HttpGet]
+        [Route("myprofile")]
+        public IActionResult AdminProfile()
+        {
+            return View("Adminprofile");  
+        }
     }
 }
