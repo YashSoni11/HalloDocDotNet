@@ -79,5 +79,15 @@ namespace HalloDoc_BAL.Interface
         public Encounterform GetEncounterFormByRequestId(string id);
 
         public bool? IsEncounterFormFinlized(int id);
+
+        public CLoseCase GetDataForCloseCaseByRequestId(string id);
+
+        public bool SaveDataForCloseState(CLoseCase cLoseCase);
+
+        public bool CloseCaseByRequestId(int requestid, int useid);
+
+        public bool ExportExcelForCurrentPage(List<DashboardRequests> dashboardRequests);
+
+
     }
 }

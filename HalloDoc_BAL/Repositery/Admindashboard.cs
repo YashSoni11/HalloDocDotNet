@@ -20,6 +20,8 @@ using System.Web.Helpers;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -30,7 +32,7 @@ namespace HalloDoc_BAL.Repositery
         private readonly HalloDocContext _context;
         private readonly IMapper _mapper;
 
-        public Admindashboard(HalloDocContext context,IMapper mapper)
+        public Admindashboard(HalloDocContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -730,8 +732,8 @@ namespace HalloDoc_BAL.Repositery
 
         public SendAgreement GetSendAgreementpopupInfo(string requestId)
         {
-             
-             int newId = int.Parse(requestId);
+
+            int newId = int.Parse(requestId);
 
             SendAgreement? data = _context.Requestclients.Where(q => q.Requestid == newId).Select(r => new SendAgreement
             {
@@ -747,7 +749,7 @@ namespace HalloDoc_BAL.Repositery
             data.requestId = requestId;
 
             return data;
-             
+
         }
 
 
@@ -759,24 +761,24 @@ namespace HalloDoc_BAL.Repositery
                 var gfx = XGraphics.FromPdfPage(page);
                 var font = new XFont("Arial", 12);
 
-               
-                double x = 50; 
+
+                double x = 50;
                 double y = 50;
 
-                double oneby3x = 270;       
-                     
+                double oneby3x = 270;
+
                 double leftx = 290;
-             
+
                 double lineHeight = 30;
 
-                gfx.DrawString("Medical Report of"+" "+encounterform.Firstname+" "+encounterform.Lastname, font, XBrushes.Cyan, new XPoint(200, y));
+                gfx.DrawString("Medical Report of" + " " + encounterform.Firstname + " " + encounterform.Lastname, font, XBrushes.Cyan, new XPoint(200, y));
                 y += lineHeight;
 
 
 
                 gfx.DrawString("First Name:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Firstname != null ? encounterform.Firstname : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
-           
+
 
                 gfx.DrawString("Last Name:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Lastname != null ? encounterform.Lastname : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));
@@ -789,16 +791,16 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Date Of Birth:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Dob.ToString() != null ? encounterform.Dob.ToString() : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
-             
+
 
                 gfx.DrawString("Created At:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Createdat.ToString() != null? encounterform.Createdat.ToString() : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));;
+                gfx.DrawString(encounterform.Createdat.ToString() != null ? encounterform.Createdat.ToString() : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y)); ;
 
                 y += lineHeight;
 
                 gfx.DrawString("PhoneNumber:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Phonnumber != null ? encounterform.Phonnumber : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
-             
+
 
                 gfx.DrawString("Email:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Email != null ? encounterform.Email : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));
@@ -806,7 +808,7 @@ namespace HalloDoc_BAL.Repositery
                 y += lineHeight;
 
                 gfx.DrawString("History of patinet illness Or Injury:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.History != null?encounterform.History:"Not Available", font, XBrushes.Black, new XPoint(x + 220, y));
+                gfx.DrawString(encounterform.History != null ? encounterform.History : "Not Available", font, XBrushes.Black, new XPoint(x + 220, y));
                 y += lineHeight;
 
 
@@ -816,46 +818,46 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Medications:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Medications != null ? encounterform.Medications : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
-         
+
 
                 gfx.DrawString("Allergies:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Allergies != null ? encounterform.Allergies : "Not Available", font, XBrushes.Black, new XPoint(leftx +  80, y));
+                gfx.DrawString(encounterform.Allergies != null ? encounterform.Allergies : "Not Available", font, XBrushes.Black, new XPoint(leftx + 80, y));
                 y += lineHeight;
 
                 gfx.DrawString("Temp:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Temperature != null ? encounterform.Temperature : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
-               
+
 
                 gfx.DrawString("HR:", font, XBrushes.Black, new XPoint(oneby3x, y));
                 gfx.DrawString(encounterform.Hr != null ? encounterform.Hr : "Not Available", font, XBrushes.Black, new XPoint(oneby3x + 35, y));
-              
 
-                gfx.DrawString("RR:", font, XBrushes.Black, new XPoint(oneby3x+100, y));
+
+                gfx.DrawString("RR:", font, XBrushes.Black, new XPoint(oneby3x + 100, y));
                 gfx.DrawString(encounterform.Rr != null ? encounterform.Rr : "Not Available", font, XBrushes.Black, new XPoint(oneby3x + 130, y));
                 y += lineHeight;
 
 
                 gfx.DrawString("Blood Pressure1:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.BloodPressure1 != null ? encounterform.BloodPressure1 : "Not Available", font, XBrushes.Black, new XPoint(x + 95, y));
-            
+
                 gfx.DrawString("Blood Pressure2:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.BloodPressure2 != null ? encounterform.BloodPressure2 : "Not Available", font, XBrushes.Black, new XPoint(leftx + 95, y));
                 y += lineHeight;
 
 
                 gfx.DrawString("O2:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.O2 != null ? encounterform.O2 : "Not Available", font, XBrushes.Black, new XPoint(x+35, y));
-            
+                gfx.DrawString(encounterform.O2 != null ? encounterform.O2 : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+
 
 
                 gfx.DrawString("Pain:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Pain != null ? encounterform.Pain : "Not Available", font, XBrushes.Black, new XPoint(leftx+35, y));
+                gfx.DrawString(encounterform.Pain != null ? encounterform.Pain : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
                 y += lineHeight;
 
 
                 gfx.DrawString("Heent:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Heent != null ? encounterform.Heent : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-              
+
 
                 gfx.DrawString("CV:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Cv != null ? encounterform.Cv : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
@@ -863,7 +865,7 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Chest:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Chest != null ? encounterform.Chest : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-             
+
 
                 gfx.DrawString("ABD:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Abd != null ? encounterform.Abd : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
@@ -871,7 +873,7 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Extr:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Extr != null ? encounterform.Extr : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-              
+
 
                 gfx.DrawString("Skin:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Skin != null ? encounterform.Skin : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
@@ -879,7 +881,7 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Neuro:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Neuro != null ? encounterform.Neuro : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-              
+
 
                 gfx.DrawString("Other:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Other != null ? encounterform.Other : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
@@ -887,7 +889,7 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Diognosis:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Diognosis != null ? encounterform.Diognosis : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
-              
+
 
                 gfx.DrawString("Treatment Plan:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Treatmentplan != null ? encounterform.Treatmentplan : "Not Available", font, XBrushes.Black, new XPoint(leftx + 100, y));
@@ -895,7 +897,7 @@ namespace HalloDoc_BAL.Repositery
 
                 gfx.DrawString("Medications Dispensed:", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.MedicationsDispesnsed != null ? encounterform.MedicationsDispesnsed : "Not Available", font, XBrushes.Black, new XPoint(x + 150, y));
-          
+
 
                 gfx.DrawString("Procedures:", font, XBrushes.Black, new XPoint(leftx, y));
                 gfx.DrawString(encounterform.Procedures != null ? encounterform.Procedures : "Not Available", font, XBrushes.Black, new XPoint(leftx + 80, y));
@@ -915,11 +917,11 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public  bool SaveEncounterForm(Encounterform encounterform)
+        public bool SaveEncounterForm(Encounterform encounterform)
         {
-             Encounterform encounterform1 = _context.Encounterforms.Where(q=>q.Requestid ==  encounterform.Requestid).FirstOrDefault();
+            Encounterform encounterform1 = _context.Encounterforms.Where(q => q.Requestid == encounterform.Requestid).FirstOrDefault();
 
-            if(encounterform1 != null)
+            if (encounterform1 != null)
             {
                 try
                 {
@@ -959,7 +961,8 @@ namespace HalloDoc_BAL.Repositery
                     _context.Encounterforms.Update(encounterform1);
                     _context.SaveChanges();
                     return true;
-                }catch(Exception er)
+                }
+                catch (Exception er)
                 {
                     return false;
                 }
@@ -994,7 +997,123 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+        public CLoseCase GetDataForCloseCaseByRequestId(string id)
+        {
+            int newid = int.Parse(id);
 
+            if (newid == 0)
+            {
+                return new CLoseCase();
+            }
+
+            CLoseCase? cLoseCase = _context.Requestclients.Where(q => q.Requestid == newid).Select(r => new CLoseCase
+            {
+                Firstname = r.Firstname,
+                Lastname = r.Lastname,
+                Phone = r.Phonenumber,
+                Email = r.Email,
+                Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))
+            }).FirstOrDefault();
+
+            string confirmationnum = _context.Requests.Where(q => q.Requestid == newid).Select(r => r.Confirmationnumber).FirstOrDefault();
+
+            if (confirmationnum.IsNullOrEmpty())
+            {
+                confirmationnum = "MD98098908";
+            }
+
+            List<ViewDocument> viewDocuments = _context.Requestwisefiles.Where(q => q.Requestid == newid).Select(r => new ViewDocument
+            {
+                FileId = r.Requestwisefileid,
+                filename = r.Filename,
+                uploadDate = r.Createddate,
+            }).ToList();
+
+
+            cLoseCase.ViewDocuments = viewDocuments;
+            cLoseCase.ConfirmationNumber = confirmationnum;
+
+            return cLoseCase;
+        }
+
+        public bool SaveDataForCloseState(CLoseCase cLoseCase)
+        {
+            int newid = int.Parse(cLoseCase.requestId);
+
+            if (newid == 0)
+            {
+                return false;
+            }
+            Requestclient requestclient = _context.Requestclients.Where(q => q.Requestid == newid).FirstOrDefault();
+
+            if (requestclient == null)
+            {
+                return false;
+            }
+            try
+            {
+                requestclient.Phonenumber = cLoseCase.Phone;
+                requestclient.Email = cLoseCase.Email;
+
+                _context.Requestclients.Update(requestclient);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool CloseCaseByRequestId(int requestid, int adminid)
+        {
+
+
+
+            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestid);
+
+            if (request != null)
+            {
+                request.Status = 2;
+                request.Modifieddate = DateTime.Now;
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = requestid,
+                    Status = request.Status,
+                    Createddate = DateTime.Now,
+                    Adminid = adminid
+
+                };
+
+                try
+                {
+                    _context.Requests.Update(request);
+                    _context.Requeststatuslogs.Add(requeststatuslog);
+                    _context.SaveChanges();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
+        public bool ExportExcelForCurrentPage(List<DashboardRequests> dashboardRequests)
+        {
+            return false;
+
+        }
     }
 
 

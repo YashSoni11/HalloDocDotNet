@@ -350,26 +350,6 @@
         $('#nav-home-tab').click();
   }
 
-    const showLocation = () =>{
-
-
-        
-            
-           
-            var zip = $("#zip").val();
-            var city = $("#city").val();
-            var state = $("#state").val();
-            var street = $("#street").val();
-
-            console.log(address)
-
-            var address = street+','+city+','+state+','+zip
-           
-            var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
-
-              
-            window.open(mapsUrl, "_blank");
-    }
 
     $(document).ready(function(){
           
@@ -415,22 +395,7 @@
         }
     }
 
-    const editDetails = () => {
-        console.log("iuhio")
-        $(".tbDisabled").removeAttr("disabled");
-        $(".editMode").css("display","block");
-        $(".editBtn").css("display", "none");
-
-
-    }
-   
-    const cancleEdit = () =>{
-         
-        $(".editBtn").css("display", "block");
-        $(".editMode").css("display", "none");
-        $(".tbDisabled").attr("disabled", "true")
-
-    }
+ 
 
 
    

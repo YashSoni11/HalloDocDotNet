@@ -7,8 +7,9 @@ using Newtonsoft.Json;
 using HalloDoc_BAL.Repositery;
 using System.IdentityModel.Tokens.Jwt;
 using System.Globalization;
-
-
+using Microsoft.IdentityModel.Tokens;
+using ClosedXML;
+using ClosedXML.Excel;
 
 namespace dotnetProc.Controllers
 {
@@ -20,12 +21,14 @@ namespace dotnetProc.Controllers
         private readonly IAdmindashboard _dashboard;
         private readonly IAccount _account;
         private readonly IEmailService _emailService;
+        private readonly IPatientReq _patientReq;
 
-        public AdmindashboardController(IAdmindashboard dashboard, IAccount account, IEmailService emailService)
+        public AdmindashboardController(IAdmindashboard dashboard, IAccount account, IEmailService emailService, IPatientReq patientReq)
         {
             _dashboard = dashboard;
             _account = account;
             _emailService = emailService;
+            _patientReq = patientReq;
         }
 
 
@@ -714,9 +717,9 @@ namespace dotnetProc.Controllers
             return PartialView("_CancleAgreementModal", cancleAgreement);
         }
 
-        public IActionResult PostCancleAgreement(CancleAgreement cancleAgreement,string requestId)
+        public IActionResult PostCancleAgreement(CancleAgreement cancleAgreement, string requestId)
         {
-            bool response = _dashboard.CancleAgrrementByRequstId(cancleAgreement,requestId);
+            bool response = _dashboard.CancleAgrrementByRequstId(cancleAgreement, requestId);
 
             if (response)
             {
@@ -764,11 +767,11 @@ namespace dotnetProc.Controllers
                 return PartialView("_SendAgreementModal", sendAgreement);
             }
 
-             
-              
+
+
         }
 
-        public IActionResult SendAgrrementLink(SendAgreement sendAgreement,string requestId)
+        public IActionResult SendAgrrementLink(SendAgreement sendAgreement, string requestId)
         {
 
             string subject = "Service Agreement";
@@ -778,9 +781,9 @@ namespace dotnetProc.Controllers
             string body = "Please click on <a asp-route-id='" + requestId + "' href='" + link + "'+>Agreement</a> to view agreement ";
 
 
-           bool  response =  _emailService.SendEmail(sendAgreement.Email, subject, body);
+            bool response = _emailService.SendEmail(sendAgreement.Email, subject, body);
 
-            if(response)
+            if (response)
             {
                 TempData["ShowPositiveNotification"] = "Agreement Sent Successfully.";
             }
@@ -822,12 +825,12 @@ namespace dotnetProc.Controllers
             {
                 return Json(new { code = 401 });
             }
-            else 
-            { 
-                 if(ModelState.IsValid)
+            else
+            {
+                if (ModelState.IsValid)
                 {
                     string subject = "Request Link";
-                  
+
 
                     string link = "https://localhost:7008/Home/patientform/";
 
@@ -838,7 +841,7 @@ namespace dotnetProc.Controllers
 
                     bool response = _emailService.SendEmail(sendLink.Email, subject, body);
 
-                    if(response)
+                    if (response)
                     {
                         TempData["ShowPositiveNotification"] = "Link Sent Successfully.";
                     }
@@ -854,7 +857,7 @@ namespace dotnetProc.Controllers
                     TempData["ShowNegativeNotification"] = "Not Valid Information!";
                 }
 
-                    return RedirectToAction("Dashboard");
+                return RedirectToAction("Dashboard");
             }
 
 
@@ -866,20 +869,20 @@ namespace dotnetProc.Controllers
         {
 
             Encounterform encounterform1 = _dashboard.GetEncounterFormByRequestId(id);
-            
+
             if (encounterform1 == null)
             {
                 encounterform1 = new Encounterform();
                 encounterform1.Requestid = int.Parse(id);
-               
+
             }
 
             return View(encounterform1);
         }
 
         [HttpPost]
-        
-        public IActionResult SaveEncounterForm(Encounterform encounterform,string requestId)
+
+        public IActionResult SaveEncounterForm(Encounterform encounterform, string requestId)
         {
 
 
@@ -896,14 +899,14 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Something went wrong!";
             }
 
-            return RedirectToAction("EncounterForm",  new { id = requestId });
+            return RedirectToAction("EncounterForm", new { id = requestId });
         }
 
 
         [HttpPost]
         public IActionResult DownLoadForm(string requestid)
         {
-            
+
 
             Encounterform encounterForm = _dashboard.GetEncounterFormByRequestId(requestid);
 
@@ -920,7 +923,274 @@ namespace dotnetProc.Controllers
 
             bool? response = _dashboard.IsEncounterFormFinlized(newid);
 
-             return Json(new {isfinelized = response});
+            return Json(new { isfinelized = response });
+        }
+
+        [AuthManager("Admin")]
+        [HttpGet]
+        [Route("closecase/{id}")]
+
+        public IActionResult CloseCase(string id)
+        {
+
+            CLoseCase closeCase = _dashboard.GetDataForCloseCaseByRequestId(id);
+            closeCase.requestId = id;
+            return View(closeCase);
+        }
+
+        [HttpPost]
+        public IActionResult SaveCloseCaseData(CLoseCase closeCase, string requestId)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                closeCase.requestId = requestId;
+                bool response = _dashboard.SaveDataForCloseState(closeCase);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Data Saved Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+                }
+                return RedirectToAction("CloseCase", new { id = requestId });
+            }
+
+        }
+
+        [HttpPost]
+
+        public IActionResult PostCloseCase(string requestId)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                int newid = int.Parse(requestId);
+
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                bool response = _dashboard.CloseCaseByRequestId(newid, loggedInUser.UserId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Request Closed Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went  Wrong!";
+                }
+
+                return RedirectToAction("Dashboard");
+            }
+
+        }
+
+        [AuthManager("Admin")]
+        [HttpGet]
+        [Route("Admindashboard/reqbyadmin")]
+        public IActionResult PatientReqByAdmin()
+        {
+            return View("CreateRequestbyAdmin");
+        }
+
+        [HttpPost]
+        public IActionResult PatientFormByAdmin(PatientReqByAdmin patientReqByAdmin)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+
+             
+                bool isemailblocked = _patientReq.IsEmailBlocked(patientReqByAdmin.Email);
+                bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(patientReqByAdmin.Phonenumber);
+                bool IsregionAvailable = _patientReq.IsRegionAvailable(patientReqByAdmin.Location.State);
+
+
+
+                if (isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+                {
+
+                      TempData["isemailblocked"] = "Account with this email is blocked.";
+
+
+
+                    if (IsPhoneBlocked)
+                    {
+                        TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                    }
+
+                    if (IsregionAvailable == false)
+                    {
+                        TempData["IsRegionAvailable"] = "Region is not available.";
+                    }
+
+                    return View("CreateRequestbyAdmin", patientReqByAdmin);
+                }
+
+
+
+                CmnInformation patientInfo = new CmnInformation
+                {
+                    FirstName = patientReqByAdmin.FirstName,
+                    LastName = patientReqByAdmin.LastName,
+                    Email = patientReqByAdmin.Email,
+                    PhoneNumber = patientReqByAdmin.Phonenumber
+                };
+
+                AddressModel address = new AddressModel()
+                {
+                    City = patientReqByAdmin.Location.City,
+                    State = patientReqByAdmin.Location.State,
+                    Street = patientReqByAdmin.Location.Street,
+                    ZipCode = patientReqByAdmin.Location.ZipCode,
+                    RoomNo = patientReqByAdmin.Location.RoomNo
+                };
+                PatientReq pr = new PatientReq()
+                {
+                    FirstName = patientReqByAdmin.FirstName,
+                    LastName = patientReqByAdmin.LastName,
+                    Email = patientReqByAdmin.Email,
+                    Phonenumber = patientReqByAdmin.Phonenumber,
+                    BirthDate = patientReqByAdmin.BirthDate,
+                    Location = address,
+                    Symptoms = patientReqByAdmin.Notes
+                };
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, "Patient", patientReqByAdmin.Location.State);
+
+                bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, patientReqByAdmin.Location);
+
+
+
+                if (response == false || patientRequest == null)
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went  Wrong!";
+                }
+                else
+                {
+                    TempData["ShowPositiveNotification"] = "Request Submited Successfully.";
+                }
+
+                return RedirectToAction("Dashboard", "Admindashboard");
+
+
+            }
+            else
+            {
+                return RedirectToAction("PatientReqByAdmin");
+            }
+        }
+
+        public IActionResult ExportDataAsExcelFile(string type, string[] StatusArray, string region, string Name)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+
+                int IntType = 0;
+                if (type != null)
+                {
+                    IntType = int.Parse(type);
+                }
+
+                List<DashboardRequests> dashboardRequests = _dashboard.GetRequestsFromRequestorType(IntType, StatusArray, region, Name);
+
+
+                string[] header = { "Name", "Date of Birth", "Requestor", "Phonenumber", "Address", "Notes" };
+
+                using (var package = new XLWorkbook())
+                {
+
+                    var worksheet = package.Worksheets.Add("Sheet1");
+                    int row = 1;
+                    for (int i = 0; i < header.Length; i++)
+                    {
+                        worksheet.Cell(row, i + 1).Value = header[i];
+                    }
+
+                    row++;
+                    int j = 0;
+                    foreach (DashboardRequests req in dashboardRequests)
+                    {
+
+                        worksheet.Cell(row, j + 1).Value = req.Username;
+
+                        j++;
+
+                        worksheet.Cell(row, j + 1).Value = req.Birthdate;
+
+                        j++;
+
+                        worksheet.Cell(row, j + 1)  .Value = req.Requestor;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Phone + "/" + req.RequestorPhone;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Address;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Notes;
+
+                        j = 0;
+                        row++;
+
+
+
+
+                    }
+
+
+                    using (var stream = new MemoryStream())
+                    {
+                        package.SaveAs(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        // Return Excel file as a downloadable file
+                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "table_data.xlsx");
+                    }
+                }
+
+                //bool response = _dashboard.ExportExcelForCurrentPage(dashboardRequests);
+
+                
+            }
         }
     }
 }

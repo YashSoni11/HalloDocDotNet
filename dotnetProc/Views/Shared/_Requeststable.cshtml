@@ -34,19 +34,19 @@
         int j = 1;
            <table class="table ReqtableContainer">
             <thead >
-                <tr style="background-color:#f1f1f1;">
-                <th scope="col">Name</th>
-                <th scope="col">Date Of Birth</th>
-                <th scope="col">Requestor</th>
-                <th scope="col">Requested Date</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Address</th>
-                <th scope="col">Notes</th>
-                <th scope="col">Chat With</th>
-                <th scope="col">Active</th>
+                <tr  style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader" scope="col">Name</th>
+                    <th class="reqtableHeader" scope="col">Date Of Birth</th>
+                    <th class="reqtableHeader" scope="col">Requestor</th>
+                    <th class="reqtableHeader" scope="col">Requested Date</th>
+                    <th class="reqtableHeader" scope="col">Phone</th>
+                    <th class="reqtableHeader" scope="col">Address</th>
+                    <th class="reqtableHeader" scope="col">Notes</th>
+                    <th class="reqtableHeader" scope="col">Chat With</th>
+                    <th class="reqtableHeader" scope="col">Active</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody  class="reqtableBody">
 
             @foreach (DashboardRequests dr in Model.Requests)
             {
@@ -141,6 +141,10 @@
                                         if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
                                         {
                                             <li><button class="dropdown-item" onclick="GetEncounterCaseView(@dr.Requestid)"><i class="bi bi-file-earmark-text mx-1"></i>Encounter</button></li>
+                                        }
+                                        if ( status[dr.status] == "Toclose")
+                                        {
+                                            <li><a class="dropdown-item" asp-action="CloseCase" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-x-circle mx-1"></i>Close Case</a></li>
                                         }
                                     }
                                   

@@ -295,9 +295,9 @@ namespace HalloDoc_BAL.Repositery
                 Phonenumber = cm.PhoneNumber,
                 Createddate = DateTime.Now,
                 Status = 1,
-                Userid = userId == 0?null:userId,
                 Confirmationnumber = confirmatinumber,
                 Email = cm.Email,
+                Createduserid = userId
             };
 
             _context.Requests.Add(request);

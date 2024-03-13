@@ -847,7 +847,16 @@ const GetSendLinkPopUp = () => {
 
                 $("#CancleCasePopup").html(response);
 
+
+                $.validator.unobtrusive.parse($("#SendLinkForm"));
+
+                const input = document.querySelector("#phonInput");
+                window.intlTelInput(input, {
+                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
+                });
+
                 $("#SendLinkPopUp").modal("show");
+
             }
 
         },
@@ -988,4 +997,51 @@ const GetVendorDetails = () => {
     })
 
 
+}
+
+
+///User-Dashboard Functionality
+
+const editDetails = () => {
+    console.log("iuhio")
+    $(".tbDisabled").removeAttr("disabled");
+    $(".editMode").css("display", "block");
+    $(".editBtn").css("display", "none");
+
+
+}
+
+const cancleEdit = () => {
+
+    $(".editBtn").css("display", "block");
+    $(".editMode").css("display", "none");
+    $(".tbDisabled").attr("disabled", "true")
+
+}
+
+
+const showLocation = () => {
+
+
+   
+
+
+    var zip = $("#zip").val();
+    var city = $("#city").val();
+    var state = $("#state").val();
+    var street = $("#street").val();
+
+    if (city == '' || state == "" || street == "") {
+        toastr.error("Please enter  valid location!");
+        return;
+    }
+
+    console.log(address)
+
+    var address = street + ',' + city + ',' + state + ',' + zip
+
+    var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
+
+
+    window.open(mapsUrl, "_blank");
 }
