@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <Content Remove="Views\FormByConciearge.cshtml" />
+    <Content Remove="wwwroot\Upload\.~lock.table_data2.xlsx#" />
+    <Content Remove="wwwroot\Upload\table_data.xlsx" />
   </ItemGroup>
 
   <ItemGroup>

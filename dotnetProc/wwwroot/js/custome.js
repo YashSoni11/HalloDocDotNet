@@ -545,7 +545,7 @@ const GetEncounterCaseView = (id) => {
 
             } else {
 
-                //window.location.href = `https://localhost:7008/Admindashboard/encounterform/${id}`
+                window.location.href = `https://localhost:7008/Admindashboard/encounterform/${id}`
             }
 
         },

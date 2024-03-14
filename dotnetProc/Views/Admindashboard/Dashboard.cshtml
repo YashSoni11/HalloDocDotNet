@@ -278,18 +278,25 @@
             url: "/Admindashboard/ExportDataAsExcelFile",
             data: { type: type, StatusArray: statusarray, region: region, Name: searchString },
             success: function (response) {
-
+           console.log(response)
                 if (response.code == 401) {
 
                     location.reload();
                 } else {
-
-                    $("#tableContainer").html(response);
-                    DisPlayPagination()
+                   
+                     var filename = "table_data.xlsx"; 
+                    //var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";        
+                    //var blob = new Blob([response], { type: contentType });
+                    var link = document.createElement('a');
+                    link.href = response.url;
+                    link.download = filename;
+                    link.click();
+                    toastr.success("File Exported Successfully.")
+                    //window.location.href. = response.url;
                 }
             },
             error: function (err) {
-                console.log(err)
+                console.log(err,"ioo")
             }
         })
        

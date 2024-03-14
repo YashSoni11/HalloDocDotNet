@@ -88,6 +88,13 @@ namespace HalloDoc_BAL.Interface
 
         public bool ExportExcelForCurrentPage(List<DashboardRequests> dashboardRequests);
 
+        public AdminProfile GetAdminProfileData(int adminid);
+
+        public bool ResetAdminPassword(int adminId, string password);
+
+        public bool SaveAdminAccountInfo(AdminProfile ap,int adminId);
+        public bool SaveAdminMailingAndBillingInfo(AdminProfile ap,int adminId);
+
 
     }
 }

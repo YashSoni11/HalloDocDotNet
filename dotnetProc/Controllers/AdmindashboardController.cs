@@ -10,6 +10,7 @@ using System.Globalization;
 using Microsoft.IdentityModel.Tokens;
 using ClosedXML;
 using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace dotnetProc.Controllers
 {
@@ -1176,14 +1177,24 @@ namespace dotnetProc.Controllers
 
                     }
 
-
+                    byte[] fileBytes;
                     using (var stream = new MemoryStream())
                     {
                         package.SaveAs(stream);
                         stream.Seek(0, SeekOrigin.Begin);
 
-                        // Return Excel file as a downloadable file
-                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "table_data.xlsx");
+                        fileBytes = stream.ToArray();
+                        string fileName = Guid.NewGuid().ToString() + ".xlsx";
+                        string filePath =  Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
+
+                        string path = Path.Combine(filePath, fileName); 
+
+                        System.IO.File.WriteAllBytes(path, fileBytes);
+                       
+                        string fileUrl = path;
+
+                        return Json(new { Url = "https://localhost:7008/Upload/"+fileName });
+                  
                     }
                 }
 
@@ -1193,12 +1204,143 @@ namespace dotnetProc.Controllers
             }
         }
 
-        //[AuthManager("Admin")]
+        [AuthManager("Admin")]
         [HttpGet]
         [Route("myprofile")]
         public IActionResult AdminProfile()
         {
-            return View("Adminprofile");  
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            AdminProfile adminProfile = _dashboard.GetAdminProfileData(loggedInUser.UserId);
+
+
+            return View("Adminprofile",adminProfile);  
+        }
+
+        [HttpPost]
+        public IActionResult ResetAdminPassword(string AdminPassword)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if(AdminPassword.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Password!";
+                return RedirectToAction("AdminProfile");
+
+            }
+            else
+            {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                string hashedPassword = _account.GetHashedPassword(AdminPassword); 
+
+                bool response = _dashboard.ResetAdminPassword(loggedInUser.UserId,hashedPassword);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Password Changed Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+                }
+
+                return RedirectToAction("AdminProfile");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult SaveAdminAccountInformation(AdminProfile ap)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if(ModelState.IsValid)
+            {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                bool response = _dashboard.SaveAdminAccountInfo(ap,loggedInUser.UserId);
+
+                if(response)
+                {
+                    TempData["ShowPositiveNotification"] = "Account Information Saved Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                }
+                return RedirectToAction("AdminProfile");
+
+
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                return RedirectToAction("AdminProfile");
+            }
+           
+        }
+
+
+        [HttpPost]
+        public IActionResult SaveMailingAndBillingInformation(AdminProfile ap)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                bool response = _dashboard.SaveAdminMailingAndBillingInfo(ap, loggedInUser.UserId);
+
+                if (response)
+               {
+                    TempData["ShowPositiveNotification"] = "Mailing & Billig Info Saved Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                }
+                return RedirectToAction("AdminProfile");
+
+
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                return RedirectToAction("AdminProfile");
+            }
         }
     }
 }

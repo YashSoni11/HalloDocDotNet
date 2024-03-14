@@ -1114,6 +1114,123 @@ namespace HalloDoc_BAL.Repositery
             return false;
 
         }
+
+        public AdminProfile GetAdminProfileData(int adminid)
+        {
+            
+
+            Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminid);
+
+            if (admin != null)
+            {
+                AdminProfile ap = new AdminProfile()
+                {
+                    Firstname = admin.Firstname,
+                    Lastname = admin.Lastname,
+                    Confirmationemail = admin.Email,
+                    State = _context.Regions.Where(q => q.Regionid == admin.Regionid).Select(r => r.Name).FirstOrDefault(),
+                    Role = _context.Roles.Where(q => q.Roleid == admin.Roleid).Select(r => r.Name).FirstOrDefault(),
+                    Phone = admin.Mobile,
+                    AltPhone = admin.Altphone,
+                    Address1 = admin.Address1,
+                    Address2 = admin.Address2,
+                    City = admin.City,
+                    Status = (int)(admin.Status),
+                    Zip = admin.Zip,
+                    AspnetAdminid = admin.Aspnetuserid
+
+                };
+
+
+                Aspnetuser aspnetuser = _context.Aspnetusers.Where(q=>q.Id == ap.AspnetAdminid).FirstOrDefault();
+
+                ap.Email = aspnetuser.Email;
+                ap.Username = aspnetuser.Username;
+
+                List<Role> roles = _context.Roles.ToList();
+                List<Region> regions = _context.Regions.ToList();
+
+
+                ap.roles = roles;
+                ap.regions = regions;
+
+                return ap;
+            }
+
+            return new AdminProfile();
+        }
+
+        public bool ResetAdminPassword(int adminId,string password)
+        {
+            string aspnetId = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+            Aspnetuser aspnetuser = _context.Aspnetusers.Where(q => q.Id == aspnetId).FirstOrDefault();
+
+            try
+            {
+                aspnetuser.Passwordhash = password;
+
+                _context.Aspnetusers.Update(aspnetuser);
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool SaveAdminAccountInfo(AdminProfile ap,int adminId)
+        {
+            try
+            {
+
+                 Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminId);
+                Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q=>q.Id == admin.Aspnetuserid);
+
+                aspnetuser.Username = ap.Username;
+                aspnetuser.Email = ap.Email;
+                admin.Firstname = ap.Firstname;
+                admin.Lastname = ap.Lastname;
+                admin.Mobile = ap.Phone;
+                admin.Status = (short)ap.Status;
+                admin.Email = ap.Confirmationemail;
+                admin.Roleid = _context.Roles.Where(q => q.Name == ap.Role).Select(r => r.Roleid).FirstOrDefault();
+
+                _context.Admins.Update(admin);
+                _context.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool SaveAdminMailingAndBillingInfo(AdminProfile ap, int adminId)
+        {
+            try
+            {
+
+                Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminId);
+
+                admin.Address1 = ap.Address1;
+                admin.Address2 = ap.Address2;
+                admin.City = ap.City;
+                admin.Regionid = _context.Regions.Where(q=>q.Name == ap.State).Select(r=>r.Regionid).FirstOrDefault();
+                admin.Zip = ap.Zip;
+                admin.Altphone = ap.AltPhone;
+
+                _context.Admins.Update(admin);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
     }
 
 

@@ -2,11 +2,13 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    Layout = "_NavBar";
+    Layout = "_Layout";
 }
 
 @using HalloDoc_DAL.ViewModels;
 @model HalloDoc_DAL.ViewModels.Documents;
+
+<partial name="_NavBar"/>
 
 
 <div class="container-fluid mt-3 ">

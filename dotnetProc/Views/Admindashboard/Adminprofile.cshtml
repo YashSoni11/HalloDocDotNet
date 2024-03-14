@@ -8,8 +8,11 @@
 
 
 
-@model HalloDoc_DAL.Models.Admin;
+@model HalloDoc_DAL.AdminViewModels.AdminProfile;
 
+@{
+    string[] statusArray = { "Active", "Dactive" };
+}
 
 
 <div class="container-fluid mt-3 ">
@@ -23,11 +26,13 @@
             </a>
         </div>
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
+            <form asp-action="ResetAdminPassword" asp-controller="Admindashboard" id="resetForm" method="post">
+                <input hidden id="HiddenadminpassInp" value="" name="AdminPassword" />
+            </form>
 
-
-            <form asp-action="FormByFamily" asp-controller="Home" method="post" enctype="multipart/form-data">
                 <div class="container-fluid  formContainer mb-5">
 
+            <form asp-action="SaveAdminAccountInformation" asp-controller="Admindashboard" method="post">
 
                     <!-- Family/Frineds Information Input Group -->
 
@@ -36,7 +41,7 @@
                         <h4 class="mb-3 mt-3">Account Information</h4>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Firstname" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="Username" type="text" class="form-control tbDisabled" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Username</label>
                                 @* <span asp-validation-for="FamilyFriendsIfo.FirstName" class="text-danger"></span> *@
@@ -44,18 +49,18 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input  type="text" class="form-control" id="floatingInput"
+                                <input asp-for="Password" type="text" class="form-control" id="AdminPassInp"
                                        placeholder="name@example.com">
-                                <label for="floatingInput">Password</label>
+                                <label for="AdminPassInp">Password</label>
                                 @* <span asp-validation-for="FamilyFriendsIfo.LastName" class="text-danger"></span> *@
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="Status" class="form-select" id="floatingInput" aria-label="Default select example">
+                                <select asp-for="Status" value="@statusArray[(int)Model.Status-1]" class="form-select tbDisabled" id="floatingInput" aria-label="Default select example">
                                     <option value="1">Active</option>
-                                    <option value="2">Deactive</option>
+                                    <option value="2">Dactive</option>
                                 </select>
                                 <label for="floatingInput">Status</label>
                                 @* <span asp-validation-for="FamilyFriendsIfo.PhoneNumber" class="text-danger"></span> *@
@@ -64,25 +69,34 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="Roleid" class="form-select" aria-label="Default select example" >
-                                    <option value="1">Master Admin</option>
-                                    <option value="2">Admin</option>
+                                <select asp-for="Role" value="Role" class="form-select tbDisabled" aria-label="Default select example">
+                                    @foreach(Role role in Model.roles)
+                                    {
+                                    <option value="@role.Name">@role.Name</option>                                    
+                                    }
                                 </select>
                                 <label for="floatingInput">Role</label>
                                 @* <span asp-validation-for="FamilyFriendsIfo.Email" class="text-danger"></span> *@
 
                             </div>
                         </div>
+
+                        <div class="col-12 d-flex justify-content-end" >
+                            <button type="button"
+                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="ResetAdminPassword('HiddenadminpassInp')">
+                                Reset Password
+                            </button>
+                        </div>
                         
                     </div>
-
+          
                     <!-- Patient Information Input Group -->
 
                     <div class="row mt-3">
                         <h4 class="mt-3 mb-3">Administrator Information</h4>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Firstname" class="form-control" placeholder="Leave a comment here"
+                                <input asp-for="Firstname" class="form-control tbDisabled" placeholder="Leave a comment here"
                                           id="floatingTextarea2" ></input>
                                 <label for="floatingTextarea2">Firstname</label>
                                 @* <span asp-validation-for="PatientInfo.Symptoms" class="text-danger"></span> *@
@@ -90,7 +104,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Lastname" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="Lastname" type="text" class="form-control tbDisabled" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Last Name</label>
                                 @* <span asp-validation-for="PatientInfo.FirstName" class="text-danger"></span> *@
@@ -98,41 +112,81 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Email" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="Email" type="text" class="form-control tbDisabled" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Email</label>
                                 @* <span asp-validation-for="PatientInfo.LastName" class="text-danger"></span> *@
 
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Email" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="Confirmationemail" type="text" class="form-control tbDisabled" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Confirmation Email</label>
                                 @* <span asp-validation-for="PatientInfo.BirthDate" class="text-danger"></span> *@
 
                             </div>
                         </div>
-                    </div>
-
                     <div class="col-xl-6 col-sm-6 col-12">
                         <div class="form-floating mb-3 phoneInputDiv">
-                            <input asp-for="Altphone" style='height: 57px;' type="tel" id='phonInput' class="form-control"
+                            <input asp-for="Phone" style='height: 57px;' type="tel" id='phonInput' class="form-control tbDisabled"
                                    id="floatingInput">
                             <label for="floatingInput"></label>
                             @* <span asp-validation-for="PatientInfo.Phonenumber" class="text-danger"></span> *@
                         </div>
                     </div>
 
+                    <div id="RegionChekboxdiv" class="col-xl-6 col-sm-6 col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                               District of Columbia
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                New York
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Virgnia
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                               Maryland
+                            </label>
+                        </div>
+                    </div>
+
+                    </div>
+
+
+
+                   
+
+                    <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
+                        <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
+                        <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
+                            Cancle
+                        </button>
+                    </div>
+                </form>
                     <!-- Patient Contact Information Input Group -->
+                <form asp-action="SaveMailingAndBillingInformation" asp-controller="Admindashboard" method="post">
 
                     <div class="row mt-3">
                         <h4 class="mb-3">Mailing & Billing Information</h4>
 
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Address1" type="email" class="form-control emailInp" id="floatingInput"
+                                <input asp-for="Address1" type="text" class="form-control emailInp tbDisabled1" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Address1</label>
                                 @* <span asp-validation-for="PatientInfo.Email" class="text-danger"></span> *@
@@ -140,7 +194,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Address2" type="email" class="form-control emailInp" id="floatingInput"
+                                <input asp-for="Address2" type="text" class="form-control emailInp tbDisabled1" id="floatingInput"
                                        placeholder="name@example.com" >
                                 <label for="floatingInput">Address2</label>
                                 @* <span asp-validation-for="PatientInfo.Email" class="text-danger"></span> *@
@@ -148,7 +202,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="City" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="City" type="text" class="form-control tbDisabled1" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">City</label>
                                 @* <span asp-validation-for="patientLocation.City" class="text-danger"></span> *@
@@ -157,17 +211,19 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="Regionid" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
-                                    <option value="1">Gujarat</option>
-                                    <option value="2">Maharastra</option>
-                                    <option value="3">Punjab</option>
+                                <select asp-for="State" class="form-select tbDisabled1" aria-label="Default select example" style="height:3rem;padding:13px;">
+                                    @foreach(Region region in Model.regions)
+                                    {
+                                    <option value="@region.Name">@region.Name</option>
+                                }
+                                  
                                 </select>
                                 @* <span asp-validation-for="patientLocation.State" class="text-danger"></span> *@
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Zip" type="number" class="form-control" id="floatingInput"
+                                <input asp-for="Zip" type="number" class="form-control tbDisabled1" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Zip Code</label>
                                 @* <span asp-validation-for="patientLocation.ZipCode" class="text-danger"></span> *@
@@ -176,15 +232,24 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3 phoneInputDiv">
-                                <input asp-for="Altphone" style='height: 57px;' type="tel" id='phonInput' class="form-control"
+                                <input asp-for="AltPhone" style='height: 57px;' type="tel" id='phonInput' class="form-control tbDisabled1"
                                        id="floatingInput">
                                 <label for="floatingInput"></label>
                                 @* <span asp-validation-for="PatientInfo.Phonenumber" class="text-danger"></span> *@
                             </div>
                         </div>
+                        <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                            <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn1" onclick="editDetails1()">Edit</button>
+                            <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode1" style="display:none;" onclick="()">Save</button>
+                            <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode1" style="display:none;" onclick="cancleEdit1()">
+                                Cancle
+                            </button>
+                        </div>
+
 
                     </div>
-
+</form>
+@*
                     <div class="row justify-content-end p-3">
                         <div class="d-flex col-3 justify-content-end" style="column-gap: 1rem;">
                             <button type="submit" class="btn btn-info  text-white darkInfo-btn">Submit</button>
@@ -193,21 +258,67 @@
                                 Cancel
                             </button>
                         </div>
-                    </div>
+                    </div>*@
 
                 </div>
-            </form>
+            
         </div>
 
     </div>
 </div>
-@section Scripts {
 
-    @{
-        <partial name="_ValidationScriptsPartial" />
-    }
-}
 
 <script>
     $(".reg-nav").remove();
+
+
+    $(document).ready(function () {
+
+   
+    $(".tbDisabled").attr("disabled", "true")
+    $(".tbDisabled1").attr("disabled", "true")
+
+
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+            toastr.remove();
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        } else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.remove();
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+    const editDetails1 = () =>{
+        $(".tbDisabled1").removeAttr("disabled");
+        $(".editMode1").css("display", "block");
+        $(".editBtn1").css("display", "none");
+    }
+
+    const cancleEdit1 = () =>{
+
+
+        $(".editBtn1").css("display", "block");
+        $(".editMode1").css("display", "none");
+        $(".tbDisabled1").attr("disabled", "true")
+
+
+    }
+
+    const ResetAdminPassword = (id) =>{
+
+
+        var passwordValue = $("#AdminPassInp").val();
+
+        if(passwordValue == ''){
+             toastr.error("Please Enter Password!");
+             return;
+        }
+
+        $(`#${id}`).val(passwordValue);
+
+        $("#resetForm").submit();
+
+
+    }
+
 </script>
