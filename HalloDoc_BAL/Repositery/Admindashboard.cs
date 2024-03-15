@@ -22,6 +22,7 @@ using PdfSharpCore.Pdf;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
+//using System.Drawing;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -117,6 +118,19 @@ namespace HalloDoc_BAL.Repositery
         public List<Physician> FilterPhysicianByRegion(int regionid)
         {
             List<Physician> physicians = _context.Physicians.Where(q => q.Regionid == regionid).ToList();
+
+            return physicians;
+        }
+
+        public List<ProviderMenu> FilterProviderByRegions(int regionId)
+        {
+            List<ProviderMenu> physicians = _context.Physicians.Where(q => q.Regionid == regionId).Select(r=> new ProviderMenu()
+            {
+                Name = r.Firstname + " " + r.Lastname,
+                IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
+                Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
+                status = (int)r.Status
+            }).ToList();
 
             return physicians;
         }
@@ -1225,6 +1239,47 @@ namespace HalloDoc_BAL.Repositery
                 return true;
             }
             catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public List<ProviderMenu> GetAllProviders()
+        {
+            List<ProviderMenu> providers = _context.Physicians.Select(r => new ProviderMenu()
+            {
+                Name = r.Firstname + " " + r.Lastname,
+                IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
+                Role = _context.Roles.Where(q=>q.Roleid == r.Roleid).Select(r=>r.Name).FirstOrDefault(),
+                status = (int)r.Status,
+                ProviderId = r.Physicianid
+            }).ToList();
+
+            return providers;
+        }
+
+
+        public bool SaveProviderChanges(List<ProviderMenu> providers)
+        {
+            try
+            {
+
+                foreach(ProviderMenu provider in providers)
+                {
+
+                    Physiciannotification physiciannotification = _context.Physiciannotifications.Where(q => q.Physicianid == provider.ProviderId).FirstOrDefault();
+
+                    physiciannotification.Isnotificationstopped = provider.IsNoificationOn;
+
+                    _context.Physiciannotifications.Update(physiciannotification);
+                }
+
+                _context.SaveChanges();
+
+                return true;
+            } 
+            catch(Exception ex)
             {
                 return false;
             }

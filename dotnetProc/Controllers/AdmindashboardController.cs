@@ -259,6 +259,7 @@ namespace dotnetProc.Controllers
             }
         }
 
+        [HttpPost]
         public IActionResult PostCancleRequest(AdminCancleCase adminCancleCase, int requestId)
         {
             string token = HttpContext.Request.Cookies["jwt"];
@@ -284,12 +285,49 @@ namespace dotnetProc.Controllers
         public IActionResult GetPhysicianByRegion(int regionId)
         {
 
-            List<Physician> physicians = _dashboard.FilterPhysicianByRegion(regionId);
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+
+                List<Physician> physicians = _dashboard.FilterPhysicianByRegion(regionId);
 
 
-            string response = JsonConvert.SerializeObject(physicians);
+                string response = JsonConvert.SerializeObject(physicians);
 
-            return Json(response);
+                return Json(response);
+            }
+
+        }
+
+        public IActionResult GetProvidersByRegions(int regionId)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                List<ProviderMenu> physicians = _dashboard.FilterProviderByRegions(regionId);
+
+
+                Providers providers = new Providers()
+                {
+                    providers = physicians
+                };
+
+                return PartialView("_ProviderTable", providers);
+            }
 
         }
 
@@ -1340,6 +1378,59 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Somthing went wrong!";
 
                 return RedirectToAction("AdminProfile");
+            }
+        }
+
+
+        [AuthManager("Admin")]
+        [HttpGet]
+        [Route("providers")]
+        public IActionResult ProviderMenu()
+        {
+            List<ProviderMenu> providers = _dashboard.GetAllProviders();
+            List<Region> regions = _dashboard.GetAllRegions();
+
+            Providers providers1 = new Providers()
+            {
+                providers = providers,
+                regions = regions
+             };
+
+            return View(providers1);
+        }
+
+        [HttpPost]
+
+        public IActionResult SaveProviderChanges(List<Providers> providers)
+        {
+
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                //bool response = _dashboard.SaveProviderChanges(providers.providers);
+                bool response = false;
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Data Saved Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                }
+
+                return RedirectToAction("ProviderMenu");
             }
         }
     }

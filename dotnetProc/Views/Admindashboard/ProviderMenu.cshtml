@@ -1,0 +1,133 @@
+﻿@model HalloDoc_DAL.AdminViewModels.Providers;
+
+
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>Provider Information</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mt-3 ProviderMenuHeader">
+
+
+            <div class="row justify-content-between" style="height: 6rem; align-items: center;">
+
+                <div class="col-4">
+
+                    <div class="form-floating">
+                        <select class="form-select" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion()">
+                            @foreach (Region region in Model.regions)
+                            {
+                                <option value="@region.Regionid">@region.Name</option>
+                            }
+                        </select>
+                        <label for="ProviderRegionSelector">Regions</label>
+                    </div>
+
+
+                </div>
+
+                <div class="col-3">
+                    <button type="submit" class="btn btn-info  text-white darkInfo-btn " onclick="()">Create Provider Account</button>
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+ 
+    <div class="row table-responsive" id="tableContainer" style="justify-content:center">
+        <div id="ProviderTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between ">
+
+            <partial name="_ProviderTable" model="@Model.providers"/>
+
+        </div>
+            
+       
+
+    </div>
+      
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+    const GetProvidersByRegion = () => {
+
+        let region = $("#ProviderRegionSelector").val();
+
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/GetProvidersByRegions",
+            data: { regionId: region },
+            success: function (response) {
+
+
+                if (response.code == 401) {
+
+                    location.reload();
+
+
+                } else {
+
+                    console.log(response)
+                   $("#ProviderTableContainer").html(response);
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+
+
+    }
+
+    const SaveProviderChanges = () =>{
+
+        $("#ProviderForm").submit();
+    }
+
+
+    
+
+</script>

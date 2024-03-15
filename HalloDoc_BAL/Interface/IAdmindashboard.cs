@@ -95,6 +95,11 @@ namespace HalloDoc_BAL.Interface
         public bool SaveAdminAccountInfo(AdminProfile ap,int adminId);
         public bool SaveAdminMailingAndBillingInfo(AdminProfile ap,int adminId);
 
+        public List<ProviderMenu> GetAllProviders();
+
+        public List<ProviderMenu> FilterProviderByRegions(int regionId);
+
+        public bool SaveProviderChanges(List<ProviderMenu> providers);
 
     }
 }

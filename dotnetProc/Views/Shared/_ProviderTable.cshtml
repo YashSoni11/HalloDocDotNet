@@ -1,0 +1,87 @@
+﻿@model List<HalloDoc_DAL.AdminViewModels.ProviderMenu>;
+@using HalloDoc_DAL.AdminViewModels;
+
+
+@{
+    <partial name="_encounterModal" />
+    string[] status = { "Active", "Pending", "deactive" };
+ <form id="ProviderForm" asp-action="SaveProviderChanges" asp-controller="Admindashboard" method="post">
+
+
+  
+
+   
+        <table class="table ReqtableContainer">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader" scope="col">Stop Notification</th>
+                    <th class="reqtableHeader" scope="col">Provider Name</th>
+                    <th class="reqtableHeader" scope="col">Role</th>
+                    <th class="reqtableHeader" scope="col">ON Call Status</th>
+                    <th class="reqtableHeader" scope="col">Status</th>
+                    <th class="reqtableHeader" scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+           
+                @foreach (ProviderMenu Physician in Model)
+                {
+
+
+
+
+                    <tr class="align-middle">
+                    <th> <input asp-for="@Physician.Name" /></th>
+                    <th class="align-middle" scope="row"> <input class="form-check-input" type="checkbox" asp-for="@Physician.IsNoificationOn" onchange="handleNotificationChange()"></th>
+                        <td class="align-middle">@Physician.Name</td>
+                        <td class="align-middle">@Physician.Role</td>
+                        <td class="align-middle">Un Available</td>
+                        <td class="align-middle">
+                            @status[Physician.status-1]
+                        </td>
+                        <td class="align-middle">
+
+
+                            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                Contact
+                            </button>
+                            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                Edit
+                            </button>
+
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+                
+        </table>
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 d-flex justify-content-end mt-3">
+            <button id="ProviderChangeSaveBtn" type="submit" class="btn btn-info  text-white darkInfo-btn ">Save</button>
+        </div>
+
+    </form>
+
+}
+
+
+<script>
+
+    //$("document").ready(function () {
+
+    //    DisPlayPagination();
+
+    //})
+
+    
+    const handleNotificationChange = () =>{
+
+       if( $("#ProviderChangeSaveBtn").css("display") == "none"){
+            $("#ProviderChangeSaveBtn").css("display","block");
+       }
+    }
+
+
+</script>
