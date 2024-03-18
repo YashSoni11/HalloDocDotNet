@@ -1,11 +1,11 @@
-﻿@model List<HalloDoc_DAL.AdminViewModels.ProviderMenu>;
+﻿@model HalloDoc_DAL.AdminViewModels.ProviderList;
 @using HalloDoc_DAL.AdminViewModels;
 
 
 @{
-    <partial name="_encounterModal" />
+    
     string[] status = { "Active", "Pending", "deactive" };
- <form id="ProviderForm" asp-action="SaveProviderChanges" asp-controller="Admindashboard" method="post">
+    <form method="post" id="ProviderForm" asp-action="SaveProviderChanges" asp-controller="Admindashboard">
 
 
   
@@ -24,20 +24,20 @@
             </thead>
             <tbody>
            
-                @foreach (ProviderMenu Physician in Model)
+                @for (int i = 0;i<Model.providers.Count;i++)
                 {
 
 
 
 
                     <tr class="align-middle">
-                    <th> <input asp-for="@Physician.Name" /></th>
-                    <th class="align-middle" scope="row"> <input class="form-check-input" type="checkbox" asp-for="@Physician.IsNoificationOn" onchange="handleNotificationChange()"></th>
-                        <td class="align-middle">@Physician.Name</td>
-                        <td class="align-middle">@Physician.Role</td>
+                    <td style="display:none"><input asp-for="@Model.providers[i].ProviderId" hidden  style="display:none;"/></td>
+                    <th class="align-middle" scope="row"> <input class="form-check-input" type="checkbox" asp-for="@Model.providers[i].IsNoificationOn" onchange="handleNotificationChange()"></th>
+                        <td class="align-middle">@Model.providers[i].Name</td>
+                        <td class="align-middle">@Model.providers[i].Role</td>
                         <td class="align-middle">Un Available</td>
                         <td class="align-middle">
-                            @status[Physician.status-1]
+                            @status[Model.providers[i].status-1]
                         </td>
                         <td class="align-middle">
 
@@ -58,9 +58,7 @@
                 
         </table>
 
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 d-flex justify-content-end mt-3">
-            <button id="ProviderChangeSaveBtn" type="submit" class="btn btn-info  text-white darkInfo-btn ">Save</button>
-        </div>
+       
 
     </form>
 

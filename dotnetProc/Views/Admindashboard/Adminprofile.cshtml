@@ -14,6 +14,8 @@
     string[] statusArray = { "Active", "Dactive" };
 }
 
+<partial name="_DashNavbar" />
+<partial name="_Dashtabs" />
 
 <div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
@@ -274,7 +276,7 @@
 
     $(document).ready(function () {
 
-   
+        handleNavChange('admin-profile-tab')
     $(".tbDisabled").attr("disabled", "true")
     $(".tbDisabled1").attr("disabled", "true")
 

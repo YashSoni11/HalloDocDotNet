@@ -11,6 +11,7 @@
     --label-disabled: #EEEEEE;
     --tab-border-color: #dee2e6;
     --admindash-nav-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    --disabled-input: #e9ecef;
 }
 
 .dark-theme {
@@ -25,7 +26,8 @@
     --date-icon-color: 1;
     --label-disabled: #222831;
     --tab-border-color: #EEEEEE;
-    --admindash-nav-shadow:rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    --admindash-nav-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    --disabled-input: #6f7376;
 }
 
 
@@ -38,9 +40,23 @@ label {
     color: var(--pi-label-color);
     white-space: break-spaces;
 }
+/*.form-floating > label::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: blue;
+   
+}
+
+/ Style the ::after pseudo-element of the label when the input is focused /
+.form-floating > .form-control:focus + label::after {
+    background-color: red;
+   
+}*/
 
 
-h3,h2,h4,h5{
+h3,h2,h4,h5,h6{
     color: var(--pi-heading-color);
 }
 
@@ -69,6 +85,12 @@ h3,h2,h4,h5{
     color: white
 }
 
+.UserTable{
+    color:var(--pi-label-color);
+}
+p{
+    color:var(--pi-label-color);
+}
 .navbar {
     /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */
     box-shadow: 5px 1px 18px #9b9b9b;
@@ -115,9 +137,14 @@ h3,h2,h4,h5{
     background-color: var(--label-disabled) !important;
 }
 
+.form-control:disabled {
+    background-color: var(--disabled-input);
+    opacity: 1;
+}
 
 .form-control:focus ~ label {
     color: #0dcaf0 !important;
+    /*background-color:white;*/
 }
 
 ::-webkit-calendar-picker-indicator {

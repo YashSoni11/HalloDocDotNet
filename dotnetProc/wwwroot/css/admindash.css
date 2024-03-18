@@ -142,9 +142,9 @@
     box-shadow: var(--NotesContainer-shadow);
 }
 
-h2 {
+/*h2 {
     color: var(--NotesContainer-color);
-}
+}*/
 
 .RequestorTypeHeading {
     border-radius: 18px;

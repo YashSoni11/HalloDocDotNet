@@ -29,4 +29,11 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public List<Region> regions { get; set; }
     }
+
+    public class ProviderList
+    {
+        public List<ProviderMenu> providers { get; set; }
+
+        public string rr { get; set; }  
+    }
 }

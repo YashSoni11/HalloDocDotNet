@@ -46,5 +46,5 @@ body {
 
 
 .form-control:focus ~ label {
-    transform: scale(0.80) translateY(-1.8rem) translateX(0.15rem) !important;
+    /*transform: scale(0.80) translateY(-1.8rem) translateX(0.50rem) !important;*/
 }

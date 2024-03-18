@@ -124,13 +124,32 @@ namespace HalloDoc_BAL.Repositery
 
         public List<ProviderMenu> FilterProviderByRegions(int regionId)
         {
-            List<ProviderMenu> physicians = _context.Physicians.Where(q => q.Regionid == regionId).Select(r=> new ProviderMenu()
+
+            List<ProviderMenu> physicians = new List<ProviderMenu>();
+            if (regionId != 0)
+            {
+              physicians = _context.Physicians.Where(q => q.Regionid == regionId).Select(r=> new ProviderMenu()
             {
                 Name = r.Firstname + " " + r.Lastname,
                 IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
                 Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
-                status = (int)r.Status
+                status = (int)r.Status,
+                ProviderId = r.Physicianid,
             }).ToList();
+            }
+            else
+            {
+                physicians = _context.Physicians.Select(r => new ProviderMenu()
+                {
+
+                    Name = r.Firstname + " " + r.Lastname,
+                    IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
+                    Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
+                    status = (int)r.Status,
+                    ProviderId = r.Physicianid,
+
+                }).ToList();
+            }
 
             return physicians;
         }

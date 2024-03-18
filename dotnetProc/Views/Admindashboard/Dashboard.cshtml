@@ -17,12 +17,8 @@
 
 
 
-
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0" style="background-color: var(--pi-form-back-color);">
-        
-        
-        
 
         <div class="container-fluid" >
 
@@ -175,6 +171,10 @@
 
 
           </div>
+        
+        
+        
+
 
 
  
@@ -202,6 +202,14 @@
 
 
    $(document).ready(function(){
+
+        if (!localStorage.getItem("ActiveLink")) {
+            localStorage.setItem("ActiveLink", "dash-tab");
+            document.getElementById("dash-tab").classList.add("active")
+
+        }
+
+        handleNavChange("dash-tab");
 
              toastr.remove();
          if('@TempData["ShowPositiveNotification"]' != ''){

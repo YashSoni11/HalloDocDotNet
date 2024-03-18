@@ -30,7 +30,7 @@
             </a>
         </div>
             <div class="col-8 formContainer" style="padding: 1rem;box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;border-radius: 13px;">
-                <div id="map" style="height: 400px;"></div>
+                <div id="map" style="height: 800px;"></div>
             </div>
         </div>
 
@@ -43,6 +43,8 @@
 <script>
 
   $(document).ready(function(){
+
+        handleNavChange('provider-location-tab');
 
     var dataPoints = @Html.Raw(Json.Serialize(Model));
 

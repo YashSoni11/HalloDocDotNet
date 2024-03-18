@@ -1,7 +1,7 @@
 ﻿@using HalloDoc_DAL.Models;
 @model HalloDoc_DAL.AdminViewModels.AdminAssignCase;
 
-<form mthod="post" id="AssignCaseForm" asp-action="PostAssignCase" asp-controller="Admindashboard" asp-route-requestId="@Model.RequestId">
+<form method="post" id="AssignCaseForm" asp-action="PostAssignCase" asp-controller="Admindashboard" asp-route-requestId="@Model.RequestId">
     <div class="modal fade" id="AssignCasePopUp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" id="CancleCaseContent">

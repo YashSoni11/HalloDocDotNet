@@ -10,6 +10,22 @@ const  preventNavigation = () => {
     };
 }
 
+const handleNavChange = (id) => {
+
+    let prevId = localStorage.getItem("ActiveLink");
+
+    let prevEle = document.getElementById(prevId);
+
+    prevEle.classList.remove("active");
+
+    console.log(typeof id)
+    let currEle = document.getElementById(id);
+    console.log(currEle)
+    currEle.classList.add("active");
+
+    localStorage.setItem("ActiveLink", id);
+}
+
 $(document).ready(function () {
     var theme = localStorage.getItem('currentTheme')
 
@@ -828,6 +844,9 @@ const ClearCase = () => {
 
 
 //Dashboard Buttons Functions
+
+
+
 const GetSendLinkPopUp = () => {
 
 

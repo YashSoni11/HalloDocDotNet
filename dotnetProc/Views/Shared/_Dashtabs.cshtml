@@ -3,19 +3,19 @@
 
 <ul class="nav  Admintabs" id="pills-tab" role="tablist" style="background-color: var(--pi-form-back-color);height:4rem;">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active tab-link" href="#" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
+        @*<a class="nav-link active tab-link" href="#" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>*@
+        <a class="nav-link  tab-link"  id="dash-tab" asp-action="Dashboard" asp-controller="Admindashboard"  role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link tab-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Provider Location</a>
+        @*<a class="nav-link tab-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Provider Location</a>*@
+        <a class="nav-link tab-link" asp-action="ProviderLocations" asp-controller="Admindashboard" id="provider-location-tab" role="tab" aria-controls="pills-profile"  >Provider Location</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link tab-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
+        @*<a class="nav-link tab-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>*@
+        <a class="nav-link tab-link" asp-action="AdminProfile" asp-controller="Admindashboard" id="admin-profile-tab"  role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link tab-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" a role="tab" aria-controls="pills-disabled" aria-selected="false">Providers</a>
-    </li>
-    <li class="nav-item " role="presentation">
-        <a class="nav-link tab-link" id="pills-providers-tab" data-bs-toggle="pill" data-bs-target="#pills-provider" a role="tab" aria-controls="pills-provider" aria-selected="false">Providers</a>
+        <a class="nav-link tab-link" id="provider-menu-tab" asp-action="ProviderMenu" asp-controller="Admindashboard"  role="tab" aria-controls="pills-disabled" aria-selected="false">Providers</a>
     </li>
     <li class="nav-item " role="presentation">
         <a class="nav-link tab-link" id="pills-partners-tab" data-bs-toggle="pill" data-bs-target="#pills-partners" a role="tab" aria-controls="pills-partners" aria-selected="false">Partners</a>

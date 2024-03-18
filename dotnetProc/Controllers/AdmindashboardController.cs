@@ -321,7 +321,7 @@ namespace dotnetProc.Controllers
                 List<ProviderMenu> physicians = _dashboard.FilterProviderByRegions(regionId);
 
 
-                Providers providers = new Providers()
+                ProviderList providers = new ProviderList()
                 {
                     providers = physicians
                 };
@@ -1382,17 +1382,16 @@ namespace dotnetProc.Controllers
         }
 
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("providers")]
         public IActionResult ProviderMenu()
-        {
-            List<ProviderMenu> providers = _dashboard.GetAllProviders();
+        { 
             List<Region> regions = _dashboard.GetAllRegions();
 
             Providers providers1 = new Providers()
             {
-                providers = providers,
+              
                 regions = regions
              };
 
@@ -1401,7 +1400,7 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
 
-        public IActionResult SaveProviderChanges(List<Providers> providers)
+        public IActionResult SaveProviderChanges(Providers pr)
         {
 
 
@@ -1417,8 +1416,8 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                //bool response = _dashboard.SaveProviderChanges(providers.providers);
-                bool response = false;
+                bool response = _dashboard.SaveProviderChanges(pr.providers);
+               
                 if (response)
                 {
                     TempData["ShowPositiveNotification"] = "Data Saved Successfully.";
