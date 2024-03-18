@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@model List<HalloDoc_DAL.Models.Physicianlocation>;
+@using HalloDoc_DAL.Models;
+
+@{
+    string[] LocationData;
+
+    foreach (Physicianlocation pl in Model)
+    {
+
+    }
+
+
+    <partial name="_DashNavbar" />
+    <partial name="_Dashtabs" />
+
+    <div class="container-fluid">
+
+
+        <div class="row justify-content-center">
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between  mb-3 mt-2 ">
+            <h5>Provider Location</h5>
+            <a asp-controller="Admindashboard" asp-action="Dashboard" class="nav-link">
+                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </button>
+            </a>
+        </div>
+            <div class="col-8 formContainer" style="padding: 1rem;box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;border-radius: 13px;">
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+
+
+<script>
+
+  $(document).ready(function(){
+
+    var dataPoints = @Html.Raw(Json.Serialize(Model));
+
+    console.log(dataPoints)
+
+    var map = L.map('map').setView([20.5937, 78.9629], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    dataPoints.forEach(function (point) {
+        L.marker([point.latitude, point.longitude])
+            .addTo(map)
+            .bindPopup(point.physicianname)
+
+    })
+  })
+
+</script>

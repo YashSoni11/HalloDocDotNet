@@ -1433,5 +1433,16 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("ProviderMenu");
             }
         }
+
+        [HttpGet]
+        [Route("providerlocation")]
+        public IActionResult ProviderLocations()
+        {
+
+            List<Physicianlocation> physicianlocations = _dashboard.GetAllPhysicianlocation();
+
+
+            return View("providerlocation",physicianlocations);
+        }
     }
 }

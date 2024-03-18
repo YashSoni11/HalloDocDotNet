@@ -101,5 +101,7 @@ namespace HalloDoc_BAL.Interface
 
         public bool SaveProviderChanges(List<ProviderMenu> providers);
 
+        public List<Physicianlocation> GetAllPhysicianlocation();
+
     }
 }

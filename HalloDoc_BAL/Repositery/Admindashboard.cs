@@ -1285,6 +1285,14 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+        public List<Physicianlocation> GetAllPhysicianlocation()
+        {
+            List<Physicianlocation> physicianlocations = _context.Physicianlocations.ToList();
+
+            return physicianlocations;
+        }
+
+
 
     }
 
