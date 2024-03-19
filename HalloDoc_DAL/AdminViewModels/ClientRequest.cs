@@ -32,5 +32,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public string ConfirmationNumber { get; set; }
 
+        public int RequestId { get; set; }
+
     }
 }

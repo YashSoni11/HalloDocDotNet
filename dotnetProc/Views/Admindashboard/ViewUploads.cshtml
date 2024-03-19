@@ -6,6 +6,10 @@
 
 
 
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
 
 <div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
@@ -24,7 +28,7 @@
 
                 <!-- File Upload Input Group -->
 
-                <div class="row mt-3">
+                <div class="row">
 
                     <div class="col-12 d-flex justify-content-start flex-column p-4">
 
@@ -32,8 +36,8 @@
 
                         <div class="d-flex align-items-center">
 
-                            <h3 class="text-info ">Tester</h3>
-                            <h6 class="mx-2">(MD9878978)</h6>
+                            <h3 class="text-info ">@Model.PatientName</h3>
+                            <h6 class="mx-2">@(Model.ConfirmationNumber != null ? (Model.ConfirmationNumber) : "(MD229980)")</h6>
                         </div>
 
                         <p>Check here for any files that you or the doctors of your subsequents requestors have attached for you to review. </p>
@@ -65,28 +69,28 @@
                 <div class="row  p-3">
                     <div class="col-6">
 
-                        <h4>Documnets</h4>
+                        <h4>Documents</h4>
                     </div>
                     <div class=" d-flex col-6 justify-content-end " style="column-gap:1rem;">
                         <button type="button"
                                 class="btn btn-outline-info text-info lightInfo-btn" onclick="downloadChekedFiles()">
-                            Download All
+                            <i class="bi bi-box-arrow-down show-icon"></i> <span class="text-vanish"> Download All</span>
                         </button>
                         <form id="DeleteAllForm" asp-action="DeleteAllFiles" asp-controller="Admindashboard" asp-route-id="@Model.requestId">
                             <input hidden name="deleteIds" id="DataArray" value="" />
                             <button type="button"
                                     class="btn btn-outline-info text-info lightInfo-btn" onclick="DeleteAllFiles()">
-                                Delete All
+                                <i class="bi bi-trash-fill show-icon"></i> <span class="text-vanish"> Delete All</span>
                             </button>
                         </form>
                         <form id="SendMailForm" asp-action="SendDocumentViaMail" asp-controller="Admindashboard" asp-route-id="@Model.requestId">
 
                             <input hidden name="DocFiles" id="FilesArray" value="" />
 
-                        <button type="button"
-                                class="btn btn-outline-info text-info lightInfo-btn" onclick="SendFilesViaEmail()">
-                            Send Mail
-                        </button>
+                            <button type="button"
+                                    class="btn btn-outline-info text-info lightInfo-btn" onclick="SendFilesViaEmail()">
+                                <i class="bi bi-envelope show-icon"></i> <span class="text-vanish">Send Mail</span>
+                            </button>
                         </form>
                     </div>
 
@@ -94,7 +98,7 @@
 
                 <div class="container-fluid">
 
-                    <table class="table ">
+                     <table id="pc-ViewUploadTable" class="table " style="color:var(--pi-label-color);">
                         <thead class="table-secondary">
                             <tr>
                                 <th scope="col"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" onchange="checkAll()"></th>
@@ -110,7 +114,7 @@
 
                                 <tr>
                                     <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
-                                    <td id="Docfiles" class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
+                                    <td  class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
                                     <td>@doc.uploadDate</td>
                                     <td class="d-flex" style="column-gap:10px;">
                                         <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
@@ -129,6 +133,58 @@
                         </tbody>
                     </table>
 
+       @* <-----------------------------  Mobile Scrren --------------------------------->*@
+
+
+                    <ul id="mb-ViewUploadTable" class="list-group">
+                        @foreach (ViewDocument doc in Model.ViewDocuments)
+                        {
+
+                            <li class="list-group-item" style="background-color:var(--pi-back-color);color:var(--pi-label-color);">
+                                <div class="container-fluid" style="row-gap:1rem;">
+                                    <div class="row mb-3">
+
+                                        <div class="col-2">
+                                            <input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")">
+                                        </div>
+                                        <div id="Docfiles" class="col-8 @doc.filename.Replace(" ","")" style="padding:0rem;">
+
+                                            @doc.filename
+
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="col-12">
+                                            @doc.uploadDate.ToString("MMM dd, yyyy")
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-2">
+
+                                            <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                                <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
+                                            </a>
+
+                                        </div>
+
+                                        <div class="col-2">
+
+                                            <form method="post" asp-action="DeleteFileById" asp-controller="Admindashboard" asp-route-id="@doc.FileId">
+                                                <button type="submit" class="btn @doc.filename.Replace(" ","")" style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                                    <i id='themeIcon' class="bi bi-trash text-info"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
                 </div>
 
             </div>
@@ -142,18 +198,25 @@
 
 
 
-<footer class="patientSubmitFooter" style="position:absolute;">
+@*<footer class="patientSubmitFooter" style="position:absolute;">
     <span>Terms and Conditions</span>
     <span>|</span>
     <span>Privacy Policy</span>
 </footer>
-
+*@
 
 
 
 <script>
 
-    $(document).ready(function(){
+    $(document).ready(function () {
+
+        let prevId = localStorage.getItem("ActiveLink")
+
+        let currEle = document.getElementById(prevId)
+
+        currEle.classList.add("active");
+
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {
@@ -169,13 +232,13 @@
 
 
 
-            var files = [];
+        var files = [];
 
         var filenames = $("#Docfiles");
 
         //console.log(filenames)
 
-        for(let i = 0;i<filenames.length;i++){
+        for (let i = 0; i < filenames.length; i++) {
 
             let filename = filenames[i].textContent
 
@@ -188,7 +251,7 @@
 
         var dataobject = {
             fileArray: files,
-            UserMail:mail
+            UserMail: mail
         }
 
         console.log(dataobject)
@@ -201,7 +264,7 @@
 
         $("#SendMailForm").submit();
 
-        
+
     }
 
     const DeleteAllFiles = () => {

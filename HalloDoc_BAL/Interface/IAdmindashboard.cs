@@ -103,5 +103,9 @@ namespace HalloDoc_BAL.Interface
 
         public List<Physicianlocation> GetAllPhysicianlocation();
 
+        public string GetConfirmationNumber(int id);
+
+        public List<Casetag> GetAllCaseTags();
+
     }
 }

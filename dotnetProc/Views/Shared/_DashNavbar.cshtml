@@ -21,7 +21,7 @@
 
             <div class="col-7 d-flex justify-content-end align-items-center" style="column-gap:2rem;">
 
-                <h6 id="username">Welcome,@TempData["UserName"]</h6>
+            <h6 id="username">Welcome,@Context.Request.Cookies["UserName"]</h6>
             <a asp-action="Logout" asp-controller="Account"  class="btn btn-outline-info lightInfo-btn">
                 Logout
             </a>

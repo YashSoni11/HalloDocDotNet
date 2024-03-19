@@ -6,6 +6,7 @@
 }
 
 <partial name="_DashNavbar" />
+<partial name="_Dashtabs" />
 
 <div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
@@ -23,9 +24,9 @@
             <div class="container-fluid  formContainer mb-5">
 
 
-                <div class="row mt-3 justify-content-between">
+                <div class="row justify-content-between">
 
-                    <div class="col-6 d-flex justify-content-start flex-column p-4">
+                    <div class="col-xl-6 col-12 d-flex justify-content-start flex-column p-4">
 
                         <p>Patient Name</p>
 
@@ -38,7 +39,7 @@
 
 
                     </div>
-                    <div class="col-4 d-flex justify-content-end flex-column p-4">
+                    <div class="col-xl-4 col-12 d-flex justify-content-end flex-column p-4">
 
                         <button type="button" class="btn btn-outline-info text-info lightInfo-btn ">
                             Create Invoice Through Quickbooks
@@ -56,7 +57,7 @@
                 <div class="row  p-3">
                     <div class="col-6">
 
-                        <h4>Documnets</h4>
+                        <h4>Documents</h4>
                     </div>
 
 
@@ -73,7 +74,7 @@
                         }
                         else
                         {
-                            <table class="table ">
+                            <table id="pc-ViewUploadTable" class="table" style="color:var(--pi-label-color);">
                                 <thead class="table-secondary">
                                     <tr>
                                         <th></th>
@@ -102,6 +103,46 @@
                                     }
                                 </tbody>
                             </table>
+
+
+                      //<-------------------------- Mobile Screen ----------------------------------></>
+
+                            <ul id="mb-ViewUploadTable" class="list-group">
+                                @foreach (ViewDocument doc in Model.ViewDocuments)
+                                {
+
+                                    <li class="list-group-item" style="background-color:var(--pi-back-color);color:var(--pi-label-color);">
+                                        <div class="container-fluid" style="row-gap:1rem;">
+                                            <div class="row mb-3">
+
+                                                <div id="Docfiles" class="col-8 @doc.filename.Replace(" ","")" style="padding:0rem;">
+
+                                                    @doc.filename
+
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+
+                                                <div class="col-12">
+                                                    @doc.uploadDate.ToString("MMM dd, yyyy")
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-2">
+
+                                                    <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                                        <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
+                                                    </a>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
 
                         }
                     }
@@ -133,7 +174,7 @@
 
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
                                 <input asp-for="Birthdate" type="date" class="form-control BirthdateInp" id="floatingInput"
                                        placeholder="name@example.com" disabled>
@@ -143,7 +184,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-5 col-sm-5 col-12">
+                        <div class="col-xl-5 col-sm-5 col-9">
                             <div class="form-floating mb-3 phoneInputDiv">
                                 <input asp-for="Phone" style='height: 57px;' type="tel" id='phonInput' class="form-control tbDisabled"
                                        id="floatingInput">
@@ -153,7 +194,7 @@
                         </div>
                         <div class="col-xl-1 col-sm-2 col-2 d-flex  align-content-center">
                             <div class="form-floating mb-3 d-flex justify-content-center align-content-center">
-                                <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:5rem;">
+                                <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:4rem;">
                                     <i id='themeIcon' class="bi bi-telephone text-info fs-4"></i>
                                 </button>
                             </div>
@@ -171,7 +212,7 @@
                 </form>
                 <div class="row justify-content-end p-3">
                   
-                    <div class="d-flex col-4 justify-content-end" style="column-gap: 1rem;">
+                    <div class="d-flex col-xl-4 col-sm-6 justify-content-end" style="column-gap: 1rem;">
                         <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
                         <button type="button" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="$('#CloseFormSubmitBtn').click()">Save</button>
                         <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
@@ -197,6 +238,11 @@
     $(document).ready(function () {
 
         $(".tbDisabled").attr("disabled", "true")
+        let prevId = localStorage.getItem("ActiveLink")
+
+        let currEle = document.getElementById(prevId)
+
+        currEle.classList.add("active");
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {

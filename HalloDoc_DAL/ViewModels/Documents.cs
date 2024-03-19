@@ -15,6 +15,10 @@ namespace HalloDoc_DAL.ViewModels
 
      public   List<IFormFile> FormFile { get; set; }
 
+        public string PatientName { get; set; }
+
+        public string ConfirmationNumber { get; set; }
+
 
     }
 }
