@@ -2,7 +2,7 @@
 
 
 
-
+@* 
 
 <nav class="navbar" style="box-shadow: var(--admindash-nav-shadow);">
         <div class="container-fluid">
@@ -12,10 +12,10 @@
 
 
             <img class="img-fluid" id="navLogo"  style="height: 5rem;" src="~/images/trans_logo.png" />
-        <a asp-action="Logout" asp-controller="Account" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
+         <a asp-action="Logout" asp-controller="Account" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
                >
             Logout
-        </a>
+        </a> 
            
 
 
@@ -33,7 +33,55 @@
             </div>
 
         </div>
-    </nav>
+    </nav> *@
+
+<nav class="navbar" style="box-shadow: var(--admindash-nav-shadow);">
+    <div class="container-fluid">
+
+
+
+        <div class="LeftSideDashNav">
+
+            <button type="button" class="btn btn-outline-info lightInfo-btn menu-btn"
+                    onclick="toggleSideDashBar()">
+                <i class="bi bi-list "></i>
+            </button>
+            <img class="img-fluid" id="navLogo" style="height: 5rem;" src="~/images/trans_logo.png" />
+
+        </div>
+
+
+
+
+        <div class="col-7 d-flex justify-content-end align-items-center RightSideDashNav">
+
+            <h6 id="username">Welcome,@TempData["UserName"]</h6>
+            <button type="button" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
+                    onclick="">
+                <span class="text-vanish"> Logout</span> <i class="bi bi-box-arrow-left logoutIcon"></i>
+            </button>
+            <button style="width: 3rem; height: 3rem;" type="button" class="btn btn-outline-info lightInfo-btn "
+                    onclick="changeTheme()">
+                <i id='themeIcon' class="bi bi-moon text-info"></i>
+            </button>
+
+        </div>
+
+    </div>
+</nav>
+
+
+
+<script>
+
+    const toggleSideDashBar = () => {
+        console.log(34)
+        $("#SideDashBar").toggleClass("SideDashBarToggle");
+    }
+
+
+</script>
+
 
 
 

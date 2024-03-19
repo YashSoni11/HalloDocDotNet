@@ -7,9 +7,9 @@
     border-color: var(--pi-back-color) var(--pi-back-color) var(--tab-border-color) var(--pi-back-color) !important;
 }
 
-#outerLogout {
+/*#outerLogout {
     display: none;
-}
+}*/
 
 .accordion{
     display:none;
@@ -32,9 +32,9 @@
         display:none;
     }
 
-    #navLogo{
+  /*  #navLogo{
         display:none;
-    }
+    }*/
 
     .accordion{
         display:block;

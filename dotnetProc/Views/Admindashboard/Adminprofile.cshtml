@@ -21,7 +21,7 @@
     <div class="row justify-content-center">
         <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between  mb-3 mt-2">
             <h3>My Profile</h3>
-            <a class="nav-link" asp-controller="Home" asp-action="PatientRequest">
+            <a class="nav-link" asp-controller="Dashboard" asp-action="Admindashboard">
                 <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
                     <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
                 </button>
@@ -32,7 +32,7 @@
                 <input hidden id="HiddenadminpassInp" value="" name="AdminPassword" />
             </form>
 
-                <div class="container-fluid  formContainer mb-5">
+                <div class="container-fluid  formContainer mb-5" style="padding:1rem;">
 
             <form asp-action="SaveAdminAccountInformation" asp-controller="Admindashboard" method="post">
 
@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="Status" value="@statusArray[(int)Model.Status-1]" class="form-select tbDisabled" id="floatingInput" aria-label="Default select example">
+                                <select asp-for="Status" value="@statusArray[(int)Model.Status-1]" class="form-select form-control tbDisabled" id="floatingInput" aria-label="Default select example">
                                     <option value="1">Active</option>
                                     <option value="2">Dactive</option>
                                 </select>
@@ -71,7 +71,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="Role" value="Role" class="form-select tbDisabled" aria-label="Default select example">
+                                <select asp-for="Role" value="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
                                     @foreach(Role role in Model.roles)
                                     {
                                     <option value="@role.Name">@role.Name</option>                                    
@@ -213,7 +213,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="State" class="form-select tbDisabled1" aria-label="Default select example" style="height:3rem;padding:13px;">
+                                <select asp-for="State" class="form-select tbDisabled1 form-control" aria-label="Default select example" style="height:3rem;padding:13px;">
                                     @foreach(Region region in Model.regions)
                                     {
                                     <option value="@region.Name">@region.Name</option>
