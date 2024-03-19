@@ -1,6 +1,4 @@
-﻿
-
-@using HalloDoc_DAL.AdminViewModels;
+﻿@using HalloDoc_DAL.AdminViewModels;
 
 
 
@@ -23,18 +21,18 @@
 
 @{
 
-    <partial name="_encounterModal"/>
+    <partial name="_encounterModal" />
 
     string[] colors = { "#74d36e", "#ffb545", "#75ccff", "#e9aee7" };
-    string[] requestorType = { "Patient", "Family/Friend", "Concierge", "Business"};
-    string[] status = {"", "New", "Unpaid", "Active", "Active", "Conclude", "Conclude", "Conclude", "Toclose", "Pending",""};
+    string[] requestorType = { "Patient", "Family/Friend", "Concierge", "Business" };
+    string[] status = { "", "New", "Unpaid", "Active", "Active", "Conclude", "Conclude", "Conclude", "Toclose", "Pending", "" };
 
-    if(Model.Requests.Count != 0)
+    if (Model.Requests.Count != 0)
     {
         int j = 1;
-           <table class="table ReqtableContainer">
-            <thead >
-                <tr  style="background-color:#f1f1f1;">
+        <table class="table ReqtableContainer">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
                     <th class="reqtableHeader" scope="col">Name</th>
                     <th class="reqtableHeader" scope="col">Date Of Birth</th>
                     <th class="reqtableHeader" scope="col">Requestor</th>
@@ -44,38 +42,38 @@
                     <th class="reqtableHeader" scope="col">Notes</th>
                     <th class="reqtableHeader" scope="col">Chat With</th>
                     <th class="reqtableHeader" scope="col">Active</th>
-            </tr>
-        </thead>
-        <tbody  class="reqtableBody">
+                </tr>
+            </thead>
+            <tbody class="reqtableBody">
 
-            @foreach (DashboardRequests dr in Model.Requests)
-            {
+                @foreach (DashboardRequests dr in Model.Requests)
+                {
 
 
-                 
+
 
                     <tr class="align-middle" style="background-color:@colors[dr.Requesttype-1] !important;color:white">
-                    <th class="align-middle" scope="row">@dr.Username</th>
+                        <th class="align-middle" scope="row">@dr.Username</th>
                         <td class="align-middle">@(dr.Birthdate != null ? dr.Birthdate.ToString("MMM dd,yyyy") : "Not Available")</td>
                         <td class="align-middle">@dr.Requestor</td>
                         <td class="align-middle">@dr.Requestdate</td>
                         <td class="align-middle">
-                        
+
                             <div class="phone-col"><i class="bi bi-telephone"></i><div>@dr.Phone</div></div><div>(Patient)</div>
-                        
+
                             @{
-                                if(dr.RequestorPhone != null)
+                                if (dr.RequestorPhone != null)
                                 {
                                     <div class="phone-col"><i class="bi bi-telephone"></i><div>@dr.RequestorPhone</div></div>
 
                                     <div>(@requestorType[dr.Requesttype-1])</div>
- 
+
                                 }
                             }
-                        
+
                         </td>
                         <td class="align-middle">@dr.Address </td>
-                        <td class ="align-middle">@(dr.Notes != null ? dr.Notes : "Not Available")</td>
+                        <td class="align-middle">@(dr.Notes != null ? dr.Notes : "Not Available")</td>
                         <td class="align-middle">
                             <button type="button" class="btn bg-transparent action-btn "><i class="bi bi-person mx-1"></i> Provider</button>
                         </td>
@@ -88,10 +86,10 @@
                                 <ul class="dropdown-menu">
 
                                     @{
-                                        if(status[dr.status] == "New")
+                                        if (status[dr.status] == "New")
                                         {
                                             <li>
-                                                <button class="dropdown-item" onclick="GetAssginCasePopup(@dr.Requestid)">
+                                                <button class="dropdown-item" onclick="GetAssginCasePopup(@dr.Requestid,'DashBoardModalPopUp')">
                                                     <i class="bi bi-card-checklist mx-1">
                                                     </i> Assign Case
                                                 </button>
@@ -101,7 +99,7 @@
                                         {
                                             <li>
                                                 <button class="dropdown-item"
-                                                        onclick="GetCancleCase(@dr.Requestid)">
+                                                        onclick="GetCancleCase(@dr.Requestid,'DashBoardModalPopUp')">
                                                     <i class="bi bi-x-circle mx-1"></i>Cancel Case
                                                 </button>
                                             </li>
@@ -114,21 +112,21 @@
                                         {
                                             <li><button class="dropdown-item" onclick="GetViewnotes(@dr.Requestid)"><i class="bi bi-journal-text mx-1"></i>View Notes</button></li>
                                         }
-                                        if(status[dr.status] == "New")
+                                        if (status[dr.status] == "New")
                                         {
-                                            <li><button class="dropdown-item" onclick="GetBlockCasePopup(@dr.Requestid)" href="#"><img src="~/images//ban.svg" class="mx-1" />Block Patient</button></li>
+                                            <li><button class="dropdown-item" onclick="GetBlockCasePopup(@dr.Requestid,'DashBoardModalPopUp')" href="#"><img src="~/images//ban.svg" class="mx-1" />Block Patient</button></li>
                                         }
-                                        if(status[dr.status] == "Pending")
+                                        if (status[dr.status] == "Pending")
                                         {
-                                            <li><button class="dropdown-item" onclick="GetTransferCasePopup(@dr.Requestid)"><i class="bi bi-journal-arrow-up mx-1"></i>Transfer</button></li>
+                                            <li><button class="dropdown-item" onclick="GetTransferCasePopup(@dr.Requestid,'DashBoardModalPopUp')"><i class="bi bi-journal-arrow-up mx-1"></i>Transfer</button></li>
                                         }
-                                        if(status[dr.status] == "Pending")
+                                        if (status[dr.status] == "Pending")
                                         {
-                                            <li><button class="dropdown-item" onclick="GetSendAgreementView(@dr.Requestid)"><i class="bi bi-journal-check mx-1"></i>Send Aggrement</button></li>
+                                            <li><button class="dropdown-item" onclick="GetSendAgreementView(@dr.Requestid,'DashBoardModalPopUp')"><i class="bi bi-journal-check mx-1"></i>Send Aggrement</button></li>
                                         }
                                         if (status[dr.status] == "Pending" || status[dr.status] == "Toclose")
                                         {
-                                            <li><button class="dropdown-item" onclick="GetClearCasePopup(@dr.Requestid)"><i class="bi bi-x-circle mx-1"></i>Clear Case</button></li>
+                                            <li><button class="dropdown-item" onclick="GetClearCasePopup(@dr.Requestid,'DashBoardModalPopUp')"><i class="bi bi-x-circle mx-1"></i>Clear Case</button></li>
                                         }
                                         if (status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Unpaid" || status[dr.status] == "Toclose")
                                         {
@@ -140,181 +138,270 @@
                                         }
                                         if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
                                         {
-                                            <li><button class="dropdown-item" onclick="GetEncounterCaseView(@dr.Requestid)"><i class="bi bi-file-earmark-text mx-1"></i>Encounter</button></li>
+                                            <li><button class="dropdown-item" onclick="GetEncounterCaseView(@dr.Requestid,'DashBoardModalPopUp')"><i class="bi bi-file-earmark-text mx-1"></i>Encounter</button></li>
                                         }
-                                        if ( status[dr.status] == "Toclose")
+                                        if (status[dr.status] == "Toclose")
                                         {
                                             <li><a class="dropdown-item" asp-action="CloseCase" asp-route-id="@dr.Requestid" asp-controller="Admindashboard"><i class="bi bi-x-circle mx-1"></i>Close Case</a></li>
                                         }
                                     }
-                                  
-                                
-                                   
-                                  
-                                    
-                                   
-                                    
-                                    
-                                    
-                                   
-                                   
+
+
+
+
+
+
+
+
+
+
+
                                 </ul>
                             </div>
                         </td>
-                </tr>
-                j++;
-            }
+                    </tr>
+                    j++;
+                }
 
-        </tbody>
+            </tbody>
         </table>
-        <nav  aria-label="Page navigation example">
-            <ul class="pagination justify-content-end PageNumbers">
-            </ul>
-        </nav>
+
 
 
         int i = 1;
-        <div class="accordion" id="accordionExample">
+        <div class="accordion" id="accordionExample mt-3">
 
-        @foreach (DashboardRequests dr in Model.Requests)
-        {
+            @foreach (DashboardRequests dr in Model.Requests)
+            {
 
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading@(i)">
-                        <button class="accordion-button container-fluid" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(i)" aria-expanded="true" aria-controls="collapse@(i)">
-                           <div class="row">
+                <div class="accordion-item" style="background:var(--pi-form-back-color);">
+                    <h2 class="accordion-header" id="heading@(i)">
+                        <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(i)" aria-expanded="true" aria-controls="collapse@(i)">
+                            <div class="row">
 
-                             <div class="col-8">
+                                <div class="col-8">
                                     <div>@dr.Username</div>
 
                                     <div>@dr.Address</div>
-                             </div>
-                              <div class="col-4">
+                                </div>
+                                <div class="col-4">
                                     <h5 class="ReqType-Heading"> <i class="bi bi-circle-fill" style="color:@colors[dr.Requesttype-1]"></i> @requestorType[dr.Requesttype-1]</h5>
-                               </div>
+                                </div>
 
-                           </div>
-                            
-                    </button>
-                </h2>
-                 <div id="collapse@(i)" class="accordion-collapse collapse show" aria-labelledby="heading@(i)" data-bs-parent="#accordionExample">
-                    <div class="accordion-body container-fluid">
-                        
-                         <div class="row">
-                       <div class="col-12 d-flex justify-content-end">
-                                    <a href="#" class="btn p-0">
+                            </div>
+
+                        </button>
+                    </h2>
+                    <div id="collapse@(i)" class="accordion-collapse collapse show" aria-labelledby="heading@(i)" data-bs-parent="#accordionExample">
+                        <div class="accordion-body container-fluid">
+
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+                                    
                                         <div class="linkTypeBtn" style="background-color:#f7e7ff;color:#990df0;border:1px solid #990df0;border-radius:10px;width:10rem;">
-                                             View Case
+                                            <a class=" btn" asp-action="ViewRequest" asp-route-requestid="@dr.Requestid" asp-controller="Admindashboard">View Case</a>
                                         </div>
-                                    </a>
-                       </div>
-                    </div>
-                    
-                        <div class="row">
+                                    
+                                </div>
+                            </div>
 
-                         <div class="col-12">
-                                   <div class="d-flex align-content-center mt-2" >
+                            <div class="row">
+
+                                <div class="col-12">
+                                    <div class="d-flex align-content-center mt-2">
                                         <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Birth: @(dr.Birthdate != null ? dr.Birthdate : "Not Available") </h6>
-                                   </div>
-                                   <div class="d-flex align-content-center mt-2">
+                                    </div>
+                                    <div class="d-flex align-content-center mt-2">
                                         <span class="AccordianIcons mx-1"><i class="bi bi-envelope mx-1"></i></span>  <h6 class="mt-0">Email: @(dr.Notes != null ? dr.Notes : "Not Available") </h6>
-                                   </div>
-                                   <div class="d-flex align-content-center mt-2">
+                                    </div>
+                                    <div class="d-flex align-content-center mt-2">
                                         <span class="AccordianIcons mx-1"><i class="bi bi-telephone mx-1"></i></span>  <h6 class="mt-0">Patient: @(dr.Phone != null ? dr.Phone : "Not Available")</h6>
-                                   </div>
-                                   <div class="d-flex align-content-center mt-2">
-                                       <span class="AccordianIcons mx-1"><i class="bi bi-journal-arrow-up mx-1"></i></span>  <h6 class="mt-0">Tranfer Notes: </h6>
-                                   </div>
-                                   <div class="d-flex align-content-center mt-2">
-                                       <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Service: </h6>
-                                   </div>
-                                   <div class="d-flex align-content-center mt-2">
+                                    </div>
+                                    <div class="d-flex align-content-center mt-2">
+                                        <span class="AccordianIcons mx-1"><i class="bi bi-journal-arrow-up mx-1"></i></span>  <h6 class="mt-0">Tranfer Notes: </h6>
+                                    </div>
+                                    <div class="d-flex align-content-center mt-2">
+                                        <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Service: </h6>
+                                    </div>
+                                    <div class="d-flex align-content-center mt-2">
                                         <span class="AccordianIcons mx-1"><i class="bi bi-file-medical mx-1"></i></span>  <h6 class="mt-0">Physician:@(dr.PhysicianName != null ? dr.PhysicianName : "Not Available") </h6>
-                                   </div>
+                                    </div>
                                     <div class="d-flex align-content-center mt-2">
                                         <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  <h6 class="mt-0">Requestor:@(dr.Requestor != null ? dr.Requestor : "Not Available") </h6>
-                                   </div>
-                         
-                        
-                         
-                         </div>
-                        
-                        </div>    
+                                    </div>
 
-                        <div class="row mt-3 gy-3">
 
-                          <div class="col-6">
-                                    <a href="#" class="btn p-0">
-                                       <div class="linkTypeBtn">
-                                           View Notes
-                                       </div>
-                                    </a>
-                          </div>
-                          <div class="col-6">
-                                    <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn" style="background-color:#276a61;">
-                                            Doctors Notes
-                                        </div>
-                                    </a>
-                           </div>
-                                <div class="col-6">
-                                    <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn">
-                                            View Uploads
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn">
-                                           Encounter
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn" style="background-color:#ffa500;">
-                                            Orders
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn">
-                                            Email
-                                        </div>
-                                    </a>
-                                </div>
-                        </div>
 
-                        <div class="row mt-3">
+                                </div>
 
-                              <div class="col-12 d-flex justify-content-end" style="align-items:center;">
-                                   <span class="mx-1">Chat With:</span>
+                            </div>
+
+                            <div class="row mt-3 gy-3">
+                               @{
+                                    if (status[dr.status] == "New")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn" style="background:#950cdb;">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetAssginCasePopup(@dr.Requestid,'DashBoardModalPopUp')">
+                                                    Assign Case
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+                                    }
+                                    if (status[dr.status] == "New" || status[dr.status] == "Toclose")
+                                    {
+                   
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn" style="background:#eb1f1f;">
+                                                <button class="btn text-white"
+                                                        style="font-size:12px;"
+                                                        onclick="GetCancleCase(@dr.Requestid,'DashBoardModalPopUp')">
+                                                     Cancel Case
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    }
+                                    if (status[dr.status] == "New" || status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose" || status[dr.status] == "Unpaid")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn ">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetViewnotes(@dr.Requestid)">View Notes</button>
+                                            </div>
+
+                                        </div>
+                                        
+                                    }
+                                    if (status[dr.status] == "New")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn " style="background:#eb1f1f;">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetBlockCasePopup(@dr.Requestid,'DashBoardModalPopUp')">Block Patient</button>
+                                            </div>
+
+                                        </div>
+                                        
+                                    }
+                                    if (status[dr.status] == "Pending")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn " style="background:#0099f3;">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetTransferCasePopup(@dr.Requestid,'DashBoardModalPopUp')">Transfer</button>
+                                            </div>
+
+                                        </div>
+                                       
+                                    }
+                                    if (status[dr.status] == "Pending")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn" style="background:#dba50c;">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetSendAgreementView(@dr.Requestid,'DashBoardModalPopUp')">Send Aggrement</button>
+                                            </div>
+
+                                        </div>
+                                        
+                                    }
+                                    if (status[dr.status] == "Pending" || status[dr.status] == "Toclose")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn" style="background:#dba50c;">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetClearCasePopup(@dr.Requestid,'DashBoardModalPopUp')">Clear Case</button>
+                                            </div>
+
+                                        </div>
+                                       
+                                    }
+                                    if (status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Unpaid" || status[dr.status] == "Toclose")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn">
+                                                <a class="btn text-white" style="font-size:12px;" asp-action="ViewUploads" asp-route-id="@dr.Requestid" asp-controller="Admindashboard">View Uploads</a>
+                                            </div>
+
+                                        </div>
+                                     
+                                    }
+                                    if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn" style="background:#dba50c;">
+                                                <a class="btn text-white" style="font-size:12px;" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard">Orders</a>
+                                            </div>
+
+                                        </div>
+                                       
+                                    }
+                                    if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn ">
+                                                <button class="btn text-white" style="font-size:12px;" onclick="GetEncounterCaseView(@dr.Requestid,'DashBoardModalPopUp')">Encounter</button>
+                                            </div>
+
+                                        </div>
+                                        
+                                    }
+                                    if (status[dr.status] == "Toclose")
+                                    {
+                                        <div class="col-6">
+
+                                            <div class="linkTypeBtn">
+                                                <a class="btn text-white" style="font-size:12px;" asp-action="CloseCase" asp-route-id="@dr.Requestid" asp-controller="Admindashboard">Close Case</a>
+
+                                            </div>
+                                      </div>
+                                    }
+                                }
+
+                               
+                              </div>
+
+                            <div class="row mt-3">
+
+                                <div class="col-12 d-flex justify-content-end" style="align-items:center;">
+                                    <span class="mx-1" style="color:var(--pi-label-color);">Chat With:</span>
                                     <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn mx-1" style="background-color:white;color:#0dcaf0;border:1px solid #0dcaf0;border-radius:10px;width:7rem;">
+                                        <div class="linkTypeBtn mx-1" style="background-color:var(--pi-form-back-color);color:#0dcaf0;border:1px solid #0dcaf0;border-radius:10px;width:7rem;">
                                             <i class="bi bi-person fs-4"></i>  Patient
                                         </div>
                                     </a>
                                     <a href="#" class="btn p-0">
-                                        <div class="linkTypeBtn" style="background-color:white;color:#0dcaf0;border:1px solid #0dcaf0;border-radius:10px;width:7rem;">
+                                        <div class="linkTypeBtn" style="background-color:var(--pi-form-back-color);color:#0dcaf0;border:1px solid #0dcaf0;border-radius:10px;width:7rem;">
                                             <i class="bi bi-file-medical fs-4"></i>  Provider
                                         </div>
                                     </a>
-                              </div>
-                           
-                        </div>
+                                </div>
 
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            i++;
+                i++;
 
+            
+                                
+                            
         }
-
         </div>
-     
+        <nav aria-label="Page navigation example mt-3">
+            <ul class="pagination justify-content-end PageNumbers">
+            </ul>
+        </nav>
     }
     else
     {
@@ -335,6 +422,6 @@
     })
 
 
-    
+
 
 </script>

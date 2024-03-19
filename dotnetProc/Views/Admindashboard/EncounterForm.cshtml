@@ -10,14 +10,16 @@
 
 <partial name="_DashNavBar" />
 
+<partial name="_Dashtabs" />
+
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
 
-        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mb-3 justify-content-between">
             <h5>Encounter form</h5>
-            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+            <a asp-action="Dashboard" asp-controller="Admindashboard" class="btn btn-outline-info text-info lightInfo-btn">
                 <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
-            </button>
+            </a>
         </div>
 
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
@@ -166,7 +168,7 @@
 
                             </div>
                         </div>
-                        <div class="col-xl-3 col-sm-3 col-2">
+                        <div class="col-xl-3 col-sm-3 col-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="BloodPressure1" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
@@ -175,7 +177,7 @@
 
                             </div>
                         </div>
-                        <div class="col-xl-3 col-sm-3 col-2">
+                        <div class="col-xl-3 col-sm-3 col-6">
                             <div class="form-floating mb-3">
                                 <input asp-for="BloodPressure2" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
@@ -347,6 +349,12 @@
 
 
     $(document).ready(function () {
+
+        let prevId = localStorage.getItem("ActiveLink")
+
+        let currEle = document.getElementById(prevId)
+
+        currEle.classList.add("active");
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {

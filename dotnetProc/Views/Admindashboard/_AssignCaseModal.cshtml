@@ -19,30 +19,32 @@
                         <div class="col-12">
                             <div class="form-floating mb-3">
 
-                                <select id="sl" asp-for="SelectedRegionName" class="form-control form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onchange="GetPhysicianByRegions()">
-                                    <option selected="">Narrow Search By Regions</option>
+                                <select id="sl" asp-for="SelectedRegionName" class="form-select" aria-label="Default select example" onchange="GetPhysicianByRegions()">
+                                    <option value="0" selected="">All Region</option>
                                     @foreach(Region region in Model.Regions)
                                     {
                                         <option  value="@region.Regionid">@region.Name</option>
                                     }
                                     
                                 </select>
-
+                                <label for="sl">Narrow Search By Regions</label>
+                                <span asp-validation-for="SelectedRegionName" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-12">
                         <div class="form-floating mb-3">
 
-                            <select id="PhysicianInp" asp-for="SelectedPhycisianId" class="form-control form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
-                                <option selected="">Physicians</option>
+                            <select id="PhysicianInp" asp-for="SelectedPhycisianId" class="form-select" aria-label="Default select example">
+                 
                                 @foreach (Physician physician in Model.Physicians)
                                 {
                                         <option value="@physician.Physicianid">@physician.Firstname @physician.Lastname</option>
                                 }
 
                             </select>
-
+                                <label for="PhysicianInp">Physicians</label>
+                                <span asp-validation-for="SelectedPhycisianId" class="text-danger"></span>
 
                         </div>
                     </div>
@@ -51,7 +53,7 @@
                                 <textarea asp-for="Description" class="form-control" placeholder="Leave a comment here"
                                           id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Provide Additional Notes</label>
-
+                                <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
                         </div>
                     </div>

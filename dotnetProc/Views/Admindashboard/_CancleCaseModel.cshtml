@@ -19,15 +19,15 @@
 
                    <div class="col-12">
                      <div class="form-floating mb-3">
+                                <select id="reasonSelector" asp-for="Reason" class="form-select" aria-label="Floating label select example">
+                                    @foreach (Casetag casetag in Model.reasons)
+                                    {
+                                        <option value="@casetag.Name">@casetag.Name</option>
 
-                        <select  asp-for="Reason" class="form-control form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
-                            <option selected="">Reason For Cancelation</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Maharastra">Maharastra</option>
-                            <option value="Punjab">Punjab</option>
-                        </select>
-
-
+                                    }
+                                </select>
+                                <label for="reasonSelector">Reason For Cancelation</label>
+                                <span asp-validation-for="Reason" class="text-danger"></span>
                       </div>
                    </div>
 
@@ -36,8 +36,9 @@
                             <textarea asp-for="AdditionalNotes"  class="form-control" placeholder="Leave a comment here"
                                       id="floatingTextarea2" style="height: 100px"></textarea>
                             <label for="floatingTextarea2">Provide Additional Notes</label>
-                           
-                        </div>
+                                <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
+
+                            </div>
                     </div>
                 </div>
 

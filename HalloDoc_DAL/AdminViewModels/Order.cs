@@ -16,6 +16,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
 
         [Required(ErrorMessage = "Profession is Required.")]
+
         public string Profession { get; set; }
 
         [Required(ErrorMessage = "Business is Required.")]

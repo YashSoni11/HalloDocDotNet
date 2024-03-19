@@ -28,7 +28,7 @@
 
                                 </select>
 
-
+                                <span asp-validation-for="SelectedRegionName" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12">
@@ -42,7 +42,7 @@
                                     }
 
                                 </select>
-
+                                <span asp-validation-for="SelectedPhycisianId" class="text-danger"></span>
 
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                                 <textarea asp-for="Description" class="form-control" placeholder="Leave a comment here"
                                           id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Provide Additional Notes</label>
-
+                                <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
                         </div>
                     </div>

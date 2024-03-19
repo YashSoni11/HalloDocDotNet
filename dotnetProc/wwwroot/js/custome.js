@@ -573,7 +573,7 @@ const GetEncounterCaseView = (id) => {
 
 }
 
-const GetSendAgreementView = (id) => {
+const GetSendAgreementView = (id, modalContainerId) => {
 
 
     $.ajax({
@@ -587,7 +587,7 @@ const GetSendAgreementView = (id) => {
                 location.reload();
             } else {
 
-                $("#CancleCasePopup").html(response);
+                $(`#${modalContainerId}`).html(response);
 
                 $("#SendAgreementPopup").modal("show");
             }
@@ -602,7 +602,7 @@ const GetSendAgreementView = (id) => {
 }
 
 
-const GetCancleCase = (id) => {
+const GetCancleCase = (id, modalContainerId) => {
 
 
 
@@ -618,11 +618,10 @@ const GetCancleCase = (id) => {
 
                 location.reload();
             } else {
+                $(`#${modalContainerId}`).html(response);
 
-                $("#CancleCasePopup").html(response);
-
-                $("#CancleCaseModal").addClass("show");
-                $("#CancleCaseModal").css({ "display": "block", "backdrop-filter": "brightness(0.5)" });
+                $.validator.unobtrusive.parse($("#CancleCaseForm"));
+                $("#CancleCaseModal").modal("show");
             }
 
         },
@@ -633,7 +632,7 @@ const GetCancleCase = (id) => {
 
 }
 
-const GetAssginCasePopup = (id) => {
+const GetAssginCasePopup = (id,modalContainerId) => {
 
 
     $.ajax({
@@ -641,13 +640,15 @@ const GetAssginCasePopup = (id) => {
         url: "/Admindashboard/GetAssginCaseView",
         data: { requestId: id },
         success: function (response) {
+           
             if (response.code == 401) {
 
                 location.reload();
             } else {
 
-                $("#CancleCasePopup").html(response);
+                $(`#${modalContainerId}`).html(response);
 
+                $.validator.unobtrusive.parse($("#AssignCaseForm"));
                 $("#AssignCasePopUp").modal("show");
 
             }
@@ -660,7 +661,7 @@ const GetAssginCasePopup = (id) => {
 
 }
 
-const GetBlockCasePopup = (id) => {
+const GetBlockCasePopup = (id, modalContainerId) => {
 
 
     $.ajax({
@@ -674,8 +675,9 @@ const GetBlockCasePopup = (id) => {
                 location.reload();
             } else {
 
-                $("#CancleCasePopup").html(response);
+                $(`#${modalContainerId}`).html(response);
 
+                $.validator.unobtrusive.parse($("#BlockCaseForm"));
                 $("#BlockCaseModal").modal("show");
 
             }
@@ -688,26 +690,7 @@ const GetBlockCasePopup = (id) => {
 
 }
 
-const GetViewCase = (id) => {
 
-    $.ajax({
-        method: "post",
-        url: "/Admindashboard/GetRequestClientInfoFromRequestId",
-        data: { id: id },
-        success: function (response) {
-
-
-
-            $("#pills-home").html(response);
-
-
-        },
-        error: function (err) {
-            console.log(err)
-        }
-    })
-
-}
 
 
 const GetViewnotes = (id) => {
@@ -730,7 +713,7 @@ const GetViewnotes = (id) => {
 }
 
 
-const GetTransferCasePopup = (id) => {
+const GetTransferCasePopup = (id, modalContainerId) => {
 
     $.ajax({
         method: "post",
@@ -743,8 +726,9 @@ const GetTransferCasePopup = (id) => {
                 location.reload();
             } else {
 
-                $("#CancleCasePopup").html(response);
+                $(`#${modalContainerId}`).html(response);
 
+                $.validator.unobtrusive.parse($("#TransferCaseForm"));
                 $("#TransferCaseModal").modal("show");
 
             }
@@ -757,7 +741,7 @@ const GetTransferCasePopup = (id) => {
 
 }
 
-const GetClearCasePopup = (id) => {
+const GetClearCasePopup = (id, modalContainerId) => {
 
     $.ajax({
         method: "post",
@@ -770,7 +754,7 @@ const GetClearCasePopup = (id) => {
                 location.reload();
             } else {
 
-                $("#CancleCasePopup").html(response);
+                $(`#${modalContainerId}`).html(response);
 
                 $("#ClearCasePopup").modal("show");
 
@@ -847,7 +831,7 @@ const ClearCase = () => {
 
 
 
-const GetSendLinkPopUp = () => {
+const GetSendLinkPopUp = (modalContainerId) => {
 
 
 
@@ -864,7 +848,7 @@ const GetSendLinkPopUp = () => {
 
             } else {
 
-                $("#CancleCasePopup").html(response);
+                $(`#${modalContainerId}`).html(response);
 
 
                 $.validator.unobtrusive.parse($("#SendLinkForm"));
@@ -922,7 +906,7 @@ const GetPhysicianByRegions = () => {
 
             PhysicianDropdown.empty();
 
-            PhysicianDropdown.append($("<option></option>").text("Physicians").attr("selected", "true"));
+            //PhysicianDropdown.append($("<option></option>").text("Physicians").attr("selected", "true"));
 
 
             $.each(PhysicianData, function (index, physician) {

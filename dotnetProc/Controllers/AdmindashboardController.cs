@@ -58,7 +58,8 @@ namespace dotnetProc.Controllers
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 string adminname = _dashboard.GetAdminUsername(loggedInUser.UserId);
-                TempData["UserName"] = adminname;
+                Response.Cookies.Append("UserName", adminname);
+                
 
                 List<DashboardRequests> requests = _dashboard.GetAllRequests();
                 RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
@@ -214,6 +215,7 @@ namespace dotnetProc.Controllers
             int newrequestid = int.Parse(requestid);
 
             ClientRequest requestclient = _dashboard.GetUserInfoFromRequestId(newrequestid);
+            requestclient.RequestId = newrequestid;
 
             return View(requestclient);
 
@@ -248,11 +250,13 @@ namespace dotnetProc.Controllers
                 int newrequestid = int.Parse(id);
 
                 string name = _dashboard.GetPatientName(newrequestid);
+                List<Casetag> casetags = _dashboard.GetAllCaseTags();
 
                 AdminCancleCase adminCancleCase = new AdminCancleCase
                 {
                     PatientName = name,
                     requestId = newrequestid,
+                    reasons = casetags,
                 };
 
                 return PartialView("_CancleCaseModel", adminCancleCase);
@@ -272,13 +276,19 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
             }
-            else
+            else  if(ModelState.IsValid)
             {
 
 
                 Request request = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
 
                 return RedirectToAction("Dashboard", "Admindashboard");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+                return RedirectToAction("Dashboard", "Admindashboard");
+
             }
         }
 
@@ -295,8 +305,17 @@ namespace dotnetProc.Controllers
             }
             else
             {
+                List<Physician> physicians = new List<Physician>();
 
-                List<Physician> physicians = _dashboard.FilterPhysicianByRegion(regionId);
+                if (regionId == 0)
+                {
+                    physicians = _dashboard.GetAllPhysician();
+                }
+                else
+                {
+                    physicians = _dashboard.FilterPhysicianByRegion(regionId);
+                }
+              
 
 
                 string response = JsonConvert.SerializeObject(physicians);
@@ -404,6 +423,7 @@ namespace dotnetProc.Controllers
             return RedirectToAction("Dashboard", "Admindashboard");
         }
 
+        [AuthManager("Admin")]
         [Route("Admindashboard/Viewdocuments/{id}")]
         [HttpGet]
         public IActionResult ViewUploads(int id)
@@ -423,13 +443,16 @@ namespace dotnetProc.Controllers
                 TempData["requestId"] = id;
 
                 List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
-
+                string  ConfirmationNumber = _dashboard.GetConfirmationNumber(id);
+                string PatientName = _dashboard.GetPatientName(id);
 
                 Documents documents = new Documents
                 {
-                    //requestId = id,
+                    requestId = id,
                     ViewDocuments = docs,
-                    FormFile = null
+                    FormFile = null,
+                    ConfirmationNumber = ConfirmationNumber,
+                    PatientName = PatientName,
                 };
 
 
@@ -497,7 +520,7 @@ namespace dotnetProc.Controllers
             }
 
 
-            //_dashboard.DeleteAllFiles(newarray);
+            _dashboard.DeleteAllFiles(newarray);
 
             int requestid = (int)TempData["requestId"];
 

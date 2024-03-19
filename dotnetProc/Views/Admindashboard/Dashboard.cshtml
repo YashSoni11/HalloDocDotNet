@@ -7,7 +7,7 @@
     Layout = "_Layout";
 }
 
-<div id="CancleCasePopup">
+<div id="DashBoardModalPopUp">
 </div>
 
 <partial  name="_DashNavbar" />
@@ -25,15 +25,15 @@
            <div class="row">
 
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
-                    <button id="big-btn1" type="button" class="btn btn-outline-primary big-btn w-100 ActiveStatus " style="background-color:#c6e5ff" onclick="getStatusWiseRequests(['1'],'big-btn1','New')">
-                        <h6><i class="bi bi-envelope-open"></i>New</h6>
-                        <h4 class="mt-1 text-primary">@Model.RequestTypeCounts.Newrequestcount</h4>
+                    <button id="big-btn1" type="button" class="btn  big-btn w-100 ActiveStatus " style="background-color:#c6e5ff;border:1px solid #0d6efd" onclick="getStatusWiseRequests(['1'],'big-btn1','New')">
+                        <h6 style="color:#0d6efd;"><i class="bi bi-envelope-open"></i>New</h6>
+                        <h4 style="color:#0d6efd;" class="mt-1 text-primary">@Model.RequestTypeCounts.Newrequestcount</h4>
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
-                    <button id="big-btn2" type="button" class="btn btn-outline-info big-btn w-100 " style="background-color:#dcf9ff" onclick="getStatusWiseRequests(['2'],'big-btn2','Unpaid')">
-                        <h6><i class="bi bi-wallet2 mx-2"></i>Unpaid</h6>
-                        <h4 class="mt-1 text-info" style="">@Model.RequestTypeCounts.Unpaidrequestcount</h4>
+                    <button id="big-btn2" type="button" class="btn  big-btn w-100 " style="background-color:#dcf9ff;border:1px solid #0dcaf0" onclick="getStatusWiseRequests(['2'],'big-btn2','Unpaid')">
+                        <h6 style="color:#0dcaf0;"><i class="bi bi-wallet2 mx-2"></i>Unpaid</h6>
+                        <h4 style="color:#0dcaf0;" class="mt-1">@Model.RequestTypeCounts.Unpaidrequestcount</h4>
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4  mt-2">
@@ -72,15 +72,15 @@
 
                  <div class="col-xl-4 col-lg-4 col-md-3 col-sm-2 col-2">
 
-                    <h3 class="Req-Heading1" >Patients <span class="StatusName">(New)</span></h3>
-                    <h6 class="Req-Heading2" style="display:none;">Patients <span class="StatusName">(New)</span></h6>
+                    <h3 class="Req-Heading1">Patients <span class="StatusName fs-5" style="color:#5e5bff;">(New)</span></h3>
+                    <h6 class="Req-Heading2" style="display:none;">Patients <span class="StatusName" style="color:#5e5bff;">(New)</span></h6>
 
 
                  </div>
 
 
                  <div class="col-xl-7 col-lg-7 col-md-8 col-sm-9 col-10 d-flex ReqHandleBtnContainer">
-                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="GetSendLinkPopUp()" ><i class="bi bi-send mx-1"></i><span class="text-vanish">Send Link</span></button>
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="GetSendLinkPopUp('DashBoardModalPopUp')"><i class="bi bi-send mx-1"></i><span class="text-vanish">Send Link</span></button>
                     <a style='width: 100%;' asp-action="PatientReqByAdmin" asp-controller="Admindashboard" class="btn btn-info mt-3 text-white"><i class="bi bi-file-text mx-1"></i><span class="text-vanish">Create Request</span></a>
 
                   
@@ -142,17 +142,17 @@
 
                 <div  class="col-xl-7 col-lg-7 col-md-12 col-12 d-flex justify-content-evenly  mt-md-3 mt-3" style="align-items:center;">
 
-                    <button id="ReqType-Heading0" class="btn btn-outline-dark text-vanish ReqType-Heading" onclick="GetFiltteredRequests('0')">All</button>
+                    <button id="ReqType-Heading0" class="btn  text-vanish ReqType-Heading" style="color:var(--pi-label-color);" onclick="GetFiltteredRequests('0')">All</button>
                     <button id="ReqType-Heading1" onclick="GetFiltteredRequests('1')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-success"></i> Patient</button>
                     <button id="ReqType-Heading2" onclick="GetFiltteredRequests('2')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-warning"></i> Family/Freind</button>
                     <button id="ReqType-Heading3" onclick="GetFiltteredRequests('3')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-primary"></i> Concierge</button>
                     <button id="ReqType-Heading4" onclick="GetFiltteredRequests('4')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill" style="color:pink;"></i> Business</button>
-                    <select id="rowsperpage" class="form-select form-control" aria-label="Default select example" onchange="changeRowsPerPage(event.target)" style="width:6rem;">
+                    @*<select id="rowsperpage" class="form-select" aria-label="Default select example" onchange="changeRowsPerPage(event.target)" style="width:6rem;">
                         <option selected value="5">Rows</option>
                         <option value="2">2</option>
                         <option value="10">10</option>
                         <option value="50">50</option>
-                    </select>
+                    </select>*@
                       </div>
 
                          

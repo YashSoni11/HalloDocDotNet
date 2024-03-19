@@ -65,6 +65,20 @@ namespace HalloDoc_BAL.Repositery
             return name;
         }
 
+
+        public List<Casetag> GetAllCaseTags()
+        {
+            List<Casetag> casetag = _context.Casetags.ToList();
+
+            return casetag;
+        }
+
+        public string GetConfirmationNumber(int id)
+        {
+            return _context.Requests.Where(q => q.Requestid == id).Select(r => r.Confirmationnumber).FirstOrDefault();
+        }
+
+
         public List<DashboardRequests> GetAllRequests()
         {
 
@@ -95,9 +109,11 @@ namespace HalloDoc_BAL.Repositery
 
         public string GetAdminUsername(int id)
         {
-            string name = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Firstname).FirstOrDefault();
+            string aspId = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
 
-            return name;
+            string userName = _context.Aspnetusers.Where(q=>q.Id == aspId).Select(r=>r.Username).FirstOrDefault();
+
+            return userName;
         }
 
 
