@@ -107,5 +107,7 @@ namespace HalloDoc_BAL.Interface
 
         public List<Casetag> GetAllCaseTags();
 
+        public string GetExcelFile(List<DashboardRequests> dashboardRequests);
+
     }
 }

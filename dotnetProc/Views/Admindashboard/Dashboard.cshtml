@@ -86,7 +86,7 @@
                   
                     <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="ExportFile()"><i class="bi bi-share mx-1"></i><span class="text-vanish">Export</span></button>
 
-                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-box-arrow-up-right mx-1"></i><span class="text-vanish">Export All</span></button>
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="ExportAllRecords()"><i class="bi bi-box-arrow-up-right mx-1"></i><span class="text-vanish">Export All</span></button>
                     <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-person-workspace mx-1 "></i><span class="text-vanish">Request DTY Support</span></button>
 
                  </div>  
@@ -194,7 +194,7 @@
 
     @{
        
-        <partial name="_ValidationScriptsPartial" />
+            <partial name="_ValidationScriptsPartial" />
     }
 }
 
@@ -310,6 +310,75 @@
        
    }
 
+
+   const ExportAllRecords = () =>{
+
+       console.log(1)
+        let statusarray = [];
+        let StatusBtns = $(".big-btn");
+
+       for (let i = 1; i < StatusBtns.length + 1; i++) {
+
+
+
+           if ($(`#big-btn${i}`).hasClass('ActiveStatus')) {
+
+
+
+               if (i == 1) {                     /*New*/
+                   statusarray = ['1'];
+               } else if (i == 2) {              /*Unpaid*/
+                   statusarray = ['2']
+               } else if (i == 3) {              /*Active*/
+                   statusarray = ['3', '4'];
+               } else if (i == 4) {              /*Conclude*/
+                   statusarray = ['5']
+               } else if (i == 5) {               /*ToClose*/
+                   statusarray = ['6', '7', '8']
+               } else if (i == 6) {                /*Pending*/
+                   statusarray = ['9']
+               }
+
+               break;
+           }
+
+       }
+
+            $.ajax({
+                method: "post",
+                url: "/Admindashboard/GetExcelRecordStatusWise",
+                data: { StatusArray: statusarray},
+                success: function (response) {
+                        console.log(response)
+                    if (response.code == 401) {
+
+                        location.reload();
+                    } 
+                    else if(response.code == 403){
+                        toastr.error("Error While Exporting File!")
+                    }
+                    else {
+
+                        var filename = "table_data.xlsx";
+                        //var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        //var blob = new Blob([response], { type: contentType });
+                        var link = document.createElement('a');
+                        link.href = response.url;
+                        link.download = filename;
+                        link.click();
+                        toastr.success("File Exported Successfully.")
+                        //window.location.href. = response.url;
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+
+
+
+        
+   }
     
 
 

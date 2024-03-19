@@ -1196,72 +1196,50 @@ namespace dotnetProc.Controllers
 
                 List<DashboardRequests> dashboardRequests = _dashboard.GetRequestsFromRequestorType(IntType, StatusArray, region, Name);
 
+                string response = _dashboard.GetExcelFile(dashboardRequests);
 
-                string[] header = { "Name", "Date of Birth", "Requestor", "Phonenumber", "Address", "Notes" };
-
-                using (var package = new XLWorkbook())
+               if(response != "")
                 {
-
-                    var worksheet = package.Worksheets.Add("Sheet1");
-                    int row = 1;
-                    for (int i = 0; i < header.Length; i++)
-                    {
-                        worksheet.Cell(row, i + 1).Value = header[i];
-                    }
-
-                    row++;
-                    int j = 0;
-                    foreach (DashboardRequests req in dashboardRequests)
-                    {
-
-                        worksheet.Cell(row, j + 1).Value = req.Username;
-
-                        j++;
-
-                        worksheet.Cell(row, j + 1).Value = req.Birthdate;
-
-                        j++;
-
-                        worksheet.Cell(row, j + 1)  .Value = req.Requestor;
-                        j++;
-                        worksheet.Cell(row, j + 1).Value = req.Phone + "/" + req.RequestorPhone;
-                        j++;
-                        worksheet.Cell(row, j + 1).Value = req.Address;
-                        j++;
-                        worksheet.Cell(row, j + 1).Value = req.Notes;
-
-                        j = 0;
-                        row++;
-
-
-
-
-                    }
-
-                    byte[] fileBytes;
-                    using (var stream = new MemoryStream())
-                    {
-                        package.SaveAs(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
-
-                        fileBytes = stream.ToArray();
-                        string fileName = Guid.NewGuid().ToString() + ".xlsx";
-                        string filePath =  Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
-
-                        string path = Path.Combine(filePath, fileName); 
-
-                        System.IO.File.WriteAllBytes(path, fileBytes);
-                       
-                        string fileUrl = path;
-
-                        return Json(new { Url = "https://localhost:7008/Upload/"+fileName });
-                  
-                    }
+                    return Json(new { Url = response }) ;
                 }
-
+                else
+                {
+                    return Json(new { code = 403 });
+                }
                 //bool response = _dashboard.ExportExcelForCurrentPage(dashboardRequests);
 
                 
+            }
+        }
+
+        public IActionResult GetExcelRecordStatusWise(string[] StatusArray)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired)
+            {
+                TempData["ShowNegativeNotification"] = "You need to login!";
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
+
+                string response = _dashboard.GetExcelFile(dashboardRequests);
+
+
+                if (response != "")
+                {
+                    return Json(new { Url = response });
+                }
+                else
+                {
+                    return Json(new { code = 403 });
+                }
+                
+
             }
         }
 
