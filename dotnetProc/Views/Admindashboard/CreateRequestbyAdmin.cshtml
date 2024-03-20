@@ -141,7 +141,7 @@
 
                         <div class="col-xl-2 col-sm-4 col-6 d-flex  align-content-center">
                             <div class="form-floating mb-3 d-flex justify-content-center align-content-center">
-                                <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="chekcRegionAvailibility()">
+                                <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="chekcRegionAvailibility('state')">
                                    Verify
                                 </button>
                             </div>
@@ -201,6 +201,12 @@
 
 <script>
 $(document).ready(function(){
+        let prevId = localStorage.getItem("ActiveLink")
+
+        let currEle = document.getElementById(prevId)
+
+        currEle.classList.add("active");
+
     toastr.remove();
     $(".reg-nav").remove();
 
@@ -216,7 +222,7 @@ $(document).ready(function(){
 
 
 })
-
+   
 const verifyAddress = () =>{
 
       

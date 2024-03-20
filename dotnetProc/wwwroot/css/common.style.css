@@ -13,6 +13,8 @@
     --admindash-nav-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     --disabled-input: #e9ecef;
     --accordian-btn-color: white;
+    --NotesContainer-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    --Notes-icon-color:black;
 }
 
 .dark-theme {
@@ -29,7 +31,8 @@
     --tab-border-color: #EEEEEE;
     --admindash-nav-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
     --disabled-input: #6f7376;
-    --accordian-btn-color: #606266
+    --accordian-btn-color: #606266;
+    --Notes-icon-color: #0dcaf0;
 }
 
 

@@ -27,7 +27,7 @@ namespace HalloDoc_DAL.AdminViewModels
         public string Address { get; set; }
 
 
-        public string Notes { get; set; }
+        public List<TransferNotes>? Notes { get; set; }
 
 
         public int status { get; set; }

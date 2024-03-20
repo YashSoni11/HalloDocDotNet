@@ -531,7 +531,7 @@ namespace dotnetProc.Controllers
 
       
 
-            return Json(new { Response = isExists,ModalMsg= "Currently We Are Not Servicing In your Provided Region !" });
+            return Json(new { Response = isExists,NegativeMsg= "Currently We Are Not Servicing In your Provided Region !",PositiveMsg="Location is available." });
         }
         public IActionResult Privacy()
         {

@@ -219,10 +219,10 @@ const checkPhoneNumberAvailibility = () => {
 
 }
 
-const chekcRegionAvailibility = () => {
+const chekcRegionAvailibility = (id) => {
 
 
-    let region = $("#regionInp").val();
+    let region = $(`#${id}`).val();
     console.log(region)
     if (region == "Region") {
         return;
@@ -238,10 +238,13 @@ const chekcRegionAvailibility = () => {
             console.log(response)
             if (response.response == false) {
 
-                $("#AlertModalContent").text(response.modalMsg)
+                $("#AlertModalContent").text(response.negativeMsg)
 
-                $("#regionModalBtn").click();
+            } else {
+                $("#AlertModalContent").text(response.positiveMsg)
+
             }
+                $("#regionModalBtn").click();
         },
         error: function () {
             console.log(2, email);
@@ -982,13 +985,23 @@ const GetVendorDetails = () => {
         success: function (response) {
 
 
+            if (response.code == 401) {
+
+                location.reload();
 
 
-            $("#BusinessContact").val(response.businesscontact)
-            $("#VendorEmail").val(response.email)
-            $("#VendorFax").val(response.faxnumber)
+            } else if (response.code == 403) {
+                toastr.error(response.msg);
+            }
+            else {
 
 
+
+                $("#BusinessContact").val(response.businesscontact)
+                $("#VendorEmail").val(response.email)
+                $("#VendorFax").val(response.faxnumber)
+
+            }
 
 
         },

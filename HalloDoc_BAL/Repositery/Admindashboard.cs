@@ -96,13 +96,16 @@ namespace HalloDoc_BAL.Repositery
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
                 Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
+                Notes  = _context.Requeststatuslogs.Where(q=>q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+              {
+                AdminId = r.Adminid,
+                PhysicianId = r.Transtophysicianid,
+                PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                TransferedDate = r.Createddate,
+                Description = r.Notes
+            }).ToList(),
+
             }).ToList();
-
-
-
-
-
-
 
             return requests;
 
@@ -171,8 +174,10 @@ namespace HalloDoc_BAL.Repositery
             return physicians;
         }
 
-        public Request AssignRequest(AdminAssignCase assignCase, int requestId)
+        public bool AssignRequest(AdminAssignCase assignCase, int requestId)
         {
+            try
+            {
             Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
 
             if (request != null)
@@ -199,7 +204,12 @@ namespace HalloDoc_BAL.Repositery
             }
 
 
-            return request;
+            return true;
+
+            }catch(Exception ex)
+            {
+                return false;
+            }
         }
 
 
@@ -258,6 +268,14 @@ namespace HalloDoc_BAL.Repositery
                 Requesttype = _context.Requests.Where(q => q.Requestid == r.Requestid).Select(r => r.Requesttypeid).FirstOrDefault(),
                 Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0)),
                 RequestorPhone = _context.Requests.Where(q => q.Requestid == r.Requestid).Select(m => m.Requesttypeid != 1 ? m.Phonenumber : null).FirstOrDefault(),
+                Notes = _context.Requeststatuslogs.Where(q => q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                {
+                    AdminId = r.Adminid,
+                    PhysicianId = r.Transtophysicianid,
+                    PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                    TransferedDate = r.Createddate,
+                    Description = r.Notes
+                }).ToList(),
             }).ToList();
 
             return requests;
@@ -325,6 +343,14 @@ namespace HalloDoc_BAL.Repositery
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
                 Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
+                Notes = _context.Requeststatuslogs.Where(q => q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                {
+                    AdminId = r.Adminid,
+                    PhysicianId = r.Transtophysicianid,
+                    PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                    TransferedDate = r.Createddate,
+                    Description = r.Notes
+                }).ToList(),
 
 
             }).ToList();
@@ -362,6 +388,14 @@ namespace HalloDoc_BAL.Repositery
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
                 RegionId = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(q => q.Regionid).FirstOrDefault(),
                 RequestTypeId = r.Requesttypeid,
+                Notes = _context.Requeststatuslogs.Where(q => q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                {
+                    AdminId = r.Adminid,
+                    PhysicianId = r.Transtophysicianid,
+                    PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                    TransferedDate = r.Createddate,
+                    Description = r.Notes
+                }).ToList(),
 
             }).ToList();
 
@@ -380,7 +414,7 @@ namespace HalloDoc_BAL.Repositery
 
             if (name != null)
             {
-                dashboardRequests = dashboardRequests.Where(q => q.Username.Contains(name)).ToList();
+                dashboardRequests = dashboardRequests.Where(q => q.Username.ToLower().Contains(name.ToLower())).ToList();
             }
 
 
@@ -405,7 +439,10 @@ namespace HalloDoc_BAL.Repositery
                 Notes = r.Notes,
                 RequestTypeId = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Requesttypeid).FirstOrDefault(),
                 ConfirmationNumber = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Confirmationnumber).FirstOrDefault(),
+                Status = _context.Requests.Where(q=>q.Requestid == requestId).Select(r=>r.Status).FirstOrDefault(),
             }).FirstOrDefault();
+
+           
 
             return requestclient;
         }
@@ -414,15 +451,56 @@ namespace HalloDoc_BAL.Repositery
         {
             RequestNotes? requestNotes = _context.Requestnotes.Where(q => q.Requestid == requestId).Select(r => new RequestNotes
             {
-                TranferNotes = r.Physiciannotes,
+              
                 AdminNotes = r.Adminnotes,
                 AddtionalNotes = r.Administrativenotes,
                 PhysicianNotes = r.Physiciannotes
 
             }).FirstOrDefault();
 
+            if (requestNotes == null)
+            {
+
+                return requestNotes;
+            }
+            else
+            {
+
+            List<TransferNotes> transfernotes = new List<TransferNotes>();
+
+             transfernotes = _context.Requeststatuslogs.Where(q => q.Requestid == requestId && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r=> new TransferNotes
+            {
+                AdminId = r.Adminid,
+                PhysicianId = r.Transtophysicianid,
+                PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                TransferedDate = r.Createddate,
+                Description = r.Notes
+        }).ToList();
+
+            
+            requestNotes.TranferNotes = transfernotes;
+
             return requestNotes;
+            }
         }
+
+        public bool SaveNotesChanges(string notes, int requestId)
+        {
+            try
+            {
+            Requestnote requestNotes = _context.Requestnotes.FirstOrDefault(q => q.Requestid == requestId);
+
+            requestNotes.Adminnotes = notes;
+
+            _context.Requestnotes.Update(requestNotes);
+            _context.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public ClientRequest UpdateClientRequest(ClientRequest clientRequest, int RequestId)
         {
@@ -445,8 +523,11 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request UpdateRequestToClose(AdminCancleCase adminCancleCase, int id)
+        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id)
         {
+            try
+            {
+
             Request request = _context.Requests.FirstOrDefault(q => q.Requestid == id);
 
             request.Casetag = adminCancleCase.Reason;
@@ -465,8 +546,13 @@ namespace HalloDoc_BAL.Repositery
             _context.Requests.Update(request);
 
             _context.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
 
-            return request;
+           
         }
 
         public List<ViewDocument> GetDocumentsByRequestId(int requestId)
@@ -571,9 +657,10 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId, int adminId)
+        public bool TransferRequest(AdminAssignCase adminAssignCase, int requestId, int adminId)
         {
-
+            try
+            {
 
             Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
 
@@ -595,17 +682,16 @@ namespace HalloDoc_BAL.Repositery
                 Adminid = adminId
             };
 
-            try
-            {
+            
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.Requests.Update(request);
                 _context.SaveChanges();
 
-                return request;
+                return true;
             }
             catch (Exception err)
             {
-                return new Request();
+                return false;
             }
 
         }
@@ -1173,36 +1259,46 @@ namespace HalloDoc_BAL.Repositery
 
             if (admin != null)
             {
-                AdminProfile ap = new AdminProfile()
+
+                AccountAndAdministratorInfo ai = new AccountAndAdministratorInfo()
                 {
                     Firstname = admin.Firstname,
                     Lastname = admin.Lastname,
                     Confirmationemail = admin.Email,
-                    State = _context.Regions.Where(q => q.Regionid == admin.Regionid).Select(r => r.Name).FirstOrDefault(),
                     Role = _context.Roles.Where(q => q.Roleid == admin.Roleid).Select(r => r.Name).FirstOrDefault(),
                     Phone = admin.Mobile,
+                    Status = (int)(admin.Status),
+                    AspnetAdminid = admin.Aspnetuserid
+
+                };
+                MailingAndBillingInfo mi = new MailingAndBillingInfo()
+                {
+                    State = _context.Regions.Where(q => q.Regionid == admin.Regionid).Select(r => r.Name).FirstOrDefault(),
                     AltPhone = admin.Altphone,
                     Address1 = admin.Address1,
                     Address2 = admin.Address2,
                     City = admin.City,
-                    Status = (int)(admin.Status),
                     Zip = admin.Zip,
-                    AspnetAdminid = admin.Aspnetuserid
 
+                };
+                AdminProfile ap = new AdminProfile()
+                {
+                    accountInfo = ai,
+                    mailingAndBillingInfo = mi
                 };
 
 
-                Aspnetuser aspnetuser = _context.Aspnetusers.Where(q=>q.Id == ap.AspnetAdminid).FirstOrDefault();
+                Aspnetuser aspnetuser = _context.Aspnetusers.Where(q=>q.Id == ap.accountInfo.AspnetAdminid).FirstOrDefault();
 
-                ap.Email = aspnetuser.Email;
-                ap.Username = aspnetuser.Username;
 
+                   ap.accountInfo.Email = aspnetuser.Email;
+                  ap.accountInfo.Username = aspnetuser.Username;
                 List<Role> roles = _context.Roles.ToList();
                 List<Region> regions = _context.Regions.ToList();
 
 
-                ap.roles = roles;
-                ap.regions = regions;
+                ap.accountInfo.roles = roles;
+                ap.mailingAndBillingInfo.regions = regions;
 
                 return ap;
             }
@@ -1238,14 +1334,14 @@ namespace HalloDoc_BAL.Repositery
                  Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminId);
                 Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q=>q.Id == admin.Aspnetuserid);
 
-                aspnetuser.Username = ap.Username;
-                aspnetuser.Email = ap.Email;
-                admin.Firstname = ap.Firstname;
-                admin.Lastname = ap.Lastname;
-                admin.Mobile = ap.Phone;
-                admin.Status = (short)ap.Status;
-                admin.Email = ap.Confirmationemail;
-                admin.Roleid = _context.Roles.Where(q => q.Name == ap.Role).Select(r => r.Roleid).FirstOrDefault();
+                aspnetuser.Username = ap.accountInfo.Username;
+                aspnetuser.Email = ap.accountInfo.Email;
+                admin.Firstname = ap.accountInfo.Firstname;
+                admin.Lastname = ap.accountInfo.Lastname;
+                admin.Mobile = ap.accountInfo.Phone;
+                admin.Status = (short)ap.accountInfo.Status;
+                admin.Email = ap.accountInfo.Confirmationemail;
+                admin.Roleid = _context.Roles.Where(q => q.Name == ap.accountInfo.Role).Select(r => r.Roleid).FirstOrDefault();
 
                 _context.Admins.Update(admin);
                 _context.SaveChanges();
@@ -1263,12 +1359,12 @@ namespace HalloDoc_BAL.Repositery
 
                 Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminId);
 
-                admin.Address1 = ap.Address1;
-                admin.Address2 = ap.Address2;
-                admin.City = ap.City;
-                admin.Regionid = _context.Regions.Where(q=>q.Name == ap.State).Select(r=>r.Regionid).FirstOrDefault();
-                admin.Zip = ap.Zip;
-                admin.Altphone = ap.AltPhone;
+                admin.Address1 = ap.mailingAndBillingInfo.Address1;
+                admin.Address2 = ap.mailingAndBillingInfo.Address2;
+                admin.City = ap.mailingAndBillingInfo.City;
+                admin.Regionid = _context.Regions.Where(q=>q.Name == ap.mailingAndBillingInfo.State).Select(r=>r.Regionid).FirstOrDefault();
+                admin.Zip = ap.mailingAndBillingInfo.Zip;
+                admin.Altphone = ap.mailingAndBillingInfo.AltPhone;
 
                 _context.Admins.Update(admin);
                 _context.SaveChanges();
@@ -1365,7 +1461,7 @@ namespace HalloDoc_BAL.Repositery
                     j++;
                     worksheet.Cell(row, j + 1).Value = req.Address;
                     j++;
-                    worksheet.Cell(row, j + 1).Value = req.Notes;
+                    //worksheet.Cell(row, j + 1).Value = req.Notes;
 
                     j = 0;
                     row++;

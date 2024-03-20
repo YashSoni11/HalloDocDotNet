@@ -464,7 +464,7 @@ namespace HalloDoc_BAL.Repositery
 
         public bool  IsRegionAvailable(string region)
         {
-            return _context.Regions.Any(q=>q.Name == region);
+            return _context.Regions.Any(q=>q.Name.ToLower() == region.ToLower());
         }
 
 

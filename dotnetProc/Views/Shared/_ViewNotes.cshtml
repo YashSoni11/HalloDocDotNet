@@ -4,29 +4,7 @@
 @using HalloDoc_DAL.ViewModels;
 @model HalloDoc_DAL.AdminViewModels.AdminDashboard;
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <div class="container-fluid mt-3">
@@ -125,27 +103,3 @@
 
 
 
-
-<script>
-
-    const showLocation = () => {
-
-
-
-
-
-        var zip = $("#zip").val();
-        var city = $("#city").val();
-        var state = $("#state").val();
-        var street = $("#street").val();
-
-        console.log(address)
-
-        var address = street + ',' + city + ',' + state + ',' + zip
-
-        var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
-
-
-        window.open(mapsUrl, "_blank");
-    }
-</script>

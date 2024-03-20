@@ -25,7 +25,7 @@
         <div class="row justify-content-center">
 
 
-            <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mb-3 justify-content-between">
                 <div class="d-flex" style="align-items:center;">
                     <h2>New Request</h2>
                     <span class="mx-1 RequestorTypeHeading" style="background-color:@colors[Model.RequestTypeId-1]">@requestorType[Model.RequestTypeId-1]</span>
@@ -148,14 +148,23 @@
 
                         <div class="row justify-content-end p-3">
                             <div class="d-flex col-4 justify-content-end" style="column-gap: 1rem;">
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="GetAssginCasePopup(@Model.RequestId,'ViewCaseModalContainer')">Assign</button>
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</button>
+                               
+                                @if(Model.Status == 1)
+                                {
+                                 <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="GetAssginCasePopup(@Model.RequestId,'ViewCaseModalContainer')">Assign</button>
+                                    
+                                }
+                                <a asp-action="GetRequestNotes" asp-controller="Admindashboard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</a>
                                 <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
                                 <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
                                 <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
                                     Cancle Edit
                                 </button>
-                                <button type="button" class="btn btn-danger  text-white darkInfo-btn">Cancle</button>
+                                @if(Model.Status == 1 || Model.Status == 8)
+                                {
+                                    <button type="button" onclick="GetCancleCase(@Model.RequestId,'ViewCaseModalContainer')" class="btn btn-danger  text-white darkInfo-btn">Cancle</button>
+                                    
+                                }
 
                             </div>
                         </div>
@@ -174,6 +183,14 @@
 
         </div>
     </div>
+}
+
+@section Scripts{
+
+    @{
+
+        <partial name="_ValidationScriptsPartial" />
+    }
 }
 
 <script>

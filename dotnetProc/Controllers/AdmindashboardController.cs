@@ -189,20 +189,54 @@ namespace dotnetProc.Controllers
 
         //}
 
-
-
+        [AuthManager("Admin")]
+        [HttpGet]
+        [Route("Viewnotes/{id}")]
         public IActionResult GetRequestNotes(string id)
         {
             int newrequestid = int.Parse(id);
 
             RequestNotes requestNotes = _dashboard.GetNotesFromRequestId(newrequestid);
 
-            AdminDashboard adminDashboard = new AdminDashboard
+            NotesView notes = new NotesView
             {
-                requestnotes = requestNotes
+                requestnotes = requestNotes,
+                requestId = newrequestid
             };
 
-            return PartialView("_ViewNotes", adminDashboard);
+            return View("ViewNotes", notes);
+        }
+
+        [HttpPost]
+        public IActionResult SaveNotesChanges(NotesView notesView,int id)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "You need to login";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                int newrequestid = id;
+
+                bool response = _dashboard.SaveNotesChanges(notesView.AdditionalNotes, newrequestid);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Chnages Saved Successfully.";
+            }
+            else 
+            {
+                TempData["ShowNegativeNotification"] = "Data Not Saved!";
+            }
+            return RedirectToAction("GetRequestNotes", new { id = newrequestid });
+
+            }
+
         }
 
         [AuthManager("Admin")]
@@ -280,8 +314,16 @@ namespace dotnetProc.Controllers
             {
 
 
-                Request request = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
+                bool response = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
 
+                if(response)
+                {
+                    TempData["ShowPositiveNotification"] = "Request Cancled Succesfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something went wrong!";
+                }
                 return RedirectToAction("Dashboard", "Admindashboard");
             }
             else
@@ -381,9 +423,41 @@ namespace dotnetProc.Controllers
 
         public IActionResult PostAssignCase(AdminAssignCase adminAssignCase, int requestId)
         {
-            Request request = _dashboard.AssignRequest(adminAssignCase, requestId);
 
-            return RedirectToAction("Dashboard", "Admindashboard");
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+        
+                return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
+            }
+            else if (ModelState.IsValid)
+            {
+
+
+                bool  response = _dashboard.AssignRequest(adminAssignCase, requestId);
+
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Request Cancled Succesfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something went wrong!";
+                }
+                return RedirectToAction("Dashboard", "Admindashboard");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+                return RedirectToAction("Dashboard", "Admindashboard");
+
+            }
+
+
         }
 
 
@@ -610,11 +684,33 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetVendorDetails(string id)
         {
-            int newid = int.Parse(id);
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            Healthprofessional healthprofessional = _dashboard.GetVendorByVendorId(newid);
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            return Json(healthprofessional);
+            if (istokenExpired)
+            {
+                return Json(new { code = 401 });
+            }
+            else
+            {
+                if (id.IsNullOrEmpty())
+                {
+
+                    return Json(new { code = 403, msg = "Please Select Vendor!" });
+                }
+                else
+                {
+
+                    int newid = int.Parse(id);
+
+
+
+                    Healthprofessional healthprofessional = _dashboard.GetVendorByVendorId(newid);
+
+                    return Json(healthprofessional);
+                }
+            }
         }
 
 
@@ -656,20 +752,37 @@ namespace dotnetProc.Controllers
 
             string token = HttpContext.Request.Cookies["jwt"];
 
-            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+            bool istokenExpired = _account.IsTokenExpired(token);
 
-            Request request = _dashboard.TransferRequest(adminAssignCase, requestId, loggedInUser.UserId);
-
-            if (request != null)
+            if (istokenExpired)
             {
 
+                return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
+            }
+            else if(ModelState.IsValid)
+            {
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+               bool response = _dashboard.TransferRequest(adminAssignCase, requestId, loggedInUser.UserId);
+
+                if (response)
+                {
                 TempData["ShowPositiveNotification"] = "Request Transfered Successfully.";
+
+                }
+                else
+                {
+                TempData["ShowNegativeNotification"] = "Something Went wrong!";
+
+                }
+              return RedirectToAction("Dashboard", "Admindashboard");
+
             }
             else
             {
-                TempData["ShowNegativeNotification"] = "Something Went wrong!";
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+              return RedirectToAction("Dashboard", "Admindashboard");
             }
-            return RedirectToAction("Dashboard", "Admindashboard");
         }
 
 
@@ -1153,7 +1266,7 @@ namespace dotnetProc.Controllers
 
                 bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, patientReqByAdmin.Location);
 
-
+                bool response1 = _dashboard.SaveNotesChanges(patientReqByAdmin.Notes, patientRequest.Requestid);
 
                 if (response == false || patientRequest == null)
                 {
@@ -1256,6 +1369,8 @@ namespace dotnetProc.Controllers
             AdminProfile adminProfile = _dashboard.GetAdminProfileData(loggedInUser.UserId);
 
 
+
+
             return View("Adminprofile",adminProfile);  
         }
 
@@ -1303,7 +1418,11 @@ namespace dotnetProc.Controllers
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
+            if (ModelState.IsValid)
+            {
 
+            }
+            
             bool istokenExpired = _account.IsTokenExpired(token);
 
             if (istokenExpired || token.IsNullOrEmpty())
@@ -1311,7 +1430,7 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if(ModelState.IsValid)
+            else if(TryValidateModel(ap.accountInfo))
             {
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
@@ -1354,7 +1473,7 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if (ModelState.IsValid)
+            else if (TryValidateModel(ap.mailingAndBillingInfo))
             {
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 

@@ -32,7 +32,7 @@ namespace HalloDoc_BAL.Interface
 
         public string GetPatientName(int id);
 
-        public Request UpdateRequestToClose(AdminCancleCase adminCancleCase, int id);
+        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id);
 
         public List<Region> GetAllRegions();
 
@@ -40,7 +40,7 @@ namespace HalloDoc_BAL.Interface
 
         public List<Physician> FilterPhysicianByRegion(int regionid);
 
-        public Request AssignRequest(AdminAssignCase assignRequest, int requestId);
+        public bool AssignRequest(AdminAssignCase assignRequest, int requestId);
 
         public Request BlockRequest(AdminBlockCase blockRequest, int requestId);
 
@@ -60,7 +60,7 @@ namespace HalloDoc_BAL.Interface
 
         public Healthprofessional GetVendorByVendorId(int id);
 
-        public Request TransferRequest(AdminAssignCase adminAssignCase, int requestId,int adminId);
+        public bool TransferRequest(AdminAssignCase adminAssignCase, int requestId,int adminId);
 
         public bool SendDocumentsViaEmail(dynamic data);
 
@@ -108,6 +108,8 @@ namespace HalloDoc_BAL.Interface
         public List<Casetag> GetAllCaseTags();
 
         public string GetExcelFile(List<DashboardRequests> dashboardRequests);
+
+        public bool SaveNotesChanges(string nots, int requestId);
 
     }
 }

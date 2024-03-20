@@ -55,7 +55,7 @@
 
         <div class="col-7 d-flex justify-content-end align-items-center RightSideDashNav">
 
-            <h6 id="username">Welcome,@TempData["UserName"]</h6>
+            <h6 id="username">Welcome,@Context.Request.Cookies["UserName"]</h6>
             <button type="button" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
                     onclick="">
                 <span class="text-vanish"> Logout</span> <i class="bi bi-box-arrow-left logoutIcon"></i>

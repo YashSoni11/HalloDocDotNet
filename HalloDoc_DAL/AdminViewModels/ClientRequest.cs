@@ -34,5 +34,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public int RequestId { get; set; }
 
+        public int Status { get; set; }
+
     }
 }

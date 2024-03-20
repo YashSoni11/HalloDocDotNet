@@ -138,6 +138,7 @@
 .NotesContainer {
     color: var(--NotesContainer-color);
     box-shadow: var(--NotesContainer-shadow);
+    border-radius:10px;
 }
 
 /*h2 {

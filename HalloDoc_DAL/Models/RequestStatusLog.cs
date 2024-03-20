@@ -61,4 +61,7 @@ public partial class Requeststatuslog
     [ForeignKey("Transtophysicianid")]
     [InverseProperty("RequeststatuslogTranstophysicians")]
     public virtual Physician? Transtophysician { get; set; }
+
+    public string? PhysicianName { get; set; }
+
 }
