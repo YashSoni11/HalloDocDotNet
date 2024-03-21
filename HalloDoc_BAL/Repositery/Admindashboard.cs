@@ -148,7 +148,7 @@ namespace HalloDoc_BAL.Repositery
             List<ProviderMenu> physicians = new List<ProviderMenu>();
             if (regionId != 0)
             {
-              physicians = _context.Physicians.Where(q => q.Regionid == regionId).Select(r=> new ProviderMenu()
+              physicians = _context.Physicians.Where(q => q.Regionid == regionId && q.Isdeleted == false).Select(r=> new ProviderMenu()
             {
                 Name = r.Firstname + " " + r.Lastname,
                 IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
@@ -159,7 +159,7 @@ namespace HalloDoc_BAL.Repositery
             }
             else
             {
-                physicians = _context.Physicians.Select(r => new ProviderMenu()
+                physicians = _context.Physicians.Where(q=>q.Isdeleted == false).Select(r => new ProviderMenu()
                 {
 
                     Name = r.Firstname + " " + r.Lastname,

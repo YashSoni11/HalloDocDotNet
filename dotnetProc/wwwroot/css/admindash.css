@@ -176,7 +176,7 @@
 
 .tab-link.active {
     border-width: 1px;
-    border-color: transparent transparent #0dcaf0 transparent;
+    border-color: transparent transparent #0dcaf0 transparent !important;
     color: #0dcaf0;
     transition: 0.4s;
 }

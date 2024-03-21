@@ -56,10 +56,10 @@
         <div class="col-7 d-flex justify-content-end align-items-center RightSideDashNav">
 
             <h6 id="username">Welcome,@Context.Request.Cookies["UserName"]</h6>
-            <button type="button" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
+            <a asp-action="Logout" asp-controller="Account" id="outerLogout" class="btn btn-outline-info lightInfo-btn"
                     onclick="">
                 <span class="text-vanish"> Logout</span> <i class="bi bi-box-arrow-left logoutIcon"></i>
-            </button>
+            </a>
             <button style="width: 3rem; height: 3rem;" type="button" class="btn btn-outline-info lightInfo-btn "
                     onclick="changeTheme()">
                 <i id='themeIcon' class="bi bi-moon text-info"></i>
@@ -75,7 +75,7 @@
 <script>
 
     const toggleSideDashBar = () => {
-        console.log(34)
+      
         $("#SideDashBar").toggleClass("SideDashBarToggle");
     }
 

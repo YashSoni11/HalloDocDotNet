@@ -26,6 +26,7 @@ builder.Services.AddDbContext<HalloDocContext>(q => q.UseNpgsql(con));
 builder.Services.AddScoped<IAccount, Account>();
 builder.Services.AddScoped<IAdmindashboard, Admindashboard>();
 builder.Services.AddScoped<IPatientReq,PatientRequest>();
+builder.Services.AddScoped<IProvider,ProviderServices>();
 builder.Services.AddTransient<IEmailService,EmailService>();
 builder.Services.AddTransient<IJwtServices, JwtServices>();
 

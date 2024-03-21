@@ -1036,6 +1036,56 @@ const cancleEdit = () => {
 }
 
 
+const editDetails1 = () => {
+    console.log("po")
+    $(".tbDisabled1").removeAttr("disabled");
+    $(".editMode1").css("display", "block");
+    $(".editBtn1").css("display", "none");
+}
+
+const cancleEdit1 = () => {
+
+
+    $(".editBtn1").css("display", "block");
+    $(".editMode1").css("display", "none");
+    $(".tbDisabled1").attr("disabled", "true")
+
+
+}
+
+const editDetails2 = () => {
+    $(".tbDisabled2").removeAttr("disabled");
+    $(".editMode2").css("display", "block");
+    $(".editBtn2").css("display", "none");
+}
+
+const cancleEdit2 = () => {
+
+
+    $(".editBtn2").css("display", "block");
+    $(".editMode2").css("display", "none");
+    $(".tbDisabled2").attr("disabled", "true")
+
+
+}
+
+const editDetails3 = () => {
+    $(".tbDisabled3").removeAttr("disabled");
+    $(".editMode3").css("display", "block");
+    $(".editBtn3").css("display", "none");
+}
+
+const cancleEdit3 = () => {
+
+
+    $(".editBtn3").css("display", "block");
+    $(".editMode3").css("display", "none");
+    $(".tbDisabled3").attr("disabled", "true")
+
+
+}
+
+
 const showLocation = () => {
 
 

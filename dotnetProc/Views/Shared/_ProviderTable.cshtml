@@ -45,9 +45,9 @@
                             <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
                                 Contact
                             </button>
-                            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                            <a asp-action="ProviderProfile" asp-controller="Provider" asp-route-id="@Model.providers[i].ProviderId" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
                                 Edit
-                            </button>
+                            </a>
 
 
                         </td>
