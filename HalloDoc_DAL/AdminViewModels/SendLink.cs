@@ -10,7 +10,7 @@ namespace HalloDoc_DAL.AdminViewModels
     public class SendLink
     {
 
-        public string requestId { get; set; }
+        public string? requestId { get; set; }
 
         [Required(ErrorMessage = "FirstName is Required.")]
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]

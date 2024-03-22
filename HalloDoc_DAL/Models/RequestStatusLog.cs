@@ -62,6 +62,6 @@ public partial class Requeststatuslog
     [InverseProperty("RequeststatuslogTranstophysicians")]
     public virtual Physician? Transtophysician { get; set; }
 
-    public string? PhysicianName { get; set; }
+    
 
 }

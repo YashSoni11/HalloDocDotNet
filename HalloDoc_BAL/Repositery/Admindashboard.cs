@@ -192,13 +192,13 @@ namespace HalloDoc_BAL.Repositery
                 {
                     Requestid = requestId,
                     Status = request.Status,
-                    Physicianid = int.Parse(assignCase.SelectedPhycisianId),
+                    //Physicianid = int.Parse(assignCase.SelectedPhycisianId),
                     Notes = assignCase.Description,
                     Createddate = DateTime.Now,
                 };
 
                 _context.Requests.Update(request);
-                _context.Requeststatuslogs.Add(requeststatuslog);
+                //_context.Requeststatuslogs.Add(requeststatuslog);
 
                 _context.SaveChanges();
             }
@@ -490,9 +490,21 @@ namespace HalloDoc_BAL.Repositery
             {
             Requestnote requestNotes = _context.Requestnotes.FirstOrDefault(q => q.Requestid == requestId);
 
-            requestNotes.Adminnotes = notes;
+                if(requestNotes == null) {
+                    Requestnote requestnote = new Requestnote();
+                    requestnote.Adminnotes = notes;
+                    requestnote.Requestid = requestId;
+                    _context.Requestnotes.Add(requestnote);
+                }
+                else
+                {
+                    requestNotes.Adminnotes = notes;
+                _context.Requestnotes.Update(requestNotes);
 
-            _context.Requestnotes.Update(requestNotes);
+
+                }
+
+
             _context.SaveChanges();
                 return true;
             }catch(Exception ex)
@@ -534,15 +546,15 @@ namespace HalloDoc_BAL.Repositery
             request.Modifieddate = DateTime.Now;
             request.Status = 8;
 
-            Requeststatuslog requeststatuslog = new Requeststatuslog
-            {
-                Requestid = adminCancleCase.requestId,
-                Status = 8,
-                Createddate = DateTime.Now,
-                Notes = adminCancleCase.AdditionalNotes
-            };
+            //Requeststatuslog requeststatuslog = new Requeststatuslog
+            //{
+            //    Requestid = (int)adminCancleCase.requestId,
+            //    Status = 8,
+            //    Createddate = DateTime.Now,
+            //    Notes = adminCancleCase.AdditionalNotes
+            //};
 
-            _context.Requeststatuslogs.Add(requeststatuslog);
+            //_context.Requeststatuslogs.Add(requeststatuslog);
             _context.Requests.Update(request);
 
             _context.SaveChanges();
@@ -794,18 +806,18 @@ namespace HalloDoc_BAL.Repositery
                 request.Status = 3;
                 request.Modifieddate = DateTime.Now;
 
-                Requeststatuslog requeststatuslog = new Requeststatuslog()
-                {
-                    Requestid = newId,
-                    Status = request.Status,
-                    Createddate = DateTime.Now,
+                //Requeststatuslog requeststatuslog = new Requeststatuslog()
+                //{
+                //    Requestid = newId,
+                //    Status = request.Status,
+                //    Createddate = DateTime.Now,
 
-                };
+                //};
 
                 try
                 {
                     _context.Requests.Update(request);
-                    _context.Requeststatuslogs.Add(requeststatuslog);
+                    //_context.Requeststatuslogs.Add(requeststatuslog);
                     _context.SaveChanges();
 
                     return true;

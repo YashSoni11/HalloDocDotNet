@@ -9,50 +9,28 @@ using System.Threading.Tasks;
 
 namespace HalloDoc_DAL.ProviderViewModels
 {
-    public class ProviderProfileView
+    public class CreateProviderAccount
     {
-        public int? PhysicianId { get; set; }
-      
-       public ProviderAccountInfo? AccountInfo { get; set; }
-
-        public ProviderMailingAndBillingInfo? ProviderMailingAndBillingInfo { get; set; }
-
-        public ProviderProfileInfo? ProviderProfileInfo { get; set; }    
-
-        public ProviderInformation? ProviderInformation { get; set; }
-       
-      
-        public IFormFile? ICA { get; set; }
-        public IFormFile? BGCheck { get; set; }
-        public IFormFile? HIPAACompliance { get; set; }
-        public IFormFile? NDA { get; set; }
-        public IFormFile? LicenseDoc { get; set; }
-    }
 
 
-
-    public class ProviderAccountInfo
-    {
         [Required(ErrorMessage = "Username is Required.")]
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
         public string? UserName { get; set; }
 
+        [Required(ErrorMessage = "Password is Required.")]
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "Status is Required.")]
         public int? Status { get; set; }
 
         [Required(ErrorMessage = "Role is Required.")]
-        public string? Role { get; set; }
+        public int? Role { get; set; }
+
+           
 
         public List<Role> roles { get; set; }
 
-    }
-
-
-    public class ProviderInformation
-    {
         [Required(ErrorMessage = "FirstName is Required.")]
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
@@ -63,25 +41,20 @@ namespace HalloDoc_DAL.ProviderViewModels
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
         public string? LastName { get; set; }
 
-
+        [Required(ErrorMessage = "Email is Required.")]
         [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "Please Enter Valid Email.")]
         public string? Email { get; set; }
         public List<Region>? Regions { get; set; }
 
-        [Required(ErrorMessage = "Phonenumber is required.")]
-        [DataType(DataType.PhoneNumber)]
-        [Phone(ErrorMessage = "Please Enter Valid Phonenumber")]
-        public string? PhoneNumber { get; set; }
+       
+        public string? AltPhone { get; set; }
 
+        [Required(ErrorMessage = "Medicallicense is required.")]
         public string? MedicalLicenseNumber { get; set; }
+
+        [Required(ErrorMessage ="NPI Number is required")]
         public string? NPINumber { get; set; }
-        public string? SyncEmail { get; set; }
-    }
-
-
-    public class ProviderMailingAndBillingInfo
-    {
 
         [Required(ErrorMessage = "Address is required.")]
         public string? Address1 { get; set; }
@@ -98,27 +71,34 @@ namespace HalloDoc_DAL.ProviderViewModels
 
 
         public string? StateName { get; set; }
+
+        [Required(ErrorMessage = "Zipcode is Required.")]
+        [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be exactly 6 digits.")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "ZIP code must be exactly 6 digits.")]
         public string? Zip { get; set; }
-        public string?  Phone { get; set; }
 
-        public List<Region> regions { get; set; }
-    } 
+        [Required(ErrorMessage = "Phonenumber is required.")]
+        [DataType(DataType.PhoneNumber)]
+        [Phone(ErrorMessage = "Please Enter Valid Phonenumber")]
+        public string? Phone { get; set; }
 
+ 
 
-    public class ProviderProfileInfo
-    {
         [Required(ErrorMessage = "Businessname is Required.")]
+        [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
+
         public string? BusinessName { get; set; }
 
         [Required(ErrorMessage = "Businesswensite is Required.")]
+        [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
+
         public string? BusinessWebsite { get; set; }
         public IFormFile? Photo { get; set; }
-        public IFormFile? Signature { get; set; }
-
-        public byte[]? SignatureImage { get; set; }
+       
 
         public string? AdminNotes { get; set; }
+
+
+
     }
-
-
 }

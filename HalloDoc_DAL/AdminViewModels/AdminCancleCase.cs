@@ -18,10 +18,10 @@ namespace HalloDoc_DAL.AdminViewModels
         [MaxLength(500, ErrorMessage = "Could Not Enter More Than 500 Charachters.")]
         public string AdditionalNotes { get; set; }
 
-        public  int requestId { get; set; }
+        public  int? requestId { get; set; }
 
-        public string PatientName { get; set; }
+        public string?   PatientName { get; set; }
 
-        public List<Casetag> reasons { get; set; }
+        public List<Casetag>? reasons { get; set; }
     }
 }

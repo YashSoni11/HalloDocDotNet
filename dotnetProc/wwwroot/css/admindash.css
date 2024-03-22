@@ -141,10 +141,13 @@
     border-radius:10px;
 }
 
+.canvasGroup{
+    display:none;
+    transition:0.2s;
+}
 /*h2 {
     color: var(--NotesContainer-color);
 }*/
-
 .RequestorTypeHeading {
     border-radius: 18px;
     display: flex;

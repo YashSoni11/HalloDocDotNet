@@ -11,9 +11,9 @@ namespace HalloDoc_DAL.AdminViewModels
     public class AdminAssignCase
     {
 
-      public   List<Region> Regions { get; set; }
+      public   List<Region>? Regions { get; set; }
 
-        public List<Physician>  Physicians { get; set; }
+        public List<Physician>?  Physicians { get; set; }
 
         [Required(ErrorMessage = "Region Is Required")]
         public string SelectedRegionName { get; set; }
@@ -25,7 +25,7 @@ namespace HalloDoc_DAL.AdminViewModels
         [MaxLength(500, ErrorMessage = "Could Not Enter More Than 500 Charachters.")]
         public string Description { get; set; }
 
-        public int RequestId { get; set; }
+        public int? RequestId { get; set; }
 
          
     }

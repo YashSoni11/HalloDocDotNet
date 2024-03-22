@@ -442,7 +442,7 @@ namespace dotnetProc.Controllers
 
                 if (response)
                 {
-                    TempData["ShowPositiveNotification"] = "Request Cancled Succesfully.";
+                    TempData["ShowPositiveNotification"] = "Request Assigned Succesfully.";
                 }
                 else
                 {
@@ -492,9 +492,43 @@ namespace dotnetProc.Controllers
         public IActionResult PostBlockCase(AdminBlockCase adminBlockCase, int requestId)
         {
 
-            Request request = _dashboard.BlockRequest(adminBlockCase, requestId);
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            return RedirectToAction("Dashboard", "Admindashboard");
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
+            }
+            else if (ModelState.IsValid)
+            {
+
+
+               
+                 Request request = _dashboard.BlockRequest(adminBlockCase, requestId);
+
+
+                if (request != null)
+                {
+                    TempData["ShowPositiveNotification"] = "Request Blocked Succesfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something went wrong!";
+                }
+                return RedirectToAction("Dashboard", "Admindashboard");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+                return RedirectToAction("Dashboard", "Admindashboard");
+
+            }
+
+
+
+           
         }
 
         [AuthManager("Admin")]
@@ -1220,12 +1254,12 @@ namespace dotnetProc.Controllers
 
                     if (IsPhoneBlocked)
                     {
-                        TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                        TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                     }
 
                     if (IsregionAvailable == false)
                     {
-                        TempData["IsRegionAvailable"] = "Region is not available.";
+                        TempData["ShowNegativeNotification"] = "Region is not available.";
                     }
 
                     return View("CreateRequestbyAdmin", patientReqByAdmin);

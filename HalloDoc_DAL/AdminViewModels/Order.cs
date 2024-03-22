@@ -11,8 +11,8 @@ namespace HalloDoc_DAL.AdminViewModels
     public class Order
     {
 
-        public List<Healthprofessionaltype> healthprofessionaltypes = null;
-        public string RequestId = null;
+        public List<Healthprofessionaltype>? healthprofessionaltypes;
+        public string? RequestId;
 
 
         [Required(ErrorMessage = "Profession is Required.")]

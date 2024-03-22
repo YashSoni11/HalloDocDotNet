@@ -16,11 +16,13 @@ namespace HalloDoc_DAL.AdminViewModels
         public string Notes { get; set; }
 
         [Required(ErrorMessage = "FirstName is Required.")]
+        [MinLength(2,ErrorMessage ="Minimum 2 Charachters is Required.")]
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Lastname is Required.")]
+        [MinLength(2,ErrorMessage ="Minimum 2 Charachters is Required.")]
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
         public string LastName { get; set; }

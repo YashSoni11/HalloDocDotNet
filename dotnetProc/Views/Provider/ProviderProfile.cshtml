@@ -12,386 +12,435 @@
 
 @{
     //<canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid black;"></canvas>
-           
-    <button  onclick="ClearCanvas()" >Clear</button>
-    <button onclick="SaveImage()">Save</button>
-    <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProviderProfileInfo.SignatureImage)" />
+
+   
+
     string[] statusArray = { "Active", "Deactive" };
 
-  
-        <div class="container-fluid d-flex justify-content-between mt-4" style="max-width:1000px">
-            <h4>
-                Edit Physician Account
-            </h4>
-            <div class="d-inline-flex">
-                <a class="nav-link" asp-controller="Admindashboard" asp-action="ProviderMenu">
-                    <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
-                        <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
-                    </button>
-                </a>
-            </div>
+
+    <div class="container-fluid d-flex justify-content-between mt-4" style="max-width:1000px">
+        <h4>
+            Edit Physician Account
+        </h4>
+        <div class="d-inline-flex">
+            <a class="nav-link" asp-controller="Admindashboard" asp-action="ProviderMenu">
+                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </button>
+            </a>
         </div>
-        <div class="container-fluid formContainer d-flex justify-content-center mt-4" style="max-width:1000px">
-        <canvas id="signatureCanvas" width="400" height="200" style="border: 1px solid black;"></canvas>
-            <div class="">
-                
-                <input id="adminId" hidden />
-                <h5>Account Information</h5>
-                <form id="ProviderPasswordForm" asp-action="ResetProviderPassword" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
-                    <input name="Password" id="hiddenProviderPassInp" hidden style="display:none;">
-                </form>
-                <form class="form-floating" asp-action="SaveProviderAccountInfo" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+    </div>
+    <div class="container-fluid formContainer  justify-content-center mt-4" style="max-width:1000px">
 
-                    
-                    <div class="row g-2 m-1">
-                        <div class="col-md">
-                            <div class="form-floating">
-                                <input asp-for="AccountInfo.UserName" type="text" class="form-control tbDisabled" id="userName">
-                                <label for="">User Name</label>
-                            </div>
-                        </div>
+        @*<div class="container-fluid">*@
 
-                        <div class="col-md">
-                            <div class="form-floating">
-                                <input asp-for="AccountInfo.Password" type="text" class="form-control " id="providerPassInp">
-                                <label for="floatingSelectGrid">Password</label>
-                            </div>
+        <input id="adminId" hidden />
+        <h5>Account Information</h5>
+        <form id="ProviderPasswordForm" asp-action="ResetProviderPassword" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+            <input name="Password" id="hiddenProviderPassInp" hidden style="display:none;">
+        </form>
+        <form class="form-floating" asp-action="SaveProviderAccountInfo" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+
+
+            <div class="row g-2 m-1">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input asp-for="AccountInfo.UserName" type="text" class="form-control tbDisabled" id="userName">
+                        <label for="">User Name</label>
+                        <span asp-validation-for="AccountInfo.UserName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input asp-for="AccountInfo.Password" type="text" class="form-control " id="providerPassInp">
+                        <label for="floatingSelectGrid">Password</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2 m-1">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select asp-for="AccountInfo.Status" value="@statusArray[(int)Model.AccountInfo.Status-1]" class="form-select form-control tbDisabled" id="floatingInput" aria-label="Default select example">
+                            <option value="1">Active</option>
+                            <option value="2">Deactive</option>
+                        </select>
+                        <label for="floatingInput">Status</label>
+                        <span asp-validation-for="AccountInfo.Status" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating phone-div w-100 h-100 ">
+                        <select asp-for="AccountInfo.Role" value="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
+                            @foreach (Role role in Model.AccountInfo.roles)
+                            {
+                                <option value="@role.Name">@role.Name</option>
+                            }
+                        </select>
+                        <label for="floatingInput">Role</label>
+                        <span asp-validation-for="AccountInfo.Role" class="text-danger"></span>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
+                <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
+                <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
+                    Cancle
+                </button>
+                <button type="button"
+                        class="btn btn-outline-info text-info lightInfo-btn" onclick="ResetProviderPassword('hiddenProviderPassInp')">
+                    Reset Password
+                </button>
+            </div>
+
+        </form>
+
+        <h5>Physician Information</h5>
+        <form class="form-floating t" asp-action="SaveProviderInformation" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+
+            <fieldset id="fieldset1">
+
+                <div class="row g-2 m-1">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderInformation.FirstName" type="text" class="form-control tbDisabled1">
+                            <label for="">First Name</label>
+                            <span asp-validation-for="ProviderInformation.FirstName" class="text-danger"></span>
+
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderInformation.LastName" type="text" class="form-control tbDisabled1">
+                            <label for="floatingSelectGrid">Last Name</label>
+                            <span asp-validation-for="ProviderInformation.LastName" class="text-danger"></span>
 
-                    <div class="row g-2 m-1">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select asp-for="AccountInfo.Status" value="@statusArray[(int)Model.AccountInfo.Status-1]" class="form-select form-control tbDisabled" id="floatingInput" aria-label="Default select example">
-                                    <option value="1">Active</option>
-                                    <option value="2">Deactive</option>
-                                </select>
-                                <label for="floatingInput">Status</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating phone-div w-100 h-100 ">
-                                <select asp-for="AccountInfo.Role" value="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
-                                    @foreach (Role role in Model.AccountInfo.roles)
-                                    {
-                                        <option value="@role.Name">@role.Name</option>
-                                    }
-                                </select>
-                                <label for="floatingInput">Role</label>
-                            </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderInformation.Email" type="email" class="form-control tbDisabled1">
+                            <label for="">Email</label>
+                            <span asp-validation-for="ProviderInformation.Email" class="text-danger"></span>
 
-
-                    <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
-                        <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
-                        <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
-                        <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
-                            Cancle
-                        </button>
-                        <button type="button"
-                                class="btn btn-outline-info text-info lightInfo-btn" onclick="ResetProviderPassword('hiddenProviderPassInp')">
-                            Reset Password
-                        </button>
+                        </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-floating phone-div w-100 h-100 ">
+                            <input asp-for="ProviderInformation.PhoneNumber" type="tel" class="patientPhone form-control w-100 h-100 tbDisabled1">
+                            <label for="">Phone</label>
+                            <span asp-validation-for="ProviderInformation.PhoneNumber" class="text-danger"></span>
 
-                </form>
-             
-                <h5>Physician Information</h5>
-                <form class="form-floating" asp-action="SaveProviderInformation" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderInformation.MedicalLicenseNumber" type="text" class="form-control tbDisabled1">
+                            <label for="">Medical License Number</label>
+                            <span asp-validation-for="ProviderInformation.MedicalLicenseNumber" class="text-danger"></span>
 
-                    <fieldset id="fieldset1">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderInformation.NPINumber" type="text" class="form-control tbDisabled1">
+                            <label for="">NPI Number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderInformation.SyncEmail" type="text " class="form-control tbDisabled1 ">
+                            <label for="">Synchronization Email Address</label>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-start flex-wrap mt-4">
+                        <div>
+                            @*    @foreach (var item in Model.RegionList)
+                        {
+                        <input class="form-check-input" type="checkbox" value="@item.Regionid" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                        @item.Name
+                        </label>
+                        } *@
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn1" onclick="editDetails1()">Edit</button>
+                <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode1" style="display:none;" onclick="()">Save</button>
+                <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode1" style="display:none;" onclick="cancleEdit1()">
+                    Cancle
+                </button>
+            </div>
+        </form>
+        <br />
 
-                        <div class="row g-2 m-1">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderInformation.FirstName" type="text" class="form-control tbDisabled1">
-                                    <label for="">First Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderInformation.LastName" type="text" class="form-control tbDisabled1">
-                                    <label for="floatingSelectGrid">Last Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderInformation.Email" type="email" class="form-control tbDisabled1">
-                                    <label for="">Email</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating phone-div w-100 h-100 ">
-                                    <input asp-for="ProviderInformation.PhoneNumber" type="tel" class="patientPhone form-control w-100 h-100 tbDisabled1">
-                                    <label for="">Phone</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderInformation.MedicalLicenseNumber" type="text" class="form-control tbDisabled1">
-                                    <label for="">Medical License Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderInformation.NPINumber" type="text" class="form-control tbDisabled1">
-                                    <label for="">NPI Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderInformation.SyncEmail" type="text " class="form-control tbDisabled1 ">
-                                    <label for="">Synchronization Email Address</label>
-                                </div>
-                            </div>
-                            <div class="col-6 d-flex justify-content-start flex-wrap mt-4">
-                                <div>
-                                    @*    @foreach (var item in Model.RegionList)
+
+        <h5>Mailing & Billing Information</h5>
+        <form class="form-floating" asp-action="SaveProviderMailingAndBillingInfo" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+           
+
+                <div class="row g-2 m-1">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderMailingAndBillingInfo.Address1" type="text" class="form-control tbDisabled2" placeholder="">
+                            <label for="">Address1</label>
+                            <span asp-validation-for="ProviderMailingAndBillingInfo.Address1" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderMailingAndBillingInfo.Address2" type="text" class="form-control tbDisabled2" placeholder="">
+                            <label for="floatingSelectGrid">Address2</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderMailingAndBillingInfo.City" type="text" class="form-control tbDisabled2" placeholder="">
+                            <label for="">City</label>
+                            <span asp-validation-for="ProviderMailingAndBillingInfo.City" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating phone-div w-100 h-100 ">
+                            <select asp-for="ProviderMailingAndBillingInfo.StateId" class="form-select form-control tbDisabled2" aria-label="Default select example">
+                                <option value="@Model.ProviderMailingAndBillingInfo.StateId" selected>@Model.ProviderMailingAndBillingInfo.StateName</option>
+
+                                @foreach (var items in Model.ProviderMailingAndBillingInfo.regions)
                                 {
-                                <input class="form-check-input" type="checkbox" value="@item.Regionid" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                @item.Name
-                                </label>
-                                } *@
-                                </div>
-                            </div>
+                                    if (items.Regionid != Model.ProviderMailingAndBillingInfo.StateId)
+                                    {
+                                        <option value="@items.Regionid">@items.Name</option>
+
+                                    }
+                                }
+                            </select>
+                            <label for="">Region</label>
+                            <span asp-validation-for="ProviderMailingAndBillingInfo.StateId" class="text-danger"></span>
+
                         </div>
-                    </fieldset>
-                    <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
-                        <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn1" onclick="editDetails1()">Edit</button>
-                        <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode1" style="display:none;" onclick="()">Save</button>
-                        <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode1" style="display:none;" onclick="cancleEdit1()">
-                            Cancle
-                        </button>
                     </div>
-                </form>
-                <br />
-                   
-
-                <h5>Mailing & Billing Information</h5>
-                <form class="form-floating" asp-action="SaveProviderMailingAndBillingInfo" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
-                    <fieldset id="fieldset2">
-
-                        <div class="row g-2 m-1">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderMailingAndBillingInfo.Address1" type="text" class="form-control tbDisabled2" placeholder="">
-                                    <label for="">Address1</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderMailingAndBillingInfo.Address2" type="text" class="form-control tbDisabled2" placeholder="">
-                                    <label for="floatingSelectGrid">Address2</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderMailingAndBillingInfo.City" type="text" class="form-control tbDisabled2" placeholder="">
-                                    <label for="">City</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating phone-div w-100 h-100 ">
-                                    <select asp-for="ProviderMailingAndBillingInfo.StateId" class="form-select form-control tbDisabled2" aria-label="Default select example">
-                                        <option value="@Model.ProviderMailingAndBillingInfo.StateId" selected>@Model.ProviderMailingAndBillingInfo.StateName</option>
-
-                                        @foreach (var items in Model.ProviderMailingAndBillingInfo.regions)
-                                        {
-                                            if (items.Regionid != Model.ProviderMailingAndBillingInfo.StateId)
-                                            {
-                                                <option value="@items.Regionid">@items.Name</option>
-
-                                            }
-                                        }
-                                    </select>
-                                    <label for="">Region</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderMailingAndBillingInfo.Zip" type="text" class="form-control tbDisabled2" placeholder="">
-                                    <label for="">Zip</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating phone-div w-100 h-100 ">
-                                    <input asp-for="ProviderMailingAndBillingInfo.Phone" type="tel" class="patientPhone form-control w-100 h-100 tbDisabled2" placeholder="">
-                                    <label for="">Phone</label>
-                                </div>
-                            </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="ProviderMailingAndBillingInfo.Zip" type="text" class="form-control tbDisabled2" placeholder="">
+                            <label for="">Zip</label>
                         </div>
-                        <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn2" onclick="editDetails2()">Edit</button>
-                            <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode2" style="display:none;" onclick="()">Save</button>
-                            <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode2" style="display:none;" onclick="cancleEdit2()">
-                                Cancle
-                            </button>
-                        </div>
-                    </fieldset>
-                </form>
-
-                <div class="my-3"></div>
-                <h5>Provider Profile</h5>
-                <form class="" asp-action="SaveProviderProfileInfo" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post" enctype="multipart/form-data">
-
-
-                        <div class="row g-2 m-1">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderProfileInfo.BusinessName" type="text" class="form-control tbDisabled3" placeholder="">
-                                    <label for="">Business name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input asp-for="ProviderProfileInfo.BusinessWebsite" type="text" class="form-control tbDisabled3" placeholder="">
-                                    <label for="floatingSelectGrid">Business Website</label>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-6 col-sm-6 col-12 ">
-                                <div class="input-group mb-3">
-                                    <input asp-for="ProviderProfileInfo.Photo" type="file" class="form-control" id="inputGroupFile01" placeholder="Select Photo">
-                                    <label class="input-group-text bg-info text-white" for="inputGroupFile01">
-                                        <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-4 col-sm-4 col-10 ">
-                                <div class="input-group mb-3">
-                                    <input asp-for="ProviderProfileInfo.Signature" type="file" class="form-control" id="inputGroupFile02" placeholder="Select Signature">
-                                    <label class="input-group-text bg-info text-white" for="inputGroupFile02">
-                                        <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
-                                    </label>
-                                </div>
-                            </div>
-                            <div class=" col-2">
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()"><i class="bi bi-pencil-fill mx-1"></i>Create</button>
-                            </div>
-                            <div class="col-12">
-                              
-                            </div>
-                       
-                            <div class="col-12">
-                                <div class="form-floating mb-3">
-                                    <textarea asp-for="ProviderProfileInfo.AdminNotes" class="form-control tbDisabled3" placeholder="Leave a comment here"
-                                              id="floatingTextarea2" style="height: 100px"></textarea>
-                                    <label for="floatingTextarea2">Admin Notes(optional)</label>
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                   
-
-                    <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
-                        <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn3" onclick="editDetails3()">Edit</button>
-                        <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode3" style="display:none;" onclick="()">Save</button>
-                        <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode3" style="display:none;" onclick="cancleEdit3()">
-                            Cancle
-                        </button>
                     </div>
-                </form>
-
-                <div class="my-4"></div>
-
-                <div class="border-bottom border-3 mb-3"></div>
-
-                <h5>Onboarding</h5>
-
-                <div class="row my-1">
-                    <div class="wrapper d-flex">
-                        <div class="col-1 m-1">
-                            <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                        </div>
-                        <div class="col-4">
-                            <span>Independent Contract Agreement</span>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
+                    <div class="col-md-6">
+                        <div class="form-floating phone-div w-100 h-100 ">
+                            <input asp-for="ProviderMailingAndBillingInfo.Phone" type="tel" class="patientPhone form-control w-100 h-100 tbDisabled2" placeholder="">
+                            <label for="">Phone</label>
                         </div>
                     </div>
                 </div>
-                <div class="row my-1">
-                    <div class="wrapper d-flex">
-                        <div class="col-1 m-1">
-                            <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                        </div>
-                        <div class="col-4">
-                            <span>Background Check</span>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
-                        </div>
-                    </div>
+                <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn2" onclick="editDetails2()">Edit</button>
+                    <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode2" style="display:none;" onclick="()">Save</button>
+                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode2" style="display:none;" onclick="cancleEdit2()">
+                        Cancle
+                    </button>
                 </div>
-                <div class="row my-1">
-                    <div class="wrapper d-flex">
-                        <div class="col-1 m-1">
-                            <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                        </div>
-                        <div class="col-4">
-                            <span>HIPAA Compliance</span>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row my-1">
-                    <div class="wrapper d-flex">
-                        <div class="col-1 m-1">
-                            <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                        </div>
-                        <div class="col-4">
-                            <span>Non-Disclosure Agreement</span>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row my-1">
-                    <div class="wrapper d-flex">
-                        <div class="col-1 m-1">
-                            <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                        </div>
-                        <div class="col-4">
-                            <span>License Document</span>
-                        </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="border-bottom border-3 mt-2"></div>
-              
-             
-                
-                <div class="col-12 d-flex justify-content-end mt-3" style="column-gap:1rem;">
+          
+        </form>
 
-                    <form class="form-floating" asp-action="DeleteProviderAccount" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
-                        <button type="submit" class="btn btn-danger float-end m-1 ">Delete Account</button>
-                    </form>
-                    <button type="submit" class="btn btn-info  text-white darkInfo-btn" onclick="()">Save</button>
+        <div class="my-3"></div>
+        <h5>Provider Profile</h5>
+        <form class="" asp-action="SaveProviderProfileInfo" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post" enctype="multipart/form-data">
+
+
+            <div class="row g-2 m-1">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="ProviderProfileInfo.BusinessName" type="text" class="form-control tbDisabled3" placeholder="">
+                        <label for="">Business name</label>
+                        <span asp-validation-for="ProviderProfileInfo.BusinessName" class="text-danger"></span>
+
+                    </div>
                 </div>
-                <br />
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="ProviderProfileInfo.BusinessWebsite" type="text" class="form-control tbDisabled3" placeholder="">
+                        <label for="floatingSelectGrid">Business Website</label>
+                        <span asp-validation-for="ProviderProfileInfo.BusinessWebsite" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="col-xl-6 col-sm-6 col-12 ">
+                    <div class="input-group mb-3">
+                        <input asp-for="ProviderProfileInfo.Photo" type="file" class="form-control" id="inputGroupFile01" placeholder="Select Photo">
+                        <label class="input-group-text bg-info text-white" for="inputGroupFile01">
+                            <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-sm-4 col-10 ">
+                    <div class="input-group mb-3">
+                        <input asp-for="ProviderProfileInfo.Signature" type="file" class="form-control" id="inputGroupFile02" placeholder="Select Signature">
+                        <label class="input-group-text bg-info text-white" for="inputGroupFile02">
+                            <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
+                        </label>
+                    </div>
+                </div>
+                <div class=" col-2">
+                    <button id="creatCanvasId" type="button" class="btn btn-info  text-white darkInfo-btn" onclick="ShowCanvas()"><i class="bi bi-pencil-fill mx-1"></i>Create</button>
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn canvasGroup" onclick="HideCanvas()"><i class="bi bi-x-lg mx-1"></i>Cancle</button>
+                </div>
+           
+                <div class="col-12 d-flex justify-content-center">
+                    @if (Model.ProviderProfileInfo?.SignatureImage != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProviderProfileInfo.SignatureImage)" id="signImage"/>
+                    }
+                    <canvas class="canvasGroup" id="signatureCanvas" width="400" height="200" style="border: 1px solid black;"></canvas>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn canvasGroup" onclick="SaveImage()">Download</button>
+                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn canvasGroup" onclick="ClearCanvas()">
+                        Clear
+                    </button>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="ProviderProfileInfo.AdminNotes" class="form-control tbDisabled3" placeholder="Leave a comment here"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2">Admin Notes(optional)</label>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+
+            <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn3" onclick="editDetails3()">Edit</button>
+                <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode3" style="display:none;" onclick="()">Save</button>
+                <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode3" style="display:none;" onclick="cancleEdit3()">
+                    Cancle
+                </button>
+            </div>
+        </form>
+
+        <div class="my-4"></div>
+
+        <div class="border-bottom border-3 mb-3"></div>
+
+        <h5>Onboarding</h5>
+
+        <div class="row my-1">
+            <div class="wrapper d-flex">
+                <div class="col-1 m-1">
+                    <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                </div>
+                <div class="col-4">
+                    <span>Independent Contract Agreement</span>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
+                </div>
             </div>
         </div>
-    
+        <div class="row my-1">
+            <div class="wrapper d-flex">
+                <div class="col-1 m-1">
+                    <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                </div>
+                <div class="col-4">
+                    <span>Background Check</span>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
+                </div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="wrapper d-flex">
+                <div class="col-1 m-1">
+                    <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                </div>
+                <div class="col-4">
+                    <span>HIPAA Compliance</span>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
+                </div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="wrapper d-flex">
+                <div class="col-1 m-1">
+                    <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                </div>
+                <div class="col-4">
+                    <span>Non-Disclosure Agreement</span>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                </div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="wrapper d-flex">
+                <div class="col-1 m-1">
+                    <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                </div>
+                <div class="col-4">
+                    <span>License Document</span>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                </div>
+            </div>
+        </div>
+        <div class="border-bottom border-3 mt-2"></div>
+
+
+
+        <div class="col-12 d-flex justify-content-end mt-3" style="column-gap:1rem;">
+
+            <form class="form-floating" asp-action="DeleteProviderAccount" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
+                <button type="submit" class="btn btn-danger float-end m-1 ">Delete Account</button>
+            </form>
+            <button type="submit" class="btn btn-info  text-white darkInfo-btn" onclick="()">Save</button>
+        </div>
+        <br />
+        @*</div>*@
+    </div>
+
+@section Scripts{
+
+    @{
+
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
 }
 
 
@@ -402,6 +451,9 @@
 
 
     $(document).ready(function () {
+
+        
+
 
         let prevId = localStorage.getItem("ActiveLink")
 
@@ -424,40 +476,59 @@
         }
         const canvas = document.getElementById('signatureCanvas');
         const ctx = canvas.getContext('2d');
-      
-    let drawing = false;
-    let lastX = 0;
-    let lastY = 0;
-    canvas.addEventListener('mousedown', (e) => {
-        drawing = true;
-        lastX = e.clientX - canvas.offsetLeft;
-        lastY = e.clientY - canvas.offsetTop;
-    });
 
-    canvas.addEventListener('mousemove', (e) => {
-        if (!drawing) return;
-        const x = e.clientX - canvas.offsetLeft;
-        const y = e.clientY - canvas.offsetTop;
+        // Initialize variables
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
 
-        ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 2;
+        // Event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', endDrawing);
+        canvas.addEventListener('mouseout', endDrawing);
 
+        // Functions
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            ctx.beginPath();
             ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        console.log(lastX)
-        lastX = x;
-        lastY = y;
-    });
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+            console.log(e.offsetX, e.offsetY)
+        }
 
-    canvas.addEventListener('mouseup', () => {
-        drawing = false;
-    });
-    })
-
+        function endDrawing() {
+            isDrawing = false;
+        }
 
        
+
+    })
+
+    const HideCanvas = () =>{
+
+        $(".canvasGroup").css("display", "none");
+        $("#creatCanvasId").css("display","block");
+        $("#signImage").css("display", "block");
+
+    }
+
+    const ShowCanvas = () =>{
+
+          $(".canvasGroup").css("display","block");
+        $("#creatCanvasId").css("display", "none");
+        $("#signImage").css("display","none");
+
+    }
+
     const ResetProviderPassword = (id) => {
 
 
@@ -475,14 +546,14 @@
 
     }
 
-    const ClearCanvas =  () =>{
+    const ClearCanvas = () => {
 
         const canvas = document.getElementById("signatureCanvas");
-    const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
+        const context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    const SaveImage = () =>{
+    const SaveImage = () => {
 
         const canvas = document.getElementById('signatureCanvas');
         const dataURL = canvas.toDataURL('image/png');

@@ -1,4 +1,5 @@
-﻿using HalloDoc_DAL.ProviderViewModels;
+﻿using HalloDoc_DAL.Models;
+using HalloDoc_DAL.ProviderViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,11 @@ namespace HalloDoc_BAL.Interface
 
         public bool SaveProviderProfileInfo(ProviderProfileInfo providerProfileInfo, int provideId);
 
-        public bool DeleteProviderAccount(int providerId);  
+        public bool DeleteProviderAccount(int providerId);
+
+
+        public List<Role> GetAllRoles();
+
+        public bool CreateProviderAccount(CreateProviderAccount createProviderAccount);
     }
 }

@@ -3,7 +3,9 @@ using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
+using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
@@ -307,12 +309,12 @@ namespace HalloDoc_BAL.Repositery
               
                 string contentType = GetContentType(filename);
 
-                // Return the image as a response
+               
                 return imageBytes;
             }
             catch (Exception ex)
             {
-                // Log the error (you can enhance this)
+                
                 return null;
             }
         }
@@ -331,6 +333,107 @@ namespace HalloDoc_BAL.Repositery
             // Add more content types as needed (e.g., .gif, .bmp, etc.)
 
             return "application/octet-stream"; // Default content type
+        }
+
+
+        public List<Role> GetAllRoles()
+        {
+            return _context.Roles.ToList();
+        }
+
+        public Aspnetuser AddAspNetUser(Aspnetuser pr)
+        {
+
+            try
+            {
+
+            Aspnetuser aspNetUser1 = new Aspnetuser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Username = pr.Username,
+                Email = pr.Email,
+                Passwordhash = pr.Passwordhash,
+                Phonenumber = pr.Phonenumber,
+                Createddate = DateTime.Now
+            };
+
+
+            _context.Aspnetusers.Add(aspNetUser1);
+
+            _context.SaveChanges();
+
+            return aspNetUser1;
+            }catch(Exception ex)
+            {
+                return new Aspnetuser();
+            }
+        }
+
+
+        public bool CreateProviderAccount(CreateProviderAccount createProviderAccount)
+        {
+
+            try
+            {
+                Aspnetuser aspnetuser = new Aspnetuser()
+                {
+                    Username = createProviderAccount.UserName,
+                    Email = createProviderAccount.Email,
+                    Passwordhash = createProviderAccount.Password,
+                    Phonenumber = createProviderAccount.Phone
+                };
+
+
+                Aspnetuser ProviderAspNetUser = AddAspNetUser(aspnetuser);
+                 
+                if(ProviderAspNetUser == null)
+                {
+                    return false;
+                }
+
+                Physician physician = new Physician();
+
+                physician.Aspnetuserid = ProviderAspNetUser.Id;
+                physician.Firstname = createProviderAccount.FirstName;
+                physician.Lastname = createProviderAccount.LastName;
+                physician.Email = createProviderAccount.Email;
+                physician.Roleid = createProviderAccount.Role;
+                physician.Medicallicense = createProviderAccount.MedicalLicenseNumber;
+                physician.Npinumber = createProviderAccount.NPINumber;
+                physician.Address1 = createProviderAccount.Address1;
+                physician.Address2 = createProviderAccount.Address2;
+                physician.City = createProviderAccount.City;
+                physician.Regionid = createProviderAccount.StateId;
+                physician.Status = (short)createProviderAccount.Status;
+                physician.Zip = createProviderAccount.Zip;
+                physician.Adminnotes = createProviderAccount.AdminNotes;
+                physician.Altphone = createProviderAccount.AltPhone;
+                physician.Businessname = createProviderAccount.BusinessName;
+                physician.Businesswebsite = createProviderAccount.BusinessWebsite;
+                physician.Isdeleted = false;
+
+
+                if(createProviderAccount.Photo != null)
+                {
+                    string fileName = UploadProviderFiles(createProviderAccount.Photo);
+                    if (!fileName.IsNullOrEmpty())
+                    {
+                        physician.Photo = fileName;
+                    }
+                }
+
+                
+                _context.Physicians.Add(physician);
+
+                _context.SaveChanges();
+
+                return false;
+                 
+
+            }catch (Exception ex)
+            {
+                return false;
+            }
         }
 
     }

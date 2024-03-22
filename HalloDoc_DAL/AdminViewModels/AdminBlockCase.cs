@@ -9,8 +9,8 @@ namespace HalloDoc_DAL.AdminViewModels
 {
     public class AdminBlockCase
     {
-        public int RequestId { get; set; }
-        public string PatientName { get; set; }
+        public int? RequestId { get; set; }
+        public string?   PatientName { get; set; }
 
         [Required(ErrorMessage = "Reason is required")]
         [MaxLength(500, ErrorMessage = "Could Not Enter More Than 500 Charachters.")]

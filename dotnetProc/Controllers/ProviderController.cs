@@ -1,7 +1,10 @@
-﻿using HalloDoc_BAL.Interface;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using HalloDoc_BAL.Interface;
+using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+
 
 namespace dotnetProc.Controllers
 {
@@ -224,6 +227,76 @@ namespace dotnetProc.Controllers
                 }
 
                 return RedirectToAction("ProviderMenu","Admindashboard");
+            }
+        }
+
+        [HttpGet]
+        [Route("createprovideraccount")]
+        public IActionResult CreateProviderAccountView()
+        {
+
+            CreateProviderAccount createProviderAccoun =  new CreateProviderAccount();
+
+            List<Region> regions = _dashboard.GetAllRegions();
+
+            List<Role> roles = _provider.GetAllRoles();
+
+            createProviderAccoun.Regions = regions;
+            createProviderAccoun.roles = roles;
+
+            return View("CreateProviderAccount",createProviderAccoun);
+        }
+
+
+        [HttpPost]
+        
+        public IActionResult CreateProviderAccount(CreateProviderAccount createProviderAccount)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if(ModelState.IsValid)
+            {
+
+
+                string hashedPassword = _account.GetHashedPassword(createProviderAccount.Password);
+                if (hashedPassword.IsNullOrEmpty())
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+                    return RedirectToAction("ProviderMenu", "Admindashboard");
+
+                }
+                createProviderAccount.Password = hashedPassword;
+                bool response = _provider.CreateProviderAccount(createProviderAccount);
+
+
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Account Created Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("ProviderMenu", "Admindashboard");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("CreateProviderAccountView");
             }
         }
     }

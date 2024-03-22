@@ -10,9 +10,9 @@ namespace HalloDoc_DAL.AdminViewModels
     public class CLoseCase
     {
 
-        public string requestId { get; set; }
+        public string? requestId { get; set; }
 
-        public List<ViewDocument> ViewDocuments { get; set; }
+        public List<ViewDocument>? ViewDocuments { get; set; }
 
         public string Firstname { get; set; }
 

@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-6">
                             <div class="form-floating mb-3">
-                                <input asp-for="BirthDate" type="date" class="form-control BirthdateInp" id="floatingInput"
+                                <input asp-for="BirthDate" type="date" class="form-control BirthdateInp" id="myDateInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Date Of Birth</label>
                                 <span id="BirthdayError" class="text-danger"></span>
@@ -207,7 +207,14 @@ $(document).ready(function(){
 
         currEle.classList.add("active");
 
+        var currentDate = new Date().toISOString().split('T')[0];
+
+       
+        document.getElementById('myDateInput').setAttribute('max', currentDate);
+
     toastr.remove();
+
+
     $(".reg-nav").remove();
 
     if ('@TempData["ShowPositiveNotification"]' != '') {
