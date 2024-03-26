@@ -35,8 +35,8 @@ public partial class Role
     [Column("modifieddate", TypeName = "timestamp without time zone")]
     public DateTime? Modifieddate { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray Isdeleted { get; set; } = null!;
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; } = null!;
 
     [Column("ip")]
     [StringLength(20)]

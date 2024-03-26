@@ -338,7 +338,7 @@ namespace HalloDoc_BAL.Repositery
 
         public List<Role> GetAllRoles()
         {
-            return _context.Roles.ToList();
+            return _context.Roles.Where(q=>q.Isdeleted == false).ToList();
         }
 
         public Aspnetuser AddAspNetUser(Aspnetuser pr)
@@ -435,6 +435,84 @@ namespace HalloDoc_BAL.Repositery
                 return false;
             }
         }
+
+        public List<AccessAreas> GetAreaAccessByAccountType(int accountType)
+        {
+            List<AccessAreas> menus = _context.Menus.Where(q=>q.Accounttype == accountType).Select(r=>new AccessAreas
+            {
+                AreaId = r.Menuid,
+                AreaName = r.Name
+            }).ToList();
+
+            return menus;
+        }
+
+      public  bool  CreateRole(CreateRole createRole,int adminId)
+        {
+            try
+            {
+                string aspnetId = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+                Role role = new Role();
+                int lasRoleId = _context.Roles.OrderByDescending(q => q.Roleid).Select(q => q.Roleid).FirstOrDefault();
+
+                role.Roleid = lasRoleId + 1;
+                role.Name = createRole.RoleName;
+                role.Accounttype = (short)createRole.AccountType;
+                role.Createddate = DateTime.Now;
+                role.Createdby = aspnetId;
+                role.Isdeleted = false;
+
+                  _context.Roles.Add(role);   
+
+
+
+                for(int i = 0; i < createRole.AccessAreas.Count; i++)
+                {
+                    if (createRole.AccessAreas[i].IsAreaSelected)
+                    {
+                    Rolemenu rolemenu = new Rolemenu();
+
+                    rolemenu.Menuid = createRole.AccessAreas[i].AreaId;
+                    rolemenu.Roleid = role.Roleid;
+                    
+
+                    _context.Rolemenus.Add(rolemenu);
+                    }
+
+                }
+
+                _context.SaveChanges();
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+     
+      public bool DeleteRole(int roleId)
+        {
+            try
+            {
+
+                Role role = _context.Roles.FirstOrDefault(r => r.Roleid == roleId);
+
+                role.Isdeleted = true;
+
+                _context.Roles.Update(role);
+
+                _context.SaveChanges(); 
+
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
 
     }
 }

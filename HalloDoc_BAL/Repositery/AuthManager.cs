@@ -1,4 +1,5 @@
 ﻿using HalloDoc_BAL.Interface;
+using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -17,35 +18,40 @@ using System.Text;
 
 namespace HalloDoc_BAL.Repositery
 {
-    public class AuthManager : Attribute, IAuthorizationFilter
+    public class AuthManager :   IAuthManager     /* Attribute , IAuthorizationFilter*/
     {
         private readonly string _role;
-      
-        public AuthManager(string role = "")
+        private readonly HalloDocContext _context;
+
+        public AuthManager(HalloDocContext context,string role = "")
         {
+            _context = context;
             _role = role;
            
         }
-        public  void OnAuthorization(AuthorizationFilterContext context)
+
+        public bool Authorize(HttpContext context,int RoleMenuId)
         {
-            //LoggedInUser user = SessionUtils.GetLoggedInUser(context.HttpContext.Session);
+            
 
-            var _jwtServices = context.HttpContext.RequestServices.GetRequiredService<IJwtServices>();
+            var _jwtServices = context.RequestServices.GetRequiredService<IJwtServices>();
 
 
-            if (_jwtServices == null) {
+            if (_jwtServices == null)
+            {
 
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
+                return false;
             }
 
 
-            var request = context.HttpContext.Request;
-            var token = request.Cookies["jwt"];
+          
+            var token = context.Request.Cookies["jwt"];
 
 
-           
 
-             if (token == null || !_jwtServices.ValidateToken(token, out JwtSecurityToken jwtSecurityToken)){
+
+            if (token == null || !_jwtServices.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
+            {
 
 
                 //if (context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -56,33 +62,109 @@ namespace HalloDoc_BAL.Repositery
                 //else
                 //{
 
-                context.HttpContext.Response.Cookies.Append("LoginMsg", "true");     
-                    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login"}));
-                    return;
+                //context.HttpContext.Response.Cookies.Append("LoginMsg", "true");
+                //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login" }));
+                return false;
                 //}
                 //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { Controller = "Home", Action = "Index" }));
 
             }
 
 
-             var roleClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "Role");
+            int roleId = int.Parse(jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value);
 
-            if (roleClaim == null)
+            bool isRistricted = IsRistricted(RoleMenuId, roleId);
+
+            if (!isRistricted)
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
+                return false;
+                //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
             }
 
-            if (string.IsNullOrWhiteSpace(_role) || roleClaim.Value != _role)
-            {
 
 
 
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "AccessDenied" }));
 
 
-                return;
+            //if (string.IsNullOrWhiteSpace(_role) || roleClaim.Value != _role)
+            //{
 
-            } 
+
+
+            //    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "AccessDenied" }));
+
+
+            //    return;
+
+            //}
+
+            return true;    
         }
+
+
+        public bool IsRistricted(int id,int roleId)
+        {
+             return  _context.Rolemenus.Where(q=>q.Roleid == roleId).Any(r=>r.Rolemenuid == id);
+        }
+
+
+        //public  void OnAuthorization(AuthorizationFilterContext context)
+        //{
+        //    //LoggedInUser user = SessionUtils.GetLoggedInUser(context.HttpContext.Session);
+
+        //    var _jwtServices = context.HttpContext.RequestServices.GetRequiredService<IJwtServices>();
+
+
+        //    if (_jwtServices == null) {
+
+        //        context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
+        //    }
+
+
+        //    var request = context.HttpContext.Request;
+        //    var token = request.Cookies["jwt"];
+
+
+
+
+        //     if (token == null || !_jwtServices.ValidateToken(token, out JwtSecurityToken jwtSecurityToken)){
+
+
+        //        //if (context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //        //{
+        //        //    context.Result = new JsonResult(new { code = 401 });
+        //        //    return;
+        //        //}
+        //        //else
+        //        //{
+
+        //        context.HttpContext.Response.Cookies.Append("LoginMsg", "true");     
+        //            context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login"}));
+        //            return;
+        //        //}
+        //        //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { Controller = "Home", Action = "Index" }));
+
+        //    }
+
+
+        //     var roleClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "Role");
+
+        //    if (roleClaim == null)
+        //    {
+        //        context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
+        //    }
+
+        //    if (string.IsNullOrWhiteSpace(_role) || roleClaim.Value != _role)
+        //    {
+
+
+
+        //        context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "AccessDenied" }));
+
+
+        //        return;
+
+        //    } 
+        //}
     }
 }

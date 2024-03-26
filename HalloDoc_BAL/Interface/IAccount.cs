@@ -40,7 +40,7 @@ namespace HalloDoc_BAL.Interface
 
         public List<Region> GetAllRegions();
 
-        public string GetAspNetUserRoleById(string aspnetuserid);
+        public int GetAspNetUserRoleById(string aspnetuserid);
 
         public LoggedInUser GetLoggedInUserFromJwt(string token);
 

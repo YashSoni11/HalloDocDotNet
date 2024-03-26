@@ -40,7 +40,7 @@ namespace dotnetProc.Controllers
 
 
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("Admindashboard/Dashboard")]
         public IActionResult Dashboard()
@@ -189,7 +189,7 @@ namespace dotnetProc.Controllers
 
         //}
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("Viewnotes/{id}")]
         public IActionResult GetRequestNotes(string id)
@@ -239,7 +239,7 @@ namespace dotnetProc.Controllers
 
         }
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("Admindashboard/Viewrequest/{requestid}")]
         public IActionResult ViewRequest(string requestid)
@@ -531,7 +531,7 @@ namespace dotnetProc.Controllers
            
         }
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [Route("Admindashboard/Viewdocuments/{id}")]
         [HttpGet]
         public IActionResult ViewUploads(int id)
@@ -1135,7 +1135,7 @@ namespace dotnetProc.Controllers
             return Json(new { isfinelized = response });
         }
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("closecase/{id}")]
 
@@ -1214,7 +1214,7 @@ namespace dotnetProc.Controllers
 
         }
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("Admindashboard/reqbyadmin")]
         public IActionResult PatientReqByAdmin()
@@ -1390,7 +1390,7 @@ namespace dotnetProc.Controllers
             }
         }
 
-        [AuthManager("Admin")]
+        //[AuthManager("Admin")]
         [HttpGet]
         [Route("myprofile")]
         public IActionResult AdminProfile()

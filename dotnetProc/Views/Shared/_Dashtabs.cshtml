@@ -20,7 +20,8 @@
 
         <a class="btn nav-link tab-link" id="provider-menu-tab" style="border-color:transparent;" role="tab" data-bs-toggle="dropdown" aria-expanded="false">
                Providers
-            </a>
+        </a>
+
             <ul class="dropdown-menu">
               <a class="nav-link tab-link "  asp-action="ProviderMenu" asp-controller="Admindashboard"  role="tab" aria-controls="pills-disabled" aria-selected="false">Providers</a>
                 <li><a class="dropdown-item" href="#">Action</a></li>
@@ -33,7 +34,16 @@
         <a class="nav-link tab-link" id="pills-partners-tab" data-bs-toggle="pill" data-bs-target="#pills-partners" a role="tab" aria-controls="pills-partners" aria-selected="false">Partners</a>
     </li>
     <li class="nav-item " role="presentation">
-        <a class="nav-link tab-link" id="pills-Access-tab" data-bs-toggle="pill" data-bs-target="#pills-Access" a role="tab" aria-controls="pills-Access" aria-selected="false">Access</a>
+
+
+        <a class="btn nav-link tab-link" id="pills-Access-tab" style="border-color:transparent;" data-bs-toggle="dropdown" aria-expanded="false">Access</a>
+        <ul class="dropdown-menu">
+            <a class="nav-link tab-link " asp-action="AccountAccess" asp-controller="Provider" role="tab" aria-controls="pills-disabled" aria-selected="false">Account Access</a>
+            <li><a asp-action="CreateRole" asp-controller="Provider" class="dropdown-item" >Create Role</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link tab-link" id="pills-Records-tab" data-bs-toggle="pill" data-bs-target="#pills-Records" a role="tab" aria-controls="pills-Records" aria-selected="false">Records</a>

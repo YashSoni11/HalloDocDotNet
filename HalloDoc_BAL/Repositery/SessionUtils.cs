@@ -20,7 +20,7 @@ namespace HalloDoc_BAL.Repositery
                 userInformation.UserId = Convert.ToInt32(session.GetString("UserId"));
                 userInformation.Firstname = session.GetString("Firstname");
                 userInformation.Lastname = session.GetString("Lastname");
-                userInformation.Role = session.GetString("Role");
+                //userInformation.Role = session.GetString("Role");
             }
 
             return userInformation;

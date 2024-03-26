@@ -30,5 +30,12 @@ namespace HalloDoc_BAL.Interface
         public List<Role> GetAllRoles();
 
         public bool CreateProviderAccount(CreateProviderAccount createProviderAccount);
+
+       public List<AccessAreas> GetAreaAccessByAccountType(int accountType);   
+
+       public bool CreateRole(CreateRole createRole,int adminId);
+
+        public bool DeleteRole(int roleId);
+
     }
 }

@@ -2,6 +2,7 @@
 using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
+using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,14 +18,16 @@ namespace dotnetProc.Controllers
         private readonly IEmailService _emailService;
         private readonly IPatientReq _patientReq;
         private readonly IProvider _provider;
+        private readonly IAuthManager _authManager;
 
-        public ProviderController(IAdmindashboard dashboard, IAccount account, IEmailService emailService, IPatientReq patientReq,IProvider provider)
+        public ProviderController(IAdmindashboard dashboard, IAccount account,IAuthManager authManager, IEmailService emailService, IPatientReq patientReq,IProvider provider)
         {
             _dashboard = dashboard;
             _account = account;
             _emailService = emailService;
             _patientReq = patientReq;
             _provider = provider;
+            _authManager = authManager;
         }
 
         [HttpGet]
@@ -297,6 +300,99 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
                 return RedirectToAction("CreateProviderAccountView");
+            }
+        }
+
+
+        [HttpGet]
+        [Route("accountaccess")]
+
+        public IActionResult AccountAccess()
+        {
+
+            bool response = _authManager.Authorize(HttpContext, 4);
+
+            List<Role> roles = _provider.GetAllRoles();
+
+            return View(roles);
+        }
+
+
+        public IActionResult CreateRole()
+        {
+            return View();
+        }
+
+
+        public IActionResult GetAccessArea(int accountType)
+        {
+
+            List<AccessAreas> menus = _provider.GetAreaAccessByAccountType(accountType);
+
+            CreateRole createRole = new CreateRole();   
+            createRole.AccessAreas = menus;
+
+            return PartialView("_AccountControlArea", createRole);
+        }
+
+
+        public IActionResult PostCreateRole(CreateRole createRole)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            if (ModelState.IsValid) {
+
+                bool response = _provider.CreateRole(createRole,loggedInUser.UserId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Role Created Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+                }
+
+                return RedirectToAction("AccountAccess");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("CreateRole",createRole);
+            }
+
+        }
+
+
+        public IActionResult DeletRole(int roleId)
+        {
+            if(roleId != 0)
+            {
+
+                bool response = _provider.DeleteRole(roleId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Role Deleted Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong";
+                }
+
+                return RedirectToAction("AccountAccess");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Role Not Exists!";
+
+                return RedirectToAction("AccountAccess");
+
+
             }
         }
     }

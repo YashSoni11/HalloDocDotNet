@@ -27,6 +27,7 @@ builder.Services.AddScoped<IAccount, Account>();
 builder.Services.AddScoped<IAdmindashboard, Admindashboard>();
 builder.Services.AddScoped<IPatientReq,PatientRequest>();
 builder.Services.AddScoped<IProvider,ProviderServices>();
+builder.Services.AddScoped<IAuthManager,AuthManager>();
 builder.Services.AddTransient<IEmailService,EmailService>();
 builder.Services.AddTransient<IJwtServices, JwtServices>();
 

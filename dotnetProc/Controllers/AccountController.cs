@@ -150,7 +150,7 @@ namespace dotnetProc.Controllers
                 else
                 {
                         
-                   string userRole = _account.GetAspNetUserRoleById(aspuser.Id);
+                   int userRole = _account.GetAspNetUserRoleById(aspuser.Id);
 
                     User user = _account.GetUserByAspNetId(aspuser.Id);
 
@@ -364,7 +364,7 @@ namespace dotnetProc.Controllers
 
         //}
 
-        [AuthManager("Patient")]
+        //[AuthManager("Patient")]
         [HttpGet]
         public IActionResult DashBoard(string message)
         {

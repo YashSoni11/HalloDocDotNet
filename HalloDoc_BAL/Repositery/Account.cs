@@ -98,10 +98,10 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
-        public string GetAspNetUserRoleById(string aspnetuserid)
+        public int GetAspNetUserRoleById(string aspnetuserid)
         {
              
-              string role = _context.Aspnetroles.Where(q=>q.Id == aspnetuserid).Select(r=>r.Name).FirstOrDefault();
+              int role = _context.Aspnetuserroles.Where(q=>q.Userid == aspnetuserid).Select(r=>r.Roleid).FirstOrDefault();
 
               return role;
         }
@@ -116,7 +116,7 @@ namespace HalloDoc_BAL.Repositery
 
             int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
             string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
-            string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
+            int Role = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value);
 
             LoggedInUser loggedInUser = new LoggedInUser()
             {
