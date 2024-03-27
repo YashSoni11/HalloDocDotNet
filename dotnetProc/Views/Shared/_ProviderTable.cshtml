@@ -68,10 +68,10 @@
                 <div class="accordion-item" style="background:var(--pi-form-back-color);">
                     <h2 class="accordion-header" id="heading@(k)">
                         <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(k)" aria-expanded="true" aria-controls="collapse@(k)">
-                            <div class="row">
+                            <div class="row" style="row-gap:1rem;">
 
-                                <div class="col-12">
-                                    <input class="form-check-input" type="checkbox" asp-for="@Model.providers[k].IsNoificationOn" onchange="handleNotificationChange()"> <span>@Model.providers[k].Name</span>
+                                <div class="col-12 d-flex" style="align-items:center;">
+                                    <input class="form-check-input my-0" type="checkbox" asp-for="@Model.providers[k].IsNoificationOn" onchange="handleNotificationChange()"> <span class="mx-1">@Model.providers[k].Name</span>
                                 </div>
                                 <div class="col-12">
                                     On Call Status: <span >Unavailable</span>
@@ -85,20 +85,20 @@
                         <div class="accordion-body container-fluid">
 
 
-                         <div class="row">
+                         <div class="row" style="row-gap:1rem;color:var(--pi-label-color);">
                             
                           <div class="col-12">
 
-                                    Role: <span>@Model.providers[k].Role</span>
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  Role: <span>@Model.providers[k].Role</span>
                              
                           </div>
                           <div class="col-12">
-                                    Status: <span>@status[Model.providers[k].status-1]</span>
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Status: <span>@status[Model.providers[k].status - 1]</span>
                           </div>
                             
                          </div>
                             <div class="row">
-                                <div class="col-12 d-flex justify-content-end">
+                                <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
 
                                     <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
                                         Contact
