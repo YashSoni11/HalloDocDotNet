@@ -43,7 +43,7 @@ namespace HalloDoc_BAL.Repositery
 
             var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires =  DateTime.UtcNow.AddMinutes(10);
+            var expires =  DateTime.UtcNow.AddMinutes(100);
                    
 
             var token = new JwtSecurityToken(

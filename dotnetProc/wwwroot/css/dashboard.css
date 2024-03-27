@@ -11,7 +11,7 @@
     display: none;
 }*/
 
-.accordion{
+.DashboardAccordion{
     display:none;
 }
 
@@ -36,8 +36,8 @@
         display:none;
     }*/
 
-    .accordion{
-        display:block;
+    .DashboardAccordion {
+        display: block;
     }
 
     .reqTable {

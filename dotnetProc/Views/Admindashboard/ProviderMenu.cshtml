@@ -25,14 +25,15 @@
         </div>
 
 
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mt-3 ProviderMenuHeader">
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
 
 
-            <div class="row justify-content-between" style="height: 6rem; align-items: center;">
+            <div class="row  justify-content-lg-between justify-content-sm-center  justify-content-center p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
 
-                <div class="col-4">
+                <div class="form-floating col-lg-4 col-sm-10">
 
                     <div class="form-floating">
+
                         <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion()">
                             <option value="0">All Region</option>
 
@@ -43,11 +44,13 @@
                         </select>
                         <label for="ProviderRegionSelector">Regions</label>
                     </div>
+                   
+                   
 
 
                 </div>
 
-                <div class="col-3">
+                <div class="col-lg-3 col-md-4 col-sm-12 d-sm-flex justify-content-sm-center d-flex justify-content-center ">
                     <a asp-action="CreateProviderAccountView"  asp-controller="Provider"  class="btn btn-info  text-white darkInfo-btn ">Create Provider Account</a>
                 </div>
 
@@ -63,8 +66,8 @@
     </div>
 
  
-    <div class="row table-responsive" id="tableContainer" style="justify-content:center">
-        <div id="ProviderTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between ">
+    <div class="row"  style="justify-content:center">
+        <div id="ProviderTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between ">
 
             @*<partial name="_ProviderTable"/>*@
 

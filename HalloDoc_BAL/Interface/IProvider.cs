@@ -31,11 +31,16 @@ namespace HalloDoc_BAL.Interface
 
         public bool CreateProviderAccount(CreateProviderAccount createProviderAccount);
 
-       public List<AccessAreas> GetAreaAccessByAccountType(int accountType);   
+       public List<AccessAreas> GetAreaAccessByAccountType(int accountType, int roleId = 0);   
 
        public bool CreateRole(CreateRole createRole,int adminId);
 
-        public bool DeleteRole(int roleId);
+        public bool DeleteRole(int roleId,int adminId);
 
+        public bool CreateAdminAccount(CreateAdminAccountModel adminAccount,int adminId);
+
+        public Role GetRoleById(int roleId);
+
+        public bool EditRoleService(CreateRole createRole,int adminId, int id);
     }
 }

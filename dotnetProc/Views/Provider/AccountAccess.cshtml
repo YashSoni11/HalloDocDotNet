@@ -15,6 +15,7 @@
 
 
 @{
+    int k = 0;
     string[] accountTypes = { "Admin", "Physician", "Patient" };
 
 <div class="container-fluid mt-3">
@@ -29,14 +30,14 @@
         </div>
 
 
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mt-3 ProviderMenuHeader">
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
 
 
-            <div class="row justify-content-end" style="height: 6rem; align-items: center;">
+            <div class="row justify-content-end" style="border-radius:10px 10px 0px 0px;height: 6rem; align-items: center;background:var(--pi-form-back-color);">
 
 
-                <div class="col-2">
-                    <a asp-action="CreateRole" asp-controller="Provider" class="btn btn-outline-info  text-info lightInfo-btn " onclick="()">Create Access</a>
+                <div class="col-12 d-flex justify-content-end">
+                        <a asp-action="CreateRole" asp-controller="Provider" class="btn btn-outline-info  text-info lightInfo-btn " onclick="()"><i class="bi bi-plus-lg show-icon"></i><span class="text-vanish">Create Access</span></a>
                 </div>
 
             </div>
@@ -48,7 +49,7 @@
 
 
     <div class="row table-responsive" id="tableContainer" style="justify-content:center">
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 p-0">
+            <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 p-0" style="box-shadow:rgb(0 0 0 / 15%) 0px 5px 15px 0px;">
 
             <table class="table ReqtableContainer">
                 <thead>
@@ -58,7 +59,8 @@
                         <th class="reqtableHeader text-center" scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                    <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
+                           
 
                     @for (int i = 0; i < Model.Count; i++)
                     {
@@ -72,7 +74,7 @@
                             <td class="align-middle text-center" style="display: flex;justify-content: center;column-gap: 1rem;">
 
 
-                                <a asp-route-id="@Model[i].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model[i].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
                                     Edit
                                 </a>
                                 <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model[i].Roleid">
@@ -100,6 +102,59 @@
 
     </div>
 
+
+        <div id="mb-ViewUploadTable"  class="row justify-content-center" style="justify-content:center">
+            <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 p-0">
+             <ul style="border-radius:0px 0px 10px 10px;" class="list-group">
+            @foreach (Role role  in Model)
+            {
+
+                <li class="list-group-item" style="background-color:var(--pi-form-back-color);color:var(--pi-label-color);">
+                    <div class="container-fluid" style="row-gap:1rem;">
+                        <div class="row mb-3">
+
+                          
+                            <div id="Docfiles" class="col-12">
+
+                               Name : <span class="mx-1">@role.Name</span> 
+
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                          
+                            <div class="col-12">
+                                Account Type :  <span class="mx-1">@accountTypes[@role.Accounttype-1]</span>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-2">
+
+                                <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model[k].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                    Edit
+                                </a>
+
+                            </div>
+
+                            <div class="col-2">
+
+                                <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model[k].Roleid">
+
+                                    <button type="submit" class="btn btn-outline-info text-info lightInfo-btn">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </li>
+                k++;
+            }
+        </ul>
+        </div>
+        </div>
 </div>
 
 

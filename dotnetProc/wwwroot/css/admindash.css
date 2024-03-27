@@ -9,7 +9,7 @@
 
 
 
-.accordion {
+.ProviderAccordian {
     display: none;
 }
 
@@ -241,23 +241,25 @@ input[type="checkbox"]:checked {
         display: block;
     }*/
 
+  
+}
+
+@media only screen and (max-width: 600px) {
     #username {
         display: none;
     }
 
+    #tableContainer {
+        display:none;
+    }
 
-
-    .accordion {
+    .ProviderAccordian {
         display: block;
     }
 
     .ReqtableContainer {
         display: none;
     }
-}
-
-@media only screen and (max-width: 600px) {
-
 
     .text-vanish {
         display: none;
@@ -292,7 +294,7 @@ input[type="checkbox"]:checked {
     }
 
     #mb-ViewUploadTable {
-        display: block;
+        display: flex;
     }
 
 

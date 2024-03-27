@@ -335,7 +335,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult GetAccessArea(int accountType)
+        public IActionResult GetAccessArea(int accountType,int roleId)
         {
 
             if (_authManager.Authorize(HttpContext, 4) == false)
@@ -343,10 +343,11 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("AccessDenied", "Account");
             }
 
-            List<AccessAreas> menus = _provider.GetAreaAccessByAccountType(accountType);
+            List<AccessAreas> menus = _provider.GetAreaAccessByAccountType(accountType,roleId);
 
             CreateRole createRole = new CreateRole();   
             createRole.AccessAreas = menus;
+            createRole.AccountType = accountType;
 
             return PartialView("_AccountControlArea", createRole);
         }
@@ -392,15 +393,23 @@ namespace dotnetProc.Controllers
 
         public IActionResult DeletRole(int roleId)
         {
+
             if (_authManager.Authorize(HttpContext, 4) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
 
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
             if (roleId != 0)
             {
 
-                bool response = _provider.DeleteRole(roleId);
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.DeleteRole(roleId,loggedInUser.UserId);
 
                 if (response)
                 {
@@ -437,6 +446,132 @@ namespace dotnetProc.Controllers
             createAdminAccount.roles = roles;
 
             return View(createAdminAccount);
+        }
+
+
+        [HttpPost]
+
+        public IActionResult PostCreateAdminAccount(CreateAdminAccountModel createAdminAccount)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+                bool IsEmailExists = _patientReq.IsEmailExistance(createAdminAccount.Email);
+
+                if(IsEmailExists)
+                {
+                    TempData["ShowNegativeNotification"] = "Account Already Exists!";
+                    return RedirectToAction("CreateAdminAccount", createAdminAccount);
+                }
+
+                string hashedPassword = _account.GetHashedPassword(createAdminAccount.Password);
+                if (hashedPassword.IsNullOrEmpty())
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+                    return RedirectToAction("ProviderMenu", "Admindashboard");
+
+                }
+                createAdminAccount.Password = hashedPassword;
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.CreateAdminAccount(createAdminAccount,loggedInUser.UserId);
+
+
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Account Created Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("CreateAdminAccount");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("CreateAdminAccount",createAdminAccount);
+            }
+        }
+
+        [HttpGet]
+        [Route("editrole/{id}")]
+        public IActionResult EditRoleView(int id)
+        {
+
+            Role role = _provider.GetRoleById(id);
+
+            CreateRole createRole = new CreateRole();
+
+            createRole.Roleid = id;
+            createRole.RoleName = role.Name;
+            createRole.AccountType = role.Accounttype;
+            createRole.AccessAreas = _provider.GetAreaAccessByAccountType(role.Accounttype,id);
+
+
+            return View("EditRole", createRole);
+
+        }
+
+
+        [HttpPost]
+        
+        public IActionResult EditRole(CreateRole createRole ,int id) 
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+                
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.EditRoleService(createRole, loggedInUser.UserId,id);
+
+
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Role Edited Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("AccountAccess");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("EditRoleView", new {id = id});
+            }
+
         }
     }
 }

@@ -18,6 +18,7 @@ namespace HalloDoc_DAL.ProviderViewModels
 
        public List<AccessAreas> AccessAreas { get; set; }
 
+    public int? Roleid { get; set; }
 
     }
 

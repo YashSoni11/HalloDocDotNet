@@ -13,13 +13,13 @@
 
 @{
 
-    string[] accountTypes = { "Admin", "Physician","Patient" };
+    string[] accountTypes = { "Admin", "Physician", "Patient" };
 
     <div class="container-fluid mt-3 ">
         <div class="row justify-content-center">
             <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between mb-3 mt-2">
-                <h2>Create Role</h2>
-                <a class="nav-link" asp-controller="Admindashboard" asp-action="Dashboard">
+                <h2>Edit Role</h2>
+                <a class="nav-link" asp-controller="Provider" asp-action="AccountAccess">
                     <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
                         <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
                     </button>
@@ -28,7 +28,7 @@
             <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
 
-                <form asp-action="PostCreateRole" asp-controller="Provider" method="post">
+                <form asp-action="EditRole" asp-controller="Provider" asp-route-id="@Model.Roleid" method="post">
                     <div class="container-fluid  formContainer mb-5 p-4">
 
 
@@ -46,7 +46,7 @@
                             </div>
                             <div class="col-xl-6 col-sm-6 col-12">
                                 <div class="form-floating mb-3">
-                                    <select asp-for="AccountType" class="form-select form-control" id="AccountTypeInp" aria-label="Floating label select example" onclick="GetAccessAreas()">
+                                    <select asp-for="AccountType" class="form-select form-control" id="AccountTypeInp" aria-label="Floating label select example" onchange="GetAccessAreas()">
                                         @for (int i = 1; i < accountTypes.Length + 1; i++)
                                         {
                                             <option value="@i">@accountTypes[i-1]</option>
@@ -98,7 +98,12 @@
 
     $(document).ready(function () {
 
-        handleNavChange('pills-Access-tab')
+        let prevId = localStorage.getItem("ActiveLink")
+
+        let currEle = document.getElementById(prevId)
+
+        currEle.classList.add("active");
+
         GetAccessAreas()
 
         toastr.remove();
@@ -116,16 +121,16 @@
     const GetAccessAreas = () => {
 
         let AccountType = $("#AccountTypeInp").val();
-
-        var data =    @Html.Raw(Json.Serialize(Model));
-           console.log(data,"3r")
+        var data = @Html.Raw(Json.Serialize(Model));
+       let roleId = data.roleid;
+        console.log(data, "3r")
 
         $.ajax({
             method: "post",
             url: "/Provider/GetAccessArea",
-            data: { AccountType: AccountType },
+            data: { AccountType: AccountType,roleId:roleId },
             success: function (response) {
-
+                
                 if (response.code == 401) {
 
                     location.reload();

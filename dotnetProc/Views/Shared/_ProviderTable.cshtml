@@ -3,15 +3,15 @@
 
 
 @{
-    
+   
     string[] status = { "Active", "Pending", "deactive" };
     <form method="post" id="ProviderForm" asp-action="SaveProviderChanges" asp-controller="Admindashboard">
 
 
-  
 
-   
-        <table class="table ReqtableContainer">
+
+
+        <table class="table ReqtableContainer table-responsive">
             <thead>
                 <tr style="background-color:#f1f1f1;">
                     <th class="reqtableHeader" scope="col">Stop Notification</th>
@@ -22,7 +22,7 @@
                     <th class="reqtableHeader" scope="col">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
            
                 @for (int i = 0;i<Model.providers.Count;i++)
                 {
@@ -57,6 +57,87 @@
             </tbody>
                 
         </table>
+
+
+
+        <div class="ProviderAccordian accordion" id="accordionExample mt-3">
+
+            @for(int k = 0; k < Model.providers.Count; k++)
+            {
+
+                <div class="accordion-item" style="background:var(--pi-form-back-color);">
+                    <h2 class="accordion-header" id="heading@(k)">
+                        <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(k)" aria-expanded="true" aria-controls="collapse@(k)">
+                            <div class="row">
+
+                                <div class="col-12">
+                                    <input class="form-check-input" type="checkbox" asp-for="@Model.providers[k].IsNoificationOn" onchange="handleNotificationChange()"> <span>@Model.providers[k].Name</span>
+                                </div>
+                                <div class="col-12">
+                                    On Call Status: <span >Unavailable</span>
+                                </div>
+
+                            </div>
+
+                        </button>
+                    </h2>
+                    <div id="collapse@(k)" class="accordion-collapse collapse show" aria-labelledby="heading@(k)" data-bs-parent="#accordionExample">
+                        <div class="accordion-body container-fluid">
+
+
+                         <div class="row">
+                            
+                          <div class="col-12">
+
+                                    Role: <span>@Model.providers[k].Role</span>
+                             
+                          </div>
+                          <div class="col-12">
+                                    Status: <span>@status[Model.providers[k].status-1]</span>
+                          </div>
+                            
+                         </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+
+                                    <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                        Contact
+                                    </button>
+                                    <a asp-action="ProviderProfile" asp-controller="Provider" asp-route-id="@Model.providers[k].ProviderId" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                        Edit
+                                    </a>
+             
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-12">
+                                    
+
+
+
+                                </div>
+
+                            </div>
+
+                           
+
+                            
+
+                        </div>
+                    </div>
+                </div>
+
+             
+
+
+
+
+            }
+        </div>
+
 
        
 

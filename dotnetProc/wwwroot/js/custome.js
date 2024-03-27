@@ -108,22 +108,16 @@ const changeTheme = () => {
 }
 
 
-const setUrl = ( url,  id) => {
-
-    console.log(url, id);
-
-
-
-}
 
 
 /*Validations*/
 
 
-const checkEmailAvailibility = () => {
+const checkEmailAvailibility = (target) => {
 
 
-    var email = $(".emailInp").val();
+    var email = target.value;
+    console.log(email)
     if (email == '')
         return;
 
@@ -143,6 +137,8 @@ const checkEmailAvailibility = () => {
                 $("#regionModalBtn").click();
             }
 
+          
+
             if (response.code == 401) {
                 $(".passFields").css("display", "none")
 
@@ -152,6 +148,7 @@ const checkEmailAvailibility = () => {
 
                 $(".passFields").css("display", "block")
             }
+            
 
 
 

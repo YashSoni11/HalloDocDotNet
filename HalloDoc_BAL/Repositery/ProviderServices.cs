@@ -436,13 +436,79 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public List<AccessAreas> GetAreaAccessByAccountType(int accountType)
+        public bool CreateAdminAccount(CreateAdminAccountModel createAdminAccount,int adminId)
+        {
+            try
+            {
+                Aspnetuser aspnetuser = new Aspnetuser()
+                {
+                    Username = createAdminAccount.UserName,
+                    Email = createAdminAccount.Email,
+                    Passwordhash = createAdminAccount.Password,
+                    Phonenumber = createAdminAccount.Phone
+                };
+
+
+                Aspnetuser AdminAspNetUser = AddAspNetUser(aspnetuser);
+                string aspnetId = _context.Admins.Where(q=>q.Adminid == adminId).Select(q=>q.Aspnetuserid).FirstOrDefault();
+
+                if (AdminAspNetUser == null)
+                {
+                    return false;
+                }
+
+                Admin admin = new Admin();
+
+
+                admin.Aspnetuserid = AdminAspNetUser.Id;
+                admin.Firstname = createAdminAccount.FirstName;
+                admin.Lastname = createAdminAccount.LastName;
+                admin.Email = createAdminAccount.Email;
+                admin.Roleid = createAdminAccount.Role;
+                admin.Address1 = createAdminAccount.Address1;
+                admin.Address2 = createAdminAccount.Address2;
+                admin.City = createAdminAccount.City;
+                admin.Regionid = createAdminAccount.StateId;
+                admin.Zip = createAdminAccount.Zip;
+                admin.Altphone = createAdminAccount.AltPhone;
+                admin.Createdby = aspnetId;
+                admin.Isdeleted = false;
+
+
+
+
+                _context.Admins.Add(admin);
+
+                _context.SaveChanges();
+
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public List<AccessAreas> GetAreaAccessByAccountType(int accountType,int roleId = 0)
         {
             List<AccessAreas> menus = _context.Menus.Where(q=>q.Accounttype == accountType).Select(r=>new AccessAreas
             {
                 AreaId = r.Menuid,
                 AreaName = r.Name
             }).ToList();
+
+            if(roleId != 0)
+            {
+               for(int i =0;i< menus.Count;i++)
+                {
+                    if(_context.Rolemenus.Any(q=>q.Roleid == roleId && menus[i].AreaId == q.Menuid))
+                    {
+                        menus[i].IsAreaSelected = true;
+                    }
+                }
+            }
 
             return menus;
         }
@@ -492,14 +558,18 @@ namespace HalloDoc_BAL.Repositery
 
 
      
-      public bool DeleteRole(int roleId)
+      public bool DeleteRole(int roleId,int adminId)
         {
             try
             {
 
+
                 Role role = _context.Roles.FirstOrDefault(r => r.Roleid == roleId);
+                string aspnetId = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
 
                 role.Isdeleted = true;
+                role.Modifieddate = DateTime.Now;
+                role.Modifiedby = aspnetId;
 
                 _context.Roles.Update(role);
 
@@ -509,6 +579,49 @@ namespace HalloDoc_BAL.Repositery
                 return true;
             }catch(Exception ex)
             {
+                return false;
+            }
+        }
+
+
+        public Role GetRoleById(int roleId)
+        {
+            return _context.Roles.FirstOrDefault(q => q.Roleid == roleId && q.Isdeleted == false);
+        }
+
+        public bool EditRoleService(CreateRole createRole,int adminId, int Roleid)
+        {
+            try
+            {
+
+                Role role = _context.Roles.Where(q => q.Roleid == Roleid && q.Isdeleted == false).FirstOrDefault();
+
+                role.Name = createRole.RoleName;
+                role.Accounttype = (short)createRole.AccountType;
+                role.Modifieddate = DateTime.Now;
+                role.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+                
+                for(int i  = 0; i < createRole.AccessAreas.Count; i++)
+                {
+                    if (createRole.AccessAreas[i].IsAreaSelected == true && (_context.Rolemenus.Any(q=>q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId) == false))
+                    {
+                        Rolemenu rolemenu = new Rolemenu();
+                        rolemenu.Roleid = Roleid;
+                        rolemenu.Menuid = createRole.AccessAreas[i].AreaId;
+                        _context.Rolemenus.Add(rolemenu);
+                    }
+                    else
+                    {
+                        Rolemenu rolemenu = _context.Rolemenus.FirstOrDefault(q => q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId == true);
+                        if (rolemenu != null)
+                        {
+                           _context.Rolemenus.Remove(rolemenu);
+                        }
+                    }
+                }
+                _context.SaveChanges();
+                return true;
+            }catch(Exception ex) { 
                 return false;
             }
         }

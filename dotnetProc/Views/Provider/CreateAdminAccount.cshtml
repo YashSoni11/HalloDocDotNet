@@ -12,11 +12,13 @@
 
 <partial name="_DashNavbar" />
 <partial name="_Dashtabs" />
+<partial name="_RegionModal" />
+
 
 <div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
         <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between  mb-3 mt-2">
-            <h3>Create Provider Account</h3>
+            <h3>Create Admin Account</h3>
             <a class="nav-link" asp-controller="Admindashboard" asp-action="Dashboard">
                 <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
                     <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
@@ -24,7 +26,7 @@
             </a>
         </div>
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
-            <form method="post" asp-action="CreateProviderAccount" asp-controller="Provider">
+            <form method="post" asp-action="PostCreateAdminAccount" asp-controller="Provider">
 
                 <div class="container-fluid  formContainer " style="padding:1rem;">
 
@@ -56,7 +58,7 @@
                                 <select asp-for="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
                                     @foreach (Role role in Model.roles)
                                     {
-                                        <option value="@role.Name">@role.Name</option>
+                                        <option value="@role.Roleid">@role.Name</option>
                                     }
                                 </select>
                                 <label for="floatingInput">Role</label>
@@ -90,7 +92,7 @@
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
                                 <input asp-for="Email" type="text" class="form-control tbDisabled" id="floatingInput"
-                                       placeholder="name@example.com">
+                                       placeholder="name@example.com" onblur="checkEmailAvailibility(event.target)">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="Email" class="text-danger"></span>
 
@@ -240,12 +242,7 @@
 
     $(document).ready(function () {
 
-
-        let prevId = localStorage.getItem("ActiveLink")
-
-        let currEle = document.getElementById(prevId)
-
-        currEle.classList.add("active");
+        handleNavChange('pills-Access-tab')
         toastr.remove();
 
         if ('@TempData["ShowPositiveNotification"]' != '') {

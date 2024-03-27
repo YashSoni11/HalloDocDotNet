@@ -26,7 +26,7 @@ namespace HalloDoc_DAL.ProviderViewModels
         [Required(ErrorMessage = "Role is Required.")]
         public int? Role { get; set; }
 
-        public List<Role> roles { get; set; }
+        public List<Role>? roles { get; set; }
 
         [Required(ErrorMessage = "FirstName is Required.")]
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
