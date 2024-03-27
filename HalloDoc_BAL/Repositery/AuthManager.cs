@@ -52,21 +52,7 @@ namespace HalloDoc_BAL.Repositery
 
             if (token == null || !_jwtServices.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
-
-
-                //if (context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                //{
-                //    context.Result = new JsonResult(new { code = 401 });
-                //    return;
-                //}
-                //else
-                //{
-
-                //context.HttpContext.Response.Cookies.Append("LoginMsg", "true");
-                //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Login" }));
                 return false;
-                //}
-                //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { Controller = "Home", Action = "Index" }));
 
             }
 
@@ -78,25 +64,8 @@ namespace HalloDoc_BAL.Repositery
             if (!isRistricted)
             {
                 return false;
-                //context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "Error" }));
             }
 
-
-
-
-
-
-            //if (string.IsNullOrWhiteSpace(_role) || roleClaim.Value != _role)
-            //{
-
-
-
-            //    context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "AccessDenied" }));
-
-
-            //    return;
-
-            //}
 
             return true;    
         }
@@ -104,7 +73,7 @@ namespace HalloDoc_BAL.Repositery
 
         public bool IsRistricted(int id,int roleId)
         {
-             return  _context.Rolemenus.Where(q=>q.Roleid == roleId).Any(r=>r.Rolemenuid == id);
+             return  _context.Rolemenus.Where(q=>q.Roleid == roleId).Any(r=>r.Menuid == id);
         }
 
 

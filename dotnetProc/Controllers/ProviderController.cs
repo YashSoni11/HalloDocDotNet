@@ -310,7 +310,12 @@ namespace dotnetProc.Controllers
         public IActionResult AccountAccess()
         {
 
-            bool response = _authManager.Authorize(HttpContext, 4);
+           if(_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+
 
             List<Role> roles = _provider.GetAllRoles();
 
@@ -320,12 +325,23 @@ namespace dotnetProc.Controllers
 
         public IActionResult CreateRole()
         {
+
+            if (_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             return View();
         }
 
 
         public IActionResult GetAccessArea(int accountType)
         {
+
+            if (_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
             List<AccessAreas> menus = _provider.GetAreaAccessByAccountType(accountType);
 
@@ -338,6 +354,12 @@ namespace dotnetProc.Controllers
 
         public IActionResult PostCreateRole(CreateRole createRole)
         {
+
+            if (_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             string token = HttpContext.Request.Cookies["jwt"];
 
              LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
@@ -370,7 +392,12 @@ namespace dotnetProc.Controllers
 
         public IActionResult DeletRole(int roleId)
         {
-            if(roleId != 0)
+            if (_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            if (roleId != 0)
             {
 
                 bool response = _provider.DeleteRole(roleId);
@@ -394,6 +421,22 @@ namespace dotnetProc.Controllers
 
 
             }
+        }
+
+        [HttpGet]
+        [Route("createadmin")]
+        public IActionResult CreateAdminAccount()
+        {
+            CreateAdminAccountModel createAdminAccount =  new CreateAdminAccountModel();
+
+            List<Region> regions = _dashboard.GetAllRegions();
+
+            List<Role> roles = _provider.GetAllRoles();
+
+            createAdminAccount.Regions = regions;
+            createAdminAccount.roles = roles;
+
+            return View(createAdminAccount);
         }
     }
 }

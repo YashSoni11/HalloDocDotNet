@@ -1,0 +1,356 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+<div class="">
+    <div class="container-fluid d-flex justify-content-between mt-4" style="max-width:1000px">
+        <h4>
+            Edit Physician Account
+        </h4>
+        <div class="d-inline-flex">
+            <a href="#" class="btn btn-primary m-2 text-decoration-none float-end"
+               id="back-btn">
+                Enter Payrate
+            </a>
+            <a href="@Url.Action("AdminDashboard", "Admin")" class="btn btn-primary m-2 text-decoration-none float-end"
+               id="back-btn">
+                Back
+            </a>
+        </div>
+    </div>
+    <div class="container-fluid d-flex justify-content-center mt-4" style="max-width:1000px">
+        <form method="post" class="viewCaseForm form-floating shadow patient-request-form p-3">
+             <input id="adminId" hidden /> 
+            <h5>Account Information</h5>
+            <div class="row g-2 m-1">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userName">
+                        <label for="">User Name</label>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control " id="password">
+                        <label for="floatingSelectGrid">Password</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2 m-1">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select mb-3" id="status">
+                            <option>Active</option>
+                            <option>Out</option>
+                            <option>Died</option>
+                        </select>
+                        <label for="">Status</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating phone-div w-100 h-100 ">
+                        <select class="form-select mb-3" id="role">
+                            <option>Active</option>
+                            <option>Out</option>
+                            <option>Died</option>
+                        </select>
+                        <label for="">Role</label>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary float-end m-1">Reset Password</button><br />
+
+            <h5>Physician Information</h5>
+            <fieldset id="fieldset1" disabled>
+
+                <div class="row g-2 m-1">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control">
+                            <label for="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control">
+                            <label for="floatingSelectGrid">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control">
+                            <label for="">Email</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating phone-div w-100 h-100 ">
+                            <input type="tel" class="patientPhone form-control w-100 h-100">
+                            <label for="">Phone</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control">
+                            <label for="">Medical License Number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control">
+                            <label for="">NPI Number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control">
+                            <label for="">Synchronization Email Address</label>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-start flex-wrap mt-4">
+                        <div>
+                            @*    @foreach (var item in Model.RegionList)
+                            {
+                            <input class="form-check-input" type="checkbox" value="@item.Regionid" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                            @item.Name
+                            </label>
+                            } *@
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <button type="reset" id="editBtn1" class="btn btn-primary float-end me-1 m-1">Edit</button>
+            <button type="reset" id="cancelBtn1" class="btn btn-danger float-end me-1 d-none">Cancel</button>
+            <button type="submit" id="saveBtn1" class="btn btn-primary float-end me-1 d-none">Save</button><br />
+
+            <h5>Mailing & Billing Information</h5>
+            <fieldset disabled id="fieldset2">
+
+                <div class="row g-2 m-1">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="">
+                            <label for="">Address1</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="">
+                            <label for="floatingSelectGrid">Address2</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="">
+                            <label for="">City</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating phone-div w-100 h-100 ">
+                            @*    <select class="form-select border-0" aria-label="Default select example">
+                            @foreach (var items in Model.RegionList)
+                            {
+                            <option value="@items.Regionid" selected>@items.Name</option>
+                            }
+                            </select> *@
+                            <label for="">Select A Region</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="">
+                            <label for="">Zip</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating phone-div w-100 h-100 ">
+                            <input type="tel" class="patientPhone form-control w-100 h-100" placeholder="">
+                            <label for="">Phone</label>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="my-3"></div>
+            <h5>Provider Profile</h5>
+            <fieldset id="fieldset3">
+
+                <div class="row g-2 m-1">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="">
+                            <label for="">Business name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="">
+                            <label for="floatingSelectGrid">Business Website</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <input type="file" class="form-control" placeholder="Select Photo">
+                    </div>
+
+                    <div class="col-md-4">
+                        <input type="file" class="form-control" placeholder="Select Signature">
+                    </div>
+                    <button type="button" class="btn btn-primary float-end m-1 col-1">Create</button>
+                </div>
+
+            </fieldset>
+
+            <button type="reset" id="editBtn2" class="btn btn-primary float-end m-1">Edit</button>
+            <button type="reset" id="cancelBtn2" class="btn btn-danger float-end m-1 d-none">Cancel</button>
+            <button type="submit" id="saveBtn2" class="btn btn-primary float-end m-1 d-none">Save</button><br />
+
+
+            <div class="my-4"></div>
+
+            <div class="border-bottom border-5"></div>
+
+            <h5>Onboarding</h5>
+
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>Independent Contract Agreement</span>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">Upload</button>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">View</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>Background Check</span>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">Upload</button>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">View</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>HIPAA Compliance</span>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">Upload</button>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">View</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>Non-Disclosure Agreement</span>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">Upload</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>License Document</span>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-primary">Upload</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-bottom border-5"></div>
+            <button type="reset" class="btn btn-danger float-end m-1 ">Delete Account</button>
+            <button type="submit" class="btn btn-primary float-end m-1 ">Save</button><br />
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous">
+</script>
+
+<script>
+    var editBtn1 = document.getElementById("editBtn1");
+    var saveBtn1 = document.getElementById("saveBtn1");
+    var cancelBtn1 = document.getElementById("cancelBtn1");
+
+    $("#editBtn1").click(function () {
+        document.getElementById("fieldset1").disabled = false;
+        document.getElementById("userName").disabled = false;
+        document.getElementById("status").disabled = false;
+        document.getElementById("role").disabled = false;
+
+        editBtn1.classList.add('d-none');
+        cancelBtn1.classList.remove('d-none');
+        saveBtn1.classList.remove('d-none');
+
+    });
+
+    $("#cancelBtn1").click(function () {
+        document.getElementById("fieldset1").disabled = true;
+        document.getElementById("userName").disabled = true;
+        document.getElementById("status").disabled = true;
+        document.getElementById("role").disabled = true;
+
+        editBtn1.classList.remove('d-none');
+        cancelBtn1.classList.add('d-none');
+        saveBtn1.classList.add('d-none');
+
+    });
+
+    var editBtn2 = document.getElementById("editBtn2");
+    var saveBtn2 = document.getElementById("saveBtn2");
+    var cancelBtn2 = document.getElementById("cancelBtn2");
+
+    $("#editBtn2").click(function () {
+        document.getElementById("fieldset2").disabled = false;
+
+        editBtn2.classList.add('d-none');
+        cancelBtn2.classList.remove('d-none');
+        saveBtn2.classList.remove('d-none');
+
+    });
+
+    $("#cancelBtn2").click(function () {
+        document.getElementById("fieldset2").disabled = true;
+
+        editBtn2.classList.remove('d-none');
+        cancelBtn2.classList.add('d-none');
+        saveBtn2.classList.add('d-none');
+
+    });
+</script>

@@ -13,6 +13,10 @@
 
 <partial name="_Dashtabs" />
 
+
+@{
+    string[] accountTypes = { "Admin", "Physician", "Patient" };
+
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
 
@@ -64,7 +68,7 @@
 
                         <tr class="align-middle">
                             <td class="align-middle text-center">@Model[i].Name</td>
-                            <td class="align-middle text-center">@Model[i].Accounttype</td>
+                            <td class="align-middle text-center">@accountTypes[@Model[i].Accounttype-1]</td>
                             <td class="align-middle text-center" style="display: flex;justify-content: center;column-gap: 1rem;">
 
 
@@ -97,6 +101,10 @@
     </div>
 
 </div>
+
+
+}
+
 
 
 
