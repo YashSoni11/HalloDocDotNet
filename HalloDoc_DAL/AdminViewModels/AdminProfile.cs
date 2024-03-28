@@ -62,6 +62,9 @@ namespace HalloDoc_DAL.AdminViewModels
         [DataType(DataType.PhoneNumber)]
         [Phone(ErrorMessage = "Please Enter Valid Phonenumber")]
         public string? Phone { get; set; }
+
+
+        public List<SelectedRegions>? SelectedRegions { get; set; }    
     }
 
     public class MailingAndBillingInfo
@@ -87,5 +90,14 @@ namespace HalloDoc_DAL.AdminViewModels
         public string? Zip { get; set; }
 
         public string? AltPhone { get; set; }
+    }
+
+    public class SelectedRegions
+    {
+        public int? regionId { get; set; }
+
+        public string? regionName { get; set; }
+
+        public bool IsSelected { get; set; }
     }
 }

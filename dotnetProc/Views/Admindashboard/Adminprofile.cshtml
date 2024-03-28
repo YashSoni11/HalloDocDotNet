@@ -140,30 +140,18 @@
                     </div>
 
                     <div id="RegionChekboxdiv" class="col-xl-6 col-sm-6 col-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            @for(int i = 0; i < Model.accountInfo.SelectedRegions.Count; i++)
+                            {
+                                
+                            <div class="form-check">
+                                    <input asp-for="@Model.accountInfo.SelectedRegions[i].IsSelected" class="form-check-input tbDisabled" type="checkbox" id="flexCheckDefault">
+                            <input hidden asp-for="@Model.accountInfo.SelectedRegions[i].regionId" style="display:none"/>
                             <label class="form-check-label" for="flexCheckDefault">
-                               District of Columbia
+                               @Model.accountInfo.SelectedRegions[i].regionName
                             </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                New York
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Virgnia
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                               Maryland
-                            </label>
-                        </div>
+                            </div>
+                            }
+                        
                     </div>
 
                     </div>

@@ -1308,7 +1308,28 @@ namespace HalloDoc_BAL.Repositery
                 List<Role> roles = _context.Roles.ToList();
                 List<Region> regions = _context.Regions.ToList();
 
+                List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
 
+                List<Adminregion> adminregion = _context.Adminregions.Where(q => q.Adminid == adminid).ToList();
+
+                 for(int i = 0; i < regions.Count; i++)
+                {
+                        SelectedRegions selectedRegions1 = new SelectedRegions();
+                        selectedRegions1.regionId = regions[i].Regionid;
+                        selectedRegions1.regionName = regions[i].Name;
+
+                    if(adminregion != null && adminregion.Any(q=>q.Regionid == regions[i].Regionid))
+                    {
+                        selectedRegions1.IsSelected = true;
+                    }
+                    else
+                    {
+                        selectedRegions1.IsSelected = false;
+                    }
+                    selectedRegions.Add(selectedRegions1);
+                }
+
+                ap.accountInfo.SelectedRegions = selectedRegions;
                 ap.accountInfo.roles = roles;
                 ap.mailingAndBillingInfo.regions = regions;
 
@@ -1354,6 +1375,25 @@ namespace HalloDoc_BAL.Repositery
                 admin.Status = (short)ap.accountInfo.Status;
                 admin.Email = ap.accountInfo.Confirmationemail;
                 admin.Roleid = _context.Roles.Where(q => q.Name == ap.accountInfo.Role).Select(r => r.Roleid).FirstOrDefault();
+
+
+                for(int i = 0; i < ap.accountInfo.SelectedRegions.Count; i++)
+                {
+                    SelectedRegions selectedRegion = ap.accountInfo.SelectedRegions[i];
+
+                    if (selectedRegion.IsSelected == true && (_context.Adminregions.Any(q=>q.Adminid == adminId && q.Adminregionid == selectedRegion.regionId) == false))
+                    {
+                        Adminregion adminregion = new Adminregion();
+                        adminregion.Regionid = (int)selectedRegion.regionId;
+                        adminregion.Adminid = adminId;
+                        _context.Adminregions.Add(adminregion);
+                    }else if(selectedRegion.IsSelected == false && (_context.Adminregions.Any(q => q.Adminid == adminId && q.Adminregionid == selectedRegion.regionId) == true))
+                    {
+                        Adminregion adminregion = _context.Adminregions.FirstOrDefault(q => q.Adminid == adminId && q.Adminregionid == selectedRegion.regionId);
+                        _context.Adminregions.Remove(adminregion);
+                    }
+                }
+
 
                 _context.Admins.Update(admin);
                 _context.SaveChanges();

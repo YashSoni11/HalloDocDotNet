@@ -42,5 +42,8 @@ namespace HalloDoc_BAL.Interface
         public Role GetRoleById(int roleId);
 
         public bool EditRoleService(CreateRole createRole,int adminId, int id);
+
+        public List<DayWiseShift> GetAllPhysicianDayWiseShifts(int date,int month,int year);
+
     }
 }

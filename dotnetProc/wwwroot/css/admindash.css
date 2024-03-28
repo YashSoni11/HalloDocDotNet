@@ -37,9 +37,9 @@
     flex-direction: column;
 }
 
-.table > thead > tr {
+/*.table > thead > tr {
     background-color: green;
-}
+}*/
 
 /*#searchinp:focus {
     border: none !important;
@@ -229,6 +229,13 @@ input[type="checkbox"]:checked {
     display:none;
 }
 
+.shiftBoxes{
+    width:4rem;
+    height:2rem;
+    border-width:1px;
+    border-radius:7px;
+    border-style:solid;
+}
 
 @media only screen and (max-width: 550px) {
     /*  #innerLogout{
@@ -240,8 +247,6 @@ input[type="checkbox"]:checked {
     #outerLogout{
         display: block;
     }*/
-
-  
 }
 
 @media only screen and (max-width: 600px) {

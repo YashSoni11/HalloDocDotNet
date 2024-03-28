@@ -24,6 +24,8 @@ namespace HalloDoc_BAL.Repositery
         {
             _context = context;
         }
+
+        string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
         public string UploadProviderFiles(IFormFile file)
         {
 
@@ -624,6 +626,83 @@ namespace HalloDoc_BAL.Repositery
             }catch(Exception ex) { 
                 return false;
             }
+        }
+
+
+        public List<DayWiseShift> GetAllPhysicianDayWiseShifts(int date,int month,int year)
+        {
+
+            List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
+
+            List<Shift> shifts = _context.Shifts.ToList();
+            List<DayWiseShift> dayWiseShifts = new List<DayWiseShift>();
+
+            foreach(Shiftdetail shift in shiftdetails)
+            {
+
+                if(shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Isrepeat).FirstOrDefault() == false && (date != shift.Shiftdate.Day))
+                {
+                    continue;
+                }
+              
+
+              
+             
+
+                if(date == shift.Shiftdate.Day && shift.Isdeleted == false)
+                {
+                 DayWiseShift dayWiseShift = new DayWiseShift();
+
+                    dayWiseShift.physicianId = shifts.Where(q=>q.Shiftid == shift.Shiftid).Select(r=>r.Physicianid).FirstOrDefault();
+                    dayWiseShift.startTime = shift.Starttime.Hour;
+                    dayWiseShift.endTime = shift.Endtime.Hour;
+                    dayWiseShift.status = shift.Status;
+                    dayWiseShifts.Add(dayWiseShift);
+                }
+                else if (shift.Isdeleted == false)
+                {
+                    int repeatTimes = (int)shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Repeatupto).FirstOrDefault();
+
+                    DateTime maxDate = new DateTime(year, month, date).AddDays(7 * repeatTimes);
+
+                    DateTime requestedDate = new DateTime(year, month, date);
+
+                    if (requestedDate > maxDate)
+                    {
+                        continue;
+                    }
+
+                    string weekdays = shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Weekdays).FirstOrDefault();
+
+                    for(int j = 0; j < weekdays.Length; j++)
+                    {
+                        if (weekdays[j] == ' ')
+                        {
+                            continue;
+                        }
+                        int dayIndex = weekdays[j]- '0';
+
+                        if (days[dayIndex] != requestedDate.ToString("dddd"))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            DayWiseShift dayWiseShift = new DayWiseShift();
+
+                            dayWiseShift.physicianId = shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Physicianid).FirstOrDefault();
+                            dayWiseShift.startTime = shift.Starttime.Hour;
+                            dayWiseShift.endTime = shift.Endtime.Hour;
+                            dayWiseShift.status = shift.Status;
+                            dayWiseShifts.Add(dayWiseShift);
+                        }
+                    }
+                }
+
+                 
+            }
+
+            return dayWiseShifts;
         }
 
 

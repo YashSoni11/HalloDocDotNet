@@ -23,9 +23,9 @@
         </a>
 
             <ul class="dropdown-menu">
-              <a class="nav-link tab-link "  asp-action="ProviderMenu" asp-controller="Admindashboard"  role="tab" aria-controls="pills-disabled" aria-selected="false">Providers</a>
+            <li> <a class="dropdown-item " asp-action="ProviderMenu" asp-controller="Admindashboard">Providers</a></li>
             <li><a asp-action="CreateProviderAccount" asp-controller="Provider" class="dropdown-item" >Create Provider Account</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a asp-action="ProviderScheduling" asp-controller="Provider" class="dropdown-item" >Scheduling</a></li>
                 <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
        
@@ -38,7 +38,7 @@
 
         <a class="btn nav-link tab-link" id="pills-Access-tab" style="border-color:transparent;" data-bs-toggle="dropdown" aria-expanded="false">Access</a>
         <ul class="dropdown-menu">
-            <a class="nav-link tab-link " asp-action="AccountAccess" asp-controller="Provider" role="tab" aria-controls="pills-disabled" aria-selected="false">Account Access</a>
+            <li> <a class="dropdown-item " asp-action="AccountAccess" asp-controller="Provider" role="tab" aria-controls="pills-disabled" aria-selected="false">Account Access</a></li>
             <li><a asp-action="CreateRole" asp-controller="Provider" class="dropdown-item" >Create Role</a></li>
             <li><a asp-action="CreateAdminAccount" asp-controller="Provider" class="dropdown-item" >Create Admin Account</a></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>

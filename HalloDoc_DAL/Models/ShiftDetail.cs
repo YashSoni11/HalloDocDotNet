@@ -32,8 +32,8 @@ public partial class Shiftdetail
     [Column("status")]
     public short Status { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray Isdeleted { get; set; } = null!;
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [Column("modifiedby")]
     [StringLength(128)]

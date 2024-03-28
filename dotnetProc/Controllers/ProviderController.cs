@@ -573,5 +573,36 @@ namespace dotnetProc.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("scheduling")]
+
+        public IActionResult ProviderScheduling()
+        {
+
+       
+
+            Physicianshifts shift = new Physicianshifts();
+
+            shift.Today = DateTime.Now;
+       
+
+            return View("Scheduling", shift);
+        }
+
+
+ 
+        public IActionResult GetDayWiseShiftTable(int date,int month,int year)
+        {
+            List<DayWiseShift> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year);
+
+            Physicianshifts shift = new Physicianshifts();
+
+            shift.dayWiseShifts = dayWiseShifts;
+
+            return PartialView("_DayWiseShiftTable", shift);
+        }
+
+
     }
 }
