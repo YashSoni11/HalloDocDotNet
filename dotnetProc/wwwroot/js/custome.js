@@ -1108,3 +1108,29 @@ const showLocation = () => {
 
     window.open(mapsUrl, "_blank");
 }
+
+//-------------------------Scheduling-------------------------------//
+
+const GetNextDayWiseShiftTableView = (date, month, year,dateheading) => {
+
+
+    console.log(dateheading)
+
+
+    $.ajax({
+
+        url: "/Provider/GetDayWiseShiftTable",
+        method: "post",
+        data: { date: date, month: month, year: year },
+        success: function (response) {
+
+            $("#ShiftTableContainer").html(response);
+
+            $("#DateHeader").text(dateheading)
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+}

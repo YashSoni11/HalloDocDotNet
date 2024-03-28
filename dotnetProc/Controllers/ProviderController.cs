@@ -582,10 +582,10 @@ namespace dotnetProc.Controllers
 
        
 
-            Physicianshifts shift = new Physicianshifts();
+            ShiftModel shift = new ShiftModel();
 
             shift.Today = DateTime.Now;
-       
+            shift.lastDate = DateTime.Now;
 
             return View("Scheduling", shift);
         }
@@ -599,6 +599,7 @@ namespace dotnetProc.Controllers
             Physicianshifts shift = new Physicianshifts();
 
             shift.dayWiseShifts = dayWiseShifts;
+            shift.lastDate = new DateTime(year,month,date);
 
             return PartialView("_DayWiseShiftTable", shift);
         }

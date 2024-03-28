@@ -1,7 +1,7 @@
 ﻿
 
 
-@model HalloDoc_DAL.ProviderViewModels.Physicianshifts;
+@model HalloDoc_DAL.ProviderViewModels.ShiftModel;
 @using HalloDoc_DAL.ProviderViewModels;
 
 @{
@@ -61,7 +61,7 @@
             <div class="row mt-3 p-3">
 
                 <div class="col-12">
-                     <h4>@Model.Today.ToString("dddd,MMM d,yyyy")</h4>
+                     <h4 id="DateHeader">@Model.Today.ToString("dddd,MMM d,yyyy")</h4>
                 </div>
 
             </div>
@@ -84,41 +84,10 @@
 
             </div>
 
+            <div id="ShiftTableContainer" class="container-fluid">
 
-            <div class="row mt-3 p-3">
-
-                <div class="col-3">
-
-                    <button type="button" style="border-radius:50px;" class="btn btn-info   text-white darkInfo-btn "><i class="bi bi-chevron-left"></i></button>
-                        <i class="bi bi-calendar mx-1"></i>
-                    <button type="button" style="border-radius:50px;" class="btn btn-info  text-white darkInfo-btn " onclick="GetNextDayWiseShiftTableView(@DateTime.Now.AddDays(1).Day,@DateTime.Now.AddDays(1).Month,@DateTime.Now.AddDays(1).Year)"><i class="bi bi-chevron-right"></i></button>
-
-
-
-
-
-                </div>
-
-                <div class="col-9 d-flex justify-content-end" style="column-gap:5px;" >
-                    <button type="button"  class="btn btn-info   text-white darkInfo-btn ">Day</button>
-                    <button type="button"  class="btn btn-outline-info   text-info lightInfo-btn ">Week</button>
-                    <button type="button"  class="btn btn-outline-info   text-info lightInfo-btn ">Month</button>
-                </div>
-
-            </div>
-
-
-            <div class="row mt-3 p-3 justify-content-center">
-
-                 <div id="ShiftTableContainer" class="col-12">
-
-
-                  
-                    
-
-                 </div>
-
-            </div>
+           
+           </div>
 
         </div>
 
@@ -176,6 +145,9 @@
             success: function (response) {
 
                $("#ShiftTableContainer").html(response);
+               localStorage.setItem("lastDate",date);
+               localStorage.setItem("lastMonth",month);
+               localStorage.setItem("lastYear", year);
             },
             error: function (err) {
                 console.log(err);
@@ -186,26 +158,7 @@
 
 
 
-    const GetNextDayWiseShiftTableView = (date,month,year) => {
-
-        
-        console.log(date)
-
-        $.ajax({
-
-            url: "/Provider/GetDayWiseShiftTable",
-            method: "post",
-            data: { date: date, month: month, year: year },
-            success: function (response) {
-
-                $("#ShiftTableContainer").html(response);
-            },
-            error: function (err) {
-                console.log(err);
-            }
-
-        })
-    }
+   
 
 
 </script>

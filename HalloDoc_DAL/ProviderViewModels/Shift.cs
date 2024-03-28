@@ -7,10 +7,21 @@ using System.Threading.Tasks;
 namespace HalloDoc_DAL.ProviderViewModels
 {
 
-   public class Physicianshifts
+
+    public class ShiftModel
     {
-    public DateTime Today { get; set; }
-       public List<DayWiseShift> dayWiseShifts { get; set; }
+        public DateTime Today { get; set; }
+        public DateTime lastDate { get; set; }
+
+
+    }
+    public class Physicianshifts
+    {
+        public DateTime Today { get; set; }
+
+        public DateTime lastDate { get; set; }
+
+        public List<DayWiseShift> dayWiseShifts { get; set; }
     }
     public class DayWiseShift
     {
@@ -21,6 +32,7 @@ namespace HalloDoc_DAL.ProviderViewModels
         public int endTime { get; set; }    
 
         public int status { get; set; }
+
 
     }
 }
