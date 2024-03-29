@@ -21,11 +21,11 @@
 
                                 <select id="sl" asp-for="SelectedRegionName" class="form-select form-control" aria-label="Default select example" onchange="GetPhysicianByRegions()">
                                     <option value="0" selected="">All Region</option>
-                                    @foreach(Region region in Model.Regions)
+                                    @foreach (Region region in Model.Regions)
                                     {
-                                        <option  value="@region.Regionid">@region.Name</option>
+                                        <option value="@region.Regionid">@region.Name</option>
                                     }
-                                    
+
                                 </select>
                                 <label for="sl">Narrow Search By Regions</label>
                                 <span asp-validation-for="SelectedRegionName" class="text-danger"></span>
@@ -33,21 +33,21 @@
                             </div>
                         </div>
                         <div class="col-12">
-                        <div class="form-floating mb-3">
+                            <div class="form-floating mb-3">
 
-                            <select id="PhysicianInp" asp-for="SelectedPhycisianId" class="form-select form-control"  aria-label="Default select example">
-                 
-                                @foreach (Physician physician in Model.Physicians)
-                                {
+                                <select id="PhysicianInp" asp-for="SelectedPhycisianId" class="form-select form-control" aria-label="Default select example">
+
+                                    @foreach (Physician physician in Model.Physicians)
+                                    {
                                         <option value="@physician.Physicianid">@physician.Firstname @physician.Lastname</option>
-                                }
+                                    }
 
-                            </select>
+                                </select>
                                 <label for="PhysicianInp">Physicians</label>
                                 <span asp-validation-for="SelectedPhycisianId" class="text-danger"></span>
 
+                            </div>
                         </div>
-                    </div>
                         <div class="col-12">
                             <div class="form-floating mb-3">
                                 <textarea asp-for="Description" class="form-control" placeholder="Leave a comment here"
@@ -62,7 +62,7 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-info  text-white darkInfo-btn">Submit</button>
 
-                    <button type="button"  class="btn btn-outline-info lightInfo-btn"
+                    <button type="button" class="btn btn-outline-info lightInfo-btn"
                             onclick="document.getElementById('AssignCaseForm').reset()">
                         Cancle
                     </button>
@@ -75,8 +75,8 @@
 
 <script>
 
-    
-    
+
+
 
 
 </script>

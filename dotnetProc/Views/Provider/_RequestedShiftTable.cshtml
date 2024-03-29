@@ -1,0 +1,60 @@
+﻿
+
+
+@{
+
+    string[] status = { "Active", "Pending", "deactive" };
+    <form method="post" >
+
+
+
+
+
+        <table class="table ReqtableContainer table-responsive">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader" scope="col"><input class="form-check-input" type="checkbox"></th>
+                    <th class="reqtableHeader" scope="col">Staff <span>&uarr;</span></th>
+                    <th class="reqtableHeader" scope="col">Day</th>
+                    <th class="reqtableHeader" scope="col">Time</th>
+                    <th class="reqtableHeader" scope="col">Region</th>
+                    
+                </tr>
+            </thead>
+            <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+               
+            </tbody>
+
+        </table>
+
+
+
+        
+
+
+
+
+    </form>
+
+}
+
+
+<script>
+
+    //$("document").ready(function () {
+
+    //    DisPlayPagination();
+
+    //})
+
+
+    const handleNotificationChange = () => {
+
+        if ($("#ProviderChangeSaveBtn").css("display") == "none") {
+            $("#ProviderChangeSaveBtn").css("display", "block");
+        }
+    }
+
+
+</script>

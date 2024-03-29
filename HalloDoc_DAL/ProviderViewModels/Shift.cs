@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HalloDoc_DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace HalloDoc_DAL.ProviderViewModels
     public class ShiftModel
     {
         public DateTime Today { get; set; }
-        public DateTime lastDate { get; set; }
+      
+        public  List<Region> regions { get; set; }
 
 
     }
@@ -26,6 +28,8 @@ namespace HalloDoc_DAL.ProviderViewModels
     public class DayWiseShift
     {
         public int physicianId { get; set; }
+
+        public string PhysicianName { get; set; }   
 
         public int startTime { get; set; }
 

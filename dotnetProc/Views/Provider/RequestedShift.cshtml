@@ -1,0 +1,106 @@
+﻿
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>Requested Shifts</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
+
+
+            <div class="row  justify-content-lg-between justify-content-sm-center  justify-content-center p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+                <div class="form-floating col-lg-4 col-sm-10">
+
+                    <div class="form-floating">
+
+                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion()">
+                            <option value="0">All Region</option>
+
+                           @* @foreach (Region region in Model.regions)
+                            {
+                                <option value="@region.Regionid">@region.Name</option>
+                            }*@
+                        </select>
+                        <label for="ProviderRegionSelector">Regions</label>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="col-xl-6  col-sm-12   d-flex justify-content-end" style="column-gap:1rem;">
+                    <button type="button" class="btn btn-success  text-white darkInfo-btn">View Current Month Shifts</button>
+                    <button type="button" class="btn btn-success  text-white darkInfo-btn">Approve Selected</button>
+                    <button type="button" class="btn btn-danger  text-white darkInfo-btn">Delete Selected</button>
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row" style="justify-content:center">
+        <div id="ProviderTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between ">
+
+            <partial name="_RequestedShiftTable"/>
+
+
+        </div>
+
+       
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        handleNavChange('provider-menu-tab')
+        GetProvidersByRegion();
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+
+
+
+
+</script>

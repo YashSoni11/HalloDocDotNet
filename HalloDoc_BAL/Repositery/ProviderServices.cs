@@ -56,23 +56,23 @@ namespace HalloDoc_BAL.Repositery
             {
                 return null;
             }
-            
+
 
 
 
         }
         public ProviderProfileView GetProviderData(int providerId)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(q=>q.Physicianid == providerId);
+            Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == providerId);
 
 
             ProviderProfileView providerProfileView = new ProviderProfileView();
 
             ProviderAccountInfo providerAccountInfo = new ProviderAccountInfo()
             {
-                UserName = _context.Aspnetusers.Where(q=>q.Id == physician.Aspnetuserid).Select(r=>r.Username).FirstOrDefault(),
+                UserName = _context.Aspnetusers.Where(q => q.Id == physician.Aspnetuserid).Select(r => r.Username).FirstOrDefault(),
                 Status = physician.Status,
-                Role = _context.Roles.Where(q=>q.Roleid == physician.Roleid).Select(r=>r.Name).FirstOrDefault(),
+                Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault(),
                 roles = _context.Roles.ToList(),
 
             };
@@ -81,7 +81,7 @@ namespace HalloDoc_BAL.Repositery
             {
                 FirstName = physician.Firstname,
                 LastName = physician.Lastname,
-                Email = physician.Email,    
+                Email = physician.Email,
                 PhoneNumber = physician.Mobile,
                 MedicalLicenseNumber = physician.Medicallicense,
                 NPINumber = physician.Npinumber,
@@ -94,7 +94,7 @@ namespace HalloDoc_BAL.Repositery
                 Address2 = physician.Address2,
                 City = physician.City,
                 StateId = physician.Regionid,
-                StateName = _context.Regions.Where(q=>q.Regionid == physician.Regionid).Select(r=>r.Name).FirstOrDefault(),
+                StateName = _context.Regions.Where(q => q.Regionid == physician.Regionid).Select(r => r.Name).FirstOrDefault(),
                 Phone = physician.Altphone,
                 Zip = physician.Zip,
                 regions = _context.Regions.ToList(),
@@ -115,7 +115,7 @@ namespace HalloDoc_BAL.Repositery
 
 
             return providerProfileView;
-             
+
         }
 
         public bool SaveProviderAccountInfo(ProviderAccountInfo providerAccountInfo, int provideId)
@@ -124,7 +124,7 @@ namespace HalloDoc_BAL.Repositery
             {
 
 
-                 Physician physician = _context.Physicians.FirstOrDefault(q=>q.Physicianid == provideId);
+                Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == provideId);
                 Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q => q.Id == physician.Aspnetuserid);
 
                 aspnetuser.Username = providerAccountInfo.UserName;
@@ -137,10 +137,11 @@ namespace HalloDoc_BAL.Repositery
                 _context.SaveChanges();
 
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
 
-                 return false;
+                return false;
             }
         }
 
@@ -158,7 +159,8 @@ namespace HalloDoc_BAL.Repositery
                 _context.Aspnetusers.Update(aspnetuser);
                 _context.SaveChanges();
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -180,7 +182,7 @@ namespace HalloDoc_BAL.Repositery
                 physician.Npinumber = pi.NPINumber;
                 physician.Syncemailaddress = pi.SyncEmail;
 
-            
+
                 _context.Physicians.Update(physician);
 
                 _context.SaveChanges();
@@ -235,16 +237,16 @@ namespace HalloDoc_BAL.Repositery
                 physician.Adminnotes = pp.AdminNotes;
 
 
-                if(pp.Photo != null)
+                if (pp.Photo != null)
                 {
                     string? file = UploadProviderFiles(pp.Photo);
-                    if(file == null)
+                    if (file == null)
                     {
                         return false;
                     }
                     physician.Photo = file;
                 }
-                if(pp.Signature != null)
+                if (pp.Signature != null)
                 {
                     string? file = UploadProviderFiles(pp.Signature);
                     if (file == null)
@@ -296,27 +298,27 @@ namespace HalloDoc_BAL.Repositery
         {
             try
             {
-               
-                string imagePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload\\"+ filename;
 
-                
+                string imagePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload\\" + filename;
+
+
                 if (!System.IO.File.Exists(imagePath))
                 {
-                    return null; 
+                    return null;
                 }
 
-              
+
                 byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
 
-              
+
                 string contentType = GetContentType(filename);
 
-               
+
                 return imageBytes;
             }
             catch (Exception ex)
             {
-                
+
                 return null;
             }
         }
@@ -340,7 +342,7 @@ namespace HalloDoc_BAL.Repositery
 
         public List<Role> GetAllRoles()
         {
-            return _context.Roles.Where(q=>q.Isdeleted == false).ToList();
+            return _context.Roles.Where(q => q.Isdeleted == false).ToList();
         }
 
         public Aspnetuser AddAspNetUser(Aspnetuser pr)
@@ -349,23 +351,24 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Aspnetuser aspNetUser1 = new Aspnetuser
-            {
-                Id = Guid.NewGuid().ToString(),
-                Username = pr.Username,
-                Email = pr.Email,
-                Passwordhash = pr.Passwordhash,
-                Phonenumber = pr.Phonenumber,
-                Createddate = DateTime.Now
-            };
+                Aspnetuser aspNetUser1 = new Aspnetuser
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Username = pr.Username,
+                    Email = pr.Email,
+                    Passwordhash = pr.Passwordhash,
+                    Phonenumber = pr.Phonenumber,
+                    Createddate = DateTime.Now
+                };
 
 
-            _context.Aspnetusers.Add(aspNetUser1);
+                _context.Aspnetusers.Add(aspNetUser1);
 
-            _context.SaveChanges();
+                _context.SaveChanges();
 
-            return aspNetUser1;
-            }catch(Exception ex)
+                return aspNetUser1;
+            }
+            catch (Exception ex)
             {
                 return new Aspnetuser();
             }
@@ -387,8 +390,8 @@ namespace HalloDoc_BAL.Repositery
 
 
                 Aspnetuser ProviderAspNetUser = AddAspNetUser(aspnetuser);
-                 
-                if(ProviderAspNetUser == null)
+
+                if (ProviderAspNetUser == null)
                 {
                     return false;
                 }
@@ -415,7 +418,7 @@ namespace HalloDoc_BAL.Repositery
                 physician.Isdeleted = false;
 
 
-                if(createProviderAccount.Photo != null)
+                if (createProviderAccount.Photo != null)
                 {
                     string fileName = UploadProviderFiles(createProviderAccount.Photo);
                     if (!fileName.IsNullOrEmpty())
@@ -424,21 +427,22 @@ namespace HalloDoc_BAL.Repositery
                     }
                 }
 
-                
+
                 _context.Physicians.Add(physician);
 
                 _context.SaveChanges();
 
                 return false;
-                 
 
-            }catch (Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
-        public bool CreateAdminAccount(CreateAdminAccountModel createAdminAccount,int adminId)
+        public bool CreateAdminAccount(CreateAdminAccountModel createAdminAccount, int adminId)
         {
             try
             {
@@ -452,7 +456,7 @@ namespace HalloDoc_BAL.Repositery
 
 
                 Aspnetuser AdminAspNetUser = AddAspNetUser(aspnetuser);
-                string aspnetId = _context.Admins.Where(q=>q.Adminid == adminId).Select(q=>q.Aspnetuserid).FirstOrDefault();
+                string aspnetId = _context.Admins.Where(q => q.Adminid == adminId).Select(q => q.Aspnetuserid).FirstOrDefault();
 
                 if (AdminAspNetUser == null)
                 {
@@ -493,19 +497,19 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public List<AccessAreas> GetAreaAccessByAccountType(int accountType,int roleId = 0)
+        public List<AccessAreas> GetAreaAccessByAccountType(int accountType, int roleId = 0)
         {
-            List<AccessAreas> menus = _context.Menus.Where(q=>q.Accounttype == accountType).Select(r=>new AccessAreas
+            List<AccessAreas> menus = _context.Menus.Where(q => q.Accounttype == accountType).Select(r => new AccessAreas
             {
                 AreaId = r.Menuid,
                 AreaName = r.Name
             }).ToList();
 
-            if(roleId != 0)
+            if (roleId != 0)
             {
-               for(int i =0;i< menus.Count;i++)
+                for (int i = 0; i < menus.Count; i++)
                 {
-                    if(_context.Rolemenus.Any(q=>q.Roleid == roleId && menus[i].AreaId == q.Menuid))
+                    if (_context.Rolemenus.Any(q => q.Roleid == roleId && menus[i].AreaId == q.Menuid))
                     {
                         menus[i].IsAreaSelected = true;
                     }
@@ -515,7 +519,7 @@ namespace HalloDoc_BAL.Repositery
             return menus;
         }
 
-      public  bool  CreateRole(CreateRole createRole,int adminId)
+        public bool CreateRole(CreateRole createRole, int adminId)
         {
             try
             {
@@ -530,21 +534,21 @@ namespace HalloDoc_BAL.Repositery
                 role.Createdby = aspnetId;
                 role.Isdeleted = false;
 
-                  _context.Roles.Add(role);   
+                _context.Roles.Add(role);
 
 
 
-                for(int i = 0; i < createRole.AccessAreas.Count; i++)
+                for (int i = 0; i < createRole.AccessAreas.Count; i++)
                 {
                     if (createRole.AccessAreas[i].IsAreaSelected)
                     {
-                    Rolemenu rolemenu = new Rolemenu();
+                        Rolemenu rolemenu = new Rolemenu();
 
-                    rolemenu.Menuid = createRole.AccessAreas[i].AreaId;
-                    rolemenu.Roleid = role.Roleid;
-                    
+                        rolemenu.Menuid = createRole.AccessAreas[i].AreaId;
+                        rolemenu.Roleid = role.Roleid;
 
-                    _context.Rolemenus.Add(rolemenu);
+
+                        _context.Rolemenus.Add(rolemenu);
                     }
 
                 }
@@ -552,15 +556,16 @@ namespace HalloDoc_BAL.Repositery
                 _context.SaveChanges();
 
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
 
-     
-      public bool DeleteRole(int roleId,int adminId)
+
+        public bool DeleteRole(int roleId, int adminId)
         {
             try
             {
@@ -575,11 +580,12 @@ namespace HalloDoc_BAL.Repositery
 
                 _context.Roles.Update(role);
 
-                _context.SaveChanges(); 
+                _context.SaveChanges();
 
 
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -591,7 +597,7 @@ namespace HalloDoc_BAL.Repositery
             return _context.Roles.FirstOrDefault(q => q.Roleid == roleId && q.Isdeleted == false);
         }
 
-        public bool EditRoleService(CreateRole createRole,int adminId, int Roleid)
+        public bool EditRoleService(CreateRole createRole, int adminId, int Roleid)
         {
             try
             {
@@ -602,10 +608,10 @@ namespace HalloDoc_BAL.Repositery
                 role.Accounttype = (short)createRole.AccountType;
                 role.Modifieddate = DateTime.Now;
                 role.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
-                
-                for(int i  = 0; i < createRole.AccessAreas.Count; i++)
+
+                for (int i = 0; i < createRole.AccessAreas.Count; i++)
                 {
-                    if (createRole.AccessAreas[i].IsAreaSelected == true && (_context.Rolemenus.Any(q=>q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId) == false))
+                    if (createRole.AccessAreas[i].IsAreaSelected == true && (_context.Rolemenus.Any(q => q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId) == false))
                     {
                         Rolemenu rolemenu = new Rolemenu();
                         rolemenu.Roleid = Roleid;
@@ -617,93 +623,306 @@ namespace HalloDoc_BAL.Repositery
                         Rolemenu rolemenu = _context.Rolemenus.FirstOrDefault(q => q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId == true);
                         if (rolemenu != null)
                         {
-                           _context.Rolemenus.Remove(rolemenu);
+                            _context.Rolemenus.Remove(rolemenu);
                         }
                     }
                 }
                 _context.SaveChanges();
                 return true;
-            }catch(Exception ex) { 
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public List<Physician> GetPhysicinForShiftsByRegionService(int regionId)
+        {
+            List<Physician> physicians = new List<Physician>();
+            if (regionId != 0)
+            {
+                physicians = _context.Physicians.Where(q => q.Regionid == regionId && q.Isdeleted == false).ToList();
+            }
+            else
+            {
+                physicians = _context.Physicians.Where(q => q.Isdeleted == false).ToList();
+            }
+
+            return physicians;
+        }
+        public List<DayWiseShift> GetAllPhysicianDayWiseShifts(int date, int month, int year, int regionId)
+        {
+
+            List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
+
+
+            List<Physician> physicians = GetPhysicinForShiftsByRegionService(regionId);
+
+            List<Shift> shifts = _context.Shifts.ToList();
+            List<DayWiseShift> dayWiseShifts = new List<DayWiseShift>();
+
+            foreach (Physician physician in physicians)
+            {
+                List<Shift> PhysicianShifts = _context.Shifts.Where(q => q.Physicianid == physician.Physicianid).ToList();
+
+                if (PhysicianShifts.Count == 0)
+                {
+                    DayWiseShift dayWiseShift = new DayWiseShift();
+                    dayWiseShift.physicianId = physician.Physicianid;
+                    dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    dayWiseShift.startTime = -1;
+                    dayWiseShifts.Add(dayWiseShift);
+                }
+                else
+                {
+                    bool IsTodayShiftFound = false;
+
+                    foreach (Shift shift in PhysicianShifts)
+                    {
+                        DateOnly currentDate = new DateOnly(year, month, date);
+                        Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => (q.Shiftid == shift.Shiftid) && (q.Shiftdate.Year == currentDate.Year) && (q.Shiftdate.Month == currentDate.Month) && (q.Shiftdate.Day == currentDate.Day) && (q.Isdeleted == false));
+
+
+
+                        if (shiftdetail == null)
+                        {
+
+                            continue;
+                        }
+                        else
+                        {
+                            IsTodayShiftFound = true;
+                            DayWiseShift dayWiseShift = new DayWiseShift();
+
+                            dayWiseShift.physicianId = physician.Physicianid;
+                            dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                            dayWiseShift.startTime = shiftdetail.Starttime.Hour;
+                            dayWiseShift.endTime = shiftdetail.Endtime.Hour;
+                            dayWiseShift.status = shiftdetail.Status;
+                            dayWiseShifts.Add(dayWiseShift);
+                        }
+
+                    }
+
+                    if(IsTodayShiftFound == false)
+                    {
+                        DayWiseShift dayWiseShift = new DayWiseShift();
+                        dayWiseShift.physicianId = physician.Physicianid;
+                        dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                        dayWiseShift.startTime = -1;
+                        dayWiseShifts.Add(dayWiseShift);
+                    }
+
+                    //if (shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Isrepeat).FirstOrDefault() == false && (date != shiftdetail.Shiftdate.Day))
+                    //{
+                    //    DayWiseShift dayWiseShift = new DayWiseShift();
+                    //    dayWiseShift.physicianId = physician.Physicianid;
+                    //    dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    //    dayWiseShift.startTime = -1;
+                    //    dayWiseShifts.Add(dayWiseShift);
+
+
+                    //    continue;
+                    //}
+
+
+
+
+
+                    //if (date == shiftdetail.Shiftdate.Day && shiftdetail.Isdeleted == false)
+                    //{
+                    //    DayWiseShift dayWiseShift = new DayWiseShift();
+
+
+                    //    dayWiseShift.physicianId = physician.Physicianid;
+                    //    dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    //    dayWiseShift.startTime = shiftdetail.Starttime.Hour;
+                    //    dayWiseShift.endTime = shiftdetail.Endtime.Hour;
+                    //    dayWiseShift.status = shiftdetail.Status;
+                    //    dayWiseShifts.Add(dayWiseShift);
+                    //}
+                    //else if (shiftdetail.Isdeleted == false)
+                    //{
+                    //    int repeatTimes = (int)shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Repeatupto).FirstOrDefault();
+
+                    //    DateTime maxDate = new DateTime(year, month, date).AddDays(7 * repeatTimes);
+
+                    //    DateTime requestedDate = new DateTime(year, month, date);
+
+                    //    if (requestedDate > maxDate)
+                    //    {
+                    //        DayWiseShift dayWiseShift = new DayWiseShift();
+                    //        dayWiseShift.physicianId = physician.Physicianid;
+                    //        dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    //        dayWiseShift.startTime = -1;
+                    //        dayWiseShifts.Add(dayWiseShift);
+
+                    //        continue;
+                    //    }
+
+                    //    string weekdays = shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Weekdays).FirstOrDefault();
+
+                    //    for (int j = 0; j < weekdays.Length; j++)
+                    //    {
+                    //        if (weekdays[j] == ' ')
+                    //        {
+                    //            continue;
+                    //        }
+                    //        int dayIndex = weekdays[j] - '0';
+
+                    //        if (days[dayIndex] != requestedDate.ToString("dddd"))
+                    //        {
+                    //            DayWiseShift dayWiseShift = new DayWiseShift();
+                    //            dayWiseShift.physicianId = physician.Physicianid;
+                    //            dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    //            dayWiseShift.startTime = -1;
+                    //            dayWiseShifts.Add(dayWiseShift);
+                    //            continue;
+                    //        }
+                    //        else
+                    //        {
+                    //            DayWiseShift dayWiseShift = new DayWiseShift();
+
+
+                    //            dayWiseShift.physicianId = physician.Physicianid;
+                    //            dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    //            dayWiseShift.startTime = shiftdetail.Starttime.Hour;
+                    //            dayWiseShift.endTime = shiftdetail.Endtime.Hour;
+                    //            dayWiseShift.status = shiftdetail.Status;
+                    //            dayWiseShifts.Add(dayWiseShift);
+                    //        }
+                    //    }
+                    //}
+
+                }
+            }
+
+            return dayWiseShifts;
+        }
+
+
+        public bool CreateShiftService(CreateShift createShift, int adminId)
+        {
+
+
+            try
+            {
+                Shift shift = new Shift();
+
+                shift.Shiftid = _context.Shifts.OrderByDescending(q => q.Shiftid).Select(q => q.Shiftid).FirstOrDefault() + 1;
+                shift.Physicianid = createShift.PhysicianId;
+                shift.Startdate = new DateOnly(createShift.ShiftDate.Year, createShift.ShiftDate.Month, createShift.ShiftDate.Day);
+                shift.Repeatupto = createShift.RepeatUpto;
+                shift.Createdby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+                shift.Isrepeat = createShift.IsReapet;
+                shift.Createddate = DateTime.Now;
+
+                _context.Shifts.Add(shift);
+
+
+                Shiftdetail firtShiftdetail = new Shiftdetail();
+
+                firtShiftdetail.Shiftid = shift.Shiftid;
+                firtShiftdetail.Shiftdate = createShift.ShiftDate;
+                firtShiftdetail.Starttime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute, createShift.StartTime.Second);
+                firtShiftdetail.Endtime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute, createShift.EndTime.Second);
+                firtShiftdetail.Isdeleted = false;
+                firtShiftdetail.Status = 1;
+                firtShiftdetail.Regionid = 1;
+
+                _context.Shiftdetails.Add(firtShiftdetail);
+
+
+                if (createShift.IsReapet == true)
+                {
+
+
+
+                    foreach (SelectedDays selectedDays in createShift.SelectedDays)
+                    {
+
+
+                        if (selectedDays.IsSelected == true)
+                        {
+
+
+                            Shiftdetail shiftdetail = new Shiftdetail();
+                            int daysUntillRequestedDay = (selectedDays.DayId - (int)createShift.ShiftDate.DayOfWeek + 7) % 7;
+
+                            DateTime futureDate = createShift.ShiftDate.AddDays(daysUntillRequestedDay);
+
+                            if (futureDate <= createShift.ShiftDate)
+                            {
+                                futureDate = futureDate.AddDays(7);
+                            }
+
+
+
+                            shiftdetail.Shiftid = shift.Shiftid;
+                            shiftdetail.Shiftdate = futureDate;
+                            shiftdetail.Starttime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute, createShift.StartTime.Second);
+                            shiftdetail.Endtime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute, createShift.EndTime.Second);
+                            shiftdetail.Isdeleted = false;
+                            shiftdetail.Status = 1;
+                            shiftdetail.Regionid = 1;
+                            _context.Shiftdetails.Add(shiftdetail);
+
+                            DateTime currentDate = futureDate;
+
+                            for (int i = 1; i < createShift.RepeatUpto; i++)
+                            {
+                                Shiftdetail repeatShifts = new Shiftdetail();
+
+                                repeatShifts.Shiftid = shift.Shiftid;
+                                repeatShifts.Shiftdate = currentDate.AddDays(7);
+                                repeatShifts.Starttime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute, createShift.StartTime.Second);
+                                repeatShifts.Endtime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute, createShift.EndTime.Second);
+                                repeatShifts.Isdeleted = false;
+                                repeatShifts.Status = 1;
+                                repeatShifts.Regionid = 1;
+
+                                currentDate = currentDate.AddDays(7);
+
+                                _context.Shiftdetails.Add(repeatShifts);
+                            }
+                        }
+
+                    }
+
+
+                }
+
+
+
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
                 return false;
             }
         }
 
 
-        public List<DayWiseShift> GetAllPhysicianDayWiseShifts(int date,int month,int year)
+        public List<RequestedShiftDetails> GetRequestedShiftDetails()
         {
 
-            List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
 
-            List<Shift> shifts = _context.Shifts.ToList();
-            List<DayWiseShift> dayWiseShifts = new List<DayWiseShift>();
-
-            foreach(Shiftdetail shift in shiftdetails)
+            List<RequestedShiftDetails> requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false).Select(r => new RequestedShiftDetails
             {
+                PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
+                Day = r.Shiftdate,
+                StartTime = r.Starttime,
+                EndTime = r.Endtime,
+                Region = _context.Regions.Where(q=>q.Regionid == r.Regionid).Select(r=>r.Name).FirstOrDefault(),
+               
+            }).ToList();
 
-                if(shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Isrepeat).FirstOrDefault() == false && (date != shift.Shiftdate.Day))
-                {
-                    continue;
-                }
-              
 
-              
-             
-
-                if(date == shift.Shiftdate.Day && shift.Isdeleted == false)
-                {
-                 DayWiseShift dayWiseShift = new DayWiseShift();
-
-                    dayWiseShift.physicianId = shifts.Where(q=>q.Shiftid == shift.Shiftid).Select(r=>r.Physicianid).FirstOrDefault();
-                    dayWiseShift.startTime = shift.Starttime.Hour;
-                    dayWiseShift.endTime = shift.Endtime.Hour;
-                    dayWiseShift.status = shift.Status;
-                    dayWiseShifts.Add(dayWiseShift);
-                }
-                else if (shift.Isdeleted == false)
-                {
-                    int repeatTimes = (int)shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Repeatupto).FirstOrDefault();
-
-                    DateTime maxDate = new DateTime(year, month, date).AddDays(7 * repeatTimes);
-
-                    DateTime requestedDate = new DateTime(year, month, date);
-
-                    if (requestedDate > maxDate)
-                    {
-                        continue;
-                    }
-
-                    string weekdays = shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Weekdays).FirstOrDefault();
-
-                    for(int j = 0; j < weekdays.Length; j++)
-                    {
-                        if (weekdays[j] == ' ')
-                        {
-                            continue;
-                        }
-                        int dayIndex = weekdays[j]- '0';
-
-                        if (days[dayIndex] != requestedDate.ToString("dddd"))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            DayWiseShift dayWiseShift = new DayWiseShift();
-
-                            dayWiseShift.physicianId = shifts.Where(q => q.Shiftid == shift.Shiftid).Select(r => r.Physicianid).FirstOrDefault();
-                            dayWiseShift.startTime = shift.Starttime.Hour;
-                            dayWiseShift.endTime = shift.Endtime.Hour;
-                            dayWiseShift.status = shift.Status;
-                            dayWiseShifts.Add(dayWiseShift);
-                        }
-                    }
-                }
-
-                 
-            }
-
-            return dayWiseShifts;
+            return requestedShiftDetails;
         }
+
+
 
 
     }

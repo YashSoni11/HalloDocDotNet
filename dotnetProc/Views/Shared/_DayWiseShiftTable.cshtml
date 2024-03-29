@@ -8,8 +8,9 @@
 
     <div class="col-3">
 
-        <button type="button" style="border-radius:50px;" class="btn btn-info   text-white darkInfo-btn "><i class="bi bi-chevron-left"></i></button>
-        <i class="bi bi-calendar mx-1"></i>
+        <button type="button" style="border-radius:50px;" class="btn btn-info   text-white darkInfo-btn "
+                onclick="GetNextDayWiseShiftTableView(@Model.lastDate.AddDays(-1).Day,@Model.lastDate.AddDays(-1).Month,@Model.lastDate.AddDays(-1).Year,'@Model.lastDate.AddDays(-1).ToString("dddd,MMM d,yyyy")')"><i class="bi bi-chevron-left"></i></button>
+        <i class="bi bi-calendar3 mx-1" style="color:var(--pi-label-color);"></i>
         <button type="button" style="border-radius:50px;" class="btn btn-info  text-white darkInfo-btn "
                 onclick="GetNextDayWiseShiftTableView(@Model.lastDate.AddDays(1).Day,@Model.lastDate.AddDays(1).Month,@Model.lastDate.AddDays(1).Year,'@Model.lastDate.AddDays(1).ToString("dddd,MMM d,yyyy")')">
             <i class="bi bi-chevron-right"></i>
@@ -35,7 +36,7 @@
     <div class="col-12">
 
 
-        <table class="table table-bordered table-responsive">
+        <table class="table table-bordered table-responsive" >
             <thead>
                 <tr style="background-color:#444444;color:white;">
                     <th style="width:100%">STAFF</th>
@@ -50,7 +51,7 @@
                         <th>@(i)P</th>
                     }
                 </tr>
-                <tr>
+                <tr style="color:var(--pi-label-color);">
                     <th>Coverage</th>
                     @for (int i = 0; i < 24; i++)
                     {
@@ -59,18 +60,18 @@
                 </tr>
 
             </thead>
-            <tbody>
+            <tbody style="color:var(--pi-label-color);">
                 @foreach (DayWiseShift dayWiseShift in Model.dayWiseShifts)
                 {
                     <tr>
-                        <th>Mr.Yash</th>
+                        <th>@dayWiseShift.PhysicianName</th>
                         @{
                             int start = dayWiseShift.startTime;
                             int end = dayWiseShift.endTime;
                         }
                         @for (int i = 0; i < 24; i++)
                         {
-                            if (i >= start && i <= end)
+                            if ( start != -1 &&  i >= start && i <= end )
                             {
                                 <th style="background-color:#edacea;"></th>
                             }

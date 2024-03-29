@@ -13,6 +13,11 @@
 
 <partial name="_Dashtabs" />
 
+<div id="ShiftModalContainer">
+
+</div>
+
+
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
 
@@ -34,13 +39,13 @@
 
                     <div class="form-floating">
 
-                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion()">
+                        <select class="form-select form-control" id="shiftRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onchange="GetRegionsWiseShiftTable()">
                             <option value="0">All Region</option>
 
-                           @* @foreach (Region region in Model.regions)
+                            @foreach (Region region in Model.regions)
                             {
                                 <option value="@region.Regionid">@region.Name</option>
-                            }*@
+                            }
                         </select>
                         <label for="ProviderRegionSelector">Regions</label>
                     </div>
@@ -52,8 +57,8 @@
 
                 <div class="col-xl-6  col-sm-12   d-flex justify-content-end" style="column-gap:1rem;">
                     <a asp-action="CreateProviderAccountView" asp-controller="Provider" class="btn btn-info  text-white darkInfo-btn ">Providers On Call</a>
-                    <a asp-action="CreateProviderAccountView" asp-controller="Provider" class="btn btn-info  text-white darkInfo-btn ">Shift For Review</a>
-                    <a asp-action="CreateProviderAccountView" asp-controller="Provider" class="btn btn-info  text-white darkInfo-btn ">Add New Shift</a>
+                    <a asp-action="RequestedShiftView" asp-controller="Provider" class="btn btn-info  text-white darkInfo-btn ">Shift For Review</a>
+                    <button  class="btn btn-info  text-white darkInfo-btn " onclick="GetShiftModalView()">Add New Shift</button>
                 </div>
 
             </div>
@@ -68,14 +73,14 @@
 
             <div class="row mt-3 p-3">
 
-                <div class="col-12 d-flex justify-content-end">
+                <div class="col-12 d-flex justify-content-end" >
                     
 
                     <div class="btn d-flex " style="align-items:center;column-gap:5px;">
-                        <div class="shiftBoxes" style="border-color:#edb2cf;background-color:#ffd9fd"></div><div>Pending Shift</div>
+                        <div class="shiftBoxes" style="border-color:#edb2cf;background-color:#ffd9fd"></div><div style="color:var(--pi-label-color);">Pending Shift</div>
                     </div>
                     <div class="btn d-flex " style="align-items:center;column-gap:5px;">
-                        <div class="shiftBoxes" style="border-color:#82cf97;background-color:#cffbd4"></div><div>Approved Shift</div>
+                        <div class="shiftBoxes" style="border-color:#82cf97;background-color:#cffbd4"></div><div style="color:var(--pi-label-color);">Approved Shift</div>
                     </div>
                     
 
@@ -135,19 +140,20 @@
         var date =   @Html.Raw(Json.Serialize(Model.Today.Day));
         var month =  @Html.Raw(Json.Serialize(Model.Today.Month));
         var year = @Html.Raw(Json.Serialize(Model.Today.Year));
+        var regionId = $("#shiftRegionSelector").val();
         console.log(date)
 
         $.ajax({
 
             url: "/Provider/GetDayWiseShiftTable",
             method: "post",
-            data:{date:date,month:month,year:year},
+            data:{date:date,month:month,year:year,regionId:regionId},
             success: function (response) {
 
                $("#ShiftTableContainer").html(response);
-               localStorage.setItem("lastDate",date);
-               localStorage.setItem("lastMonth",month);
-               localStorage.setItem("lastYear", year);
+               localStorage.setItem("currentDate",date);
+                localStorage.setItem("currentMonth", month);
+                localStorage.setItem("currentYear", year);
             },
             error: function (err) {
                 console.log(err);
@@ -156,9 +162,57 @@
         })
     }
 
+    const GetRegionsWiseShiftTable = () => {
 
+        var date =   localStorage.getItem("currentDate");
+        var month = localStorage.getItem("currentMonth");
+        var year = localStorage.getItem("currentYear");
+        var regionId = $("#shiftRegionSelector").val();
+       
 
-   
+        $.ajax({
+
+            url: "/Provider/GetDayWiseShiftTable",
+            method: "post",
+            data: { date: date, month: month, year: year, regionId: regionId },
+            success: function (response) {
+
+                $("#ShiftTableContainer").html(response);
+                
+            },
+            error: function (err) {
+                console.log(err);
+            }
+
+        })
+    }
+
+    const GetShiftModalView = () => {
+
+        $.ajax({
+            method: "post",
+            url: "/Provider/GetCreateShiftView",
+            data: {},
+            success: function (response) {
+
+                if (response.code == 401) {
+
+                    location.reload();
+                } else {
+
+                    $("#ShiftModalContainer").html(response);
+
+                    $("#ShiftModal").modal("show")
+
+                }
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+
+    }
 
 
 </script>

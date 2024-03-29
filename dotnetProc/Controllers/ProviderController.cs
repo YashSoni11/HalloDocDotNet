@@ -584,17 +584,19 @@ namespace dotnetProc.Controllers
 
             ShiftModel shift = new ShiftModel();
 
+            List<Region> regions = _dashboard.GetAllRegions();
             shift.Today = DateTime.Now;
-            shift.lastDate = DateTime.Now;
+            shift.regions = regions;
+            //shift.lastDate = DateTime.Now;
 
             return View("Scheduling", shift);
         }
 
 
  
-        public IActionResult GetDayWiseShiftTable(int date,int month,int year)
+        public IActionResult GetDayWiseShiftTable(int date,int month,int year,int regionId)
         {
-            List<DayWiseShift> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year);
+            List<DayWiseShift> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year, regionId);
 
             Physicianshifts shift = new Physicianshifts();
 
@@ -604,6 +606,82 @@ namespace dotnetProc.Controllers
             return PartialView("_DayWiseShiftTable", shift);
         }
 
+
+        public IActionResult GetCreateShiftView()
+        {
+
+            List<Region> regions = _dashboard.GetAllRegions();
+            List<Physician> physicians = _provider.GetPhysicinForShiftsByRegionService(0);
+
+            CreateShift createShift = new CreateShift();
+
+            createShift.regions = regions;
+            createShift.physicians = physicians;
+
+
+            return PartialView("_ShiftModal", createShift);
+        }
+        public IActionResult CreateShift(CreateShift createShift)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (!ModelState.IsValid)
+            {
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.CreateShiftService(createShift, loggedInUser.UserId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Shift Created Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("ProviderScheduling");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("ProviderScheduling");
+            }
+
+           
+
+            
+        }
+
+
+        public IActionResult RequestedShiftView()
+        {
+            RequestedShiftModal requestedShiftModal = new RequestedShiftModal();
+
+
+            List<Region> regions = _dashboard.GetAllRegions();
+
+            List<RequestedShiftDetails> details = _provider.GetRequestedShiftDetails();
+
+
+            requestedShiftModal.regions = regions;
+            requestedShiftModal.requestedShiftDetails = details;
+
+            return View("RequestedShift", details);
+        }
 
     }
 }

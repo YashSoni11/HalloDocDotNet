@@ -1114,19 +1114,22 @@ const showLocation = () => {
 const GetNextDayWiseShiftTableView = (date, month, year,dateheading) => {
 
 
-    console.log(dateheading)
-
+        var regionId = $("#shiftRegionSelector").val();
 
     $.ajax({
 
         url: "/Provider/GetDayWiseShiftTable",
         method: "post",
-        data: { date: date, month: month, year: year },
+        data: { date: date, month: month, year: year, regionId: regionId },
         success: function (response) {
 
             $("#ShiftTableContainer").html(response);
 
             $("#DateHeader").text(dateheading)
+
+            localStorage.setItem("currentDate", date);
+            localStorage.setItem("currentMonth", month);
+            localStorage.setItem("currentYear", year);
         },
         error: function (err) {
             console.log(err);

@@ -1,0 +1,147 @@
+﻿
+@model HalloDoc_DAL.ProviderViewModels.CreateShift;
+
+
+
+
+@{
+    string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+    <form asp-action="CreateShift" asp-controller="Provider" id="ShiftModalForm" mthod="post">
+        <div class="modal fade" id="ShiftModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-info">
+                        <h1 class="modal-title fs-5 text-white" id="staticBackdropLabel">Create Shift</h1>
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body container-fluid ">
+
+
+
+                        <div class="row justify-content-center">
+
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+
+                                    <select  id="sl" class="form-select form-control" aria-label="Default select example" onchange="GetPhysicianByRegions()">
+                                        <option value="0" selected="">All Region</option>
+                                        @foreach (Region region in Model.regions)
+                                        {
+                                            <option value="@region.Regionid">@region.Name</option>
+                                        }
+
+                                    </select>
+                                    <label for="sl">Regions</label>
+                                    <span class="text-danger"></span>
+
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+
+                                    <select asp-for="PhysicianId" id="PhysicianInp" class="form-select form-control" aria-label="Default select example">
+
+                                       @foreach (Physician physician in Model.physicians)
+                                        {
+                                            <option value="@physician.Physicianid">@physician.Firstname @physician.Lastname</option>
+                                        }
+
+                                    </select>
+                                    <label for="PhysicianInp">Physicians</label>
+                                    <span class="text-danger"></span>
+
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+
+                                    <input asp-for="ShiftDate" type="date" class="form-control" id="floatingInput"
+                                           placeholder="name@example.com">
+                                    <label for="PhysicianInp">ShiftDate</label>
+                                    <span class="text-danger"></span>
+
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+
+                                    <input asp-for="StartTime" type="time" class="form-control" id="floatingInput"
+                                           placeholder="name@example.com">
+                                    <label for="PhysicianInp">Start</label>
+                                    <span class="text-danger"></span>
+
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+
+                                    <input asp-for="EndTime" type="time" class="form-control" id="floatingInput"
+                                           placeholder="name@example.com">
+                                    <label for="PhysicianInp">End</label>
+                                    <span class="text-danger"></span>
+
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch mb-3">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">Repeat</label>
+                                    <input asp-for="IsReapet" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+
+                            <h6>Repeat Days</h6>
+
+                            <div class="col-12 d-flex" style="flex-wrap:wrap;column-gap:1rem;">
+
+                                @for (int i = 0; i < days.Length; i++)
+                                {
+                                    <div class="form-check">
+                                         <input asp-for="SelectedDays[i].DayId" value="@i" hidden style="display:none;"/>
+                                        <input asp-for="SelectedDays[i].IsSelected" class="form-check-input" type="checkbox">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Every @(days[i])
+                                        </label>
+                                    </div>
+                                }
+
+
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <div class="form-floating mb-3">
+
+                                    <select asp-for="RepeatUpto" class="form-select form-control" aria-label="Default select example">
+                                        <option value="1" selected>1-times</option>
+                                        <option value="2">2-times</option>
+                                        <option value="5">5-times</option>
+                                    </select>
+                                    <label for="PhysicianInp">Repeat End</label>
+                                    <span class="text-danger"></span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info  text-white darkInfo-btn">Save</button>
+
+                        <button type="button" onclick=" document.getElementById('BlockCaseForm').reset()" class="btn btn-outline-info lightInfo-btn">
+
+                            Cancle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
