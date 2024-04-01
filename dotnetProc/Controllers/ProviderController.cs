@@ -674,13 +674,67 @@ namespace dotnetProc.Controllers
 
             List<Region> regions = _dashboard.GetAllRegions();
 
-            List<RequestedShiftDetails> details = _provider.GetRequestedShiftDetails();
+           
 
 
             requestedShiftModal.regions = regions;
-            requestedShiftModal.requestedShiftDetails = details;
+            
 
-            return View("RequestedShift", details);
+            return View("RequestedShift", requestedShiftModal);
+        }
+
+
+        public IActionResult RequestedShiftTableView(int regionId)
+        {
+            List<RequestedShiftDetails> details = _provider.GetRequestedShiftDetails(regionId);
+
+            return PartialView("_RequestedShiftTable", details);
+        }
+
+
+        public IActionResult ApproveShiftAction(List<RequestedShiftDetails> requestedShiftDetails)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (!ModelState.IsValid)
+            {
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.ApproveShiftsService(requestedShiftDetails,loggedInUser.UserId);
+
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Shift Approved Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("ProviderScheduling");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("RequestedShiftView");
+            }
+
+
+
         }
 
     }

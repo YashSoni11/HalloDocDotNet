@@ -827,7 +827,7 @@ namespace HalloDoc_BAL.Repositery
                 firtShiftdetail.Starttime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute, createShift.StartTime.Second);
                 firtShiftdetail.Endtime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute, createShift.EndTime.Second);
                 firtShiftdetail.Isdeleted = false;
-                firtShiftdetail.Status = 1;
+                firtShiftdetail.Status = 0;
                 firtShiftdetail.Regionid = 1;
 
                 _context.Shiftdetails.Add(firtShiftdetail);
@@ -863,7 +863,7 @@ namespace HalloDoc_BAL.Repositery
                             shiftdetail.Starttime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute, createShift.StartTime.Second);
                             shiftdetail.Endtime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute, createShift.EndTime.Second);
                             shiftdetail.Isdeleted = false;
-                            shiftdetail.Status = 1;
+                            shiftdetail.Status = 0;
                             shiftdetail.Regionid = 1;
                             _context.Shiftdetails.Add(shiftdetail);
 
@@ -878,7 +878,7 @@ namespace HalloDoc_BAL.Repositery
                                 repeatShifts.Starttime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute, createShift.StartTime.Second);
                                 repeatShifts.Endtime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute, createShift.EndTime.Second);
                                 repeatShifts.Isdeleted = false;
-                                repeatShifts.Status = 1;
+                                repeatShifts.Status = 0;
                                 repeatShifts.Regionid = 1;
 
                                 currentDate = currentDate.AddDays(7);
@@ -904,25 +904,68 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public List<RequestedShiftDetails> GetRequestedShiftDetails()
+        public List<RequestedShiftDetails> GetRequestedShiftDetails(int regionId)
         {
 
+            List<RequestedShiftDetails> requestedShiftDetails = new List<RequestedShiftDetails>();
+            if (regionId == 0)
+            {
+                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false).Select(r => new RequestedShiftDetails
+                {
+                    PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
+                    Day = r.Shiftdate,
+                    StartTime = r.Starttime,
+                    EndTime = r.Endtime,
+                    Region = _context.Regions.Where(q => q.Regionid == r.Regionid).Select(r => r.Name).FirstOrDefault(),
+                    ShiftDetailId = r.Shiftdetailid,
 
-            List<RequestedShiftDetails> requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false).Select(r => new RequestedShiftDetails
+                }).ToList();
+            }
+            else
+            {
+              requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false && q.Regionid == regionId).Select(r => new RequestedShiftDetails
             {
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                 Day = r.Shiftdate,
                 StartTime = r.Starttime,
                 EndTime = r.Endtime,
                 Region = _context.Regions.Where(q=>q.Regionid == r.Regionid).Select(r=>r.Name).FirstOrDefault(),
-               
-            }).ToList();
+                    ShiftDetailId = r.Shiftdetailid,
+
+              }).ToList();
+
+            }
 
 
             return requestedShiftDetails;
         }
 
 
+        public bool ApproveShiftsService(List<RequestedShiftDetails> requestedShiftDetails,int adminId)
+        {
+            try
+            {
+                foreach(RequestedShiftDetails rd in  requestedShiftDetails)
+                {
+                    if(rd.IsSelected == true)
+                    {
+                        Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == rd.ShiftDetailId);
+
+                        shiftdetail.Status = 1;
+                        shiftdetail.Modifieddate = DateTime.Now;
+                        shiftdetail.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+                        _context.Shiftdetails.Update(shiftdetail);
+                    }
+                }
+
+                _context.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
 
 
     }

@@ -50,7 +50,10 @@ namespace HalloDoc_BAL.Interface
 
         public bool CreateShiftService(CreateShift createShift,int adminId);
 
-        public List<RequestedShiftDetails> GetRequestedShiftDetails();
+        public List<RequestedShiftDetails> GetRequestedShiftDetails(int regionId);
+
+        public bool ApproveShiftsService(List<RequestedShiftDetails> requestedShiftDetails, int adminId);
+
 
     }
 }

@@ -2,9 +2,9 @@
 @using HalloDoc_DAL.ProviderViewModels;
 
 
-
-
-<div class="row mt-3 p-3">
+@{
+    string[] statusColor = { "#edacea", "#67eb98" };
+    <div class="row mt-3 p-3">
 
     <div class="col-3">
 
@@ -73,7 +73,7 @@
                         {
                             if ( start != -1 &&  i >= start && i <= end )
                             {
-                                <th style="background-color:#edacea;"></th>
+                                <th style="background-color:@statusColor[dayWiseShift.status];"></th>
                             }
                             else
                             {
@@ -90,6 +90,8 @@
     </div>
 
 </div>
+}
+
 
 
 <script>
