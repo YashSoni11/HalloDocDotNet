@@ -1114,6 +1114,7 @@ const showLocation = () => {
 const GetNextDayWiseShiftTableView = (date, month, year,dateheading) => {
 
 
+
         var regionId = $("#shiftRegionSelector").val();
 
     $.ajax({
@@ -1124,6 +1125,11 @@ const GetNextDayWiseShiftTableView = (date, month, year,dateheading) => {
         success: function (response) {
 
             $("#ShiftTableContainer").html(response);
+
+            var activeModeBtn = localStorage.getItem("ActiveTableMode");
+            var activeBtn = document.getElementById(`${activeModeBtn}`);
+            activeBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn");
+            activeBtn.classList.add("btn-info", "text-white", "darkInfo-btn");
 
             $("#DateHeader").text(dateheading)
 
@@ -1136,4 +1142,115 @@ const GetNextDayWiseShiftTableView = (date, month, year,dateheading) => {
         }
 
     })
+}
+
+const GetNextWeekWiseShiftTableView = (date, month, year,dateHeading) => {
+
+
+
+
+    var regionId = $("#shiftRegionSelector").val();
+
+    $.ajax({
+
+        url: "/Provider/GetWeekWiseShiftTableView",
+        method: "post",
+        data: { date: date, month: month, year: year, regionId: regionId },
+        success: function (response) {
+
+            $("#ShiftTableContainer").html(response);
+
+
+            var activeModeBtn = localStorage.getItem("ActiveTableMode");
+            var activeBtn = document.getElementById(`${activeModeBtn}`);
+            activeBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn");
+            activeBtn.classList.add("btn-info", "text-white", "darkInfo-btn");
+
+            $("#DateHeader").text(dateHeading)
+
+
+            localStorage.setItem("currentDate", date);
+            localStorage.setItem("currentMonth", month);
+            localStorage.setItem("currentYear", year);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+}
+
+
+
+
+
+const GetRegionsWiseShiftTable = () => {
+
+
+
+    var TableMode = localStorage.getItem("TableMode");
+
+
+    var Controller = '';
+
+    if (TableMode == "Day") {
+        Controller = "GetDayWiseShiftTable"
+    } else if (TableMode == "Week") {
+        Controller = "GetWeekWiseShiftTableView"
+
+    }
+
+    var date = localStorage.getItem("currentDate");
+    var month = localStorage.getItem("currentMonth");
+    var year = localStorage.getItem("currentYear");
+    var regionId = $("#shiftRegionSelector").val();
+
+
+    $.ajax({
+
+        url: `/Provider/${Controller}`,
+        method: "post",
+        data: { date: date, month: month, year: year, regionId: regionId },
+        success: function (response) {
+
+            $("#ShiftTableContainer").html(response);
+
+            var activeModeBtn = localStorage.getItem("ActiveTableMode");
+            var activeBtn = document.getElementById(`${activeModeBtn}`);
+            activeBtn.classList.remove("btn-outline-info","text-info","lightInfo-btn");
+            activeBtn.classList.add("btn-info","text-white","darkInfo-btn");
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+}
+
+const GetShiftModalView = () => {
+
+    $.ajax({
+        method: "post",
+        url: "/Provider/GetCreateShiftView",
+        data: {},
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#ShiftModalContainer").html(response);
+
+                $("#ShiftModal").modal("show")
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
 }

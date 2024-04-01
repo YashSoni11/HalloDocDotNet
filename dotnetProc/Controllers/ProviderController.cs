@@ -596,7 +596,7 @@ namespace dotnetProc.Controllers
  
         public IActionResult GetDayWiseShiftTable(int date,int month,int year,int regionId)
         {
-            List<DayWiseShift> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year, regionId);
+            List<ShiftInformation> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year, regionId);
 
             Physicianshifts shift = new Physicianshifts();
 
@@ -737,5 +737,38 @@ namespace dotnetProc.Controllers
 
         }
 
+        public IActionResult GetWeekWiseShiftTableView(int date,int month,int year,int regionId)
+        {
+
+
+            List<WeekWisePhysicianShifts> weekWiseShifts = _provider.GetAllPhysicianWeekWiseShifts(date, month, year, regionId);
+
+            Physicianshifts shift = new Physicianshifts();
+
+            shift.weekWiseShifts = weekWiseShifts;
+
+            shift.StartOfWeek = new DateTime(year, month, date);
+            shift.lastDate = new DateTime(year, month, date).AddDays(7);
+
+            return PartialView("_WeekWiseShiftTable", shift);
+        }
+
+
+
+        public IActionResult GetViewShiftModel(int shiftdetailId)
+        {
+            List<Region> regions = _dashboard.GetAllRegions();
+            List<Physician> physicians = _provider.GetPhysicinForShiftsByRegionService(0);
+
+            ViewShift viewShift = _provider.GetShiftDetailsById(shiftdetailId);
+
+        
+
+            viewShift.regions = regions;
+            viewShift.physicians = physicians;
+
+
+            return PartialView("_ViewShiftModel", viewShift);
+        }
     }
 }

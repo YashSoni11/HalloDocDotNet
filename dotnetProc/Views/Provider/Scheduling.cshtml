@@ -121,7 +121,10 @@
 
         handleNavChange('provider-menu-tab')
         //GetProvidersByRegion();
-        GetDayWiseShiftTableView()
+        GetDayWiseShiftTableView('DayBtn')
+
+        localStorage.setItem("ActiveTableMode","DayBtn");
+        //GetWeekWiseShiftTableView();
 
 
         toastr.remove();
@@ -134,24 +137,104 @@
         }
     })
 
+    const GetWeekWiseShiftTableView = (id) => {
 
-    const GetDayWiseShiftTableView = () =>{
 
-        var date =   @Html.Raw(Json.Serialize(Model.Today.Day));
-        var month =  @Html.Raw(Json.Serialize(Model.Today.Month));
+    
+
+
+
+        var regionId = $("#shiftRegionSelector").val();
+
+    @{
+
+        DateTime today = DateTime.Today;
+        DayOfWeek startOfWeek = DayOfWeek.Sunday;
+
+        int diff = (7 + (today.DayOfWeek - startOfWeek)) % 7;
+
+        DateTime startOfWeekDate = today.AddDays(-1 * diff);
+
+
+    }
+
+            $("#DateHeader").text('@startOfWeekDate.ToString("MMM d") - @startOfWeekDate.AddDays(6).ToString("MMM d"), @(DateTime.Today.Year)')
+
+
+        $.ajax({
+
+            url: "/Provider/GetWeekWiseShiftTableView",
+            method: "post",
+            data: {
+                date: @startOfWeekDate.Day, month: @startOfWeekDate.Month, year: @startOfWeekDate.Year, regionId: regionId
+            },
+            success: function (response) {
+
+                $("#ShiftTableContainer").html(response);
+
+                var activeModeBtn = localStorage.getItem("ActiveTableMode");
+                var activeBtn = document.getElementById(`${activeModeBtn}`);
+                activeBtn.classList.remove("btn-info", "text-white", "darkInfo-btn");
+                activeBtn.classList.add("btn-outline-info", "text-info", "lightInfo-btn");
+                var currentBtn = document.getElementById(id);
+                currentBtn.classList.add("btn-info", "text-white", "darkInfo-btn")
+                currentBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn")
+                localStorage.setItem("ActiveTableMode", id)
+
+
+                localStorage.setItem("TableMode", "Week");
+
+                localStorage.setItem("currentDate", @startOfWeekDate.Day);
+                localStorage.setItem("currentMonth", @startOfWeekDate.Month);
+                localStorage.setItem("currentYear", @startOfWeekDate.Year);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+
+        })
+
+    }
+
+
+
+    const GetDayWiseShiftTableView = (id) => {
+
+    
+
+
+        var date = @Html.Raw(Json.Serialize(Model.Today.Day));
+        var month = @Html.Raw(Json.Serialize(Model.Today.Month));
         var year = @Html.Raw(Json.Serialize(Model.Today.Year));
         var regionId = $("#shiftRegionSelector").val();
-        console.log(date)
+   
+
+
 
         $.ajax({
 
             url: "/Provider/GetDayWiseShiftTable",
             method: "post",
-            data:{date:date,month:month,year:year,regionId:regionId},
+            data: { date: date, month: month, year: year, regionId: regionId },
             success: function (response) {
 
-               $("#ShiftTableContainer").html(response);
-               localStorage.setItem("currentDate",date);
+                $("#ShiftTableContainer").html(response);
+
+
+
+                var activeModeBtn = localStorage.getItem("ActiveTableMode");
+                var activeBtn = document.getElementById(`${activeModeBtn}`);
+                activeBtn.classList.remove("btn-info", "text-white", "darkInfo-btn");
+                activeBtn.classList.add("btn-outline-info","text-info","lightInfo-btn");
+                var currentBtn = document.getElementById(id);
+                currentBtn.classList.add("btn-info","text-white","darkInfo-btn")
+                currentBtn.classList.remove("btn-outline-info","text-info","lightInfo-btn")
+                localStorage.setItem("ActiveTableMode", id)
+
+
+                localStorage.setItem("TableMode", "Day");
+
+                localStorage.setItem("currentDate", date);
                 localStorage.setItem("currentMonth", month);
                 localStorage.setItem("currentYear", year);
             },
@@ -162,57 +245,7 @@
         })
     }
 
-    const GetRegionsWiseShiftTable = () => {
-
-        var date =   localStorage.getItem("currentDate");
-        var month = localStorage.getItem("currentMonth");
-        var year = localStorage.getItem("currentYear");
-        var regionId = $("#shiftRegionSelector").val();
-       
-
-        $.ajax({
-
-            url: "/Provider/GetDayWiseShiftTable",
-            method: "post",
-            data: { date: date, month: month, year: year, regionId: regionId },
-            success: function (response) {
-
-                $("#ShiftTableContainer").html(response);
-                
-            },
-            error: function (err) {
-                console.log(err);
-            }
-
-        })
-    }
-
-    const GetShiftModalView = () => {
-
-        $.ajax({
-            method: "post",
-            url: "/Provider/GetCreateShiftView",
-            data: {},
-            success: function (response) {
-
-                if (response.code == 401) {
-
-                    location.reload();
-                } else {
-
-                    $("#ShiftModalContainer").html(response);
-
-                    $("#ShiftModal").modal("show")
-
-                }
-
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        })
-
-    }
+ 
 
 
 </script>

@@ -23,9 +23,9 @@
     </div>
 
     <div class="col-9 d-flex justify-content-end" style="column-gap:5px;">
-        <button type="button" class="btn btn-info   text-white darkInfo-btn ">Day</button>
-        <button type="button" class="btn btn-outline-info   text-info lightInfo-btn ">Week</button>
-        <button type="button" class="btn btn-outline-info   text-info lightInfo-btn ">Month</button>
+            <button type="button" id="DayBtn" class="btn btn-info   text-white darkInfo-btn" onclick="GetDayWiseShiftTableView('DayBtn')">Day</button>
+        <button type="button" id="WeekBtn" class="btn btn-outline-info   text-info lightInfo-btn " onclick="GetWeekWiseShiftTableView('WeekBtn')">Week</button>
+        <button type="button" id="MonthBtn" class="btn btn-outline-info   text-info lightInfo-btn ">Month</button>
     </div>
 
 </div>
@@ -61,7 +61,7 @@
 
             </thead>
             <tbody style="color:var(--pi-label-color);">
-                @foreach (DayWiseShift dayWiseShift in Model.dayWiseShifts)
+                    @foreach (ShiftInformation dayWiseShift in Model.dayWiseShifts)
                 {
                     <tr>
                         <th>@dayWiseShift.PhysicianName</th>
@@ -96,5 +96,5 @@
 
 <script>
          
-
+    
 </script>
