@@ -120,11 +120,13 @@
     $(document).ready(function () {
 
         handleNavChange('provider-menu-tab')
-        //GetProvidersByRegion();
-        GetDayWiseShiftTableView('DayBtn')
+    
+        //GetDayWiseShiftTableView('DayBtn')
+
+        GetMonthWiseShiftTableView('MonthBtn')
 
         localStorage.setItem("ActiveTableMode","DayBtn");
-        //GetWeekWiseShiftTableView();
+        
 
 
         toastr.remove();
@@ -207,8 +209,9 @@
         var month = @Html.Raw(Json.Serialize(Model.Today.Month));
         var year = @Html.Raw(Json.Serialize(Model.Today.Year));
         var regionId = $("#shiftRegionSelector").val();
-   
+        $("#DateHeader").text("@Model.Today.ToString("dddd,MMM d,yyyy")")
 
+    
 
 
         $.ajax({
@@ -245,7 +248,50 @@
         })
     }
 
- 
+ const GetMonthWiseShiftTableView = (id) =>{
+        
+
+
+    
+        var regionId = $("#shiftRegionSelector").val();
+
+
+        $("#DateHeader").text("@DateTime.Now.ToString("MMM yyyy")")
+
+        $.ajax({
+
+            url: "/Provider/GetMonthWiseShiftTableView",
+            method: "post",
+            data: { date: 1, month: @DateTime.Now.Month, year: @DateTime.Now.Year, regionId: regionId },
+            success: function (response) {
+
+                $("#ShiftTableContainer").html(response);
+
+
+
+                var activeModeBtn = localStorage.getItem("ActiveTableMode");
+                var activeBtn = document.getElementById(`${activeModeBtn}`);
+                activeBtn.classList.remove("btn-info", "text-white", "darkInfo-btn");
+                activeBtn.classList.add("btn-outline-info", "text-info", "lightInfo-btn");
+                var currentBtn = document.getElementById(id);
+                currentBtn.classList.add("btn-info", "text-white", "darkInfo-btn")
+                currentBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn")
+                localStorage.setItem("ActiveTableMode", id)
+
+
+                localStorage.setItem("TableMode", "Month");
+
+                localStorage.setItem("currentDate", 1);
+                localStorage.setItem("currentMonth", @DateTime.Now.Month);
+                localStorage.setItem("currentYear", @DateTime.Now.Year);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+
+        })
+
+ }
 
 
 </script>

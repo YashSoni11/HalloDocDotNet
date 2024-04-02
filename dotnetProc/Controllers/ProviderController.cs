@@ -1,10 +1,12 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+
 
 
 namespace dotnetProc.Controllers
@@ -596,7 +598,7 @@ namespace dotnetProc.Controllers
  
         public IActionResult GetDayWiseShiftTable(int date,int month,int year,int regionId)
         {
-            List<ShiftInformation> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year, regionId);
+            List<DayWisePhysicianShifts> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year, regionId);
 
             Physicianshifts shift = new Physicianshifts();
 
@@ -769,6 +771,16 @@ namespace dotnetProc.Controllers
 
 
             return PartialView("_ViewShiftModel", viewShift);
+        }
+        public IActionResult GetMonthWiseShiftTableView(int date,int month,int year,int regionId)
+        {
+            List<MonthWisePhysicianShifts> MonthWiseshifts = _provider.GetAllPhysicianMonthWiseShifts(date, month, year, regionId);
+            Physicianshifts shift = new Physicianshifts();
+            shift.monthWiseShifts = MonthWiseshifts;
+
+            shift.lastDate = new DateTime(year, month, date);
+
+            return PartialView("_MonthWiseShiftTable", shift);
         }
     }
 }

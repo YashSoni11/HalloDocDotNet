@@ -23,9 +23,9 @@
     </div>
 
     <div class="col-9 d-flex justify-content-end" style="column-gap:5px;">
-            <button type="button" id="DayBtn" class="btn btn-info   text-white darkInfo-btn" onclick="GetDayWiseShiftTableView('DayBtn')">Day</button>
+            <button type="button" id="DayBtn" class="btn   btn-outline-info   text-info lightInfo-btn" onclick="GetDayWiseShiftTableView('DayBtn')">Day</button>
         <button type="button" id="WeekBtn" class="btn btn-outline-info   text-info lightInfo-btn " onclick="GetWeekWiseShiftTableView('WeekBtn')">Week</button>
-        <button type="button" id="MonthBtn" class="btn btn-outline-info   text-info lightInfo-btn ">Month</button>
+            <button type="button" id="MonthBtn" class="btn btn-outline-info   text-info lightInfo-btn " onclick="GetMonthWiseShiftTableView('MonthBtn')">Month</button>
     </div>
 
 </div>
@@ -61,26 +61,42 @@
 
             </thead>
             <tbody style="color:var(--pi-label-color);">
-                    @foreach (ShiftInformation dayWiseShift in Model.dayWiseShifts)
+                    @foreach (DayWisePhysicianShifts dayWiseShift in Model.dayWiseShifts)
                 {
                     <tr>
                         <th>@dayWiseShift.PhysicianName</th>
-                        @{
-                            int start = dayWiseShift.startTime;
-                            int end = dayWiseShift.endTime;
-                        }
-                        @for (int i = 0; i < 24; i++)
-                        {
-                            if ( start != -1 &&  i >= start && i <= end )
-                            {
-                                <th style="background-color:@statusColor[dayWiseShift.status];"></th>
+                            @{
+                                int shiftCount = dayWiseShift.DayWiseShiftInformation.Count;
+                                int i = 0;
                             }
-                            else
-                            {
+                        
 
-                                <th></th>
-                            }
-                        }
+                                @foreach(ShiftInformation shiftInformation in dayWiseShift.DayWiseShiftInformation)
+                                {
+                                    if (i == 24)
+                                        break;
+
+                                    int start = shiftInformation.startTime.Hour;
+                                    int end = shiftInformation.endTime.Hour;
+
+                                    while(i < start)
+                                    {
+                                        <th></th>
+                                        i++;
+                                    };
+                                    while (shiftInformation.status != -1 && i >= shiftInformation.startTime.Hour && i <= shiftInformation.endTime.Hour)
+                                   {
+                                        <th style="background-color:@statusColor[shiftInformation.status];"></th>
+                                        i++;
+                                    };
+
+                                }
+                                @while(i != 24)
+                                {
+                                    <th></th>
+                                }
+
+                        
                     </tr>
 
                 }

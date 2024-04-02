@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Spreadsheet;
 using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Context;
@@ -653,8 +654,9 @@ namespace HalloDoc_BAL.Repositery
 
             return physicians;
         }
-        public List<ShiftInformation> GetAllPhysicianDayWiseShifts(int date, int month, int year, int regionId)
+        public List<DayWisePhysicianShifts> GetAllPhysicianDayWiseShifts(int date, int month, int year, int regionId)
         {
+            date = 5;
 
             List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
 
@@ -663,6 +665,12 @@ namespace HalloDoc_BAL.Repositery
 
             List<Shift> shifts = _context.Shifts.ToList();
             List<ShiftInformation> dayWiseShifts = new List<ShiftInformation>();
+
+
+            List<DayWisePhysicianShifts> dayWisePhysicianShifts = new List<DayWisePhysicianShifts>();
+
+
+
 
             foreach (Physician physician in physicians)
             {
@@ -673,12 +681,18 @@ namespace HalloDoc_BAL.Repositery
                     ShiftInformation dayWiseShift = new ShiftInformation();
                     dayWiseShift.physicianId = physician.Physicianid;
                     dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
-                    dayWiseShift.startTime = -1;
+                    dayWiseShift.status = -1;
                     dayWiseShifts.Add(dayWiseShift);
                 }
                 else
                 {
                     bool IsTodayShiftFound = false;
+
+                    DayWisePhysicianShifts dayWisePhysicianShift = new DayWisePhysicianShifts();
+                    dayWisePhysicianShift.physicianId = physician.Physicianid;
+                    dayWisePhysicianShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+
+                    List<ShiftInformation> daywiseShiftInformation = new List<ShiftInformation>();
 
                     foreach (Shift shift in PhysicianShifts)
                     {
@@ -696,13 +710,10 @@ namespace HalloDoc_BAL.Repositery
                         {
                             IsTodayShiftFound = true;
                             ShiftInformation dayWiseShift = new ShiftInformation();
-
-                            dayWiseShift.physicianId = physician.Physicianid;
-                            dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
-                            dayWiseShift.startTime = shiftdetail.Starttime.Hour;
-                            dayWiseShift.endTime = shiftdetail.Endtime.Hour;
+                            dayWiseShift.startTime = shiftdetail.Starttime;
+                            dayWiseShift.endTime = shiftdetail.Endtime;
                             dayWiseShift.status = shiftdetail.Status;
-                            dayWiseShifts.Add(dayWiseShift);
+                            daywiseShiftInformation.Add(dayWiseShift);
                         }
 
                     }
@@ -710,16 +721,20 @@ namespace HalloDoc_BAL.Repositery
                     if (IsTodayShiftFound == false)
                     {
                         ShiftInformation dayWiseShift = new ShiftInformation();
-                        dayWiseShift.physicianId = physician.Physicianid;
-                        dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
-                        dayWiseShift.startTime = -1;
-                        dayWiseShifts.Add(dayWiseShift);
+                        //dayWiseShift.physicianId = physician.Physicianid;
+                        //dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                        dayWiseShift.status = -1;
+                        daywiseShiftInformation.Add(dayWiseShift);
                     }
+
+                    dayWisePhysicianShift.DayWiseShiftInformation = daywiseShiftInformation;
+
+                    dayWisePhysicianShifts.Add(dayWisePhysicianShift);
 
                 }
             }
 
-            return dayWiseShifts;
+            return dayWisePhysicianShifts;
         }
 
 
@@ -912,7 +927,7 @@ namespace HalloDoc_BAL.Repositery
                 WeekWisePhysicianShifts weekWisePhysicianShifts = new WeekWisePhysicianShifts();
                 List<ShiftInformation> WeekWiseShifts = new List<ShiftInformation>();
                 weekWisePhysicianShifts.physicianId = physician.Physicianid;
-                weekWisePhysicianShifts.PhysicianName = physician.Firstname+" "+physician.Lastname;
+                weekWisePhysicianShifts.PhysicianName = physician.Firstname + " " + physician.Lastname;
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -952,8 +967,8 @@ namespace HalloDoc_BAL.Repositery
 
                                 dayWiseShift.physicianId = physician.Physicianid;
                                 dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
-                                dayWiseShift.startTime = shiftdetail.Starttime.Hour;
-                                dayWiseShift.endTime = shiftdetail.Endtime.Hour;
+                                dayWiseShift.startTime = shiftdetail.Starttime;
+                                dayWiseShift.endTime = shiftdetail.Endtime;
                                 dayWiseShift.status = shiftdetail.Status;
                                 dayWiseShift.ShiftDetailId = shiftdetail.Shiftdetailid;
                                 dayWiseShift.ShiftId = shiftdetail.Shiftid;
@@ -968,13 +983,13 @@ namespace HalloDoc_BAL.Repositery
                             ShiftInformation dayWiseShift = new ShiftInformation();
                             dayWiseShift.physicianId = physician.Physicianid;
                             dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
-                            dayWiseShift.startTime = -1;
+                            dayWiseShift.status = -1;
                             dayWiseShift.dayOfWeek = -1;
                             WeekWiseShifts.Add(dayWiseShift);
                         }
 
                     }
-                startOfWeek = startOfWeek.AddDays(1);
+                    startOfWeek = startOfWeek.AddDays(1);
                 }
 
                 weekWisePhysicianShifts.WeekWiseShiftInformation = WeekWiseShifts;
@@ -997,7 +1012,7 @@ namespace HalloDoc_BAL.Repositery
             {
                 Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == shiftDetailsId);
 
-                 if(shiftdetail == null)
+                if (shiftdetail == null)
                 {
                     return new ViewShift();
                 }
@@ -1015,14 +1030,72 @@ namespace HalloDoc_BAL.Repositery
                 viewShift.ShiftId = shiftdetail.Shiftid;
                 viewShift.regionId = (int)shiftdetail.Regionid;
                 viewShift.RegionName = _context.Regions.Where(q => q.Regionid == viewShift.regionId).Select(r => r.Name).FirstOrDefault();
-                viewShift.Physicianname = _context.Physicians.Where(q => q.Physicianid == physisianId).Select(r => r.Firstname+" "+r.Lastname).FirstOrDefault();
-               
+                viewShift.Physicianname = _context.Physicians.Where(q => q.Physicianid == physisianId).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault();
+
 
                 return viewShift;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new ViewShift();
             }
+        }
+
+
+        public List<MonthWisePhysicianShifts> GetAllPhysicianMonthWiseShifts(int date, int month, int year, int regionId)
+        {
+
+
+
+
+
+            List<Physician> physicians = GetPhysicinForShiftsByRegionService(regionId);
+
+            //List<Shift> shifts = _context.Shifts.ToList();
+            List<MonthWisePhysicianShifts> MonthWisePhysicianShiftsList = new List<MonthWisePhysicianShifts>();
+
+
+            DateTime startOfMonth = new DateTime(year, month, date);
+
+            int daysInMonth = DateTime.DaysInMonth(startOfMonth.Year, startOfMonth.Month);
+
+            for (int i = 1; i <= daysInMonth; i++)
+            {
+
+                DateTime currentDate = new DateTime(startOfMonth.Year, startOfMonth.Month, i);
+
+                List<Shiftdetail> shiftdetails = _context.Shiftdetails.Where(q => q.Shiftdate.Day == i && q.Shiftdate.Month == currentDate.Month && q.Shiftdate.Year == currentDate.Year && q.Isdeleted == false).ToList();
+                MonthWisePhysicianShifts monthWisePhysicianShift = new MonthWisePhysicianShifts();
+
+                if (shiftdetails.Count > 0)
+                {
+                    monthWisePhysicianShift.DayNumber = i;
+                    List<ShiftInformation> shifts = new List<ShiftInformation>();
+                    foreach (Shiftdetail shiftdetail in shiftdetails)
+                    {
+                        ShiftInformation shiftInformation = new ShiftInformation();
+                        shiftInformation.ShiftDetailId = shiftdetail.Shiftdetailid;
+                        shiftInformation.startTime = shiftdetail.Starttime;
+                        shiftInformation.endTime = shiftdetail.Endtime;
+                        shiftInformation.status = shiftdetail.Status;
+
+                        int physicinId = _context.Shifts.Where(q => q.Shiftid == shiftdetail.Shiftid).Select(q => q.Physicianid).FirstOrDefault();
+                        shiftInformation.PhysicianName = _context.Physicians.Where(q => q.Physicianid == physicinId).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();  
+
+                        shifts.Add(shiftInformation);
+                    }
+                    monthWisePhysicianShift.MonthWiseShiftInformation = shifts;
+                }
+                else
+                {
+                    monthWisePhysicianShift.DayNumber = -1;
+
+                }
+
+                MonthWisePhysicianShiftsList.Add(monthWisePhysicianShift);
+            }
+
+            return MonthWisePhysicianShiftsList;
         }
 
     }

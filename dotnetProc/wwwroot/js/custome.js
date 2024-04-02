@@ -1181,6 +1181,39 @@ const GetNextWeekWiseShiftTableView = (date, month, year,dateHeading) => {
 }
 
 
+const GetNextMonthWiseShiftTableView = (month, year,dateHeading) => {
+
+    var regionId = $("#shiftRegionSelector").val();
+
+    $.ajax({
+
+        url: "/Provider/GetMonthWiseShiftTableView",
+        method: "post",
+        data: { date: 1, month: month, year: year, regionId: regionId },
+        success: function (response) {
+
+            $("#ShiftTableContainer").html(response);
+
+
+            //var activeModeBtn = localStorage.getItem("ActiveTableMode");
+            //var activeBtn = document.getElementById(`${activeModeBtn}`);
+            //activeBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn");
+            //activeBtn.classList.add("btn-info", "text-white", "darkInfo-btn");
+
+            $("#DateHeader").text(dateHeading)
+
+
+            //localStorage.setItem("currentDate", date);
+            //localStorage.setItem("currentMonth", month);
+            //localStorage.setItem("currentYear", year);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+}
+
 
 
 
@@ -1254,3 +1287,31 @@ const GetShiftModalView = () => {
     })
 
 }
+
+const GetViewShiftModel = (shiftDetailId) => {
+
+
+
+    $.ajax({
+        method: "post",
+        url: "/Provider/GetViewShiftModel",
+        data: { shiftdetailId: shiftDetailId },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#ShiftModalContainer").html(response);
+
+                $("#ViewShiftModal").modal("show")
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}  

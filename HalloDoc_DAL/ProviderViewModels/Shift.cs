@@ -25,9 +25,11 @@ namespace HalloDoc_DAL.ProviderViewModels
 
         public DateTime lastDate { get; set; }
 
-        public List<ShiftInformation> dayWiseShifts { get; set; }
+        public List<DayWisePhysicianShifts> dayWiseShifts { get; set; }
 
         public List<WeekWisePhysicianShifts> weekWiseShifts { get;set; }
+
+        public List<MonthWisePhysicianShifts> monthWiseShifts { get; set; }
     }
     public class ShiftInformation
     {
@@ -37,9 +39,9 @@ namespace HalloDoc_DAL.ProviderViewModels
 
         public string PhysicianName { get; set; }   
 
-        public int startTime { get; set; }
+        public TimeOnly startTime { get; set; }
 
-        public int endTime { get; set; }    
+        public TimeOnly endTime { get; set; }    
 
         public int status { get; set; }
 
@@ -61,8 +63,26 @@ namespace HalloDoc_DAL.ProviderViewModels
 
     }
 
+    public class DayWisePhysicianShifts
+    {
+        public int physicianId { get; set; }
 
-   public class ViewShift
+        public string PhysicianName { get; set; }
+
+        public List<ShiftInformation> DayWiseShiftInformation { get; set; }
+    }
+
+    public class MonthWisePhysicianShifts
+    {
+      public int DayNumber { get; set; }
+
+        public List<ShiftInformation> MonthWiseShiftInformation { get; set; }
+
+
+    }
+
+
+    public class ViewShift
     {
 
         public int physicianId { get; set; }
