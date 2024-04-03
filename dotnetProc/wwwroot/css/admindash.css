@@ -237,6 +237,19 @@ input[type="checkbox"]:checked {
     border-style:solid;
 }
 
+.MobileDayCells {
+    position: relative;
+    top: -9px;
+    background: white;
+    display: flex;
+    justify-content: end;
+    width: 4rem;
+    height:3rem;
+    margin-right: 1rem;
+    font-size:12px;
+}
+
+
 @media only screen and (max-width: 550px) {
     /*  #innerLogout{
 
