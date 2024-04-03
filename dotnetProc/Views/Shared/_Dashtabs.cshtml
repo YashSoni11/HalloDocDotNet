@@ -12,7 +12,7 @@
     </li>
     <li class="nav-item" role="presentation">
         @*<a class="nav-link tab-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>*@
-        <a class="nav-link tab-link" asp-action="AdminProfile" asp-controller="Admindashboard" id="admin-profile-tab"  role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
+        <a class="nav-link tab-link" asp-action="AdminProfile" asp-controller="Admindashboard"  id="admin-profile-tab"  role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
     </li>
     <li class="nav-item" role="presentation">
 
@@ -41,7 +41,7 @@
             <li> <a class="dropdown-item " asp-action="AccountAccess" asp-controller="Provider" role="tab" aria-controls="pills-disabled" aria-selected="false">Account Access</a></li>
             <li><a asp-action="CreateRole" asp-controller="Provider" class="dropdown-item" >Create Role</a></li>
             <li><a asp-action="CreateAdminAccount" asp-controller="Provider" class="dropdown-item" >Create Admin Account</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li><a asp-action="UserAccessView" asp-controller="Provider" class="dropdown-item">User Access</a></li>
         </ul>
 
     </li>

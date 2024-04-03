@@ -608,6 +608,14 @@ namespace dotnetProc.Controllers
             return PartialView("_DayWiseShiftTable", shift);
         }
 
+        public IActionResult GetDayWiseAllShiftView(int date, int month, int year, int regionId)
+        {
+            List<ShiftInformation> dayWiseShifts = _provider.GetDayWiseAllShiftInformation(date, month, year, regionId);
+
+            
+
+            return PartialView("_AllShiftView", dayWiseShifts);
+        }
 
         public IActionResult GetCreateShiftView()
         {
@@ -639,6 +647,13 @@ namespace dotnetProc.Controllers
             }
             else if (!ModelState.IsValid)
             {
+
+                if(_provider.IsValidShift(createShift))
+                {
+                    TempData["ShowNegativeNotification"] = "Shift Already Exists!";
+                    return RedirectToAction("ProviderScheduling");
+
+                }
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 bool response = _provider.CreateShiftService(createShift, loggedInUser.UserId);
@@ -781,6 +796,43 @@ namespace dotnetProc.Controllers
             shift.lastDate = new DateTime(year, month, date);
 
             return PartialView("_MonthWiseShiftTable", shift);
+        }
+
+        [HttpGet]
+        [Route("UserAccess")]
+        public IActionResult UserAccessView()
+        {
+            List<Role> roles = _provider.GetAllRoles();
+
+            UserAccessMenu userAccessMenu = new UserAccessMenu();
+
+            userAccessMenu.roles = roles;
+
+            return View("UserAccess", userAccessMenu);
+        }
+
+
+        public IActionResult GetUserAccessTableView(int roleId)
+        {
+            List<UserAccess> userAccesses = _provider.GetAllAspNetUsers(roleId);
+
+            return PartialView("_UserAccessTable", userAccesses);
+        }
+
+
+        public IActionResult RedirectToAspEditAccount(int account, int id)
+        {
+            if(account == 0)
+            {
+                return RedirectToAction("EditAdminProfile", "Admindashboard", new { id = id });
+            }else if(account == 1)
+            {
+                return RedirectToAction("ProviderProfile", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("UserAccessView");
+            }
         }
     }
 }

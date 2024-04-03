@@ -59,6 +59,11 @@ namespace HalloDoc_BAL.Interface
         public ViewShift GetShiftDetailsById(int shiftDetailsId);
         public List<MonthWisePhysicianShifts> GetAllPhysicianMonthWiseShifts(int date, int month, int year, int regionId);
 
+        public List<ShiftInformation> GetDayWiseAllShiftInformation(int date, int month, int year, int regionId);
+
+        public bool IsValidShift(CreateShift createShift);
+
+        public List<UserAccess> GetAllAspNetUsers(int roleId);
 
     }
 }

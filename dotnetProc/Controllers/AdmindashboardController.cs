@@ -10,7 +10,8 @@ using System.Globalization;
 using Microsoft.IdentityModel.Tokens;
 using ClosedXML;
 using ClosedXML.Excel;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System.Security.Principal;
+
 
 namespace dotnetProc.Controllers
 {
@@ -59,7 +60,7 @@ namespace dotnetProc.Controllers
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 string adminname = _dashboard.GetAdminUsername(loggedInUser.UserId);
                 Response.Cookies.Append("UserName", adminname);
-                
+
 
                 List<DashboardRequests> requests = _dashboard.GetAllRequests();
                 RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
@@ -208,7 +209,7 @@ namespace dotnetProc.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveNotesChanges(NotesView notesView,int id)
+        public IActionResult SaveNotesChanges(NotesView notesView, int id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -225,15 +226,15 @@ namespace dotnetProc.Controllers
 
                 bool response = _dashboard.SaveNotesChanges(notesView.AdditionalNotes, newrequestid);
 
-            if (response)
-            {
-                TempData["ShowPositiveNotification"] = "Chnages Saved Successfully.";
-            }
-            else 
-            {
-                TempData["ShowNegativeNotification"] = "Data Not Saved!";
-            }
-            return RedirectToAction("GetRequestNotes", new { id = newrequestid });
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Chnages Saved Successfully.";
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+                }
+                return RedirectToAction("GetRequestNotes", new { id = newrequestid });
 
             }
 
@@ -310,13 +311,13 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
             }
-            else  if(ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
 
 
                 bool response = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
 
-                if(response)
+                if (response)
                 {
                     TempData["ShowPositiveNotification"] = "Request Cancled Succesfully.";
                 }
@@ -357,7 +358,7 @@ namespace dotnetProc.Controllers
                 {
                     physicians = _dashboard.FilterPhysicianByRegion(regionId);
                 }
-              
+
 
 
                 string response = JsonConvert.SerializeObject(physicians);
@@ -430,14 +431,14 @@ namespace dotnetProc.Controllers
 
             if (istokenExpired || token.IsNullOrEmpty())
             {
-        
+
                 return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
             }
             else if (ModelState.IsValid)
             {
 
 
-                bool  response = _dashboard.AssignRequest(adminAssignCase, requestId);
+                bool response = _dashboard.AssignRequest(adminAssignCase, requestId);
 
 
                 if (response)
@@ -505,8 +506,8 @@ namespace dotnetProc.Controllers
             {
 
 
-               
-                 Request request = _dashboard.BlockRequest(adminBlockCase, requestId);
+
+                Request request = _dashboard.BlockRequest(adminBlockCase, requestId);
 
 
                 if (request != null)
@@ -528,7 +529,7 @@ namespace dotnetProc.Controllers
 
 
 
-           
+
         }
 
         //[AuthManager("Admin")]
@@ -551,7 +552,7 @@ namespace dotnetProc.Controllers
                 TempData["requestId"] = id;
 
                 List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
-                string  ConfirmationNumber = _dashboard.GetConfirmationNumber(id);
+                string ConfirmationNumber = _dashboard.GetConfirmationNumber(id);
                 string PatientName = _dashboard.GetPatientName(id);
 
                 Documents documents = new Documents
@@ -793,29 +794,29 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("Login", "Account", new { message = "You need to Login!" });
             }
-            else if(ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
-            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-               bool response = _dashboard.TransferRequest(adminAssignCase, requestId, loggedInUser.UserId);
+                bool response = _dashboard.TransferRequest(adminAssignCase, requestId, loggedInUser.UserId);
 
                 if (response)
                 {
-                TempData["ShowPositiveNotification"] = "Request Transfered Successfully.";
+                    TempData["ShowPositiveNotification"] = "Request Transfered Successfully.";
 
                 }
                 else
                 {
-                TempData["ShowNegativeNotification"] = "Something Went wrong!";
+                    TempData["ShowNegativeNotification"] = "Something Went wrong!";
 
                 }
-              return RedirectToAction("Dashboard", "Admindashboard");
+                return RedirectToAction("Dashboard", "Admindashboard");
 
             }
             else
             {
                 TempData["ShowNegativeNotification"] = "Not Valid Data!";
-              return RedirectToAction("Dashboard", "Admindashboard");
+                return RedirectToAction("Dashboard", "Admindashboard");
             }
         }
 
@@ -1238,7 +1239,7 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-             
+
                 bool isemailblocked = _patientReq.IsEmailBlocked(patientReqByAdmin.Email);
                 bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(patientReqByAdmin.Phonenumber);
                 bool IsregionAvailable = _patientReq.IsRegionAvailable(patientReqByAdmin.Location.State);
@@ -1248,7 +1249,7 @@ namespace dotnetProc.Controllers
                 if (isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
                 {
 
-                      TempData["isemailblocked"] = "Account with this email is blocked.";
+                    TempData["isemailblocked"] = "Account with this email is blocked.";
 
 
 
@@ -1345,9 +1346,9 @@ namespace dotnetProc.Controllers
 
                 string response = _dashboard.GetExcelFile(dashboardRequests);
 
-               if(response != "")
+                if (response != "")
                 {
-                    return Json(new { Url = response }) ;
+                    return Json(new { Url = response });
                 }
                 else
                 {
@@ -1355,7 +1356,7 @@ namespace dotnetProc.Controllers
                 }
                 //bool response = _dashboard.ExportExcelForCurrentPage(dashboardRequests);
 
-                
+
             }
         }
 
@@ -1385,7 +1386,7 @@ namespace dotnetProc.Controllers
                 {
                     return Json(new { code = 403 });
                 }
-                
+
 
             }
         }
@@ -1400,39 +1401,64 @@ namespace dotnetProc.Controllers
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
+
             AdminProfile adminProfile = _dashboard.GetAdminProfileData(loggedInUser.UserId);
 
+            adminProfile.adminId = loggedInUser.UserId;
 
 
+            return View("Adminprofile", adminProfile);
+        }
 
-            return View("Adminprofile",adminProfile);  
+        [HttpGet]
+        [Route("editadmin/{id}")]
+        public IActionResult EditAdminProfile(int id)
+        {
+            AdminProfile adminProfile = _dashboard.GetAdminProfileData(id);
+            adminProfile.adminId = id;
+
+            return View("Adminprofile", adminProfile);
         }
 
         [HttpPost]
-        public IActionResult ResetAdminPassword(string AdminPassword)
+        public IActionResult ResetAdminPassword(string AdminPassword, int adminId)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
+
+
 
             if (istokenExpired || token.IsNullOrEmpty())
             {
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if(AdminPassword.IsNullOrEmpty())
+            else if (AdminPassword.IsNullOrEmpty())
             {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 TempData["ShowNegativeNotification"] = "Not Valid Password!";
-                return RedirectToAction("AdminProfile");
+
+                if (loggedInUser.UserId == adminId)
+                {
+
+                    return RedirectToAction("AdminProfile");
+                }
+                else
+                {
+
+
+                    return RedirectToAction("EditAdminProfile", new { id = adminId });
+                }
+
 
             }
             else
             {
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                string hashedPassword = _account.GetHashedPassword(AdminPassword);
 
-                string hashedPassword = _account.GetHashedPassword(AdminPassword); 
-
-                bool response = _dashboard.ResetAdminPassword(loggedInUser.UserId,hashedPassword);
+                bool response = _dashboard.ResetAdminPassword(adminId, hashedPassword);
 
                 if (response)
                 {
@@ -1443,7 +1469,18 @@ namespace dotnetProc.Controllers
                     TempData["ShowNegativeNotification"] = "Somthing went wrong!";
                 }
 
-                return RedirectToAction("AdminProfile");
+
+                if (loggedInUser.UserId == adminId)
+                {
+
+                    return RedirectToAction("AdminProfile");
+                }
+                else
+                {
+
+
+                    return RedirectToAction("EditAdminProfile", new { id = adminId });
+                }
             }
         }
 
@@ -1456,7 +1493,7 @@ namespace dotnetProc.Controllers
             {
 
             }
-            
+
             bool istokenExpired = _account.IsTokenExpired(token);
 
             if (istokenExpired || token.IsNullOrEmpty())
@@ -1464,33 +1501,42 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if(TryValidateModel(ap.accountInfo))
+            else
             {
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-                bool response = _dashboard.SaveAdminAccountInfo(ap,loggedInUser.UserId);
-
-                if(response)
+                if (TryValidateModel(ap.accountInfo))
                 {
-                    TempData["ShowPositiveNotification"] = "Account Information Saved Successfully.";
+
+                    bool response = _dashboard.SaveAdminAccountInfo(ap, ap.adminId);
+
+                    if (response)
+                    {
+                        TempData["ShowPositiveNotification"] = "Account Information Saved Successfully.";
+
+                    }
+                    else
+                    {
+                        TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                    }
+                    return loggedInUser.UserId == ap.adminId ? RedirectToAction("AdminProfile") : RedirectToAction("EditAdminProfile", new { id = ap.adminId });
+
 
                 }
                 else
                 {
-                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                    return loggedInUser.UserId == ap.adminId ? RedirectToAction("AdminProfile") : RedirectToAction("EditAdminProfile", new { id = ap.adminId });
+
 
                 }
-                return RedirectToAction("AdminProfile");
 
 
             }
-            else
-            {
-                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
 
-                return RedirectToAction("AdminProfile");
-            }
-           
         }
 
 
@@ -1507,95 +1553,104 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if (TryValidateModel(ap.mailingAndBillingInfo))
+            else
             {
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-                bool response = _dashboard.SaveAdminMailingAndBillingInfo(ap, loggedInUser.UserId);
+                if (TryValidateModel(ap.mailingAndBillingInfo))
+                {
 
-                if (response)
-               {
-                    TempData["ShowPositiveNotification"] = "Mailing & Billig Info Saved Successfully.";
+                    bool response = _dashboard.SaveAdminMailingAndBillingInfo(ap, ap.adminId);
+                    if (response)
+                    {
+                        TempData["ShowPositiveNotification"] = "Mailing & Billig Info Saved Successfully.";
 
+                    }
+                    else
+                    {
+                        TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                    }
+
+
+                    return loggedInUser.UserId == ap.adminId ? RedirectToAction("AdminProfile") : RedirectToAction("EditAdminProfile", new { id = ap.adminId });
+                   
                 }
+
                 else
                 {
-                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                    return loggedInUser.UserId == ap.adminId ? RedirectToAction("AdminProfile") : RedirectToAction("EditAdminProfile", new { id = ap.adminId });
 
                 }
-                return RedirectToAction("AdminProfile");
+            }
 
+
+        }
+    
+
+
+    //[AuthManager("Admin")]
+    [HttpGet]
+    [Route("providers")]
+    public IActionResult ProviderMenu()
+    {
+        List<Region> regions = _dashboard.GetAllRegions();
+
+        Providers providers1 = new Providers()
+        {
+
+            regions = regions
+        };
+
+        return View(providers1);
+    }
+
+    [HttpPost]
+
+    public IActionResult SaveProviderChanges(Providers pr)
+    {
+
+
+        string token = HttpContext.Request.Cookies["jwt"];
+
+
+        bool istokenExpired = _account.IsTokenExpired(token);
+
+        if (istokenExpired || token.IsNullOrEmpty())
+        {
+            TempData["ShowNegativeNotification"] = "Session timed out!";
+            return RedirectToAction("Login", "Account");
+        }
+        else
+        {
+            bool response = _dashboard.SaveProviderChanges(pr.providers);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Data Saved Successfully.";
 
             }
             else
             {
-                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+                TempData["ShowNegativeNotification"] = "Data Not Saved!";
 
-                return RedirectToAction("AdminProfile");
             }
-        }
 
-
-        //[AuthManager("Admin")]
-        [HttpGet]
-        [Route("providers")]
-        public IActionResult ProviderMenu()
-        { 
-            List<Region> regions = _dashboard.GetAllRegions();
-
-            Providers providers1 = new Providers()
-            {
-              
-                regions = regions
-             };
-
-            return View(providers1);
-        }
-
-        [HttpPost]
-
-        public IActionResult SaveProviderChanges(Providers pr)
-        {
-
-
-            string token = HttpContext.Request.Cookies["jwt"];
-
-
-            bool istokenExpired = _account.IsTokenExpired(token);
-
-            if (istokenExpired || token.IsNullOrEmpty())
-            {
-                TempData["ShowNegativeNotification"] = "Session timed out!";
-                return RedirectToAction("Login", "Account");
-            }
-            else
-            {
-                bool response = _dashboard.SaveProviderChanges(pr.providers);
-               
-                if (response)
-                {
-                    TempData["ShowPositiveNotification"] = "Data Saved Successfully.";
-
-                }
-                else
-                {
-                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
-
-                }
-
-                return RedirectToAction("ProviderMenu");
-            }
-        }
-
-        [HttpGet]
-        [Route("providerlocation")]
-        public IActionResult ProviderLocations()
-        {
-
-            List<Physicianlocation> physicianlocations = _dashboard.GetAllPhysicianlocation();
-
-
-            return View("providerlocation",physicianlocations);
+            return RedirectToAction("ProviderMenu");
         }
     }
+
+    [HttpGet]
+    [Route("providerlocation")]
+    public IActionResult ProviderLocations()
+    {
+
+        List<Physicianlocation> physicianlocations = _dashboard.GetAllPhysicianlocation();
+
+
+        return View("providerlocation", physicianlocations);
+    }
+}
 }

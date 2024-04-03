@@ -1,0 +1,108 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.UserAccessMenu;
+@using HalloDoc_DAL.AdminViewModels;
+
+
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>User Access</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
+
+
+            <div class="row  justify-content-lg-between justify-content-sm-center  justify-content-center p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+                <div class="form-floating col-lg-4 col-sm-10">
+
+                    <div class="form-floating">
+
+                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onchange="GetUserAccessTableView(event.target.value)">
+                            <option value="0">All Roles</option>
+
+                            @foreach (Role role in Model.roles)
+                            {
+                                <option value="@role.Roleid">@role.Name</option>
+                            }
+                        </select>
+                        <label for="ProviderRegionSelector">Role</label>
+                    </div>
+
+
+
+
+                </div>
+
+                
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row" style="justify-content:center">
+        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 ">
+
+
+
+        </div>
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 d-flex justify-content-end mt-3">
+            <button id="ProviderChangeSaveBtn" type="button" class="btn btn-info  text-white darkInfo-btn " style="display:none;" onclick="SaveProviderChanges()">Save</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        handleNavChange('pills-Access-tab')
+     GetUserAccessTableView(0);
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+   
+
+
+
+</script>

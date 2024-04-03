@@ -1,0 +1,154 @@
+﻿@model List<HalloDoc_DAL.ProviderViewModels.UserAccess>;
+@using HalloDoc_DAL.AdminViewModels;
+
+
+@{
+
+    
+    string[] AccountType = { "Admin", "Physicians", "Patient" };
+    string[] status = { "Pending", "Active", "Disabled" };
+
+ 
+
+
+
+
+
+        <table class="table ReqtableContainer table-responsive">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader" scope="col">Account type</th>
+                    <th class="reqtableHeader" scope="col">Account POC</th>
+                    <th class="reqtableHeader" scope="col">Phone</th>
+                    <th class="reqtableHeader" scope="col">Status</th>
+                    <th class="reqtableHeader" scope="col">Open Requests</th>
+                    <th class="reqtableHeader" scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+                @for (int i = 0;i<Model.Count;i++)
+                {
+
+
+
+
+                    <tr class="align-middle">
+                    <td style="display:none"><input asp-for="@Model[i].UserId" hidden  style="display:none;"/></td>
+        
+                        <td class="align-middle">@AccountType[Model[i].AccountType]</td>
+                        <td class="align-middle">@Model[i].AccountName</td>
+                        <td class="align-middle">@Model[i].PhoneNumber</td>
+                        <td class="align-middle">
+                            @status[Model[i].status]
+                        </td>
+                        <td class="align-middle">@Model[i].OpenRequest</td>
+
+                        <td class="align-middle">
+
+                            <a asp-action="RedirectToAspEditAccount" asp-controller="Provider" asp-route-account="@Model[i].AccountType" asp-route-id="@Model[i].UserId" class="btn btn-outline-info text-info lightInfo-btn">
+                                Edit
+                            </a>
+
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+     
+
+        <div class="ProviderAccordian accordion" id="accordionExample mt-3">
+
+            @for(int k = 0; k < Model.Count; k++)
+            {
+
+                <div class="accordion-item" style="background:var(--pi-form-back-color);">
+                    <h2 class="accordion-header" id="heading@(k)">
+                        <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(k)" aria-expanded="true" aria-controls="collapse@(k)">
+                            <div class="row" style="row-gap:1rem;">
+
+                                <div class="col-12 d-flex" style="align-items:center;">
+                                    <h4>@Model[k].AccountName</h4>
+                                </div>
+                                <div class="col-12">
+                                Account Type: <span>@AccountType[Model[k].AccountType]</span>
+                                </div>
+
+                            </div>
+
+                        </button>
+                    </h2>
+                    <div id="collapse@(k)" class="accordion-collapse collapse show" aria-labelledby="heading@(k)" data-bs-parent="#accordionExample">
+                        <div class="accordion-body container-fluid">
+
+
+                         <div class="row" style="row-gap:1rem;color:var(--pi-label-color);">
+
+                          <div class="col-12">
+
+                                <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  Phone: <span>@Model[k].PhoneNumber</span>
+
+                          </div>
+                          <div class="col-12">
+                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Status: <span>@status[Model[k].status]</span>
+                          </div>
+                            <div class="col-12">
+                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Open Requests: <span>@Model[k].OpenRequest</span>
+                            </div>
+
+                         </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+
+
+                                <a asp-action="RedirectToAspEditAccount" asp-controller="Provider" asp-route-account="@Model[k].AccountType" asp-route-id="@Model[k].UserId" class="btn btn-outline-info text-info lightInfo-btn">
+                                    Edit
+                                </a>
+
+
+                                </div>
+                            </div>
+
+                          
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+            }
+        </div>
+
+
+
+
+    
+
+}
+
+
+<script>
+
+    //$("document").ready(function () {
+
+    //    DisPlayPagination();
+
+    //})
+
+
+ 
+
+
+</script>

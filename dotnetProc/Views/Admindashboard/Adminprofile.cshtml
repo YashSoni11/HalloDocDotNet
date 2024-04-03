@@ -11,7 +11,8 @@
 @model HalloDoc_DAL.AdminViewModels.AdminProfile;
 
 @{
-    string[] statusArray = { "Active", "Dactive" };
+    string[] statusArray = { "Pending", "Active", "Disabled" };
+    
 }
 
 <partial name="_DashNavbar" />
@@ -28,7 +29,7 @@
             </a>
         </div>
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
-            <form asp-action="ResetAdminPassword" asp-controller="Admindashboard" id="resetForm" method="post">
+            <form asp-action="ResetAdminPassword" asp-controller="Admindashboard" id="resetForm" method="post" asp-route-id="@Model.adminId">
                 <input hidden id="HiddenadminpassInp" value="" name="AdminPassword" />
             </form>
 
@@ -37,7 +38,7 @@
             <form asp-action="SaveAdminAccountInformation" asp-controller="Admindashboard" method="post">
 
                     <!-- Family/Frineds Information Input Group -->
-
+                    <input asp-for="adminId" hidden style="display:none"/>
 
                     <div class="row mt-3">
                         <h4 class="mb-3 mt-3">Account Information</h4>
@@ -60,7 +61,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="accountInfo.Status" value="@statusArray[(int)Model.accountInfo.Status-1]" class="form-select form-control tbDisabled" id="floatingInput" aria-label="Default select example">
+                                <select asp-for="accountInfo.Status" value="@statusArray[(int)Model.accountInfo.Status]" class="form-select form-control tbDisabled" id="floatingInput" aria-label="Default select example">
                                     <option value="1">Active</option>
                                     <option value="2">Dactive</option>
                                 </select>
@@ -170,6 +171,7 @@
                 </form>
                     <!-- Patient Contact Information Input Group -->
                 <form asp-action="SaveMailingAndBillingInformation" asp-controller="Admindashboard" method="post">
+                    <input asp-for="adminId" hidden style="display:none" />
 
                     <div class="row mt-3">
                         <h4 class="mb-3">Mailing & Billing Information</h4>

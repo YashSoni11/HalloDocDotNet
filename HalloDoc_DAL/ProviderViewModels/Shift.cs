@@ -50,6 +50,8 @@ namespace HalloDoc_DAL.ProviderViewModels
         public int ShiftId { get; set; }
 
         public int ShiftDetailId { get; set; }
+
+        public DateTime ShiftDate { get; set; }
     }
 
     public class WeekWisePhysicianShifts

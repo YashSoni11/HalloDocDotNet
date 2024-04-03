@@ -16,6 +16,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public MailingAndBillingInfo? mailingAndBillingInfo { get; set;}
 
+        public int adminId { get; set; }
     }
 
 

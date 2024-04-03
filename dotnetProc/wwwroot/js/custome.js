@@ -1195,17 +1195,17 @@ const GetNextMonthWiseShiftTableView = (month, year,dateHeading) => {
             $("#ShiftTableContainer").html(response);
 
 
-            //var activeModeBtn = localStorage.getItem("ActiveTableMode");
-            //var activeBtn = document.getElementById(`${activeModeBtn}`);
-            //activeBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn");
-            //activeBtn.classList.add("btn-info", "text-white", "darkInfo-btn");
+            var activeModeBtn = localStorage.getItem("ActiveTableMode");
+            var activeBtn = document.getElementById(`${activeModeBtn}`);
+            activeBtn.classList.remove("btn-outline-info", "text-info", "lightInfo-btn");
+            activeBtn.classList.add("btn-info", "text-white", "darkInfo-btn");
 
             $("#DateHeader").text(dateHeading)
 
 
-            //localStorage.setItem("currentDate", date);
-            //localStorage.setItem("currentMonth", month);
-            //localStorage.setItem("currentYear", year);
+            localStorage.setItem("currentDate", 1);
+            localStorage.setItem("currentMonth", month);
+            localStorage.setItem("currentYear", year);
         },
         error: function (err) {
             console.log(err);
@@ -1215,6 +1215,34 @@ const GetNextMonthWiseShiftTableView = (month, year,dateHeading) => {
 }
 
 
+const GetAllShiftViewModal = (date, month, year) => {
+   
+    var regionId = $("#shiftRegionSelector").val();
+
+    $.ajax({
+        method: "post",
+        url: "/Provider/GetDayWiseAllShiftView",
+        data: { date: date, month: month, year: year, regionId: regionId },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+                
+                $("#AllShiftViewContainer").html(response);
+
+          
+                $("#AllShift").modal("show");
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
 
 
 const GetRegionsWiseShiftTable = () => {
@@ -1315,3 +1343,30 @@ const GetViewShiftModel = (shiftDetailId) => {
         }
     })
 }  
+
+
+const GetUserAccessTableView = (roleId) => {
+
+
+    $.ajax({
+        method: "post",
+        url: "/Provider/GetUserAccessTableView",
+        data: { roleId: roleId },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#UserAccessTableContainer").html(response);
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}

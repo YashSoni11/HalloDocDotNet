@@ -656,7 +656,7 @@ namespace HalloDoc_BAL.Repositery
         }
         public List<DayWisePhysicianShifts> GetAllPhysicianDayWiseShifts(int date, int month, int year, int regionId)
         {
-            date = 5;
+
 
             List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
 
@@ -727,7 +727,7 @@ namespace HalloDoc_BAL.Repositery
                         daywiseShiftInformation.Add(dayWiseShift);
                     }
 
-                    dayWisePhysicianShift.DayWiseShiftInformation = daywiseShiftInformation;
+                    dayWisePhysicianShift.DayWiseShiftInformation = daywiseShiftInformation.OrderBy(q => q.startTime).ToList();
 
                     dayWisePhysicianShifts.Add(dayWisePhysicianShift);
 
@@ -736,6 +736,23 @@ namespace HalloDoc_BAL.Repositery
 
             return dayWisePhysicianShifts;
         }
+
+
+        public List<ShiftInformation> GetDayWiseAllShiftInformation(int date, int month, int year, int regionId){
+
+
+            List<ShiftInformation> shiftInformation = _context.Shiftdetails.Where(q => q.Shiftdate.Day == date && q.Shiftdate.Month == month && q.Shiftdate.Year == year && q.Isdeleted == false).Select(r => new ShiftInformation
+            {
+                ShiftDetailId = r.Shiftdetailid,
+                PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
+                startTime = r.Starttime,
+                endTime = r.Endtime,
+                ShiftDate = r.Shiftdate,
+            }).ToList();
+
+            return shiftInformation;
+
+         }
 
 
         public bool CreateShiftService(CreateShift createShift, int adminId)
@@ -835,6 +852,72 @@ namespace HalloDoc_BAL.Repositery
                 return true;
             }
             catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public bool IsValidShift(CreateShift createShift)
+        {
+            try
+            {
+                DateTime date = createShift.ShiftDate;
+
+                DateTime startTime = createShift.StartTime;
+
+                DateTime endTime = createShift.EndTime;
+
+                List<Shift> shifts = _context.Shifts.Where(q => q.Physicianid == createShift.PhysicianId).ToList();
+
+                List<Shiftdetail> shiftdetails = new List<Shiftdetail>();
+
+                foreach(Shift shift in shifts)
+                {
+                    shiftdetails.Concat(_context.Shiftdetails.Where(q => q.Shiftid == shift.Shiftid).ToList()).ToList();
+                }
+
+
+                bool isExists = false;
+
+                foreach(Shiftdetail shiftdetail in shiftdetails)
+                {
+                    if (isExists)
+                    {
+                        break;
+                    }
+                    if(shiftdetail.Shiftdate == date)
+                    {
+                        if((startTime.Hour>shiftdetail.Starttime.Hour && startTime.Hour < shiftdetail.Endtime.Hour) || (endTime.Hour > shiftdetail.Starttime.Hour && endTime.Hour < shiftdetail.Endtime.Hour))
+                        {
+                            isExists = true;
+                            break;
+                        }else if(shiftdetail.Starttime.Hour == endTime.Hour)
+                        {
+                            if (endTime.Minute >= shiftdetail.Starttime.Minute)
+                            {
+                                isExists = true;
+                                break;
+                            }
+                        }
+                        else if(shiftdetail.Endtime.Hour == startTime.Hour)
+                        {
+                            if(startTime.Minute <= shiftdetail.Endtime.Minute)
+                            {
+                                isExists = true;
+                                break;
+                            }
+                        }else if(shiftdetail.Starttime.Hour == startTime.Hour && shiftdetail.Endtime.Hour  == endTime.Hour)
+                        {
+                            isExists = true;
+                            break;
+                        }
+
+                    }
+
+                }
+
+                return isExists;
+            }catch(Exception e)
             {
                 return false;
             }
@@ -1096,6 +1179,59 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return MonthWisePhysicianShiftsList;
+        }
+
+        public List<UserAccess> GetAllAspNetUsers(int roleId)
+        {
+            List<UserAccess> users = new List<UserAccess>();
+
+            bool isAllRole = false;
+
+            if(roleId == 0)
+            {
+                isAllRole = true;
+            }
+
+            List<UserAccess> adminUsers = _context.Admins.Where(q=>q.Roleid == roleId || isAllRole).Select(r => new UserAccess
+            {
+                UserId = r.Adminid,
+                AccountName = _context.Aspnetusers.Where(q=>q.Id == r.Aspnetuserid).Select(q=>q.Username).FirstOrDefault(),
+                PhoneNumber = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Phonenumber).FirstOrDefault(),
+                status =  r.Status == null?0: (int)r.Status,
+                OpenRequest = 0,
+                AccountType = 0,
+            }).ToList();
+
+           users =  users.Concat(adminUsers).ToList();
+
+            List<UserAccess> physicianUsers = _context.Physicians.Where(q => q.Roleid == roleId || isAllRole).Select(r => new UserAccess
+            {
+                UserId = r.Physicianid,
+                AccountName = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Username).FirstOrDefault(),
+                PhoneNumber = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Phonenumber).FirstOrDefault(),
+                status = r.Status == null ? 0 : (int)r.Status,
+
+                OpenRequest = 0,
+                AccountType = 1,
+            }).ToList();
+
+
+          users =   users.Concat(physicianUsers).ToList();
+
+           // List<UserAccess> patientsUsers = _context.Users.Select(r => new UserAccess
+           // {
+           //     UserId = r.Userid,
+           //     AccountName = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Username).FirstOrDefault(),
+           //     PhoneNumber = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Phonenumber).FirstOrDefault(),
+           //     status = r.Status == null ? 0 : (int)r.Status,
+           //     OpenRequest = 0,
+           //     AccountType = 2,
+           // }).ToList();
+
+
+           //users =  users.Concat(patientsUsers).ToList();
+
+            return users;
         }
 
     }

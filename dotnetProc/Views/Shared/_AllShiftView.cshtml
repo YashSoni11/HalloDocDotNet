@@ -1,0 +1,69 @@
+﻿@model List<HalloDoc_DAL.ProviderViewModels.ShiftInformation>;
+@using HalloDoc_DAL.ProviderViewModels;
+
+
+<div class="modal fade" id="AllShift" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="CancleCaseContent">
+            <div class="modal-header bg-info">
+                <h1 class="modal-title fs-5 text-white" id="staticBackdropLabel">All Shifts</h1>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center flex-column" style="padding:2rem;">
+
+                         
+                              <h4 class="text-info" style="align-self:center;">
+                                  @Model[0].ShiftDate.ToString("dddd,MMM d,yyyy")
+
+                              </h4>
+
+                    <ul class="list-group container-fluid">
+
+
+                        @foreach (ShiftInformation shiftInformation in Model)
+                        {
+                            <li class="list-group-item row">
+
+
+                                <div class="col12">
+
+                                <span class="mx-1"><i class="bi bi-person mx-1 text-info"></i></span> Physician : @shiftInformation.PhysicianName
+
+                                </div>
+
+                                <div class="col-12">
+
+                                <span class="mx-1"><i class="bi bi-clock mx-1 text-info"></i></span>   Time :  @shiftInformation.startTime.ToString("hh:mm tt") -
+                                    @shiftInformation.endTime.ToString("hh:mm tt")
+
+                                </div>
+
+
+                            </li>
+
+                        }
+                    </ul>
+               
+
+
+
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+
+
+                <button type="button" data-bs-dismiss="modal" class="btn btn-info  text-white darkInfo-btn  ">
+
+                    Ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+
+</script>
+

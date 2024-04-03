@@ -1279,7 +1279,7 @@ namespace HalloDoc_BAL.Repositery
                     Confirmationemail = admin.Email,
                     Role = _context.Roles.Where(q => q.Roleid == admin.Roleid).Select(r => r.Name).FirstOrDefault(),
                     Phone = admin.Mobile,
-                    Status = (int)(admin.Status),
+                    Status = admin.Status == null?0: (int)(admin.Status),
                     AspnetAdminid = admin.Aspnetuserid
 
                 };
