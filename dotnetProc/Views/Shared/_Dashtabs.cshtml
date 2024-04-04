@@ -3,15 +3,15 @@
 
 <ul class="nav  Admintabs" id="pills-tab" role="tablist" style="background-color: var(--pi-form-back-color);height:4rem;">
     <li class="nav-item" role="presentation">
-        @*<a class="nav-link active tab-link" href="#" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>*@
+       
         <a class="nav-link  tab-link"  id="dash-tab" asp-action="Dashboard" asp-controller="Admindashboard"  role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
     </li>
     <li class="nav-item" role="presentation">
-        @*<a class="nav-link tab-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Provider Location</a>*@
+        
         <a class="nav-link tab-link" asp-action="ProviderLocations" asp-controller="Admindashboard" id="provider-location-tab" role="tab" aria-controls="pills-profile"  >Provider Location</a>
     </li>
     <li class="nav-item" role="presentation">
-        @*<a class="nav-link tab-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>*@
+       
         <a class="nav-link tab-link" asp-action="AdminProfile" asp-controller="Admindashboard"  id="admin-profile-tab"  role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
     </li>
     <li class="nav-item" role="presentation">
@@ -55,15 +55,60 @@
 
 
 <div id="SideDashBar">
+    <div class="container-fluid">
 
+    <h6 id="username">Welcome,@Context.Request.Cookies["UserName"]</h6>
+    </div>
     <nav class="nav flex-column" role="tablist">
+
+        <a class="nav-link  tab-link" id="dash-tab1" asp-action="Dashboard" asp-controller="Admindashboard" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
+        <a class="nav-link tab-link" asp-action="ProviderLocations" asp-controller="Admindashboard" id="provider-location-tab1" role="tab" aria-controls="pills-profile">Provider Location</a>
+        <a class="nav-link tab-link" asp-action="AdminProfile" asp-controller="Admindashboard" id="admin-profile-tab1" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
+
+        <div class="accordion accordion-flush    p-0"  >
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed tab-link" id="provider-menu-tab1" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                         Providers
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#provider-menu-tab1">
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="ProviderMenu" asp-controller="Admindashboard"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span> Providers</a>
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="CreateProviderAccount" asp-controller="Provider"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span>Create Provider Account</a>
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="ProviderScheduling" asp-controller="Provider"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span>Scheduling</a>
+                </div>
+            </div>
+
+        </div>
+
+        <a class="nav-link tab-link" id="pills-partners-tab" data-bs-toggle="pill" data-bs-target="#pills-partners" a role="tab" aria-controls="pills-partners" aria-selected="false">Partners</a>
+
+        <div class="accordion accordion-flush    p-0">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed tab-link" id="pills-Access-tab1" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseOne">
+                        Access
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#pills-Access-tab1">
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="AccountAccess" asp-controller="Provider"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span> Account Access</a>
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="CreateRole" asp-controller="Provider"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span>Create Role </a>
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="CreateAdminAccount" asp-controller="Provider"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span>Create Admin Account</a>
+                    <a class="nav-link tab-link d-flex" style="align-self:flex-start;" asp-action="UserAccessView" asp-controller="Provider"><span style="margin-right:1rem;color:#c5c5c5;"><i class="bi bi-circle-fill"></i></span>User Access</a>
+                </div>
+            </div>
+
+        </div>
+
+
+@*
         <a class="nav-link active tab-link" href="#" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
         <a class="nav-link tab-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Provider Location</a>
         <a class="nav-link tab-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
         <a class="nav-link tab-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" a role="tab" aria-controls="pills-disabled" aria-selected="false">Providers</a>
         <a class="nav-link tab-link" id="pills-partners-tab" data-bs-toggle="pill" data-bs-target="#pills-partners" a role="tab" aria-controls="pills-partners" aria-selected="false">Partners</a>
         <a class="nav-link tab-link" id="pills-Access-tab" data-bs-toggle="pill" data-bs-target="#pills-Access" a role="tab" aria-controls="pills-Access" aria-selected="false">Access</a>
-        <a class="nav-link tab-link" id="pills-Records-tab" data-bs-toggle="pill" data-bs-target="#pills-Records" a role="tab" aria-controls="pills-Records" aria-selected="false">Records</a>
+        <a class="nav-link tab-link" id="pills-Records-tab" data-bs-toggle="pill" data-bs-target="#pills-Records" a role="tab" aria-controls="pills-Records" aria-selected="false">Records</a>*@
     </nav>
 
 </div>

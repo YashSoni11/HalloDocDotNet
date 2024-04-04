@@ -106,7 +106,7 @@
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     transition: .4s;
     left: -303px;
-    z-index: 100;
+    z-index: 9999;
     background-color: white;
     display: none;
 }
@@ -179,16 +179,17 @@
 }
 
     .tab-link.nav-link:hover {
-        color: var( --pi-label-color) !important;
+        /*color: var( --pi-label-color) !important;*/
         cursor:pointer;
     }
 
-.tab-link.active {
-    border-width: 1px;
-    border-color: transparent transparent #0dcaf0 transparent !important;
-    color: #0dcaf0;
-    transition: 0.4s;
-}
+    .tab-link.active {
+        border-width: 1px;
+        border-color: transparent transparent #0dcaf0 transparent !important;
+        color: #0dcaf0;
+        transition: 0.4s;
+        
+    }
 
 #RegionChekboxdiv {
     display: flex;
@@ -341,6 +342,11 @@ input[type="checkbox"]:checked {
 
     #SideDashBar {
         display: block;
+    }
+
+    .tab-link.active {
+        color: white;
+        background-color: #0dcaf0;
     }
 }
 

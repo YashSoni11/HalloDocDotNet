@@ -64,6 +64,10 @@ namespace HalloDoc_BAL.Interface
         public bool IsValidShift(CreateShift createShift);
 
         public List<UserAccess> GetAllAspNetUsers(int roleId);
+        public bool DeleteRequestedShifts(List<RequestedShiftDetails> requestedShifts, int adminId);
+
+        public bool EditShiftService(ViewShift viewShift, int adminId);
+
 
     }
 }

@@ -22,7 +22,7 @@ namespace dotnetProc.Controllers
         private readonly IProvider _provider;
         private readonly IAuthManager _authManager;
 
-        public ProviderController(IAdmindashboard dashboard, IAccount account,IAuthManager authManager, IEmailService emailService, IPatientReq patientReq,IProvider provider)
+        public ProviderController(IAdmindashboard dashboard, IAccount account, IAuthManager authManager, IEmailService emailService, IPatientReq patientReq, IProvider provider)
         {
             _dashboard = dashboard;
             _account = account;
@@ -46,7 +46,7 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
 
-        public IActionResult SaveProviderAccountInfo(ProviderProfileView providerProfileView,int id)
+        public IActionResult SaveProviderAccountInfo(ProviderProfileView providerProfileView, int id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -73,7 +73,7 @@ namespace dotnetProc.Controllers
 
                 }
 
-                return RedirectToAction("ProviderProfile",new { id = id});
+                return RedirectToAction("ProviderProfile", new { id = id });
             }
 
         }
@@ -111,7 +111,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult SaveProviderInformation(ProviderProfileView providerProfileView ,int id)
+        public IActionResult SaveProviderInformation(ProviderProfileView providerProfileView, int id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -142,7 +142,7 @@ namespace dotnetProc.Controllers
             }
         }
 
-        public IActionResult SaveProviderMailingAndBillingInfo(ProviderProfileView providerProfileView ,int id)
+        public IActionResult SaveProviderMailingAndBillingInfo(ProviderProfileView providerProfileView, int id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -173,7 +173,7 @@ namespace dotnetProc.Controllers
             }
         }
 
-        public IActionResult SaveProviderProfileInfo(ProviderProfileView providerProfileView ,int id)
+        public IActionResult SaveProviderProfileInfo(ProviderProfileView providerProfileView, int id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -204,7 +204,7 @@ namespace dotnetProc.Controllers
             }
         }
 
-        public IActionResult DeleteProviderAccount(int id) 
+        public IActionResult DeleteProviderAccount(int id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -231,7 +231,7 @@ namespace dotnetProc.Controllers
 
                 }
 
-                return RedirectToAction("ProviderMenu","Admindashboard");
+                return RedirectToAction("ProviderMenu", "Admindashboard");
             }
         }
 
@@ -240,7 +240,7 @@ namespace dotnetProc.Controllers
         public IActionResult CreateProviderAccountView()
         {
 
-            CreateProviderAccount createProviderAccoun =  new CreateProviderAccount();
+            CreateProviderAccount createProviderAccoun = new CreateProviderAccount();
 
             List<Region> regions = _dashboard.GetAllRegions();
 
@@ -249,12 +249,12 @@ namespace dotnetProc.Controllers
             createProviderAccoun.Regions = regions;
             createProviderAccoun.roles = roles;
 
-            return View("CreateProviderAccount",createProviderAccoun);
+            return View("CreateProviderAccount", createProviderAccoun);
         }
 
 
         [HttpPost]
-        
+
         public IActionResult CreateProviderAccount(CreateProviderAccount createProviderAccount)
         {
             string token = HttpContext.Request.Cookies["jwt"];
@@ -268,7 +268,7 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if(ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
 
 
@@ -312,7 +312,7 @@ namespace dotnetProc.Controllers
         public IActionResult AccountAccess()
         {
 
-           if(_authManager.Authorize(HttpContext, 4) == false)
+            if (_authManager.Authorize(HttpContext, 4) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
@@ -337,7 +337,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult GetAccessArea(int accountType,int roleId)
+        public IActionResult GetAccessArea(int accountType, int roleId)
         {
 
             if (_authManager.Authorize(HttpContext, 4) == false)
@@ -345,9 +345,9 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("AccessDenied", "Account");
             }
 
-            List<AccessAreas> menus = _provider.GetAreaAccessByAccountType(accountType,roleId);
+            List<AccessAreas> menus = _provider.GetAreaAccessByAccountType(accountType, roleId);
 
-            CreateRole createRole = new CreateRole();   
+            CreateRole createRole = new CreateRole();
             createRole.AccessAreas = menus;
             createRole.AccountType = accountType;
 
@@ -365,12 +365,13 @@ namespace dotnetProc.Controllers
 
             string token = HttpContext.Request.Cookies["jwt"];
 
-             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
 
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
 
-                bool response = _provider.CreateRole(createRole,loggedInUser.UserId);
+                bool response = _provider.CreateRole(createRole, loggedInUser.UserId);
 
                 if (response)
                 {
@@ -387,7 +388,7 @@ namespace dotnetProc.Controllers
             {
                 TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
-                return RedirectToAction("CreateRole",createRole);
+                return RedirectToAction("CreateRole", createRole);
             }
 
         }
@@ -411,7 +412,7 @@ namespace dotnetProc.Controllers
             {
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.DeleteRole(roleId,loggedInUser.UserId);
+                bool response = _provider.DeleteRole(roleId, loggedInUser.UserId);
 
                 if (response)
                 {
@@ -438,7 +439,7 @@ namespace dotnetProc.Controllers
         [Route("createadmin")]
         public IActionResult CreateAdminAccount()
         {
-            CreateAdminAccountModel createAdminAccount =  new CreateAdminAccountModel();
+            CreateAdminAccountModel createAdminAccount = new CreateAdminAccountModel();
 
             List<Region> regions = _dashboard.GetAllRegions();
 
@@ -470,7 +471,7 @@ namespace dotnetProc.Controllers
             {
                 bool IsEmailExists = _patientReq.IsEmailExistance(createAdminAccount.Email);
 
-                if(IsEmailExists)
+                if (IsEmailExists)
                 {
                     TempData["ShowNegativeNotification"] = "Account Already Exists!";
                     return RedirectToAction("CreateAdminAccount", createAdminAccount);
@@ -485,7 +486,7 @@ namespace dotnetProc.Controllers
                 }
                 createAdminAccount.Password = hashedPassword;
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.CreateAdminAccount(createAdminAccount,loggedInUser.UserId);
+                bool response = _provider.CreateAdminAccount(createAdminAccount, loggedInUser.UserId);
 
 
 
@@ -506,7 +507,7 @@ namespace dotnetProc.Controllers
             {
                 TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
-                return RedirectToAction("CreateAdminAccount",createAdminAccount);
+                return RedirectToAction("CreateAdminAccount", createAdminAccount);
             }
         }
 
@@ -522,7 +523,7 @@ namespace dotnetProc.Controllers
             createRole.Roleid = id;
             createRole.RoleName = role.Name;
             createRole.AccountType = role.Accounttype;
-            createRole.AccessAreas = _provider.GetAreaAccessByAccountType(role.Accounttype,id);
+            createRole.AccessAreas = _provider.GetAreaAccessByAccountType(role.Accounttype, id);
 
 
             return View("EditRole", createRole);
@@ -531,8 +532,8 @@ namespace dotnetProc.Controllers
 
 
         [HttpPost]
-        
-        public IActionResult EditRole(CreateRole createRole ,int id) 
+
+        public IActionResult EditRole(CreateRole createRole, int id)
         {
 
             string token = HttpContext.Request.Cookies["jwt"];
@@ -548,9 +549,9 @@ namespace dotnetProc.Controllers
             }
             else if (ModelState.IsValid)
             {
-                
+
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.EditRoleService(createRole, loggedInUser.UserId,id);
+                bool response = _provider.EditRoleService(createRole, loggedInUser.UserId, id);
 
 
 
@@ -571,7 +572,7 @@ namespace dotnetProc.Controllers
             {
                 TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
-                return RedirectToAction("EditRoleView", new {id = id});
+                return RedirectToAction("EditRoleView", new { id = id });
             }
 
         }
@@ -582,7 +583,7 @@ namespace dotnetProc.Controllers
         public IActionResult ProviderScheduling()
         {
 
-       
+
 
             ShiftModel shift = new ShiftModel();
 
@@ -595,15 +596,15 @@ namespace dotnetProc.Controllers
         }
 
 
- 
-        public IActionResult GetDayWiseShiftTable(int date,int month,int year,int regionId)
+
+        public IActionResult GetDayWiseShiftTable(int date, int month, int year, int regionId)
         {
-            List<DayWisePhysicianShifts> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date,month,year, regionId);
+            List<DayWisePhysicianShifts> dayWiseShifts = _provider.GetAllPhysicianDayWiseShifts(date, month, year, regionId);
 
             Physicianshifts shift = new Physicianshifts();
 
             shift.dayWiseShifts = dayWiseShifts;
-            shift.lastDate = new DateTime(year,month,date);
+            shift.lastDate = new DateTime(year, month, date);
 
             return PartialView("_DayWiseShiftTable", shift);
         }
@@ -612,7 +613,7 @@ namespace dotnetProc.Controllers
         {
             List<ShiftInformation> dayWiseShifts = _provider.GetDayWiseAllShiftInformation(date, month, year, regionId);
 
-            
+
 
             return PartialView("_AllShiftView", dayWiseShifts);
         }
@@ -645,10 +646,10 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if (!ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
 
-                if(_provider.IsValidShift(createShift))
+                if (_provider.IsValidShift(createShift))
                 {
                     TempData["ShowNegativeNotification"] = "Shift Already Exists!";
                     return RedirectToAction("ProviderScheduling");
@@ -678,9 +679,56 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("ProviderScheduling");
             }
 
-           
 
-            
+
+
+        }
+
+        public IActionResult EditShift(ViewShift viewShift)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+
+                //if (_provider.IsValidShift(createShift))
+                //{
+                //    TempData["ShowNegativeNotification"] = "Shift Already Exists!";
+                //    return RedirectToAction("ProviderScheduling");
+
+                //}
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.EditShiftService(viewShift, loggedInUser.UserId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Shift Edited Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("ProviderScheduling");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("ProviderScheduling");
+            }
         }
 
 
@@ -691,11 +739,11 @@ namespace dotnetProc.Controllers
 
             List<Region> regions = _dashboard.GetAllRegions();
 
-           
+
 
 
             requestedShiftModal.regions = regions;
-            
+
 
             return View("RequestedShift", requestedShiftModal);
         }
@@ -709,7 +757,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult ApproveShiftAction(List<RequestedShiftDetails> requestedShiftDetails)
+        public IActionResult ApproveShiftAction(List<RequestedShiftDetails> requestedShiftDetails, int Val)
         {
 
             string token = HttpContext.Request.Cookies["jwt"];
@@ -727,19 +775,38 @@ namespace dotnetProc.Controllers
             {
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.ApproveShiftsService(requestedShiftDetails,loggedInUser.UserId);
 
-
-                if (response)
+                if (Val == 1)
                 {
-                    TempData["ShowPositiveNotification"] = "Shift Approved Successfully.";
 
-                }
-                else
+                    bool response = _provider.ApproveShiftsService(requestedShiftDetails, loggedInUser.UserId);
+
+                    if (response)
+                    {
+                        TempData["ShowPositiveNotification"] = "Shift Approved Successfully.";
+
+                    }
+                    else
+                    {
+                        TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                    }
+                }else if(Val == 2)
                 {
-                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+                    bool response = _provider.DeleteRequestedShifts(requestedShiftDetails, loggedInUser.UserId);
 
+                    if (response)
+                    {
+                        TempData["ShowPositiveNotification"] = "Shift Deleted Successfully.";
+
+                    }
+                    else
+                    {
+                        TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                    }
                 }
+
 
                 return RedirectToAction("ProviderScheduling");
             }
@@ -754,7 +821,7 @@ namespace dotnetProc.Controllers
 
         }
 
-        public IActionResult GetWeekWiseShiftTableView(int date,int month,int year,int regionId)
+        public IActionResult GetWeekWiseShiftTableView(int date, int month, int year, int regionId)
         {
 
 
@@ -779,7 +846,7 @@ namespace dotnetProc.Controllers
 
             ViewShift viewShift = _provider.GetShiftDetailsById(shiftdetailId);
 
-        
+
 
             viewShift.regions = regions;
             viewShift.physicians = physicians;
@@ -787,7 +854,7 @@ namespace dotnetProc.Controllers
 
             return PartialView("_ViewShiftModel", viewShift);
         }
-        public IActionResult GetMonthWiseShiftTableView(int date,int month,int year,int regionId)
+        public IActionResult GetMonthWiseShiftTableView(int date, int month, int year, int regionId)
         {
             List<MonthWisePhysicianShifts> MonthWiseshifts = _provider.GetAllPhysicianMonthWiseShifts(date, month, year, regionId);
             Physicianshifts shift = new Physicianshifts();
@@ -822,10 +889,11 @@ namespace dotnetProc.Controllers
 
         public IActionResult RedirectToAspEditAccount(int account, int id)
         {
-            if(account == 0)
+            if (account == 0)
             {
                 return RedirectToAction("EditAdminProfile", "Admindashboard", new { id = id });
-            }else if(account == 1)
+            }
+            else if (account == 1)
             {
                 return RedirectToAction("ProviderProfile", new { id = id });
             }
@@ -834,5 +902,8 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("UserAccessView");
             }
         }
+
+
+      
     }
 }

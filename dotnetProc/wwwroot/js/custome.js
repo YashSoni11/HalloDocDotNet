@@ -15,13 +15,17 @@ const handleNavChange = (id) => {
     let prevId = localStorage.getItem("ActiveLink");
 
     let prevEle = document.getElementById(prevId);
+    let prevSideEle = document.getElementById(`${prevId}1`)
 
     prevEle.classList.remove("active");
+    prevSideEle.classList.remove("active");
 
-    console.log(typeof id)
+   
     let currEle = document.getElementById(id);
-    console.log(currEle)
+    let currSideEle = document.getElementById(`${id}1`);
+    
     currEle.classList.add("active");
+    currSideEle.classList.add("active");
 
     localStorage.setItem("ActiveLink", id);
 }
@@ -104,6 +108,26 @@ const changeTheme = () => {
 
 
 
+
+}
+
+
+
+//<----------------------------------------------------Checks------------------------------->//
+
+const checkAll = (ClassName, target) => {
+
+    
+
+    var checks = $(`.${ClassName}`)
+
+    for (let i = 0; i < checks.length; i++) {
+        console.log(checks[i].checked)
+        if (target.checked == false && checks[i].checked == false) {
+            continue;
+        }
+        checks[i].click();
+    }
 
 }
 
@@ -1301,9 +1325,10 @@ const GetShiftModalView = () => {
 
                 location.reload();
             } else {
-
+                
                 $("#ShiftModalContainer").html(response);
 
+                $.validator.unobtrusive.parse($("#CreateShiftForm"));
                 $("#ShiftModal").modal("show")
 
             }
@@ -1332,7 +1357,7 @@ const GetViewShiftModel = (shiftDetailId) => {
             } else {
 
                 $("#ShiftModalContainer").html(response);
-
+                $.validator.unobtrusive.parse($("#EditShiftModalForm")); 
                 $("#ViewShiftModal").modal("show")
 
             }
@@ -1368,5 +1393,71 @@ const GetUserAccessTableView = (roleId) => {
             console.log(err)
         }
     })
+
+}
+
+const ShiftApproveAction = () => {
+
+    $("#ApproveInp").val(1);
+
+    $("#RequestShiftTableForm").submit();
+
+}
+
+const ShiftDeleteAction = () => {
+
+    $("#ApproveInp").val(2);
+
+    $("#RequestShiftTableForm").submit();
+
+
+}
+const handleRepeatAction = () => {
+
+
+
+    if ($("#RepeatSwitch")[0].checked == true) {
+
+        $(".tbDisabled").removeAttr("disabled");
+    } else {
+        $(".tbDisabled").attr("disabled", "true")
+
+    }
+
+}
+
+const CreateShift = () => {
+
+    if ($("#RepeatSwitch")[0].checked == true) {
+
+        if ($("#DaysInputs")[0].checked == false) {
+
+            $("#dayValidation").text("Please Select Minimum 1 Day.")
+        } else {
+            console.log("9")
+            $("#CreateShiftForm").submit();
+            $("#dayValidation").text("")
+
+
+        }
+    } else {
+
+        $("#dayValidation").text("")
+
+        $("#CreateShiftForm").submit();
+    }
+}
+
+const hadleDaysCheck = () => {
+
+
+
+    if ($("#DaysInputs")[0].checked == false) {
+        $("#DaysInputs").click();
+    }
+
+
+
+
 
 }

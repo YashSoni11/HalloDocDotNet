@@ -101,7 +101,7 @@
                      <table id="pc-ViewUploadTable" class="table " style="color:var(--pi-label-color);">
                         <thead class="table-secondary">
                             <tr>
-                                <th scope="col"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" onchange="checkAll()"></th>
+                                <th scope="col"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" onchange="checkAll('fileCheckBox',event.target)"></th>
                                 <th>Name</th>
                                 <th scope="col">Upload Date <span>&uarr;</span></th>
                                 <th scope="col">Actions</th>
@@ -306,19 +306,7 @@
         $("#DocForm").submit();
     }
 
-    const checkAll = () => {
-
-
-        var chkecks = $(".fileCheckBox")
-
-        for (let i = 0; i < chkecks.length; i++) {
-
-
-            chkecks[i].click();
-        }
-
-    }
-
+ 
 
     const downloadChekedFiles = () => {
 

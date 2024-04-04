@@ -6,7 +6,7 @@
 @{
     string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
-    <form asp-action="CreateShift" asp-controller="Provider" id="ShiftModalForm" mthod="post">
+    <form asp-action="EditShift" asp-controller="Provider" id="EditShiftModalForm" mthod="post">
         <div class="modal fade" id="ViewShiftModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -16,44 +16,50 @@
                     </div>
                     <div class="modal-body container-fluid ">
 
-
+                        
+                       <input asp-for="ShiftDetailId" hidden style="display:none"/>
+                       <input asp-for="ShiftId" hidden style="display:none"/>
 
                         <div class="row justify-content-center">
 
                             <div class="col-12">
                                 <div class="form-floating mb-3">
 
-                                    <select asp-for="regionId" id="sl" class="form-select form-control" aria-label="Default select example" onchange="GetPhysicianByRegions()">
+                                    <select asp-for="regionId" id="sl" class="form-select form-control tbDisabled" aria-label="Default select example" onchange="GetPhysicianByRegions()">
                                         <option value="@Model.regionId" selected>@Model.RegionName</option>
                                         @foreach (Region region in Model.regions)
                                         {
+                                            if(Model.regionId != region.Regionid)
+                                            {
+                                                
                                             <option value="@region.Regionid">@region.Name</option>
+                                            }
                                         }
 
                                     </select>
                                     <label for="sl">Regions</label>
-                                    <span class="text-danger"></span>
+                                    <span asp-validation-for="regionId" class="text-danger"></span>
 
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating mb-3">
 
-                                    <select asp-for="physicianId" id="PhysicianInp" class="form-select form-control" aria-label="Default select example">
+                                    <select asp-for="physicianId" id="PhysicianInp" class="form-select form-control tbDisabled" aria-label="Default select example">
                                         <option value="@Model.physicianId" selected>@Model.Physicianname</option>
 
                                         @foreach (Physician physician in Model.physicians)
                                         {
                                             if (@Model.physicianId != physician.Physicianid)
                                             {
-                                                
-                                              <option value="@physician.Physicianid">@physician.Firstname @physician.Lastname</option>
+
+                                                <option value="@physician.Physicianid">@physician.Firstname @physician.Lastname</option>
                                             }
                                         }
 
                                     </select>
                                     <label for="PhysicianInp">Physicians</label>
-                                    <span class="text-danger"></span>
+                                    <span asp-validation-for="physicianId" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -61,10 +67,10 @@
                             <div class="col-12">
                                 <div class="form-floating mb-3">
 
-                                    <input asp-for="ShiftDate" type="date" class="form-control" id="floatingInput"
+                                    <input asp-for="ShiftDate" min="@DateTime.Now.Date" type="date" class="form-control tbDisabled" id="myDateInput"
                                            placeholder="name@example.com">
                                     <label for="PhysicianInp">ShiftDate</label>
-                                    <span class="text-danger"></span>
+                                    <span asp-validation-for="ShiftDate" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -72,33 +78,36 @@
                             <div class="col-6">
                                 <div class="form-floating mb-3">
 
-                                    <input asp-for="startTime" type="time" class="form-control" id="floatingInput"
+                                    <input asp-for="startTime" min="@DateTime.Now.ToString("hh:mm tt")" type="time" class="form-control tbDisabled" id="floatingInput"
                                            placeholder="name@example.com">
                                     <label for="PhysicianInp">Start</label>
-                                    <span class="text-danger"></span>
+                                    <span asp-validation-for="startTime" class="text-danger"></span>
 
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating mb-3">
 
-                                    <input asp-for="endTime" type="time" class="form-control" id="floatingInput"
+                                    <input asp-for="endTime" min="@DateTime.Now.ToString("hh:mm tt")" type="time" class="form-control tbDisabled" id="floatingInput"
                                            placeholder="name@example.com">
                                     <label for="PhysicianInp">End</label>
-                                    <span class="text-danger"></span>
+                                    <span asp-validation-for="endTime" class="text-danger"></span>
 
                                 </div>
                             </div>
-                            
+
                         </div>
 
-                     
+
 
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-bs-dismiss="modal" class="btn btn-info  text-white darkInfo-btn">Return</button>
-                        <button type="button" class="btn btn-info  text-white darkInfo-btn">Edit</button>
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
+                        <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none" onclick="editDetails()">Save</button>
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none" onclick="cancleEdit()">Cancle</button>
+
                         <button type="button" class="btn btn-danger  text-white darkInfo-btn">Delete</button>
 
                     </div>
@@ -107,3 +116,12 @@
         </div>
     </form>
 }
+
+<script>
+
+    $(document).ready(function () {
+
+    
+        $(".tbDisabled").attr("disabled", "true")
+    })
+</script>

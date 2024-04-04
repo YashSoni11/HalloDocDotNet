@@ -47,10 +47,10 @@
 
                 </div>
 
-                <div class="col-xl-6  col-sm-12   d-flex justify-content-end" style="column-gap:1rem;">
-                    <button type="button" class="btn btn-success  text-white darkInfo-btn">View Current Month Shifts</button>
-                    <button type="button" class="btn btn-success  text-white darkInfo-btn" onclick="$('#RequestShiftTableForm').submit()">Approve Selected</button>
-                    <button type="button" class="btn btn-danger  text-white darkInfo-btn">Delete Selected</button>
+                <div class="col-xl-6  col-sm-12 flex-xl-row flex-sm-column  flex-column flex-  d-flex justify-content-end" style="column-gap:1rem;">
+                    <a type="button" asp-action="ProviderScheduling" asp-controller="Provider" class="btn btn-success  text-white darkInfo-btn mb-2">View Current Month Shifts</a>
+                    <button type="button" class="btn btn-success  text-white darkInfo-btn mb-2" onclick="ShiftApproveAction()">Approve Selected</button>
+                    <button type="button" class="btn btn-danger  text-white darkInfo-btn mb-2" onclick="ShiftDeleteAction()">Delete Selected</button>
                 </div>
 
             </div>
@@ -77,6 +77,7 @@
     </div>
 
 </div>
+
 
 
 

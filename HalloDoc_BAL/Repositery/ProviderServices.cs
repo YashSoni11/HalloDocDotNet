@@ -658,7 +658,7 @@ namespace HalloDoc_BAL.Repositery
         {
 
 
-            List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
+            List<Shiftdetail> shiftdetails = _context.Shiftdetails.Where(q=>q.Isdeleted == false).ToList();
 
 
             List<Physician> physicians = GetPhysicinForShiftsByRegionService(regionId);
@@ -857,6 +857,37 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+        public bool EditShiftService(ViewShift viewShift,int adminId)
+        {
+            try
+            {
+                Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == viewShift.ShiftDetailId);
+
+                shiftdetail.Shiftdate = viewShift.ShiftDate;
+                shiftdetail.Starttime = viewShift.startTime;
+                shiftdetail.Endtime = viewShift.endTime;
+                shiftdetail.Regionid = viewShift.regionId;
+                shiftdetail.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+                shiftdetail.Modifieddate = DateTime.Now;
+
+                Shift shift = _context.Shifts.FirstOrDefault(q => q.Shiftid == shiftdetail.Shiftid);
+
+                shift.Physicianid = viewShift.physicianId;
+
+                _context.Shifts.Update(shift);
+                _context.Shiftdetails.Update(shiftdetail);
+
+                _context.SaveChanges();
+
+                return true;
+              
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool IsValidShift(CreateShift createShift)
         {
             try
@@ -930,7 +961,7 @@ namespace HalloDoc_BAL.Repositery
             List<RequestedShiftDetails> requestedShiftDetails = new List<RequestedShiftDetails>();
             if (regionId == 0)
             {
-                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false).Select(r => new RequestedShiftDetails
+                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false && q.Status == 0).Select(r => new RequestedShiftDetails
                 {
                     PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                     Day = r.Shiftdate,
@@ -943,7 +974,7 @@ namespace HalloDoc_BAL.Repositery
             }
             else
             {
-                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false && q.Regionid == regionId).Select(r => new RequestedShiftDetails
+                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false && q.Regionid == regionId && q.Status == 0).Select(r => new RequestedShiftDetails
                 {
                     PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                     Day = r.Shiftdate,
@@ -992,7 +1023,7 @@ namespace HalloDoc_BAL.Repositery
         public List<WeekWisePhysicianShifts> GetAllPhysicianWeekWiseShifts(int date, int month, int year, int regionId)
         {
 
-            List<Shiftdetail> shiftdetails = _context.Shiftdetails.ToList();
+            List<Shiftdetail> shiftdetails = _context.Shiftdetails.Where(q=>q.Isdeleted == false).ToList();
 
 
             List<Physician> physicians = GetPhysicinForShiftsByRegionService(regionId);
@@ -1093,7 +1124,7 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-                Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == shiftDetailsId);
+                Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == shiftDetailsId && q.Isdeleted == false);
 
                 if (shiftdetail == null)
                 {
@@ -1112,8 +1143,8 @@ namespace HalloDoc_BAL.Repositery
                 viewShift.status = shiftdetail.Status;
                 viewShift.ShiftId = shiftdetail.Shiftid;
                 viewShift.regionId = (int)shiftdetail.Regionid;
-                viewShift.RegionName = _context.Regions.Where(q => q.Regionid == viewShift.regionId).Select(r => r.Name).FirstOrDefault();
-                viewShift.Physicianname = _context.Physicians.Where(q => q.Physicianid == physisianId).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault();
+                viewShift.RegionName = _context.Regions.Where(q => q.Regionid == viewShift.regionId ).Select(r => r.Name).FirstOrDefault();
+                viewShift.Physicianname = _context.Physicians.Where(q => q.Physicianid == physisianId && q.Isdeleted == false).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault();
 
 
                 return viewShift;
@@ -1232,6 +1263,37 @@ namespace HalloDoc_BAL.Repositery
            //users =  users.Concat(patientsUsers).ToList();
 
             return users;
+        }
+
+
+        public bool DeleteRequestedShifts(List<RequestedShiftDetails> requestedShifts,int adminId)
+        {
+            try
+            {
+
+                foreach(RequestedShiftDetails shift in requestedShifts) {
+
+                    if(shift.IsSelected == true)
+                    {
+
+                    Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == shift.ShiftDetailId);
+
+                    shiftdetail.Isdeleted = true;
+                    shiftdetail.Modifieddate = DateTime.Now;
+                    shiftdetail.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+                    _context.Shiftdetails.Update(shiftdetail);
+
+                    }
+                 
+                }
+
+                _context.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
         }
 
     }
