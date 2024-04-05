@@ -250,6 +250,13 @@ input[type="checkbox"]:checked {
     font-size:12px;
 }
 
+.page-item{
+
+box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
+padding: 8px;
+border-radius: 6px;
+
+}
 
 @media only screen and (max-width: 550px) {
     /*  #innerLogout{

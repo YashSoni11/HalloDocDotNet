@@ -1,4 +1,4 @@
-﻿@model List<HalloDoc_DAL.ProviderViewModels.RequestedShiftDetails>
+﻿@model HalloDoc_DAL.ProviderViewModels.RequestShiftTable
 
 
 @{
@@ -24,27 +24,29 @@
             </thead>
             <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
 
-                @for(int i = 0; i < Model.Count; i++)
+                @for(int i = 0; i < Model.requestedShiftDetails.Count; i++)
                 {
                     <tr>
 
-                        <input  asp-for="@Model[i].ShiftDetailId" style="display:none;" hidden />
-                        <th><input asp-for="@Model[i].IsSelected" class="form-check-input shiftCheckBox"  type="checkbox"> </th>
-                        <th>@Model[i].PhysicianName</th>
-                        <th>@Model[i].Day.ToString("MMM d,yyyy")</th>
-                        <th>@Model[i].StartTime.ToString("h:mm tt") - @Model[i].EndTime.ToString("h:mm tt")</th>
-                        <th>@Model[i].Region</th>
+                        <input  asp-for="@Model.requestedShiftDetails[i].ShiftDetailId" style="display:none;" hidden />
+                        <th><input asp-for="@Model.requestedShiftDetails[i].IsSelected" class="form-check-input shiftCheckBox"  type="checkbox" onchange="console.log(event.target)"> </th>
+                        <th>@Model.requestedShiftDetails[i].PhysicianName</th>
+                        <th>@Model.requestedShiftDetails[i].Day.ToString("MMM d,yyyy")</th>
+                        <th>@Model.requestedShiftDetails[i].StartTime.ToString("h:mm tt") - @Model.requestedShiftDetails[i].EndTime.ToString("h:mm tt")</th>
+                        <th>@Model.requestedShiftDetails[i].Region</th>
                     </tr>
                 }
 
             </tbody>
 
         </table>
+        </form>
+        <form id="mb-RequestShiftTableForm" asp-action="ApproveShiftAction" asp-controller="Provider" method="post">
 
-
+        <input type="number" hidden name="Val" id="mb-ApproveInp" style="display:none;" />
 
         <ul id="mb-ViewUploadTable" style="border-radius:0px 0px 10px 10px;" class="list-group">
-            @for (int i = 0; i < Model.Count; i++)
+            @for (int i = 0; i < Model.requestedShiftDetails.Count; i++)
 
             {
 
@@ -53,32 +55,32 @@
                         <div class="row mb-3">
 
                             <div class="col-2">
-                                <input asp-for="@Model[i].IsSelected" class="form-check-input shiftCheckBox" type="checkbox">
+                                <input asp-for="@Model.requestedShiftDetails[i].IsSelected" class="form-check-input shiftCheckBox" type="checkbox">
                             </div>
                             <div  class="col-8" style="padding:0rem;">
 
-                                @Model[i].PhysicianName
+                                @Model.requestedShiftDetails[i].PhysicianName
 
                             </div>
                         </div>
                         <div class="row mb-3">
 
                             <div class="col-12">
-                                @Model[i].Day.ToString("MMM d,yyyy")
+                                @Model.requestedShiftDetails[i].Day.ToString("MMM d,yyyy")
                             </div>
 
                         </div> 
                         <div class="row mb-3">
 
                             <div class="col-12">
-                                @Model[i].StartTime.ToString("h:mm tt") - @Model[i].EndTime.ToString("h:mm tt")
+                                @Model.requestedShiftDetails[i].StartTime.ToString("h:mm tt") - @Model.requestedShiftDetails[i].EndTime.ToString("h:mm tt")
                             </div>
 
                         </div>
                         <div class="row mb-3">
 
                             <div class="col-12">
-                                @Model[i].Region
+                                @Model.requestedShiftDetails[i].Region
                             </div>
 
                         </div>
@@ -95,6 +97,18 @@
 
     </form>
 
+
+
+    <div class="row p-3">
+        <nav aria-label="Page navigation example mt-3">
+            <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
+                <li class="page-item" onclick="GetRequestedShiftTableView(@Model.regionId,@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
+                <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
+                <li class="page-item" onclick="GetRequestedShiftTableView(@Model.regionId,@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+            </ul>
+        </nav>
+    </div>
+
 }
 
 
@@ -107,12 +121,7 @@
     //})
 
 
-    const handleNotificationChange = () => {
-
-        if ($("#ProviderChangeSaveBtn").css("display") == "none") {
-            $("#ProviderChangeSaveBtn").css("display", "block");
-        }
-    }
+ 
 
 
      

@@ -34,6 +34,10 @@ namespace HalloDoc_DAL.AdminViewModels
     {
         public List<ProviderMenu> providers { get; set; }
 
-        public string rr { get; set; }  
+        public int rowsPerPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int currentPage { get; set; }
     }
 }

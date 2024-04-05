@@ -749,11 +749,19 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult RequestedShiftTableView(int regionId)
+        public IActionResult RequestedShiftTableView(int regionId,int currentPage)
         {
             List<RequestedShiftDetails> details = _provider.GetRequestedShiftDetails(regionId);
 
-            return PartialView("_RequestedShiftTable", details);
+            RequestShiftTable requestShiftTable = new RequestShiftTable()
+            {
+                regionId = regionId,
+                TotalPages = (int)Math.Ceiling((double)details.Count / 2),
+                requestedShiftDetails = details.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                currentPage = currentPage,
+            };
+
+            return PartialView("_RequestedShiftTable", requestShiftTable);
         }
 
 

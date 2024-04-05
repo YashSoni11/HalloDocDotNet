@@ -62,15 +62,15 @@ namespace dotnetProc.Controllers
                 Response.Cookies.Append("UserName", adminname);
 
 
-                List<DashboardRequests> requests = _dashboard.GetAllRequests();
-                RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
-                List<Region> regions = _dashboard.GetAllRegions();
+                List<DashboardRequests> dashboardRequests = _dashboard.GetAllRequests();
+                RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(dashboardRequests);
+              
 
                 AdminDashboard adminDashboard = new AdminDashboard
                 {
-                    Requests = requests,
+                   
                     RequestTypeCounts = requestTypeCounts,
-                    Regions = regions,
+                   
                 };
 
 
@@ -81,45 +81,45 @@ namespace dotnetProc.Controllers
         }
 
 
-        [HttpPost]
-        [Route("Admindashboard/Dashboard")]
+        //[HttpPost]
+        //[Route("Admindashboard/Dashboard")]
 
-        public IActionResult Dashboard(AdminDashboard adminDashboard)
-        {
-
-
-            if (adminDashboard.Searchstring != null)
-            {
-                List<DashboardRequests> requests = _dashboard.GetRequestsByUsername(adminDashboard.Searchstring);
-
-                RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
+        //public IActionResult Dashboard(AdminDashboard adminDashboard)
+        //{
 
 
-                adminDashboard.Requests = requests;
-                adminDashboard.RequestTypeCounts = requestTypeCounts;
+        //    if (adminDashboard.Searchstring != null)
+        //    {
+        //        List<DashboardRequests> requests = _dashboard.GetRequestsByUsername(adminDashboard.Searchstring);
 
-                return View(adminDashboard);
-            }
-            else
-            {
-                List<DashboardRequests> requests = _dashboard.GetAllRequests();
-                RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
+        //        RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
 
 
-                adminDashboard.Requests = requests;
-                adminDashboard.RequestTypeCounts = requestTypeCounts;
+        //        adminDashboard.Requests = requests;
+        //        adminDashboard.RequestTypeCounts = requestTypeCounts;
+
+        //        return View(adminDashboard);
+        //    }
+        //    else
+        //    {
+        //        List<DashboardRequests> requests = _dashboard.GetAllRequests();
+        //        RequestTypeCounts requestTypeCounts = _dashboard.GetAllRequestsCount(requests);
 
 
-                return View(adminDashboard);
-
-            }
-
+        //        adminDashboard.Requests = requests;
+        //        adminDashboard.RequestTypeCounts = requestTypeCounts;
 
 
-        }
+        //        return View(adminDashboard);
+
+        //    }
 
 
-        public IActionResult GetStatuswiseRequests(string[] StatusArray)
+
+        //}
+
+
+        public IActionResult GetStatuswiseRequests(string[] StatusArray,int currentPage)
         {
             //int statusint = int.Parse(status);
 
@@ -135,8 +135,20 @@ namespace dotnetProc.Controllers
             else
             {
                 List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
+                List<Region> regions = _dashboard.GetAllRegions();
 
-                AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+                RequestTable adminDashboard = new RequestTable {
+
+
+                    TotalPages = (int)Math.Ceiling((double)dashboardRequests.Count / 2),
+                    Requests = dashboardRequests.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                    currentPage = currentPage,
+                    Searchstring = "",
+                    Regions = regions,
+                    regionId = 0,
+                    RequestType = 0,
+                
+                };
 
                 return PartialView("_Requeststable", adminDashboard);
 
@@ -146,7 +158,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult GetRequestorTypeWiseRequests(string type, string[] StatusArray, string region, string Name)
+        public IActionResult GetRequestorTypeWiseRequests(int type, string[] StatusArray, string region, string Name,int currentPage)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -159,15 +171,28 @@ namespace dotnetProc.Controllers
             else
             {
 
-                int IntType = 0;
-                if (type != null)
-                {
-                    IntType = int.Parse(type);
-                }
+                int IntType = type;
+                //if (type != null)
+                //{
+                //    IntType = int.Parse(type);
+                //}
 
                 List<DashboardRequests> dashboardRequests = _dashboard.GetRequestsFromRequestorType(IntType, StatusArray, region, Name);
+                List<Region> regions = _dashboard.GetAllRegions();
 
-                AdminDashboard adminDashboard = new AdminDashboard { Requests = dashboardRequests };
+                 RequestTable adminDashboard = new RequestTable {
+
+
+                    TotalPages = (int)Math.Ceiling((double)dashboardRequests.Count / 2),
+                    Requests = dashboardRequests.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                    currentPage = currentPage,
+                    regionId = region == null ? 0:int.Parse(region),
+                    Regions = regions,
+                    Searchstring = Name,
+                    RequestType = IntType,
+
+
+                };
 
                 return PartialView("_Requeststable", adminDashboard);
             }
@@ -368,7 +393,7 @@ namespace dotnetProc.Controllers
 
         }
 
-        public IActionResult GetProvidersByRegions(int regionId)
+        public IActionResult GetProvidersByRegions(int regionId,int currentPage)
         {
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -385,7 +410,10 @@ namespace dotnetProc.Controllers
 
                 ProviderList providers = new ProviderList()
                 {
-                    providers = physicians
+                    
+                    TotalPages = (int)Math.Ceiling((double)physicians.Count / 2),
+                    providers = physicians.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                    currentPage = currentPage,
                 };
 
                 return PartialView("_ProviderTable", providers);
@@ -1589,6 +1617,7 @@ namespace dotnetProc.Controllers
 
         }
     
+
 
 
     //[AuthManager("Admin")]

@@ -34,7 +34,7 @@
 
                     <div class="form-floating">
 
-                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion()">
+                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion('1',false)">
                             <option value="0">All Region</option>
 
                             @foreach (Region region in Model.regions)
@@ -74,9 +74,15 @@
               
         </div>
 
+
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 d-flex justify-content-end mt-3">
-            <button id="ProviderChangeSaveBtn" type="button" class="btn btn-info  text-white darkInfo-btn " style="display:none;" onclick="SaveProviderChanges()" >Save</button>
+            <button id="ProviderChangeSaveBtn" type="button" class="btn btn-info  text-white darkInfo-btn " style="display:none;" onclick="SaveProviderChanges('ProviderForm')">Save</button>
         </div>
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 d-flex justify-content-end mt-3">
+            <button id="mb-ProviderChangeSaveBtn" type="button" class="btn btn-info  text-white darkInfo-btn " style="display:none;" onclick="SaveProviderChanges('mb-ProviderForm')">Save</button>
+        </div>
+
+    
 
     </div>
       
@@ -89,7 +95,7 @@
     $(document).ready(function () {
 
         handleNavChange('provider-menu-tab')
-        GetProvidersByRegion();
+        GetProvidersByRegion('1',false);
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {
@@ -102,41 +108,11 @@
     })
 
 
-    const GetProvidersByRegion = () => {
-
-        let region = $("#ProviderRegionSelector").val();
 
 
-        $.ajax({
-            method: "post",
-            url: "/Admindashboard/GetProvidersByRegions",
-            data: { regionId: region },
-            success: function (response) {
+    const SaveProviderChanges = (formId) =>{
 
-
-                if (response.code == 401) {
-
-                    location.reload();
-
-
-                } else {
-
-                    console.log(response)
-                   $("#ProviderTableContainer").html(response);
-                }
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        })
-
-
-
-    }
-
-    const SaveProviderChanges = () =>{
-
-        $("#ProviderForm").submit();
+        $(`#${formId}`).submit();
     }
 
 

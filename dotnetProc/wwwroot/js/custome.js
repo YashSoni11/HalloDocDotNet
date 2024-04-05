@@ -444,7 +444,7 @@ const getStatusWiseRequests = (statusarray, id, Statusname) => {
     $.ajax({
         method: "post",
         url: "/Admindashboard/GetStatuswiseRequests",
-        data: { StatusArray: statusarray },
+        data: { StatusArray: statusarray,currentPage:1 },
         success: function (response) {
 
             if (response.code == 401) {
@@ -455,7 +455,7 @@ const getStatusWiseRequests = (statusarray, id, Statusname) => {
              $("#tableContainer").html(response);
             localStorage.setItem("CurrentStatusType", Statusname);
             $(`#${id}`).addClass('ActiveStatus');
-            DisPlayPagination()
+            //DisPlayPagination()
             }
 
         },
@@ -467,7 +467,13 @@ const getStatusWiseRequests = (statusarray, id, Statusname) => {
 }
 
 
-const GetFiltteredRequests = (type = '') => {
+const GetFiltteredRequests = (currentPage,totalPages,isPageAction, type) => {
+
+    console.log(currentPage, totalPages, isPageAction)
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
 
     let region = $("#DashRegionSelector").val();
 
@@ -514,6 +520,8 @@ const GetFiltteredRequests = (type = '') => {
 
 
     if (type != '') {
+        console.log("hiee",type)
+
         for (let i = 0; i < RequestorTypeBtns.length; i++) {
 
             $(`#ReqType-Heading${i}`).removeClass("ActiveRequestorType")
@@ -524,7 +532,7 @@ const GetFiltteredRequests = (type = '') => {
     }
     else {
 
-
+        console.log("hi",type)
 
         for (let i = 0; i < RequestorTypeBtns.length; i++) {
 
@@ -546,7 +554,7 @@ const GetFiltteredRequests = (type = '') => {
     $.ajax({
         method: "post",
         url: "/Admindashboard/GetRequestorTypeWiseRequests",
-        data: { type: type, StatusArray: statusarray, region: region, Name: searchString },
+        data: { type: type, StatusArray: statusarray, region: region, Name: searchString, currentPage: currentPage },
         success: function (response) {
 
             if (response.code == 401) {
@@ -555,7 +563,10 @@ const GetFiltteredRequests = (type = '') => {
             } else {
 
                 $("#tableContainer").html(response);
-                DisPlayPagination()
+                $("#searchinp").val(searchString);
+                //$("DashRegionSelector").append($("<option selected></option>").text(physician.Firstname + " " + physician.Lastname).val(region))
+                
+                //DisPlayPagination()
             }
         },
         error: function (err) {
@@ -1398,17 +1409,29 @@ const GetUserAccessTableView = (roleId) => {
 
 const ShiftApproveAction = () => {
 
-    $("#ApproveInp").val(1);
+    
 
+    if (window.length <= 600) {
+        $("#mb-ApproveInp").val(1);
+        $("#mb-RequestShiftTableForm").submit();
+    } else {
+        $("#ApproveInp").val(1);
     $("#RequestShiftTableForm").submit();
+    }
 
 }
 
 const ShiftDeleteAction = () => {
 
-    $("#ApproveInp").val(2);
+    
 
-    $("#RequestShiftTableForm").submit();
+    if (window.length <= 600) {
+        $("#mb-ApproveInp").val(2);
+        $("#mb-RequestShiftTableForm").submit();
+    } else {
+        $("#ApproveInp").val(2);
+        $("#RequestShiftTableForm").submit();
+    }
 
 
 }
@@ -1460,4 +1483,76 @@ const hadleDaysCheck = () => {
 
 
 
+}
+
+const GetProvidersByRegion = (currentPage,totalPages,isPageAction) => {
+
+    let region = $("#ProviderRegionSelector").val();
+
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
+
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetProvidersByRegions",
+        data: { regionId: region, currentPage: currentPage },
+        success: function (response) {
+
+
+            if (response.code == 401) {
+
+                location.reload();
+
+
+            } else {
+
+               
+                $("#ProviderTableContainer").html(response);
+            }
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+
+
+}
+
+
+
+const GetRequestedShiftTableView = (regionId, currentPage, isPageAction, totalPages = 0) => {
+    console.log(regionId, currentPage, isPageAction, totalPages)
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
+
+    $.ajax({
+
+        url: "/Provider/RequestedShiftTableView",
+        method: "post",
+        data: { regionId: regionId, currentPage: currentPage },
+        success: function (response) {
+
+            $("#RequestedShiftTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+}
+
+const handleNotificationChange = () => {
+
+    if ($("#ProviderChangeSaveBtn").css("display") == "none") {
+        $("#ProviderChangeSaveBtn").css("display", "block");
+    }
 }

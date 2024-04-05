@@ -98,77 +98,12 @@
           </div>
 
 
-        <div class="container-fluid mt-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;padding:1rem;background-color: var(--pi-back-color);">
+        <div id="tableContainer" class="container-fluid mt-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;padding:1rem;background-color: var(--pi-back-color);">
 
-              <div class="row justify-content-between">
+       
+             @*<partial name="_Requeststable"/>*@
 
-                     <div class="col-xl-5 col-lg-5 col-md-12 col-12  align-content-center">
-                         <div class="container-fluid">
-                             <div class="row">
-
-                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12">
-                            @*<form asp-action="Dashboard" method="post">*@
-                        <div id="iuu" class="d-flex form-floating mb-3 bg-transparent"  style="border:1px solid #d7d7d7; border-radius: 4px;">
-                            <input type="search" asp-for="Searchstring" class="form-control  bg-transparent border-0 emailInput " id="searchinp"
-                                   placeholder="name@example.com">
-                            <label id="userLabel" for="searchinp">Search Patient</label>
-                                    <span class="" style="align-self:center;" id="userLabelIcon"><button class="btn" type="submit"><i class=' bi bi-search' style="color: var( --pi-label-color);" onclick="GetFiltteredRequests()"></i></button></span>
-
-                        </div>
-                            @*</form>*@
-                     </div>
-                        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 mx-xl-5 mx-lg-5">
-                                <select id="DashRegionSelector" class="form-select form-control" aria-label="Default select example" style="height:59px;padding:13px;background-color:var(--pi-back-color);" onchange="GetFiltteredRequests()">
-
-                                    <option selected>All Regions</option>
-                                    @foreach(Region region in Model.Regions)
-                                    {
-
-                                        <option value="@region.Regionid">@region.Name</option>
-
-
-                                    }
-                                 
-                            </select>
-
-                      </div>
-                                   
-                             </div>
-
-                         </div>
-
-
-                     </div>
-
-                <div  class="col-xl-7 col-lg-7 col-md-12 col-12 d-flex justify-content-evenly  mt-md-3 mt-3" style="align-items:center;">
-
-                    <button id="ReqType-Heading0" class="btn  text-vanish ReqType-Heading" style="color:var(--pi-label-color);" onclick="GetFiltteredRequests('0')">All</button>
-                    <button id="ReqType-Heading1" onclick="GetFiltteredRequests('1')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-success"></i> Patient</button>
-                    <button id="ReqType-Heading2" onclick="GetFiltteredRequests('2')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-warning"></i> Family/Freind</button>
-                    <button id="ReqType-Heading3" onclick="GetFiltteredRequests('3')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-primary"></i> Concierge</button>
-                    <button id="ReqType-Heading4" onclick="GetFiltteredRequests('4')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill" style="color:pink;"></i> Business</button>
-                    @*<select id="rowsperpage" class="form-select" aria-label="Default select example" onchange="changeRowsPerPage(event.target)" style="width:6rem;">
-                        <option selected value="5">Rows</option>
-                        <option value="2">2</option>
-                        <option value="10">10</option>
-                        <option value="50">50</option>
-                    </select>*@
-                      </div>
-
-                         
-                   
-
-
-
-              </div>
-
-               <div class="row table-responsive" id="tableContainer" style="justify-content:center">
-
-                     <partial name="_Requeststable"/>
-
-               </div>
-
-
+             
 
           </div>
         
@@ -180,13 +115,7 @@
  
     
     </div>
-    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">.qf..</div>
-    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">..qfw.</div>
-    <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">.fwq..</div>
-    <div class="tab-pane fade" id="pills-provider" role="tabpanel" aria-labelledby="pills-provider-tab" tabindex="0">.fwq..</div>
-    <div class="tab-pane fade" id="pills-partners" role="tabpanel" aria-labelledby="pills-partners-tab" tabindex="0">.fwq..</div>
-    <div class="tab-pane fade" id="pills-Access" role="tabpanel" aria-labelledby="pills-Access-tab" tabindex="0">.fwq..</div>
-    <div class="tab-pane fade" id="pills-Records" role="tabpanel" aria-labelledby="pills-Records-tab" tabindex="0">.fwq..</div>
+ 
 </div>
 
 
@@ -202,6 +131,8 @@
 
 
    $(document).ready(function(){
+
+        getStatusWiseRequests(['1'], 'big-btn1', 'New');
 
         if (!localStorage.getItem("ActiveLink")) {
             localStorage.setItem("ActiveLink", "dash-tab");

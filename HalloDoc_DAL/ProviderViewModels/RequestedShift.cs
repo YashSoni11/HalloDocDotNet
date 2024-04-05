@@ -15,6 +15,18 @@ namespace HalloDoc_DAL.ProviderViewModels
          public List<RequestedShiftDetails> requestedShiftDetails { get; set; }
     }
 
+    public class RequestShiftTable
+    {
+        public int rowsPerPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int currentPage { get; set; }
+        public int regionId { get; set; }
+        public List<RequestedShiftDetails> requestedShiftDetails { get; set; }
+
+    }
+
     public class RequestedShiftDetails
     {
         public bool IsSelected { get; set; }

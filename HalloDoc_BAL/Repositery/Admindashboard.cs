@@ -408,7 +408,8 @@ namespace HalloDoc_BAL.Repositery
             if (region != null)
             {
                 int newregionid = int.Parse(region);
-                dashboardRequests = dashboardRequests.Where(q => q.RegionId == newregionid).ToList();
+                bool isAllRegion = newregionid == 0 ? true : false;
+                dashboardRequests = dashboardRequests.Where(q => q.RegionId == newregionid || isAllRegion).ToList();
 
             }
 

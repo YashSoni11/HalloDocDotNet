@@ -9,21 +9,36 @@ namespace HalloDoc_DAL.AdminViewModels
 {
     public class AdminDashboard
     {
-
-
-       public  List<DashboardRequests> Requests { get; set; }
-
-        public List<Region> Regions { get; set; }   
-
-        public string Searchstring { get; set; }
-
-
         public RequestTypeCounts RequestTypeCounts { get; set; }
 
-        public Requestclient requestclient { get; set; }
 
-        public RequestNotes requestnotes { get; set; }  
+      
 
        
     }
+
+
+    public class RequestTable
+    {
+        public List<DashboardRequests> Requests { get; set; }
+
+        public List<Region> Regions { get; set; }
+
+        public int regionId { get; set; }
+
+        public string Searchstring { get; set; }
+
+       public int RequestType { get; set; }
+
+        public Requestclient requestclient { get; set; }
+
+        public RequestNotes requestnotes { get; set; }
+
+        public int rowsPerPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int currentPage { get; set; }
+    }
+  
 }
