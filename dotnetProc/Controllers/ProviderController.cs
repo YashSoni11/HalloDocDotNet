@@ -319,11 +319,26 @@ namespace dotnetProc.Controllers
 
 
 
-            List<Role> roles = _provider.GetAllRoles();
+           
 
-            return View(roles);
+            return View();
         }
 
+
+        public IActionResult GetAccountAccessTableView(int currentPage)
+        {
+            List<Role> roles = _provider.GetAllRoles();
+
+
+            AccountAccessTable accountAccessTable = new AccountAccessTable()
+            {
+                TotalPages = (int)Math.Ceiling((double)roles.Count / 2),
+                roles = roles.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                currentPage = currentPage,
+            };
+
+            return PartialView("_AccountAccessTable", accountAccessTable);
+        }
 
         public IActionResult CreateRole()
         {
@@ -887,11 +902,24 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult GetUserAccessTableView(int roleId)
+        public IActionResult GetUserAccessTableView(int roleId,int currentPage)
         {
+
+
+
             List<UserAccess> userAccesses = _provider.GetAllAspNetUsers(roleId);
 
-            return PartialView("_UserAccessTable", userAccesses);
+
+            UserAccessTable userAccessTable = new UserAccessTable()
+            {
+                TotalPages = (int)Math.Ceiling((double)userAccesses.Count / 2),
+                userAccesses = userAccesses.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                currentPage = currentPage,
+            };
+
+
+
+            return PartialView("_UserAccessTable", userAccessTable);
         }
 
 
@@ -912,6 +940,177 @@ namespace dotnetProc.Controllers
         }
 
 
-      
+        public IActionResult GetVendorsView()
+        {
+            List<Healthprofessionaltype> healthprofessionaltypes = _provider.GetAllHealthProfessionalTypes();
+
+            Vendors vendors = new Vendors()
+            {
+
+                healthprofessionaltypes = healthprofessionaltypes,
+            };
+
+            return View("Vendors", vendors);
+        }
+
+        public IActionResult GetVendorsTableView(string vendorName, int HealthProfessionId, int currentPage)
+        {
+            List<VendorList> vendorLists = _provider.GetVendorsData(vendorName,HealthProfessionId);
+
+            VendorTable vendorTable = new VendorTable()
+            {
+
+                TotalPages = (int)Math.Ceiling((double)vendorLists.Count / 2),
+                VendorList = vendorLists.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                currentPage = currentPage,
+
+            };
+
+            return PartialView("_VendorTable", vendorTable);
+        }
+
+        public IActionResult EditVendorView(int id)
+        {
+            VendorDetails vendorDetails = _provider.EditVendorDetailsView(id);
+            vendorDetails.VendorId = id;
+
+            return View("EditVendor", vendorDetails);
+        }
+
+        public IActionResult EditVendorDetails(VendorDetails vendorDetails,int id)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+
+                
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.EditVendor(vendorDetails,id, loggedInUser.UserId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Vendor Edited Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("EditVendorView",new {id = id});
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("EditVendorView",  new {id=id});
+            }
+        }
+
+        public IActionResult DeleteVendor(int id)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if(id!= 0)
+            {
+
+                bool response = _provider.DeleteVendorService(id);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Vendor Deleted Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("GetVendorsView");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "User Not Found!";
+                return RedirectToAction("GetVendorsView");
+
+            }
+
+        }
+
+
+        public IActionResult AddVendorView()
+        {
+            VendorDetails vendorDetails = new VendorDetails();
+
+            vendorDetails.regions = _dashboard.GetAllRegions();
+            vendorDetails.healthprofessionaltypes = _provider.GetAllHealthProfessionalTypes();
+
+            return View("AddVendor", vendorDetails);
+        }
+
+        public IActionResult AddVendor(VendorDetails vendorDetails)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.AddVendorService(vendorDetails);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Vendor Added Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("GetVendorsView");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("GetVendorsView");
+            }
+        }
+
     }
 }

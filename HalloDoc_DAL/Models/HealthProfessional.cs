@@ -54,8 +54,8 @@ public partial class Healthprofessional
     [StringLength(100)]
     public string? Phonenumber { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray? Isdeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [Column("ip")]
     [StringLength(20)]

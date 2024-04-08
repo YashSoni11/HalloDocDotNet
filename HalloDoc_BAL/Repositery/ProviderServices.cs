@@ -1295,6 +1295,174 @@ namespace HalloDoc_BAL.Repositery
                 return false;
             }
         }
+      public List<Healthprofessionaltype> GetAllHealthProfessionalTypes()
+        {
+            return _context.Healthprofessionaltypes.ToList();
+        }
+
+        public List<VendorList> GetVendorsData(string vendorName, int HealthProfessionId)
+        {
+            try
+            {
+                bool IsSearchByName = false;
+
+                if (string.IsNullOrEmpty(vendorName))
+                {
+                    IsSearchByName = true;
+                }
+
+                bool IsSearchById = false;
+
+                if(HealthProfessionId == 0)
+                {
+                    IsSearchById = true;
+                }
+
+                List<VendorList> vendorLists = _context.Healthprofessionals.Where(q=>(IsSearchByName || q.Vendorname.ToLower().Contains(vendorName.ToLower())  ) && (IsSearchById || q.Profession == HealthProfessionId ) && q.Isdeleted == false ).Select(r => new VendorList
+                {
+                    VendorId = r.Vendorid,
+                    BusinessContact = r.Businesscontact,
+                    BusinessName = r.Vendorname,
+                    Email = r.Email,
+                    FaxNumber = r.Faxnumber,
+                    PhoneNumber = r.Phonenumber,
+                    Profession = _context.Healthprofessionaltypes.Where(q => q.Healthprofessionalid == r.Profession).Select(r => r.Professionname).FirstOrDefault(),
+
+
+                }).ToList();
+
+                return vendorLists;
+            }catch(Exception ex) {
+
+                return new List<VendorList>();
+            }
+        }
+
+        public VendorDetails EditVendorDetailsView(int id)
+        {
+
+            try
+            {
+
+
+                VendorDetails? vendorDetails = _context.Healthprofessionals.Where(q => q.Vendorid == id).Select(r => new VendorDetails { 
+
+
+                    ProfessionId = (int)r.Profession,
+                    Profession = _context.Healthprofessionaltypes.Where(q=>q.Healthprofessionalid == r.Profession).Select(r=>r.Professionname).FirstOrDefault(),
+                    BusinessName = r.Vendorname,
+                    BusinessContact = r.Businesscontact,
+                    Email = r.Email,
+                    FaxNumber = r.Faxnumber,
+                    PhoneNumber = r.Phonenumber,
+                    Street = r.Address,
+                    regionId = (int)r.Regionid,
+                    regionName = _context.Regions.Where(q=>q.Regionid == r.Regionid).Select(r=>r.Name).FirstOrDefault(),
+                    City = r.City,
+                    ZipCode = r.Zip,
+
+
+                }).FirstOrDefault();
+
+                vendorDetails.healthprofessionaltypes = _context.Healthprofessionaltypes.ToList();
+                vendorDetails.regions = _context.Regions.ToList();
+
+                return vendorDetails;
+            }
+            catch (Exception ex)
+            {
+                return new VendorDetails();
+            }
+        }
+
+        public bool EditVendor(VendorDetails vendorDetails,int adminId, int id)
+        {
+            try
+            {
+
+
+                Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
+
+                
+
+                healthprofessional.Profession = vendorDetails.ProfessionId;
+                healthprofessional.Vendorname = vendorDetails.BusinessName;
+                healthprofessional.Businesscontact = vendorDetails.BusinessContact;
+                healthprofessional.Email = vendorDetails.Email;
+                healthprofessional.Faxnumber = vendorDetails.FaxNumber;
+                healthprofessional.Phonenumber = vendorDetails.PhoneNumber;
+                healthprofessional.Address = vendorDetails.Street;
+                healthprofessional.State = vendorDetails.regionName;
+                healthprofessional.City = vendorDetails.City;
+                healthprofessional.Zip = vendorDetails.ZipCode;
+                healthprofessional.Regionid = vendorDetails.regionId;
+                healthprofessional.Modifieddate = DateTime.Now;
+               
+
+                _context.Healthprofessionals.Update(healthprofessional);
+                _context.SaveChanges();
+
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteVendorService(int id)
+        {
+            try
+            {
+                Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
+
+                healthprofessional.Isdeleted = true;
+                healthprofessional.Modifieddate = DateTime.Now;
+
+                _context.Healthprofessionals.Update(healthprofessional);
+                _context.SaveChanges();
+
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool AddVendorService(VendorDetails vendorDetails)
+        {
+            try
+            {
+
+                Healthprofessional healthprofessional = new Healthprofessional();
+
+                healthprofessional.Profession = vendorDetails.ProfessionId;
+                healthprofessional.Vendorname = vendorDetails.BusinessName;
+                healthprofessional.Businesscontact = vendorDetails.BusinessContact;
+                healthprofessional.Email = vendorDetails.Email;
+                healthprofessional.Faxnumber = vendorDetails.FaxNumber;
+                healthprofessional.Phonenumber = vendorDetails.PhoneNumber;
+                healthprofessional.Address = vendorDetails.Street;
+                healthprofessional.State = _context.Regions.Where(q=>q.Regionid == vendorDetails.regionId).Select(r=>r.Name).FirstOrDefault();
+                healthprofessional.City = vendorDetails.City;
+                healthprofessional.Zip = vendorDetails.ZipCode;
+                healthprofessional.Regionid = vendorDetails.regionId;
+                healthprofessional.Createddate = DateTime.Now;
+                healthprofessional.Isdeleted = false;
+
+
+                _context.Healthprofessionals.Add(healthprofessional);
+                _context.SaveChanges();
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
 
     }
 }

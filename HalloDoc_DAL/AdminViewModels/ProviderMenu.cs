@@ -27,6 +27,9 @@ namespace HalloDoc_DAL.AdminViewModels
     {
         public List<ProviderMenu> providers { get; set; }
 
+        public List<Healthprofessionaltype> Healthprofessionaltypes { get; set; }
+     
+
         public List<Region> regions { get; set; }
     }
 

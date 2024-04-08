@@ -21,9 +21,9 @@
 
         <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
             <h3>User Access</h3>
-            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+            <a asp-action="UserAccessView" asp-controller="Provider" class="btn btn-outline-info text-info lightInfo-btn">
                 <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
-            </button>
+            </a>
         </div>
 
 
@@ -36,7 +36,7 @@
 
                     <div class="form-floating">
 
-                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onchange="GetUserAccessTableView(event.target.value)">
+                        <select class="form-select form-control" id="userAccessRoleSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onchange="GetUserAccessTableView('1',false)">
                             <option value="0">All Roles</option>
 
                             @foreach (Role role in Model.roles)
@@ -67,7 +67,7 @@
 
 
     <div class="row" style="justify-content:center">
-        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 ">
+        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
 
 
 
@@ -88,7 +88,7 @@
     $(document).ready(function () {
 
         handleNavChange('pills-Access-tab')
-     GetUserAccessTableView(0);
+     GetUserAccessTableView('1',false);
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {

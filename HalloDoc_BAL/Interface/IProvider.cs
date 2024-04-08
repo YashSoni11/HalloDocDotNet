@@ -68,6 +68,16 @@ namespace HalloDoc_BAL.Interface
 
         public bool EditShiftService(ViewShift viewShift, int adminId);
 
+        public List<VendorList> GetVendorsData(string vendorName, int HealthProfessionId);
 
+        public List<Healthprofessionaltype> GetAllHealthProfessionalTypes();
+
+        public bool EditVendor(VendorDetails vendorDetails,int adminId,int id);
+
+        public VendorDetails EditVendorDetailsView(int id);
+
+        public bool DeleteVendorService(int id);
+
+        public bool AddVendorService(VendorDetails vendorDetails);
     }
 }

@@ -1,0 +1,125 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.Vendors;
+@using HalloDoc_DAL.Models;
+
+
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>Vendor(s)</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
+
+
+            <div class="row  justify-content-lg-between justify-content-sm-center  justify-content-center p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+                <div class="form-floating col-lg-4 col-sm-10">
+
+                    <div id="iuu" class="d-flex form-floating  bg-transparent" style="border:1px solid #d7d7d7; border-radius: 4px;">
+                        <input value="" type="search" class="form-control  bg-transparent border-0  " id="VendorSearchString"
+                               placeholder="name@example.com">
+                        <label id="userLabel" for="searchinp">Search Vendors</label>
+                        <span class="" style="align-self:center;" id="userLabelIcon" onclick="GetVendorsTableView('1',false)"><i class=' bi bi-search' style="color: var( --pi-label-color);"></i></span>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-4 col-sm-10">
+                    <div class="form-floating ">
+
+                    <select id="PreosfessionId"  class="form-select form-control" aria-label="Default select example"  onchange="GetVendorsTableView('1',false)">
+                        <option value="0">All Profession</option>
+
+                        @foreach (Healthprofessionaltype healthprofessionaltype in Model.healthprofessionaltypes)
+                        {
+                            <option value="@healthprofessionaltype.Healthprofessionalid">@healthprofessionaltype.Professionname</option>
+                        }
+                    </select>
+                    <label for="PreosfessionId">Profession</label>
+                    </div>
+
+
+                  
+                </div>
+
+
+
+
+
+
+                <div class="col-lg-3 col-md-4 col-sm-12 d-sm-flex justify-content-sm-end d-flex justify-content-end ">
+                    <a asp-action="AddVendorView" asp-controller="Provider" class="btn btn-outline-info text-info lightInfo-btn "><i class=" bi bi-plus text-info"></i><span class="text-vanish">Add Business</span></a>
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row" style="justify-content:center">
+        <div id="VendorTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+
+            @*<partial name="_ProviderTable"/>*@
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        GetVendorsTableView('1', false);
+        //handleNavChange('pills-partners-tab');
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+
+
+
+
+
+</script>

@@ -14,6 +14,18 @@ namespace HalloDoc_DAL.ProviderViewModels
 
 
     }
+
+
+    public class UserAccessTable
+    {
+        public int rowsPerPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int currentPage { get; set; }
+
+        public List<UserAccess> userAccesses { get; set; }
+    }
     public class UserAccess
     {
 

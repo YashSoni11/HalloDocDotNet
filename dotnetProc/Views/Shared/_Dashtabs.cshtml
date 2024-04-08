@@ -30,9 +30,19 @@
             </ul>
        
     </li>
+
     <li class="nav-item " role="presentation">
-        <a class="nav-link tab-link" id="pills-partners-tab" data-bs-toggle="pill" data-bs-target="#pills-partners" a role="tab" aria-controls="pills-partners" aria-selected="false">Partners</a>
+      
+        <a class="btn nav-link tab-link" id="pills-partners-tab" style="border-color:transparent;" data-bs-toggle="dropdown" aria-expanded="false">Partners</a>
+        <ul class="dropdown-menu">
+            <li> <a class="dropdown-item " asp-action="GetVendorsView" asp-controller="Provider">Vendors</a></li>
+            
+        </ul>
+
     </li>
+
+
+
     <li class="nav-item " role="presentation">
 
 

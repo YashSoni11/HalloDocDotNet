@@ -1380,14 +1380,52 @@ const GetViewShiftModel = (shiftDetailId) => {
     })
 }  
 
+const GetAccountAccessTableView = (currentPage, isPageAction, totalPages = 0) => {
 
-const GetUserAccessTableView = (roleId) => {
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction, currentPage, totalPages)
+        return;
+    }
+
+
+    $.ajax({
+        method: "post",
+        url: "/Provider/GetAccountAccessTableView",
+        data: { currentPage: currentPage },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#AccountAccessTableContainer").html(response);
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+const GetUserAccessTableView = (currentPage, isPageAction, totalPages = 0) => {
+
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction, currentPage, totalPages)
+        return;
+    }
+
+    let roleId = document.getElementById("userAccessRoleSelector").value;
 
 
     $.ajax({
         method: "post",
         url: "/Provider/GetUserAccessTableView",
-        data: { roleId: roleId },
+        data: { roleId: roleId, currentPage: currentPage },
         success: function (response) {
 
             if (response.code == 401) {
@@ -1526,7 +1564,7 @@ const GetProvidersByRegion = (currentPage,totalPages,isPageAction) => {
 
 
 const GetRequestedShiftTableView = (regionId, currentPage, isPageAction, totalPages = 0) => {
-    console.log(regionId, currentPage, isPageAction, totalPages)
+   
     if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
         console.log(isPageAction)
         return;
@@ -1540,6 +1578,39 @@ const GetRequestedShiftTableView = (regionId, currentPage, isPageAction, totalPa
         success: function (response) {
 
             $("#RequestedShiftTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+}
+
+
+const GetVendorsTableView = (currentPage, isPageAction, totalPages = 0) => {
+
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
+
+
+    let vendorName = document.getElementById("VendorSearchString").value
+    let HealthProfessionId = document.getElementById("PreosfessionId").value;
+
+    console.log(vendorName, HealthProfessionId);
+
+    $.ajax({
+
+        url: "/Provider/GetVendorsTableView",
+        method: "post",
+        data: { vendorName: vendorName, HealthProfessionId: HealthProfessionId, currentPage: currentPage },
+        success: function (response) {
+
+            $("#VendorTableContainer").html(response);
 
 
         },
