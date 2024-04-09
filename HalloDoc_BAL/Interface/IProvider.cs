@@ -79,5 +79,9 @@ namespace HalloDoc_BAL.Interface
         public bool DeleteVendorService(int id);
 
         public bool AddVendorService(VendorDetails vendorDetails);
+
+
+        public List<SearchRecords> GetFillteredSearchRecordsData(int Status, string PatientName, int RequestType, DateTime FromDate, DateTime ToDate, string ProviderName, string Email, string Phone);
+        public List<EmailLogs> GetFillteredEmailLogsData(string ReciverName, int RoleId, string EmailId, DateTime CreateDate, DateTime SentDate);
     }
 }

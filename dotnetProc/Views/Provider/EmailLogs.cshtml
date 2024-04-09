@@ -1,0 +1,155 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.SearchRecordsForm;
+@using HalloDoc_DAL.AdminViewModels;
+
+
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-10 col-lg-11 col-md-12 col-sm-12 col-12 justify-content-between">
+            <h3>EmailLogs(Gmail)</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+        <div class="col-xl-10 col-lg-11 col-md-12 col-sm-12 col-12 mt-3 ProviderMenuHeader">
+
+            <form>
+                <div class="row  p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+                    <div class="col-lg-3 col-sm-10">
+
+                        <div class="form-floating">
+
+                            <select class="form-select form-control" id="el-Role" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion('1',false)">
+                                <option value="0">All Region</option>
+
+                                @* @foreach (Region region in Model.regions)
+                                {
+                                <option value="@region.Regionid">@region.Name</option>
+                                }*@
+                            </select>
+                            <label for="ProviderRegionSelector">Search By  Role</label>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-3 col-sm-10">
+                        <div class="form-floating ">
+                            <input asp-for="Patientname" type="text" class="form-control" id="el-ReciverName"
+                                   placeholder="name@example.com">
+                            <label for="floatingInput">Receiver Name</label>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-sm-10">
+                        <div class="form-floating ">
+                            <input asp-for="Patientname" type="text" class="form-control" id="el-email"
+                                   placeholder="name@example.com">
+                            <label for="floatingInput">Email Id</label>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+               
+
+                    <div class="col-lg-3 col-sm-10">
+                        <div class="form-floating ">
+                            <input asp-for="FromDateOfServive" type="date" class="form-control" id="el-createDate"
+                                   placeholder="name@example.com">
+                            <label for="floatingInput">Created Date</label>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-10">
+                        <div class="form-floating ">
+                            <input asp-for="ToDateOfService" type="date" class="form-control" id="el-SentDate"
+                                   placeholder="name@example.com">
+                            <label for="floatingInput">Sent Date</label>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+
+                        <button type="reset" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                            Clear
+                        </button>
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn " onclick="GetEmailLogsTableView()">Search</button>
+
+                    </div>
+
+                </div>
+
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row" style="justify-content:center">
+        <div id="EmailLogsTableContainer" class="col-xl-10 col-lg-11 col-md-12 col-sm-12 col-12 justify-content-between p-0">
+
+
+            @*<partial name="_ProviderTable"/>*@
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        //handleNavChange('provider-menu-tab')
+        GetEmailLogsTableView();
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+
+
+
+
+
+
+</script>

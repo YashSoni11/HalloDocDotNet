@@ -1621,6 +1621,80 @@ const GetVendorsTableView = (currentPage, isPageAction, totalPages = 0) => {
     })
 }
 
+
+
+const GetSearchRecordsTableView = () => {
+
+    let Status = $("#sr-status").val();
+    let patientname = $("#sr-patientName").val();
+    let RequestType = $("#sr-requestType").val();
+    let FromDate = $("#sr-FromDate").val();
+    let toDate = $("#sr-ToDate").val();
+    let ProviderName = $("#sr-ProviderName").val();
+    let Email = $("#sr-Email").val();
+    let phonumber = $("#sr-phoneNumber").val();
+
+    
+    $.ajax({
+
+        url: "/Provider/GetSearchRecordsTableView",
+        method: "post",
+        data: {
+            Status: Status, PatientName: patientname, RequestType: RequestType, FromDate: FromDate, ToDate: toDate, ProviderName: ProviderName, Emai
+                : Email, Phone: phonumber
+        },
+        success: function (response) {
+
+            $("#SearchRecordsTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+    
+
+}
+
+
+const GetEmailLogsTableView = () => {
+
+
+    let ReciverName = $("#el-ReciverName").val();
+    let RoleId = $("#el-Role").val();
+    let EmailId = $("#el-email").val();
+    let CreateDate = $("#el-createDate").val();
+    let SentDate = $("#el-SentDate").val();
+
+
+
+
+    $.ajax({
+
+        url: "/Provider/GetEmailLogsTableView",
+        method: "post",
+        data: {
+            ReciverName: ReciverName, RoleId: RoleId, EmailId: EmailId, CreateDate: CreateDate, SentDate: SentDate
+        },
+        success: function (response) {
+
+            $("#EmailLogsTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+
+}
+
 const handleNotificationChange = () => {
 
     if ($("#ProviderChangeSaveBtn").css("display") == "none") {

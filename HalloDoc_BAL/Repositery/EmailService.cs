@@ -12,12 +12,53 @@ using System.Net.Mail;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using HalloDoc_DAL.Context;
+using System.Collections;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace HalloDoc_BAL.Repositery
 {
     public class EmailService : IEmailService
     {
 
+        private readonly HalloDocContext _context;
+       
+
+        public EmailService(HalloDocContext context, IMapper mapper)
+        {
+            _context = context;
+        }
+
+
+        public bool AddEmailLog(string subject,int requestId, string emailTemplet, string UserEmail, string ConfirmationNumber, bool IsEmailSent)
+        {
+
+            try
+            {
+
+            Emaillog emaillog = new Emaillog();
+            emaillog.Subjectname = subject;
+            emaillog.Requestid = requestId;
+            emaillog.Emailtemplate = emailTemplet;
+            emaillog.Isemailsent = new BitArray(new[] { IsEmailSent});
+            emaillog.Emailid = UserEmail;
+            emaillog.Confirmationnumber = ConfirmationNumber;
+                emaillog.Createdate = DateTime.Now;
+                emaillog.Sentdate = DateTime.Now;
+                emaillog.Action = 1;
+
+            _context.Emaillogs.Add(emaillog);
+            _context.SaveChanges();
+
+            return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+
+
+        }
 
         public bool SendEmail(string uemail, string subject, string body)
         {

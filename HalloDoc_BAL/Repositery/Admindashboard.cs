@@ -723,7 +723,8 @@ namespace HalloDoc_BAL.Repositery
 
             foreach (string file in files)
             {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", file);
+                string newfile = file.Trim();
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", newfile);
                 message.Attachments.Add(new Attachment(path));
             }
 
@@ -749,6 +750,12 @@ namespace HalloDoc_BAL.Repositery
                 return false;
             }
         }
+
+        public string GetConfirmationNumberByRequestId(int requestId)
+        {
+            return _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Confirmationnumber).FirstOrDefault();
+        }
+
 
 
         public bool ClearCaseByRequestid(string id, int adminId)

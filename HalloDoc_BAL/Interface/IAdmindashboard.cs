@@ -111,5 +111,8 @@ namespace HalloDoc_BAL.Interface
 
         public bool SaveNotesChanges(string nots, int requestId);
 
+
+        public string GetConfirmationNumberByRequestId(int requestId);
+
     }
 }

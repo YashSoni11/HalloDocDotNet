@@ -849,7 +849,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult SendDocumentViaMail(string DocFiles, string id)
+        public IActionResult SendDocumentViaMail(string DocFiles, int id)
         {
 
             dynamic Data = JsonConvert.DeserializeObject(DocFiles);
@@ -857,6 +857,14 @@ namespace dotnetProc.Controllers
 
 
             bool response = _dashboard.SendDocumentsViaEmail(Data);
+
+            string Confirmationnumber = _dashboard.GetConfirmationNumber(id);
+
+            string UserMail = Data["UserMail"];
+
+            bool reponse1 = _emailService.AddEmailLog("Documents",id, "For Sending Attachments to Patient", UserMail, Confirmationnumber, response);
+
+             
 
 
             if (response == true)
@@ -869,7 +877,7 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Somthing went wrong!";
             }
 
-            return RedirectToAction("ViewUploads", new { id = int.Parse(id) });
+            return RedirectToAction("ViewUploads", new { id = id });
 
         }
 

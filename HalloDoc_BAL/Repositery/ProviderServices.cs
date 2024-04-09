@@ -6,15 +6,18 @@ using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
 using HalloDoc_DAL.ViewModels;
+using ICSharpCode.SharpZipLib.GZip;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using SixLabors.ImageSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_BAL.Repositery
@@ -30,6 +33,31 @@ namespace HalloDoc_BAL.Repositery
         }
 
         string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+        public enum Status
+        {
+            Unassigned = 1,
+            Unpaid,
+            MDEnRoute,
+            MDOnSite,
+            Conclude,
+            Cancelled,
+            CancelledByPatient,
+            Closed,
+            Accepted,
+            Clear,
+        }
+
+
+        public enum RequestorType
+        {
+            Patient = 1,
+            Family,
+            Conciearge,
+            Business
+
+        }
+
         public string UploadProviderFiles(IFormFile file)
         {
 
@@ -1463,6 +1491,174 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+        public List<SearchRecords> GetFillteredSearchRecordsData(int Status, string PatientName, int RequestType, DateTime FromDate, DateTime ToDate, string ProviderName, string Email, string Phone)
+        {
+            try
+            {
+
+                List<Requestclient> requestclients = _context.Requestclients.ToList();
+                List<SearchRecords> searchRecords = new List<SearchRecords>();
+
+                bool IsAllStatus = false;
+                bool IsAllPatientName = false;
+                bool IsAllRequestTypes = false;
+                bool IsAllFromDate = false;
+                bool IsAllToDate = false;
+                bool IsAllProviderName = false;
+                bool IsAllEmail = false;
+                bool IsAllPhone = false;
+
+                if(Status == 0)
+                {
+                    IsAllStatus = true;
+                }
+                if (string.IsNullOrEmpty(PatientName))
+                {
+                    IsAllPatientName = true;
+                }
+                if(RequestType == 0)
+                {
+                    IsAllRequestTypes = true;
+                }
+                if(FromDate == DateTime.MinValue)
+                {
+                    IsAllFromDate= true;
+                }
+                if(ToDate == DateTime.MinValue)
+                {
+                    IsAllToDate = true;
+                }
+                if (string.IsNullOrEmpty(ProviderName))
+                {
+                    IsAllProviderName = true;
+                }
+                if (string.IsNullOrEmpty(Email))
+                {
+                    IsAllEmail = true;
+                }
+                if(string.IsNullOrEmpty(Phone))
+                {
+                    IsAllPhone = true;  
+                }
+
+
+                foreach(Requestclient rc in requestclients)
+                {
+
+                    SearchRecords searchRecord = new SearchRecords();
+
+                    searchRecord.PatientName = rc.Firstname + " " + rc.Lastname;
+
+
+                    searchRecord.RequestorType = _context.Requesttypes.Where(q => q.Requesttypeid == _context.Requests.Where(m => m.Requestid == rc.Requestid).Select(q => q.Requesttypeid).FirstOrDefault()).Select(q => q.Name).FirstOrDefault();
+
+                    DateTime? serviceDate = _context.Requests.Where(q => q.Requestid == rc.Requestid).Select(q => q.Accepteddate).FirstOrDefault();
+
+
+                    searchRecord.DateOfService = serviceDate == null ? null : serviceDate;
+                    searchRecord.CloseCaseDate = _context.Requeststatuslogs.Where(q => q.Requestid == rc.Requestid && (q.Status == 6 || q.Status == 7 || q.Status == 8)).Select(q => q.Createddate).FirstOrDefault();
+                    searchRecord.Email = rc.Email;
+                    searchRecord.PatientPhone = rc.Phonenumber;
+                    searchRecord.Address = rc.Address;
+                    searchRecord.Zip = rc.Zipcode;
+                    searchRecord.RequestStatus = Enum.GetName(typeof(Status), _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == rc.Requestid).Select(q => q.Status).FirstOrDefault());
+                    searchRecord.Physician = _context.Physicians.Where(q => q.Physicianid == _context.Requests.Where(q => q.Requestid == rc.Requestid).Select(q => q.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault();
+                    searchRecord.PatientNote = "-";
+                    searchRecord.CanclledByProviderNote = "-";
+                    searchRecord.Adminnote = "-";
+                    searchRecord.PhysicianNote = "-";
+
+                    searchRecords.Add(searchRecord);
+
+                }
+                   
+
+
+                searchRecords = searchRecords.Where(q=>(IsAllStatus || q.RequestStatus == null || q.RequestStatus == Enum.GetName(typeof(Status),Status)) && (IsAllPatientName  || q.PatientName == PatientName) && (IsAllRequestTypes  || q.RequestorType == null || q.RequestorType == Enum.GetName(typeof(RequestorType),RequestType))   && (IsAllEmail || q.Email == Email) && (IsAllProviderName || q.Physician == null || q.Physician.ToLower().Contains(ProviderName.ToLower()) ) && (IsAllPhone || q.PatientPhone == Phone)   ).ToList();
+             
+
+                return searchRecords;
+            }catch(Exception ex)
+            {
+
+                return new List<SearchRecords>();
+            }
+        }
+
+
+
+
+        public List<EmailLogs> GetFillteredEmailLogsData(string ReciverName, int RoleId, string EmailId, DateTime CreateDate, DateTime SentDate)
+        {
+            try
+            {
+
+                List<Requestclient> requestclients = _context.Requestclients.ToList();
+                List<Emaillog> emaillogs = _context.Emaillogs.ToList();    
+
+
+                List<EmailLogs> EmailLogs = new List<EmailLogs>();
+
+                bool IsAllReciver = false;
+                bool IsAllRole = false;
+                  bool IsAllCreateDate = false;
+                bool IsAllSentDate = false;
+               bool IsAllEmail = false;
+             
+
+                if (string.IsNullOrEmpty(ReciverName))
+                {
+                    IsAllReciver = true;
+                }
+                if (RoleId == 0)
+                {
+                    IsAllRole = true;
+                }
+                if (CreateDate == DateTime.MinValue)
+                {
+                    IsAllCreateDate = true;
+                }
+                if (SentDate == DateTime.MinValue)
+                {
+                    IsAllSentDate = true;
+                }
+                if (string.IsNullOrEmpty(EmailId))
+                {
+                    IsAllEmail = true;
+                }
+           
+
+                foreach(Emaillog emaillog in emaillogs)
+                {
+                    EmailLogs emailLogs = new EmailLogs();
+
+                    emailLogs.Recipient = _context.Requests.Where(q => q.Requestid == emaillog.Requestid).Select(q => q.Firstname + "" + q.Lastname).FirstOrDefault();
+                    emailLogs.Action = (int)emaillog.Action;
+                    emailLogs.RoleName = _context.Roles.Where(q => q.Roleid == emaillog.Roleid).Select(q => q.Name).FirstOrDefault();
+                    emailLogs.Email = emaillog.Emailid;
+                    emailLogs.CreateDate = emaillog.Createdate;
+                    emailLogs.SentDate = (DateTime)emaillog.Sentdate;
+                    emailLogs.Sent = emaillog.Isemailsent[0];
+                    emailLogs.ConfirmationNumber = emaillog.Confirmationnumber;
+
+
+                    EmailLogs.Add(emailLogs);
+                    
+                }
+
+
+
+                EmailLogs = EmailLogs.Where(q => (IsAllReciver || q.Recipient.ToLower().Contains(ReciverName.ToLower()) ) && (IsAllRole || q.RoleName == _context.Roles.Where(q => q.Roleid == RoleId).Select(q => q.Name).FirstOrDefault())  && (IsAllEmail || q.Email == EmailId)).ToList();
+
+
+                return EmailLogs;
+            }
+            catch (Exception ex)
+            {
+
+                return new List<EmailLogs>();
+            }
+        }
 
     }
 }

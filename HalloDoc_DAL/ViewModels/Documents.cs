@@ -20,5 +20,7 @@ namespace HalloDoc_DAL.ViewModels
         public string ConfirmationNumber { get; set; }
 
 
+
+
     }
 }

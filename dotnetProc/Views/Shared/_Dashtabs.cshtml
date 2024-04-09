@@ -56,7 +56,13 @@
 
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link tab-link" id="pills-Records-tab" data-bs-toggle="pill" data-bs-target="#pills-Records" a role="tab" aria-controls="pills-Records" aria-selected="false">Records</a>
+        <a class="nav-link tab-link" id="pills-Records-tab" style="border-color:transparent;" data-bs-toggle="dropdown">Records</a>
+
+        <ul class="dropdown-menu">
+            <li> <a class="dropdown-item " asp-action="SearchRecordsView" asp-controller="Provider">Search Records</a></li>
+            <li> <a class="dropdown-item " asp-action="EmailLogsView" asp-controller="Provider">Email Logs</a></li>
+           
+        </ul>
     </li>
 </ul>
 

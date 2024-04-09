@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Models;
@@ -1110,6 +1111,64 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("GetVendorsView");
             }
+        }
+
+        public IActionResult SearchRecordsView()
+        {
+            return View("SearchRecords");
+        }
+
+        public IActionResult GetSearchRecordsTableView(int Status,string PatientName,int RequestType,DateTime FromDate,DateTime ToDate,string ProviderName,string Email,string Phone)
+        {
+
+            List<SearchRecords> searchRecords = _provider.GetFillteredSearchRecordsData( Status,  PatientName,  RequestType,  FromDate,  ToDate,  ProviderName,  Email,  Phone);
+
+            //SearchRecordsTable searchRecordsTable = new SearchRecordsTable()
+            //{
+            //    TotalPages = (int)Math.Ceiling((double)vendorLists.Count / 2),
+            //    VendorList = vendorLists.Skip(2 * (currentPage - 1)).Take(5).ToList(),
+            //    currentPage = currentPage,
+            //};
+
+            SearchRecordsTable searchRecordsTable = new SearchRecordsTable()
+            {
+                TotalPages = 0,
+                currentPage = 0,
+                SearchRecords = searchRecords,
+            };
+
+
+            return PartialView("_SearchRecordsTable", searchRecordsTable);
+
+        }
+
+
+        public IActionResult EmailLogsView()
+        {
+            return View("EmailLogs");
+        }
+        public IActionResult GetEmailLogsTableView( string ReciverName, int RoleId ,string  EmailId, DateTime CreateDate,DateTime SentDate)
+        {
+
+            List<EmailLogs> emailLogs = _provider.GetFillteredEmailLogsData( ReciverName,  RoleId,   EmailId,  CreateDate,  SentDate);
+
+            //SearchRecordsTable searchRecordsTable = new SearchRecordsTable()
+            //{
+            //    TotalPages = (int)Math.Ceiling((double)vendorLists.Count / 2),
+            //    VendorList = vendorLists.Skip(2 * (currentPage - 1)).Take(5).ToList(),
+            //    currentPage = currentPage,
+            //};
+
+            EmailLogsTable emailLogsTable = new EmailLogsTable()
+            {
+                TotalPages = 0,
+                currentPage = 0,
+                EmailLogs = emailLogs,
+            };
+
+
+            return PartialView("_EmailLogsTable", emailLogsTable);
+
         }
 
     }
