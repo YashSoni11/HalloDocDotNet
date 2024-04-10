@@ -580,7 +580,7 @@ const GetFiltteredRequests = (currentPage,totalPages,isPageAction, type) => {
 
 //Action Url Functions
 
-const GetEncounterCaseView = (id) => {
+const GetEncounterCaseView = (id,modalId,IsAdmin) => {
 
     $.ajax({
         method: "post",
@@ -591,12 +591,18 @@ const GetEncounterCaseView = (id) => {
             if (response.isfinelized) {
 
 
-                $("#EncounterCaseModal").modal("show");
+                $(`#${modalId}`).modal("show");
                 $("#EncounterCaseModalRequestInp").val(id);
 
             } else {
 
-                window.location.href = `https://localhost:7008/Admindashboard/encounterform/${id}`
+                if (IsAdmin) {
+
+                    window.location.href = `https://localhost:7008/Admin/encounterform/${id}`
+                } else {
+                    window.location.href = `https://localhost:7008/Provider/encounterform/${id}`
+
+                }
             }
 
         },
@@ -1700,4 +1706,173 @@ const handleNotificationChange = () => {
     if ($("#ProviderChangeSaveBtn").css("display") == "none") {
         $("#ProviderChangeSaveBtn").css("display", "block");
     }
+}
+
+
+
+            //<----------------------------------Provider Dashboar------------------------>>
+
+
+
+const GetStatuswiseProviderRequests = (statusarray, id, Statusname) => {
+
+
+    $("#searchinp").val('');
+   
+
+
+    var newstring = "(" + Statusname + ")"
+    $(".StatusName").text(newstring)
+
+
+
+
+    let i = 1;
+    $('.big-btn').each(function () {
+
+        var borderColor = $(this).removeClass(`big-btn${i}`);
+        $(this).children().removeClass(`big-btn${i}`);
+
+        $(this).removeClass("ActiveStatus");
+
+        i++;
+
+    });
+    $(`#${id}`).addClass(`${id}`);
+
+    $(`#${id}`).children().addClass(`${id}`);
+
+
+
+
+    $.ajax({
+        method: "post",
+        url: "/ProviderDashboard/GetStatuswiseProviderRequests",
+        data: { StatusArray: statusarray, currentPage: 1 },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#tableContainer").html(response);
+                localStorage.setItem("CurrentStatusType", Statusname);
+                $(`#${id}`).addClass('ActiveStatus');
+                //DisPlayPagination()
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
+
+const GetRequestorTypeWiseProviderRequests = (currentPage, totalPages, isPageAction, type) => {
+
+    console.log(currentPage, totalPages, isPageAction)
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
+
+  
+
+    let searchString = $("#searchinp").val();
+    let statusarray = [];
+    let StatusBtns = $(".big-btn");
+
+    for (let i = 1; i < StatusBtns.length + 1; i++) {
+
+
+
+        if ($(`#big-btn${i}`).hasClass('ActiveStatus')) {
+
+
+
+            if (i == 1) {                     /*New*/
+                statusarray = ['1'];
+            } else if (i == 2) {              /*Unpaid*/
+                statusarray = ['2']
+            } else if (i == 3) {              /*Active*/
+                statusarray = ['3', '4'];
+            } else if (i == 4) {              /*Conclude*/
+                statusarray = ['5']
+            } else if (i == 5) {               /*ToClose*/
+                statusarray = ['6', '7', '8']
+            } else if (i == 6) {                /*Pending*/
+                statusarray = ['9']
+            }
+
+            break;
+        }
+
+
+
+
+
+    }
+
+    let RequestorTypeBtns = $(".ReqType-Heading");
+
+
+    if (type != '') {
+        console.log("hiee", type)
+
+        for (let i = 0; i < RequestorTypeBtns.length; i++) {
+
+            $(`#ReqType-Heading${i}`).removeClass("ActiveRequestorType")
+
+
+        }
+        $(`#ReqType-Heading${type}`).addClass("ActiveRequestorType")
+    }
+    else {
+
+        console.log("hi", type)
+
+        for (let i = 0; i < RequestorTypeBtns.length; i++) {
+
+
+            if ($(`#ReqType-Heading${i}`).hasClass('ActiveRequestorType')) {
+
+                type = i;
+                break;
+
+            }
+
+        }
+
+    }
+
+
+
+
+    $.ajax({
+        method: "post",
+        url: "/ProviderDashboard/GetRequestorTypeWiseProviderRequests",
+        data: { type: type, StatusArray: statusarray, Name: searchString, currentPage: currentPage },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#tableContainer").html(response);
+                $("#searchinp").val(searchString);
+                //$("DashRegionSelector").append($("<option selected></option>").text(physician.Firstname + " " + physician.Lastname).val(region))
+
+                //DisPlayPagination()
+            }
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+
 }

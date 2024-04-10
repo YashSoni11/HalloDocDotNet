@@ -17,6 +17,8 @@ namespace HalloDoc_BAL.Interface
         public User GetUserByAspNetId(string aspnetuserid);
 
         public Admin GetAdminByAspNetId(string aspnetuserid);
+
+        public Physician GetPhysicianByAspNetId(string aspnetuserid);
         public void StoreResetid(string resetid, DateTime expirationTime, string email);
 
         public Aspnetuser GetAspnetuserByResetId(string resetid);
@@ -40,11 +42,13 @@ namespace HalloDoc_BAL.Interface
 
         public List<Region> GetAllRegions();
 
-        public int GetAspNetUserRoleById(string aspnetuserid);
+        //public int GetAspNetUserRoleById(string aspnetuserid);
 
         public LoggedInUser GetLoggedInUserFromJwt(string token);
 
         public bool IsTokenExpired(string token);
+
+        public string GetAspNetRolesByAspNetId(string id);
 
     }
 }

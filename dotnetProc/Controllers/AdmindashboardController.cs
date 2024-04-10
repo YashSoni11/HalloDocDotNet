@@ -217,9 +217,28 @@ namespace dotnetProc.Controllers
 
         //[AuthManager("Admin")]
         [HttpGet]
-        [Route("Viewnotes/{id}")]
+        [Route("Admin/Viewnotes/{id}",Name ="AdminviewNotes")]
+        [Route("Provider/Viewnotes/{id}", Name = "ProviderviewNotes")]
         public IActionResult GetRequestNotes(string id)
         {
+
+
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            if (loggedInUser.Role == "Physician")
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+            else if (loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }
+
+
             int newrequestid = int.Parse(id);
 
             RequestNotes requestNotes = _dashboard.GetNotesFromRequestId(newrequestid);
@@ -247,9 +266,11 @@ namespace dotnetProc.Controllers
             }
             else
             {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
                 int newrequestid = id;
 
-                bool response = _dashboard.SaveNotesChanges(notesView.AdditionalNotes, newrequestid);
+                bool response = _dashboard.SaveNotesChanges(notesView.AdditionalNotes, newrequestid,loggedInUser.Role, loggedInUser.UserId);
 
                 if (response)
                 {
@@ -259,7 +280,17 @@ namespace dotnetProc.Controllers
                 {
                     TempData["ShowNegativeNotification"] = "Data Not Saved!";
                 }
-                return RedirectToAction("GetRequestNotes", new { id = newrequestid });
+
+                if(loggedInUser.Role == "Admin")
+                {
+                  return RedirectToRoute("AdminviewNotes", new { id = newrequestid });
+
+                }
+                else
+                {
+                    return RedirectToRoute("ProviderviewNotes", new { id = newrequestid });
+
+                }
 
             }
 
@@ -267,10 +298,23 @@ namespace dotnetProc.Controllers
 
         //[AuthManager("Admin")]
         [HttpGet]
-        [Route("Admindashboard/Viewrequest/{requestid}")]
+        [Route("Admindashboard/Viewrequest/{requestid}",Name ="AdminViewCase")]
+        [Route("ProviderDashboard/Viewrequest/{requestid}",Name="ProviderViewCase")]
         public IActionResult ViewRequest(string requestid)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
 
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            if(loggedInUser.Role == "Physician")
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+            else if(loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }
 
             int newrequestid = int.Parse(requestid);
 
@@ -282,8 +326,8 @@ namespace dotnetProc.Controllers
         }
 
         [HttpPost]
-        [Route("Admindashboard/Viewrequest/{requestid}")]
-        public IActionResult ViewRequest(ClientRequest clientRequest, string requestid)
+
+        public IActionResult PostViewRequest(ClientRequest clientRequest, string requestid)
         {
             int newrequestid = int.Parse(requestid);
 
@@ -561,10 +605,12 @@ namespace dotnetProc.Controllers
         }
 
         //[AuthManager("Admin")]
-        [Route("Admindashboard/Viewdocuments/{id}")]
         [HttpGet]
+        [Route("Admin/Viewdocuments/{id}",Name ="AdminViewUploads")]
+        [Route("Provider/Viewdocuments/{id}",Name ="ProviderViewUploads")]
         public IActionResult ViewUploads(int id)
         {
+
             string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
@@ -576,7 +622,16 @@ namespace dotnetProc.Controllers
             }
             else
             {
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
+            if (loggedInUser.Role == "Physician")
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+            else if (loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }
                 TempData["requestId"] = id;
 
                 List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
@@ -609,6 +664,9 @@ namespace dotnetProc.Controllers
             //int requestId = int.Parse(paths[paths.Length - 1]);
 
 
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
 
             bool response = true;
 
@@ -619,9 +677,18 @@ namespace dotnetProc.Controllers
 
             }
 
+            if (loggedInUser.Role == "Admin")
+            {
+                return RedirectToRoute("AdminViewUploads", new { id = id });
 
+            }
+            else
+            {
+                return RedirectToRoute("ProviderViewUploads", new { id = id });
 
-            return RedirectToAction("ViewUploads", new { id = id });
+            }
+
+           
 
 
         }
@@ -665,8 +732,9 @@ namespace dotnetProc.Controllers
 
         }
 
-        [Route("Admindashboard/sendorder/{id}")]
         [HttpGet]
+        [Route("Admin/sendorder/{id}",Name ="AdminSendOrder")]
+        [Route("Provider/sendorder/{id}",Name ="ProviderSendOrder")]
         public IActionResult SendOrder(string id)
         {
             string token = HttpContext.Request.Cookies["jwt"];
@@ -681,6 +749,15 @@ namespace dotnetProc.Controllers
             else
             {
 
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                if (loggedInUser.Role == "Physician")
+                {
+                    ViewData["RoleName"] = "Phy";
+                }
+                else if (loggedInUser.Role == "Admin")
+                {
+                    ViewData["RoleName"] = "Adm";
+                }
 
                 List<Healthprofessionaltype> healthprofessionaltypes = _dashboard.GetOrderDetails();
                 Order order = new Order();
@@ -692,18 +769,21 @@ namespace dotnetProc.Controllers
         }
 
 
-        [Route("Admindashboard/postorder/{id}")]
+        
         [HttpPost]
 
         public IActionResult PostOrder(Order order, string id)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+
 
             if (ModelState.IsValid)
             {
 
                 int requestId = int.Parse(id);
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-                bool response = _dashboard.PostOrderById(requestId, order);
+                bool response = _dashboard.PostOrderById(requestId, order,loggedInUser.Role,loggedInUser.UserId);
 
 
                 if (response == true)
@@ -718,7 +798,16 @@ namespace dotnetProc.Controllers
 
 
                 }
-                return RedirectToAction("Dashboard");
+                if (loggedInUser.Role == "Physician")
+                {
+                    return RedirectToRoute("ProviderSendOrder", new { id = id });
+                }
+                else 
+                {
+                    return RedirectToRoute("AdminSendOrder", new { id = id });
+
+                }
+                
             }
             else
             {
@@ -1110,9 +1199,22 @@ namespace dotnetProc.Controllers
         }
 
         [HttpGet]
-        [Route("Admindashboard/encounterform/{id}")]
+        [Route("Admin/encounterform/{id}",Name ="AdminEncounterForm")]
+        [Route("Provider/encounterform/{id}",Name ="ProviderEncounterForm")]
         public IActionResult EncounterForm(string id)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            if(loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }else if(loggedInUser.Role == "Physician")
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+
 
             Encounterform encounterform1 = _dashboard.GetEncounterFormByRequestId(id);
 
@@ -1131,6 +1233,9 @@ namespace dotnetProc.Controllers
         public IActionResult SaveEncounterForm(Encounterform encounterform, string requestId)
         {
 
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
             encounterform.Requestid = int.Parse(requestId);
 
@@ -1145,7 +1250,17 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Something went wrong!";
             }
 
-            return RedirectToAction("EncounterForm", new { id = requestId });
+            if (loggedInUser.Role == "Admin")
+            {
+                return RedirectToRoute("AdminEncounterForm", new { id = requestId });
+            }
+            else 
+            {
+                return RedirectToRoute("ProviderEncounterForm", new { id = requestId });
+            }
+
+
+            
         }
 
 
@@ -1337,7 +1452,7 @@ namespace dotnetProc.Controllers
 
                 bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, patientReqByAdmin.Location);
 
-                bool response1 = _dashboard.SaveNotesChanges(patientReqByAdmin.Notes, patientRequest.Requestid);
+                bool response1 = _dashboard.SaveNotesChanges(patientReqByAdmin.Notes, patientRequest.Requestid,"Admin",loggedInUser.UserId);
 
                 if (response == false || patientRequest == null)
                 {

@@ -50,7 +50,7 @@ namespace HalloDoc_BAL.Interface
 
         public void DeleteAllFiles(int[] IdArray);
 
-        public bool PostOrderById(int id, Order order);
+        public bool PostOrderById(int id, Order order, string Role, int UserId);
 
         public string GetAdminUsername(int id);
 
@@ -109,7 +109,7 @@ namespace HalloDoc_BAL.Interface
 
         public string GetExcelFile(List<DashboardRequests> dashboardRequests);
 
-        public bool SaveNotesChanges(string nots, int requestId);
+        public bool SaveNotesChanges(string nots, int requestId,string Role,int UserId);
 
 
         public string GetConfirmationNumberByRequestId(int requestId);

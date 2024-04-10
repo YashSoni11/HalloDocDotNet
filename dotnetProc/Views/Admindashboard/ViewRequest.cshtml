@@ -15,8 +15,18 @@
 
     <partial name="_DashNavbar" />
 
+    if(ViewData["RoleName"] == "Phy")
+    {
+        <partial name="_ProviderDashTabs" />
 
+    }
+    else if(ViewData["RoleName"] == "Adm")
+    {
     <partial name="_Dashtabs" />
+        
+    }
+
+
 
     <div id="ViewCaseModalContainer">
     </div>
@@ -30,9 +40,20 @@
                     <h2>New Request</h2>
                     <span class="mx-1 RequestorTypeHeading" style="background-color:@colors[Model.RequestTypeId-1]">@requestorType[Model.RequestTypeId-1]</span>
                 </div>
+
+                @if(ViewData["RoleName"] == "Phy")
+                {
+                    <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="ProviderDashboard">
+                        <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                    </a>
+
+                }else if(ViewData["RoleName"] == "Adm")
+                {
                 <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="Admindashboard">
                     <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
                 </a>
+                    
+                }
             </div>
 
 
@@ -149,12 +170,26 @@
                         <div class="row justify-content-end p-3">
                             <div class="d-flex col-4 justify-content-end" style="column-gap: 1rem;">
                                
-                                @if(Model.Status == 1)
+                                @if( ViewData["RoleName"] == "Adm" && Model.Status == 1)
                                 {
                                  <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="GetAssginCasePopup(@Model.RequestId,'ViewCaseModalContainer')">Assign</button>
                                     
                                 }
-                                <a asp-action="GetRequestNotes" asp-controller="Admindashboard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</a>
+
+                                @if(ViewData["RoleName"] == "Adm")
+                                {
+                                    
+                                    <a asp-action="GetRequestNotes" asp-controller="Admindashboard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</a>
+                                }else if(ViewData["RoleName"] == "Phy")
+                                {
+                                    <a asp-action="GetRequestNotes" asp-controller="ProviderDashBoard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</a>
+
+                                }
+
+
+                                @if(ViewData["RoleName"] == "Adm")
+                                {
+                                    
                                 <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
                                 <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
                                 <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
@@ -165,6 +200,9 @@
                                     <button type="button" onclick="GetCancleCase(@Model.RequestId,'ViewCaseModalContainer')" class="btn btn-danger  text-white darkInfo-btn">Cancle</button>
                                     
                                 }
+                                }
+
+
 
                             </div>
                         </div>

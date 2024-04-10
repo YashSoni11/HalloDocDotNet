@@ -25,6 +25,7 @@ var con = builder.Configuration.GetConnectionString("PSSQL");
 builder.Services.AddDbContext<HalloDocContext>(q => q.UseNpgsql(con));
 builder.Services.AddScoped<IAccount, Account>();
 builder.Services.AddScoped<IAdmindashboard, Admindashboard>();
+builder.Services.AddScoped<IProviderDashboard, ProviderDashboardServices>();
 builder.Services.AddScoped<IPatientReq,PatientRequest>();
 builder.Services.AddScoped<IProvider,ProviderServices>();
 builder.Services.AddScoped<IAuthManager,AuthManager>();

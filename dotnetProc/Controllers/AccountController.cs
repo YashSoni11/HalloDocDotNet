@@ -149,10 +149,10 @@ namespace dotnetProc.Controllers
                 }
                 else
                 {
-                        
-                   int userRole = _account.GetAspNetUserRoleById(aspuser.Id);
+                        string userRole = _account.GetAspNetRolesByAspNetId(aspuser.Id); ;
+                //int userRole = _account.GetAspNetUserRoleById(aspuser.Id);
 
-                    User user = _account.GetUserByAspNetId(aspuser.Id);
+                User user = _account.GetUserByAspNetId(aspuser.Id);
 
 
                      if (user != null)
@@ -163,7 +163,8 @@ namespace dotnetProc.Controllers
 
                        loggedInUser.UserId = user.Userid;
                        loggedInUser.Firstname = user.Firstname;
-                       loggedInUser.Role = userRole;
+                    //loggedInUser.Role = userRole;
+                    loggedInUser.Role = userRole;
 
 
                          var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
@@ -185,10 +186,11 @@ namespace dotnetProc.Controllers
 
                            loggedInUser.UserId = admin.Adminid;
                            loggedInUser.Firstname = admin.Firstname;
-                           loggedInUser.Role = userRole;
+                           //loggedInUser.Role = userRole;
+                          loggedInUser.Role = userRole;
 
 
-                            var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
+                        var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
 
                              Response.Cookies.Append("jwt", jwtToken);
 
@@ -203,9 +205,38 @@ namespace dotnetProc.Controllers
                          }
                          else
                          {
+
+
+                            Physician physician = _account.GetPhysicianByAspNetId(aspuser.Id);
+                          if(physician != null)
+                        {
+                            LoggedInUser loggedInUser = new LoggedInUser();
+
+                            loggedInUser.UserId = physician.Physicianid;
+                            loggedInUser.Firstname = physician.Firstname;
+                            //loggedInUser.Role = userRole;
+                            loggedInUser.Role = userRole;
+
+
+                            var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
+
+                            Response.Cookies.Append("jwt", jwtToken);
+
+
+
+
+
+                            TempData["UserName"] = loggedInUser.Firstname;
+                            TempData["ShowPositiveNotification"] = "Logged In Successfully";
+                            return RedirectToAction("Dashboard", "ProviderDashboard");
+                        }
+                        else
+                        {
+
                           TempData["ShowNegativeNotification"] = "Something went wrong!";
 
                           return View();
+                        }
 
                          }
 

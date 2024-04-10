@@ -485,7 +485,7 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public bool SaveNotesChanges(string notes, int requestId)
+        public bool SaveNotesChanges(string notes, int requestId,string Role,int UserId)
         {
             try
             {
@@ -493,14 +493,39 @@ namespace HalloDoc_BAL.Repositery
 
                 if(requestNotes == null) {
                     Requestnote requestnote = new Requestnote();
-                    requestnote.Adminnotes = notes;
                     requestnote.Requestid = requestId;
+                    requestnote.Createddate = DateTime.Now;
+
+                    if(Role == "Admin")
+                    {
+                       requestnote.Adminnotes = notes;
+                        requestnote.Createdby = _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
+                    else
+                    {
+                        requestnote.Physiciannotes = notes;
+                        requestnote.Createdby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
                     _context.Requestnotes.Add(requestnote);
                 }
                 else
                 {
-                    requestNotes.Adminnotes = notes;
-                _context.Requestnotes.Update(requestNotes);
+                    if (Role == "Admin")
+                    {
+                        requestNotes.Adminnotes = notes;
+                        requestNotes.Modifiedby = _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
+                    else
+                    {
+                        requestNotes.Physiciannotes = notes;
+                        requestNotes.Modifiedby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
+                    requestNotes.Modifieddate = DateTime.Now;
+                    _context.Requestnotes.Update(requestNotes);
 
 
                 }
@@ -639,7 +664,7 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-        public bool PostOrderById(int id, Order order)
+        public bool PostOrderById(int id, Order order,string Role,int UserId)
         {
 
 
@@ -649,7 +674,18 @@ namespace HalloDoc_BAL.Repositery
 
                 Orderdetail orderdetail = new Orderdetail();
 
+
+                if(Role == "Admin")
+                {
+                    orderdetail.Createdby = _context.Admins.Where(q => q.Adminid == UserId).Select(r => r.Aspnetuserid).FirstOrDefault();
+                }else if(Role == "Physician")
+                {
+                    orderdetail.Createdby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+                }
+
                 orderdetail.Requestid = id;
+                orderdetail.Vendorid = int.Parse(order.Business);
                 orderdetail.Faxnumber = order.FaxNumber;
                 orderdetail.Businesscontact = order.BusinessContact;
                 orderdetail.Noofrefill = int.Parse(order.RefillNumber);

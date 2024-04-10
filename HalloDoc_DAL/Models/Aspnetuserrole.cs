@@ -17,7 +17,7 @@ public partial class Aspnetuserrole
 
     [Key]
     [Column("roleid")]
-    public int Roleid { get; set; }
+    public string Roleid { get; set; }
 
     [ForeignKey("Userid")]
     [InverseProperty("Aspnetuserroles")]
