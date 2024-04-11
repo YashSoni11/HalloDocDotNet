@@ -31,6 +31,8 @@ namespace HalloDoc_DAL.ProviderViewModels
         public List<WeekWisePhysicianShifts> weekWiseShifts { get;set; }
 
         public List<MonthWisePhysicianShifts> monthWiseShifts { get; set; }
+
+        public string Role { get; set; }
     }
     public class ShiftInformation
     {

@@ -25,7 +25,7 @@ namespace HalloDoc_BAL.Interface
 
         public int AddUser(string AspNetUserId, PatientReq pr, AddressModel Location);
 
-        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state);
+        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state,string Role);
 
         public bool AddRequestClient(PatientReq patientReq,int requestId, AddressModel Location);
 

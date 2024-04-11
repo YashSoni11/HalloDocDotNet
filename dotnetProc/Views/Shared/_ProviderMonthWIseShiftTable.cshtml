@@ -3,7 +3,6 @@
 
 
 <div id="AllShiftViewContainer">
-
 </div>
 
 
@@ -16,15 +15,15 @@
 
 
 
-        
+
 
             <button type="button" style="border-radius:50px;" class="btn btn-info   text-white darkInfo-btn "
-                    onclick="GetNextMonthWiseShiftTableView(@Model.lastDate.AddMonths(-1).Month,@Model.lastDate.AddMonths(-1).Year,'@Model.lastDate.AddMonths(-1).ToString("MMM yyyy")')">
+                    onclick="GetNextMonthWiseProviderShiftTableView(@Model.lastDate.AddMonths(-1).Month,@Model.lastDate.AddMonths(-1).Year,'@Model.lastDate.AddMonths(-1).ToString("MMM yyyy")')">
                 <i class="bi bi-chevron-left"></i>
             </button>
             <i class="bi bi-calendar3 mx-1" style="color:var(--pi-label-color);"></i>
             <button type="button" style="border-radius:50px;" class="btn btn-info  text-white darkInfo-btn "
-                    onclick="GetNextMonthWiseShiftTableView(@Model.lastDate.AddMonths(1).Month,@Model.lastDate.AddMonths(1).Year,'@Model.lastDate.AddMonths(1).ToString("MMM yyyy")')">
+                    onclick="GetNextMonthWiseProviderShiftTableView(@Model.lastDate.AddMonths(1).Month,@Model.lastDate.AddMonths(1).Year,'@Model.lastDate.AddMonths(1).ToString("MMM yyyy")')">
                 <i class="bi bi-chevron-right"></i>
             </button>
 
@@ -34,11 +33,7 @@
 
         </div>
 
-        <div class="col-9 d-flex justify-content-end" style="column-gap:5px;">
-            <button type="button" id="DayBtn" class="btn btn-outline-info   text-info lightInfo-btn " onclick="GetDayWiseShiftTableView('DayBtn')">Day</button>
-            <button type="button" id="WeekBtn" class="btn btn-outline-info   text-info lightInfo-btn " onclick="GetWeekWiseShiftTableView('WeekBtn')">Week</button>
-            <button type="button" id="MonthBtn" class="btn btn-outline-info   text-info lightInfo-btn " onclick="GetMonthWiseShiftTableView('MonthBtn')">Month</button>
-        </div>
+  
 
     </div>
 
@@ -74,7 +69,7 @@
                             {
                                 if (cuurentDay == 1)
                                 {
-                                    SkipFirstDays = i-1;
+                                    SkipFirstDays = i - 1;
                                 }
                                 <th class="text-center" style="background-color:#edacea">@cuurentDay</th>
                                 cuurentDay++;
@@ -90,13 +85,13 @@
                     {
                         <tr>
 
-                            @for (int j =  -SkipFirstDays; j <cuurentDay ; j++)
+                            @for (int j = -SkipFirstDays; j < cuurentDay; j++)
                             {
                                 if (i == 4 && j > 0 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation != null && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count > 4)
                                 {
-                                    <th  class="text-center align-middle" style="cursor:pointer;" onclick="GetAllShiftViewModal(@j,@Model.lastDate.Month,@Model.lastDate.Year)">View All</th>
+                                    <th class="text-center align-middle" style="cursor:pointer;" onclick="GetAllShiftViewModal(@j,@Model.lastDate.Month,@Model.lastDate.Year)">View All</th>
                                 }
-                               else if (j > 0 && Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
+                                else if (j > 0 && Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
                                 {
 
                                     <th style="background-color:@statusColor[Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].status];height:4rem;width:20rem;cursor:pointer;" onclick="GetViewShiftModel(@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].ShiftDetailId)">
@@ -134,7 +129,7 @@
                     @for (int i = 0; i < 5; i++)
                     {
                         <tr>
-                            @for (int j = cuurentDay - 7 ; j < cuurentDay; j++)
+                            @for (int j = cuurentDay - 7; j < cuurentDay; j++)
                             {
                                 if (Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
                                 {
@@ -142,7 +137,7 @@
                                     <th style="background-color:@statusColor[Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].status];height:4rem;width:20rem;cursor:pointer" onclick="GetViewShiftModel(@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].ShiftDetailId)">
 
 
-                                        @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].startTime.ToString("hh:mm tt") - 
+                                        @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].startTime.ToString("hh:mm tt") -
                                         @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].endTime.ToString("hh:mm tt")/@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].PhysicianName
 
                                     </th>
@@ -176,7 +171,7 @@
                     @for (int i = 0; i < 5; i++)
                     {
                         <tr>
-                            @for (int j = cuurentDay - 7 ; j < cuurentDay ; j++)
+                            @for (int j = cuurentDay - 7; j < cuurentDay; j++)
                             {
                                 if (Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
                                 {
@@ -216,7 +211,7 @@
                     @for (int i = 0; i < 5; i++)
                     {
                         <tr>
-                            @for (int j = cuurentDay - 7 ; j < cuurentDay ; j++)
+                            @for (int j = cuurentDay - 7; j < cuurentDay; j++)
                             {
                                 if (cuurentDay <= daysinmonth && Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
                                 {
@@ -235,57 +230,6 @@
                             }
                         </tr>
                     }
-                    <tr>
-                        @for (int i = 0; i < 7; i++)
-                        {
-                            if (cuurentDay <= daysinmonth)
-                            {
-
-                                DateTime currentDate = new DateTime(Model.lastDate.Year, Model.lastDate.Month, cuurentDay);
-                                int isDayOfWeek = (int)currentDate.DayOfWeek;
-
-                                @if (isDayOfWeek == i)
-                                {
-                                    <th class="text-center" style="background-color:#edacea">@cuurentDay </th>
-                                    cuurentDay++;
-                                }
-                                else
-                                {
-                                    <th></th>
-                                }
-                            }
-                            else
-                            {
-                                <th></th>
-                            }
-
-                        }
-                    </tr>
-                    @for (int i = 0; i < 5; i++)
-                    {
-                        <tr>
-                            @for (int j = cuurentDay - 7 ; j < cuurentDay; j++)
-                            {
-                                if (cuurentDay <= daysinmonth && Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
-                                {
-
-                                    <th style="background-color:@statusColor[Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].status];height:4rem;width:20rem;cursor:pointer" onclick="GetViewShiftModel(@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].ShiftDetailId)">
-
-                                        @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].startTime.ToString("hh:mm tt") -
-                                        @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].endTime.ToString("hh:mm tt")/@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].PhysicianName
-                                    </th>
-                                }
-                                else
-                                {
-                                    <th style="height:4rem;width:20rem;"></th>
-
-                                }
-                            }
-                        </tr>
-                    }
-                    @if (cuurentDay <= daysinmonth)
-                    {
-                        
                     <tr>
                         @for (int i = 0; i < 7; i++)
                         {
@@ -320,20 +264,71 @@
                                 if (cuurentDay <= daysinmonth && Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
                                 {
 
-                                        <th style="background-color:@statusColor[Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].status];height:4rem;width:20rem;cursor:pointer" onclick="GetViewShiftModel(@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].ShiftDetailId)">
+                                    <th style="background-color:@statusColor[Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].status];height:4rem;width:20rem;cursor:pointer" onclick="GetViewShiftModel(@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].ShiftDetailId)">
 
-                                            @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].startTime.ToString("hh:mm tt") -
-                                            @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].endTime.ToString("hh:mm tt")/@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].PhysicianName
+                                        @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].startTime.ToString("hh:mm tt") -
+                                        @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].endTime.ToString("hh:mm tt")/@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].PhysicianName
                                     </th>
                                 }
                                 else
                                 {
-                                        <th style="height:4rem;width:20rem;"></th>
+                                    <th style="height:4rem;width:20rem;"></th>
 
                                 }
                             }
                         </tr>
                     }
+                    @if (cuurentDay <= daysinmonth)
+                    {
+
+                        <tr>
+                            @for (int i = 0; i < 7; i++)
+                            {
+                                if (cuurentDay <= daysinmonth)
+                                {
+
+                                    DateTime currentDate = new DateTime(Model.lastDate.Year, Model.lastDate.Month, cuurentDay);
+                                    int isDayOfWeek = (int)currentDate.DayOfWeek;
+
+                                    @if (isDayOfWeek == i)
+                                    {
+                                        <th class="text-center" style="background-color:#edacea">@cuurentDay </th>
+                                        cuurentDay++;
+                                    }
+                                    else
+                                    {
+                                        <th></th>
+                                    }
+                                }
+                                else
+                                {
+                                    <th></th>
+                                }
+
+                            }
+                        </tr>
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <tr>
+                                @for (int j = cuurentDay - 7; j < cuurentDay; j++)
+                                {
+                                    if (cuurentDay <= daysinmonth && Model.monthWiseShifts[j - 1].DayNumber != -1 && Model.monthWiseShifts[j - 1].MonthWiseShiftInformation.Count >= i + 1)
+                                    {
+
+                                        <th style="background-color:@statusColor[Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].status];height:4rem;width:20rem;cursor:pointer" onclick="GetViewShiftModel(@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].ShiftDetailId)">
+
+                                            @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].startTime.ToString("hh:mm tt") -
+                                            @Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].endTime.ToString("hh:mm tt")/@Model.monthWiseShifts[j - 1].MonthWiseShiftInformation[i].PhysicianName
+                                        </th>
+                                    }
+                                    else
+                                    {
+                                        <th style="height:4rem;width:20rem;"></th>
+
+                                    }
+                                }
+                            </tr>
+                        }
                     }
 
                 </tbody>

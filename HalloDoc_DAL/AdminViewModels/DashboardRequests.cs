@@ -42,5 +42,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public int RequestTypeId { get; set; }
 
+        public int CallType { get; set; }
+
     }
 }

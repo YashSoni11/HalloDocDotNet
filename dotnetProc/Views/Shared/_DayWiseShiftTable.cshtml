@@ -3,6 +3,11 @@
 
 
 @{
+
+    @if(ViewData["RoleName"] == "Phy")
+    {
+        <h1>Chal Hatttt</h1>
+    }
     string[] statusColor = { "#edacea", "#67eb98" };
     <div class="row mt-3 p-3">
 
@@ -36,7 +41,7 @@
     <div class="col-12">
 
 
-       @* <table class="table table-bordered table-responsive" >
+        <table class="table table-bordered table-responsive" >
             <thead>
                 <tr style="background-color:#444444;color:white;">
                     <th style="width:100%">STAFF</th>
@@ -103,11 +108,11 @@
                 }
 
             </tbody>
-        </table>*@
+        </table>
 
 
 
-            <table class="table table-bordered table-responsive">
+         @*   <table class="table table-bordered table-responsive">
                 <thead>
                     <tr style="border-top:none;">
                         <th class="p-0" style="height:3rem;"></th>
@@ -145,7 +150,7 @@
                         </tr>
                     }
                 </tbody>
-        </table>
+        </table>*@
 
 
     </div>

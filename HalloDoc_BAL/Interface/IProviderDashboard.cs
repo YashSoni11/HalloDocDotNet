@@ -1,4 +1,6 @@
 ﻿using HalloDoc_DAL.AdminViewModels;
+using HalloDoc_DAL.Models;
+using HalloDoc_DAL.ProviderViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,21 @@ namespace HalloDoc_BAL.Interface
 
 
         public bool AcceptRequest(int requestId, int physicianId);
+
+
+        public bool SaveTypeOfCareService(int requestId,bool HouseCall);
+
+        public bool HouseCallActionService(int id);
+
+        public ConcludeCare GetConcludeCareDetails(int requestId);
+
+        public bool ConcludeCareService(ConcludeCare concludeCare, int requestId, int UserId, string Role);
+
+
+        public List<Region> GetAllPhysicianRegions(int PhysicinId);
+
+        public List<MonthWisePhysicianShifts> GetPhysicianMonthWiseShifts(int date, int month, int year, int PhysicianId);
+
 
     }
 }

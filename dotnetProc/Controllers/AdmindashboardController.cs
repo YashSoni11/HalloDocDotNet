@@ -13,6 +13,7 @@ using ClosedXML.Excel;
 using System.Security.Principal;
 
 
+
 namespace dotnetProc.Controllers
 {
     public class AdmindashboardController : Controller
@@ -1109,6 +1110,10 @@ namespace dotnetProc.Controllers
         public IActionResult SendAgrrementLink(SendAgreement sendAgreement, string requestId)
         {
 
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
             string subject = "Service Agreement";
 
             string link = "https://localhost:7008/Reviewagreement/" + requestId;
@@ -1127,7 +1132,10 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Something went wrong!";
             }
 
-            return RedirectToAction("Dashboard");
+
+
+
+            return loggedInUser.Role == "Admin" ? RedirectToAction("Dashboard") : RedirectToAction("Dashboard", "ProviderDashBoard");
         }
 
 
@@ -1156,6 +1164,7 @@ namespace dotnetProc.Controllers
 
             bool istokenExpired = _account.IsTokenExpired(token);
 
+                    LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
             if (istokenExpired)
             {
                 return Json(new { code = 401 });
@@ -1184,15 +1193,31 @@ namespace dotnetProc.Controllers
                     {
                         TempData["ShowNegativeNotification"] = "Somthing went wrong!";
                     }
+                    if (loggedInUser.Role == "Admin")
+                    {
+                        return RedirectToAction("Dashboard");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Dashboard","ProviderDashboard");
 
-                    return RedirectToAction("Dashboard");
+                    }
+                   
                 }
                 else
                 {
                     TempData["ShowNegativeNotification"] = "Not Valid Information!";
                 }
 
-                return RedirectToAction("Dashboard");
+                if (loggedInUser.Role == "Admin")
+                {
+                    return RedirectToAction("Dashboard");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "ProviderDashboard");
+
+                }
             }
 
 
@@ -1203,6 +1228,9 @@ namespace dotnetProc.Controllers
         [Route("Provider/encounterform/{id}",Name ="ProviderEncounterForm")]
         public IActionResult EncounterForm(string id)
         {
+
+
+
             string token = HttpContext.Request.Cookies["jwt"];
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
@@ -1283,8 +1311,9 @@ namespace dotnetProc.Controllers
             int newid = int.Parse(requestId);
 
             bool? response = _dashboard.IsEncounterFormFinlized(newid);
+            int status = _dashboard.GetRequestStatusByRequestId(newid);
 
-            return Json(new { isfinelized = response });
+            return Json(new { isfinelized = response, status = status }) ;
         }
 
         //[AuthManager("Admin")]
@@ -1368,9 +1397,22 @@ namespace dotnetProc.Controllers
 
         //[AuthManager("Admin")]
         [HttpGet]
-        [Route("Admindashboard/reqbyadmin")]
+        [Route("Admin/reqbyadmin",Name ="AdminPatientReq")]
+        [Route("Provider/reqbyadmin",Name ="ProviderPatientReq")]
         public IActionResult PatientReqByAdmin()
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            if(loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }else if(loggedInUser.Role == "Physician")
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+
             return View("CreateRequestbyAdmin");
         }
 
@@ -1381,6 +1423,7 @@ namespace dotnetProc.Controllers
             string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
+            LoggedInUser loggedInUser = new LoggedInUser();
 
             if (istokenExpired || token.IsNullOrEmpty())
             {
@@ -1389,7 +1432,7 @@ namespace dotnetProc.Controllers
             }
             else if (ModelState.IsValid)
             {
-
+                loggedInUser =  _account.GetLoggedInUserFromJwt(token);
 
                 bool isemailblocked = _patientReq.IsEmailBlocked(patientReqByAdmin.Email);
                 bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(patientReqByAdmin.Phonenumber);
@@ -1446,9 +1489,8 @@ namespace dotnetProc.Controllers
                     Symptoms = patientReqByAdmin.Notes
                 };
 
-                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-                Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, "Patient", patientReqByAdmin.Location.State);
+                Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, "Patient", patientReqByAdmin.Location.State,loggedInUser.Role);
 
                 bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, patientReqByAdmin.Location);
 
@@ -1462,14 +1504,21 @@ namespace dotnetProc.Controllers
                 {
                     TempData["ShowPositiveNotification"] = "Request Submited Successfully.";
                 }
+                if(loggedInUser.Role == "Admin")
+                {
+                   return RedirectToAction("Dashboard", "Admindashboard");
 
-                return RedirectToAction("Dashboard", "Admindashboard");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "ProviderDashboard");
+                }
 
 
             }
             else
             {
-                return RedirectToAction("PatientReqByAdmin");
+             return  loggedInUser.Role == "Admin"?  RedirectToRoute("AdminPatientReq"): RedirectToRoute("ProviderPatientReq");
             }
         }
 

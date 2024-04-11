@@ -80,7 +80,34 @@ showModal();
 
 
 
+const makeBold = (id) => {
 
+
+    let radBtn = $(".rdInput");
+
+
+   
+
+    //radBtn.each(function (index, inp) {
+
+    //    inp.checked = false;
+    //})
+
+
+    //document.getElementById(`${id}`).checked = true;
+
+
+    $('.rdLabel').css({ 'background-color': 'white', 'color': '#0dcaf0' })
+
+
+    if ($(`#${id}`)[0].checked) {
+        $(`#${id}`).next('label').css({ 'background-color': '#0dcaf0', 'color': 'white' })
+
+    }
+
+
+
+}
 
 
 const changeTheme = () => {
@@ -588,7 +615,11 @@ const GetEncounterCaseView = (id,modalId,IsAdmin) => {
         data: { requestId: id },
         success: function (response) {
             console.log(response)
-            if (response.isfinelized) {
+            if (response.status == 3) {
+                $("#TypeOfCareModal").modal("show");
+                $("#TypeCareRequestId").val(id);
+            }
+            else if (response.isfinelized) {
 
 
                 $(`#${modalId}`).modal("show");
@@ -1358,6 +1389,34 @@ const GetShiftModalView = () => {
 
 }
 
+const GetProviderShiftModalView = () => {
+
+    $.ajax({
+        method: "post",
+        url: "/ProviderDashboard/GetProviderCreateShiftView",
+        data: {},
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#ShiftModalContainer").html(response);
+
+                $.validator.unobtrusive.parse($("#ProviderCreateShiftForm"));
+                $("#ShiftModal").modal("show")
+
+            }
+
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
+}
+
 const GetViewShiftModel = (shiftDetailId) => {
 
 
@@ -1513,6 +1572,29 @@ const CreateShift = () => {
 
         $("#CreateShiftForm").submit();
     }
+}
+
+const ProviderCreatShift = () => {
+
+    if ($("#RepeatSwitch")[0].checked == true) {
+
+        if ($("#DaysInputs")[0].checked == false) {
+
+            $("#dayValidation").text("Please Select Minimum 1 Day.")
+        } else {
+            console.log("9")
+            $("#ProviderCreateShiftForm").submit();
+            $("#dayValidation").text("")
+
+
+        }
+    } else {
+
+        $("#dayValidation").text("")
+
+        $("#CreateShiftForm").submit();
+    }
+
 }
 
 const hadleDaysCheck = () => {
@@ -1875,4 +1957,33 @@ const GetRequestorTypeWiseProviderRequests = (currentPage, totalPages, isPageAct
     })
 
 
+}
+
+const GetNextMonthWiseProviderShiftTableView = (month, year, dateHeading) => {
+
+  
+
+    $.ajax({
+
+        url: "/ProviderDashboard/GetMonthWiseProviderShiftTableView",
+        method: "post",
+        data: { date: 1, month: month, year: year},
+        success: function (response) {
+
+            $("#ShiftTableContainer").html(response);
+
+
+
+            $("#DateHeader").text(dateHeading)
+
+
+            localStorage.setItem("currentDate", 1);
+            localStorage.setItem("currentMonth", month);
+            localStorage.setItem("currentYear", year);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
 }

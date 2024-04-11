@@ -117,7 +117,17 @@
 
                             </td>
                             <td class="align-middle">@dr.Address </td>
-                            <td class="align-middle"></td>
+                            <td class="align-middle">
+                             
+                                @if(dr.status == 4 && dr.CallType == 1)
+                                {
+                                    <form method="post" asp-action="PostHouseCallAction" asp-controller="ProviderDashboard" asp-route-id="@dr.Requestid">
+                                    <button type="submit" class="btn btn-info  text-white darkInfo-btn">House Call</button>
+                                    </form>
+
+                                }
+
+                            </td>
                             
                             <td class="align-middle">
                                 <button type="button" class="btn bg-transparent action-btn "><i class="bi bi-person mx-1"></i> Provider</button>
@@ -178,7 +188,7 @@
                                             }
                                             if (status[dr.status] == "Conclude")
                                             {
-                                                <li><button class="dropdown-item" style="color:var(--pi-label-color)" onclick="GetEncounterCaseView(@dr.Requestid,'DashBoardModalPopUp')"><i class="bi bi-file-earmark-text mx-1"></i>Conclude Care</button></li>
+                                                <li><a asp-action="ConcludeCareView" asp-controller="ProviderDashboard" asp-route-id="@dr.Requestid" class="dropdown-item" style="color:var(--pi-label-color)" ><i class="bi bi-file-earmark-text mx-1"></i>Conclude Care</a></li>
                                             }
                                             
                                         }
@@ -437,9 +447,9 @@
     <div class="row">
         <nav aria-label="Page navigation example mt-3">
             <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
-                <li class="page-item" onclick="GetFiltteredRequests(@Model.currentPage-1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
+                <li class="page-item" onclick="GetRequestorTypeWiseProviderRequests(@Model.currentPage-1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
                 <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
-                <li class="page-item" onclick="GetFiltteredRequests(@Model.currentPage+1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+                <li class="page-item" onclick="GetRequestorTypeWiseProviderRequests(@Model.currentPage+1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
             </ul>
         </nav>
 

@@ -1,7 +1,9 @@
-﻿using HalloDoc_BAL.Interface;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
+using HalloDoc_DAL.ProviderViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace HalloDoc_BAL.Repositery
 {
-    public class ProviderDashboardServices:IProviderDashboard
+    public class ProviderDashboardServices : IProviderDashboard
     {
 
         private readonly HalloDocContext _context;
@@ -24,26 +26,27 @@ namespace HalloDoc_BAL.Repositery
 
         public List<DashboardRequests> GetAllProviderRequests(int physicianId)
         {
-            List<DashboardRequests> requests = _context.Requests.Where(q=>q.Physicianid == physicianId).Select(r => new DashboardRequests
+            List<DashboardRequests> requests = _context.Requests.Where(q => q.Physicianid == physicianId).Select(r => new DashboardRequests
             {
                 Requestid = r.Requestid,
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
-        
+
                 Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
-            
+                CallType = r.Calltype == null ? 0 : (int)r.Calltype,
+
                 Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
                 status = r.Status,
                 Requesttype = r.Requesttypeid,
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
-                
+
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
-                
+
             }).ToList();
 
             return requests;
         }
 
-        public List<DashboardRequests> GetStatuswiseProviderRequestsService(string[] statusArray,int PhysicianId)
+        public List<DashboardRequests> GetStatuswiseProviderRequestsService(string[] statusArray, int PhysicianId)
         {
 
             Dictionary<int, int> status = new Dictionary<int, int>();
@@ -64,6 +67,7 @@ namespace HalloDoc_BAL.Repositery
                 Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
                 Requestdate = r.Createddate,
                 Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
+                CallType = r.Calltype == null ? 0 : (int)r.Calltype,
                 status = r.Status,
                 Requesttype = r.Requesttypeid,
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
@@ -108,6 +112,7 @@ namespace HalloDoc_BAL.Repositery
                 Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
                 Requestdate = r.Createddate,
                 Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
+                CallType = r.Calltype == null ? 0 : (int)r.Calltype,
                 status = r.Status,
                 Requesttype = r.Requesttypeid,
                 Requestortype = _context.Requesttypes.Where(q => q.Requesttypeid == r.Requesttypeid).Select(q => q.Name).FirstOrDefault(),
@@ -145,7 +150,7 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-        public bool AcceptRequest(int requestId,int physicianId)
+        public bool AcceptRequest(int requestId, int physicianId)
         {
 
             try
@@ -174,14 +179,252 @@ namespace HalloDoc_BAL.Repositery
 
 
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
 
 
                 return false;
-                   
+
             }
         }
+
+        public bool SaveTypeOfCareService(int requestId, bool HouseCall)
+        {
+
+
+            try
+            {
+
+
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+
+
+                if (HouseCall)
+                {
+                    request.Calltype = 1;
+                    request.Status = 4;
+                }
+                else
+                {
+
+                    request.Calltype = 2;
+                    request.Status = 5;
+                }
+
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog();
+                requeststatuslog.Status = request.Status;
+                requeststatuslog.Requestid = request.Requestid;
+                requeststatuslog.Createddate = DateTime.Now;
+
+                _context.Requests.Update(request);
+                _context.Requeststatuslogs.Add(requeststatuslog);
+
+                _context.SaveChanges();
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+
+            }
+
+        }
+
+        public bool HouseCallActionService(int id)
+        {
+
+
+            try
+            {
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == id);
+                request.Status = 5;
+                request.Modifieddate = DateTime.Now;
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog();
+                requeststatuslog.Status = 5;
+                requeststatuslog.Requestid = request.Requestid;
+                requeststatuslog.Createddate = DateTime.Now;
+
+
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+
+        public ConcludeCare GetConcludeCareDetails(int requestId)
+        {
+
+            string PatientName = _context.Requestclients.Where(q => q.Requestid == requestId).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();
+
+
+            bool isFinlize = (bool)_context.Encounterforms.Where(q => q.Requestid == requestId).Select(q => q.IsFinelized).FirstOrDefault();
+
+            ConcludeCare concludeCare = new ConcludeCare()
+            {
+                RequestId = requestId,
+                PatientName = PatientName,
+                IsFinilize = isFinlize,
+            };
+
+            return concludeCare;
+        }
+
+
+        public bool ConcludeCareService(ConcludeCare concludeCare, int requestId, int UserId, string Role)
+        {
+            try
+            {
+
+
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+
+                request.Status = 8;
+                request.Modifieddate = DateTime.Now;
+
+                Requestnote requestNotes = _context.Requestnotes.Where(q => q.Requestid == requestId).FirstOrDefault();
+
+                if (requestNotes == null)
+                {
+                    requestNotes = new Requestnote();
+
+                    requestNotes.Physiciannotes = concludeCare.ProviderNotes;
+                    requestNotes.Requestid = requestId;
+                    requestNotes.Createdby = Role == "Admin" ? _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault() : _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+                    requestNotes.Createddate = DateTime.Now;
+                    _context.Requestnotes.Add(requestNotes);
+                }
+                else
+                {
+                    requestNotes.Physiciannotes = concludeCare.ProviderNotes;
+                    requestNotes.Requestid = requestId;
+                    requestNotes.Modifiedby = Role == "Admin" ? _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault() : _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+                    requestNotes.Modifieddate = DateTime.Now;
+                    _context.Requestnotes.Update(requestNotes);
+                }
+
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog();
+
+                requeststatuslog.Status = request.Status;
+                requeststatuslog.Requestid = request.Requestid;
+                requeststatuslog.Createddate = DateTime.Now;
+
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+
+                return false;
+            }
+        }
+
+
+
+
+        public List<Region> GetAllPhysicianRegions(int PhysicinId)
+        {
+
+            List<Physicianregion> physicianregions = _context.Physicianregions.Where(q=>q.Physicianid == PhysicinId).ToList();  
+
+
+            List<Region> regions = new List<Region>();  
+
+
+            foreach(Physicianregion physicianregion in physicianregions)
+            {
+
+                Region region = _context.Regions.FirstOrDefault(q => physicianregion.Regionid == q.Regionid);
+
+                    regions.Add(region);
+            }
+
+            return regions;
+        }
+
+
+        public List<MonthWisePhysicianShifts> GetPhysicianMonthWiseShifts(int date, int month, int year, int PhysicianId)
+        {
+
+            try
+            {
+            List<MonthWisePhysicianShifts> MonthWisePhysicianShiftsList = new List<MonthWisePhysicianShifts>();
+
+
+            DateTime startOfMonth = new DateTime(year, month, date);
+
+            int daysInMonth = DateTime.DaysInMonth(startOfMonth.Year, startOfMonth.Month);
+
+            for (int i = 1; i <= daysInMonth; i++)
+            {
+
+                DateTime currentDate = new DateTime(startOfMonth.Year, startOfMonth.Month, i);
+
+                  
+
+                List<Shiftdetail> shiftdetails = _context.Shiftdetails.Where(q => q.Shiftdate.Day == i && q.Shiftdate.Month == currentDate.Month && q.Shiftdate.Year == currentDate.Year && q.Isdeleted == false).ToList();
+                MonthWisePhysicianShifts monthWisePhysicianShift = new MonthWisePhysicianShifts();
+
+                if (shiftdetails.Count > 0)
+                {
+                    monthWisePhysicianShift.DayNumber = i;
+                    List<ShiftInformation> shifts = new List<ShiftInformation>();
+                    foreach (Shiftdetail shiftdetail in shiftdetails)
+                    {
+                        if(_context.Shifts.Where(q=>q.Shiftid == shiftdetail.Shiftid).Select(q=>q.Physicianid == PhysicianId).FirstOrDefault())
+                        {
+
+                        ShiftInformation shiftInformation = new ShiftInformation();
+                        shiftInformation.ShiftDetailId = shiftdetail.Shiftdetailid;
+                        shiftInformation.startTime = shiftdetail.Starttime;
+                        shiftInformation.endTime = shiftdetail.Endtime;
+                        shiftInformation.status = shiftdetail.Status;
+
+                        int physicinId = _context.Shifts.Where(q => q.Shiftid == shiftdetail.Shiftid).Select(q => q.Physicianid).FirstOrDefault();
+                        shiftInformation.PhysicianName = _context.Physicians.Where(q => q.Physicianid == physicinId).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();
+
+                        shifts.Add(shiftInformation);
+                        }
+
+                    }
+                    monthWisePhysicianShift.MonthWiseShiftInformation = shifts;
+                }
+                else
+                {
+                    monthWisePhysicianShift.DayNumber = -1;
+
+                }
+
+                MonthWisePhysicianShiftsList.Add(monthWisePhysicianShift);
+            }
+
+            return MonthWisePhysicianShiftsList;
+
+            }catch(Exception ex)
+            {
+                return new List<MonthWisePhysicianShifts>();
+            }
+        }
+
 
 
     }

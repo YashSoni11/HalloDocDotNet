@@ -114,5 +114,8 @@ namespace HalloDoc_BAL.Interface
 
         public string GetConfirmationNumberByRequestId(int requestId);
 
+
+        public int GetRequestStatusByRequestId(int requestId);
+
     }
 }

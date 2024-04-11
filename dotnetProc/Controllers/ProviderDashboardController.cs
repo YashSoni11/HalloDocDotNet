@@ -1,8 +1,10 @@
 ﻿using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.AdminViewModels;
+using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace dotnetProc.Controllers
 {
@@ -208,6 +210,217 @@ namespace dotnetProc.Controllers
         {
             return RedirectToRoute("ProviderEncounterForm", new { id = id });
         }
-       
+
+        [HttpGet]
+
+        public IActionResult PatientReqByAdmin()
+        {
+            return RedirectToRoute("ProviderPatientReq");
+        }
+
+        [HttpPost]
+
+        public IActionResult SaveTypeOfCare(int RequestId,bool HouseCall) 
+        {
+
+
+            bool response = _providerDashboard.SaveTypeOfCareService(RequestId, HouseCall);
+
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Care Selected Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing Went Wrong";
+            }
+
+            return RedirectToAction("Dashboard");
+        }
+
+
+        [HttpPost]
+
+        public IActionResult PostHouseCallAction(int id)
+        {
+
+
+            bool response = _providerDashboard.HouseCallActionService(id);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Moved To Conclude Sate Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing Went Wrong";
+            }
+
+            return RedirectToAction("Dashboard");
+
+
+        }
+
+        [HttpGet]
+        [Route("Provider/ConcludeCare/{id}")]
+        public IActionResult ConcludeCareView(int id)
+        {
+            
+
+            ConcludeCare concludeCare = _providerDashboard.GetConcludeCareDetails(id);
+
+            return View("ConcludeCare",concludeCare);
+        }
+
+
+        [HttpPost]
+
+        public IActionResult PostConcludeCare(ConcludeCare concludeCare, int id)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            bool response = _providerDashboard.ConcludeCareService(concludeCare, id,loggedInUser.UserId,loggedInUser.Role);
+
+
+            if(response)
+            {
+                TempData["ShowPositiveNotification"] = "Request Concluded Successfully.";
+            }
+            else
+            {
+                TempData["ShowNeagativeNotification"] = "Something Went Wrong!";
+            }
+
+            return RedirectToAction("Dashboard");
+        }
+
+
+        [HttpGet]
+
+        public IActionResult ProviderProfile()
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            return RedirectToRoute("ProviderProviderProfile", new { id = loggedInUser.UserId });
+        }
+
+
+        [HttpGet]
+        [Route("Provider/MySchedule")]
+        public IActionResult ProviderScheduling()
+        {
+            ShiftModel shift = new ShiftModel();
+
+          
+            shift.Today = DateTime.Now;
+         
+            //shift.lastDate = DateTime.Now;
+
+            return View("ProviderScheduling", shift);
+        }
+
+
+    
+
+        public IActionResult GetMonthWiseProviderShiftTableView(int date, int month, int year)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            if(loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }
+            else
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+
+            List<MonthWisePhysicianShifts> MonthWiseshifts = _providerDashboard.GetPhysicianMonthWiseShifts(date, month, year, loggedInUser.UserId);
+            Physicianshifts shift = new Physicianshifts();
+            shift.monthWiseShifts = MonthWiseshifts;
+
+            shift.lastDate = new DateTime(year, month, date);
+
+            return PartialView("_ProviderMonthWiseShiftTable", shift);
+        }
+
+        public IActionResult GetProviderCreateShiftView()
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            CreateShift createShift = new CreateShift();
+
+            createShift.regions = _providerDashboard.GetAllPhysicianRegions(loggedInUser.UserId);
+           
+
+
+            return PartialView("_ProviderCreateShiftModal", createShift);
+        }
+
+        public IActionResult CreateShift(CreateShift createShift)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+
+                if (_provider.IsValidShift(createShift))
+                {
+                    TempData["ShowNegativeNotification"] = "Shift Already Exists!";
+                    return RedirectToAction("ProviderScheduling");
+
+                }
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.CreateShiftService(createShift, loggedInUser.UserId);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Shift Created Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("ProviderScheduling");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("ProviderScheduling");
+            }
+
+
+
+
+        }
+
     }
 }

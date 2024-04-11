@@ -1,4 +1,5 @@
-﻿using HalloDoc_DAL.Models;
+﻿using HalloDoc_DAL.AdminViewModels;
+using HalloDoc_DAL.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,9 @@ namespace HalloDoc_DAL.ProviderViewModels
         public string? MedicalLicenseNumber { get; set; }
         public string? NPINumber { get; set; }
         public string? SyncEmail { get; set; }
+
+        public List<SelectedRegions> SelectedRegions { get; set; }
+
     }
 
 
@@ -120,5 +124,5 @@ namespace HalloDoc_DAL.ProviderViewModels
         public string? AdminNotes { get; set; }
     }
 
-
+ 
 }
