@@ -1,0 +1,143 @@
+﻿@using HalloDoc_DAL.Models;
+@using HalloDoc_DAL.ViewModels;
+@model HalloDoc_DAL.ProviderViewModels.ProviderDashboard;
+
+@{
+    Layout = "_Layout";
+}
+
+<div id="DashBoardModalPopUp">
+</div>
+
+<partial name="_TypeOfCareModal"/>
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_ProviderDashTabs" />
+
+
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0" style="background-color: var(--pi-form-back-color);">
+
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
+                    <button id="big-btn1" type="button" class="btn  big-btn w-100 ActiveStatus " style="background-color:#c6e5ff;border:1px solid #0d6efd" onclick="GetStatuswiseProviderRequests(['1'],'big-btn1','New')">
+                        <h6 style="color:#0d6efd;"><i class="bi bi-envelope-open"></i>New</h6>
+                        <h4 style="color:#0d6efd;" class="mt-1 text-primary">@Model.RequestTypeCounts.Newrequestcount</h4>
+                    </button>
+                </div>
+             
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
+                    <button id="big-btn2" type="button" class="btn  big-btn w-100 " style="background-color:#f0e6f3;border:1px solid #6506a1" onclick="GetStatuswiseProviderRequests(['9'],'big-btn2','Pending')">
+
+                        <h6 style="color:#6506a1"><i class="bi bi-hourglass-top"></i>Pending</h6>
+                        <h4 style="color:#6506a1" class="mt-1">@Model.RequestTypeCounts.Pendingrequestcount</h4>
+
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4  mt-2">
+                    <button id="big-btn3" type="button" class="btn  big-btn w-100 " style="background-color:#e4f5ed;border:1px solid #198754" onclick="GetStatuswiseProviderRequests(['3','4'],'big-btn3','Active')">
+                        <h6 style="color:#198754"><i class="bi bi-check2-circle"></i>Active</h6>
+                        <h4 style="color:#198754" class="mt-1 text-success">@Model.RequestTypeCounts.Activerequestcount</h4>
+                    </button>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2 ">
+                    <button id="big-btn4" type="button" class="btn big-btn w-100 " style="background-color:#f7ecf7;border:1px solid #f92cf3" onclick="GetStatuswiseProviderRequests(['5'],'big-btn4','Conclude')">
+                        <h6 style="color:#f92cf3"><i class="bi bi-arrow-counterclockwise"></i>Conclude</h6>
+                        <h4 style="color:#f92cf3" class="mt-1">@Model.RequestTypeCounts.Concluderequestcount</h4>
+                    </button>
+                </div>
+              
+
+            </div>
+
+
+
+            <div class="row justify-content-between" style="margin-top:2rem; align-items:center;">
+
+
+                <div class="col-xl-4 col-lg-4 col-md-3 col-sm-2 col-2">
+
+                    <h3 class="Req-Heading1">Patients <span class="StatusName fs-5" style="color:#5e5bff;">(New)</span></h3>
+                    <h6 class="Req-Heading2" style="display:none;">Patients <span class="StatusName" style="color:#5e5bff;">(New)</span></h6>
+
+
+                </div>
+
+
+                <div class="col-xl-3 col-lg-3 col-md-5 col-sm-6 col-7 d-flex ReqHandleBtnContainer">
+                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="GetSendLinkPopUp('DashBoardModalPopUp')"><i class="bi bi-send mx-1"></i><span class="text-vanish">Send Link</span></button>
+                    <a style='width: 100%;' asp-action="PatientReqByAdmin" asp-controller="ProviderDashboard" class="btn btn-info mt-3 text-white"><i class="bi bi-file-text mx-1"></i><span class="text-vanish">Create Request</span></a>
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+        <div id="tableContainer" class="container-fluid mt-4" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;padding:1rem;background-color: var(--pi-back-color);">
+
+
+            @*<partial name="_Requeststable"/>*@
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+@section Scripts{
+
+    @{
+
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+<script>
+
+
+    $(document).ready(function () {
+
+        GetStatuswiseProviderRequests(['1'], 'big-btn1', 'New');
+
+        if (!localStorage.getItem("ActiveLink")) {
+            localStorage.setItem("ActiveLink", "dash-tab");
+            document.getElementById("dash-tab").classList.add("active")
+
+        }
+
+        //handleNavChange("dash-tab");
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+
+
+</script>
+

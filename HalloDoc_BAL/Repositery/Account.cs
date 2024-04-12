@@ -60,6 +60,11 @@ namespace HalloDoc_BAL.Repositery
 
 
         }
+        public string GetAspNetRolesByAspNetId(string id)
+        {
+            return _context.Aspnetuserroles.Where(q=>q.Userid == id).Select(q=>q.Roleid).FirstOrDefault();
+        }
+
 
         public string GetHashedPassword(string password)
         {
@@ -98,13 +103,13 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
-        public int GetAspNetUserRoleById(string aspnetuserid)
-        {
+        //public int GetAspNetUserRoleById(string aspnetuserid)
+        //{
              
-              int role = _context.Aspnetuserroles.Where(q=>q.Userid == aspnetuserid).Select(r=>r.Roleid).FirstOrDefault();
+        //      int role = _context.Aspnetuserroles.Where(q=>q.Userid == aspnetuserid).Select(r=>r.Roleid).FirstOrDefault();
 
-              return role;
-        }
+        //      return role;
+        //}
 
 
         public LoggedInUser GetLoggedInUserFromJwt(string token)
@@ -116,7 +121,7 @@ namespace HalloDoc_BAL.Repositery
 
             int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
             string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
-            int Role = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value);
+            string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
 
             LoggedInUser loggedInUser = new LoggedInUser()
             {
@@ -202,6 +207,11 @@ namespace HalloDoc_BAL.Repositery
             Admin user = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspnetuserid);
 
             return user;
+        }
+
+        public Physician GetPhysicianByAspNetId(string aspnetuserid)
+        {
+            return _context.Physicians.FirstOrDefault(q => q.Aspnetuserid == aspnetuserid);
         }
 
 

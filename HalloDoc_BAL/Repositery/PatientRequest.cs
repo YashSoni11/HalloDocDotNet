@@ -279,7 +279,7 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state)
+        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state,string Role)
         {
 
 
@@ -294,11 +294,20 @@ namespace HalloDoc_BAL.Repositery
                 Lastname = cm.LastName,
                 Phonenumber = cm.PhoneNumber,
                 Createddate = DateTime.Now,
-                Status = 1,
                 Confirmationnumber = confirmatinumber,
                 Email = cm.Email,
                 Createduserid = userId
             };
+
+            if(Role == "Physician")
+            {
+                request.Status = 9;
+                request.Physicianid = userId;
+            }
+            else
+            {
+                request.Status = 1;
+            }
 
             _context.Requests.Add(request);
 
@@ -421,7 +430,7 @@ namespace HalloDoc_BAL.Repositery
 
         public void AddConcieargeData(ConcieargeModel concieargeModel,int user)
         {
-            Request patientRequest = AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State);
+            Request patientRequest = AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State,"Patient");
 
             bool response = AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
 

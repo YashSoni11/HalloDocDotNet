@@ -24,8 +24,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
 
         [Required(ErrorMessage = "Businesscontact is required.")]
-        [DataType(DataType.PhoneNumber)]
-        [Phone(ErrorMessage = "Please Enter Valid contact")]
+       
         public string BusinessContact { get; set; }
 
 

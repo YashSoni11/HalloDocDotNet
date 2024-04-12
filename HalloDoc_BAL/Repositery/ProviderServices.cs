@@ -13,7 +13,6 @@ using SixLabors.ImageSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -93,6 +92,27 @@ namespace HalloDoc_BAL.Repositery
 
 
         }
+
+
+        public List<Region> GetAllRegionsByPhysicianId(int PhysicinId)
+        {
+
+            List<Physicianregion> physicianregions = _context.Physicianregions.Where(q => q.Physicianid == PhysicinId).ToList();
+
+
+            List<Region> regions = new List<Region>();
+
+
+            foreach (Physicianregion physicianregion in physicianregions)
+            {
+
+                Region region = _context.Regions.FirstOrDefault(q => physicianregion.Regionid == q.Regionid);
+
+                regions.Add(region);
+            }
+
+            return regions;
+        }
         public ProviderProfileView GetProviderData(int providerId)
         {
             Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == providerId);
@@ -118,6 +138,7 @@ namespace HalloDoc_BAL.Repositery
                 MedicalLicenseNumber = physician.Medicallicense,
                 NPINumber = physician.Npinumber,
                 SyncEmail = physician.Syncemailaddress,
+                Regions = GetAllRegionsByPhysicianId(providerId),
             };
 
             ProviderMailingAndBillingInfo providerMailingAndBillingInfo = new ProviderMailingAndBillingInfo()
@@ -139,6 +160,10 @@ namespace HalloDoc_BAL.Repositery
                 SignatureImage = GetImageBytesFromFile(physician.Signature),
 
             };
+
+
+
+
 
             providerProfileView.AccountInfo = providerAccountInfo;
             providerProfileView.ProviderMailingAndBillingInfo = providerMailingAndBillingInfo;
@@ -213,6 +238,25 @@ namespace HalloDoc_BAL.Repositery
                 physician.Medicallicense = pi.MedicalLicenseNumber;
                 physician.Npinumber = pi.NPINumber;
                 physician.Syncemailaddress = pi.SyncEmail;
+
+
+                for (int i = 0; i < pi.SelectedRegions.Count; i++)
+                {
+                    SelectedRegions selectedRegion = pi.SelectedRegions[i];
+
+                    if (selectedRegion.IsSelected == true && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId) == false))
+                    {
+                        Adminregion adminregion = new Adminregion();
+                        adminregion.Regionid = (int)selectedRegion.regionId;
+                        adminregion.Adminid = provideId;
+                        _context.Adminregions.Add(adminregion);
+                    }
+                    else if (selectedRegion.IsSelected == false && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId) == true))
+                    {
+                        Physicianregion physicianregion = _context.Physicianregions.FirstOrDefault(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId);
+                        _context.Physicianregions.Remove(physicianregion);
+                    }
+                }
 
 
                 _context.Physicians.Update(physician);

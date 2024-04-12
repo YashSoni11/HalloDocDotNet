@@ -79,6 +79,11 @@ namespace HalloDoc_BAL.Repositery
             return _context.Requests.Where(q => q.Requestid == id).Select(r => r.Confirmationnumber).FirstOrDefault();
         }
 
+        public int GetRequestStatusByRequestId(int requestId)
+        {
+            return _context.Requests.Where(q=>q.Requestid == requestId).Select(q=>q.Status).FirstOrDefault();
+        }
+
 
         public List<DashboardRequests> GetAllRequests()
         {
@@ -96,6 +101,7 @@ namespace HalloDoc_BAL.Repositery
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
                 Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
+                CallType = r.Calltype == null?0: (int)r.Calltype,
                 Notes  = _context.Requeststatuslogs.Where(q=>q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
               {
                 AdminId = r.Adminid,
@@ -103,6 +109,8 @@ namespace HalloDoc_BAL.Repositery
                 PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
                 TransferedDate = r.Createddate,
                 Description = r.Notes
+                
+                
             }).ToList(),
 
             }).ToList();
@@ -264,6 +272,7 @@ namespace HalloDoc_BAL.Repositery
                 Address = r.Street + "," + r.City + "," + r.State + "," + r.Zipcode,
                 Requestdate = _context.Requests.Where(q => r.Requestid == q.Requestid).Select(q => q.Createddate).FirstOrDefault(),
                 Phone = r.Phonenumber,
+
                 status = _context.Requests.Where(q => q.Requestid == r.Requestid).Select(r => r.Status).FirstOrDefault(),
                 Requesttype = _context.Requests.Where(q => q.Requestid == r.Requestid).Select(r => r.Requesttypeid).FirstOrDefault(),
                 Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0)),
@@ -335,6 +344,7 @@ namespace HalloDoc_BAL.Repositery
                 Requestid = r.Requestid,
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                 Requestor = r.Firstname + " " + r.Lastname,
+                CallType = r.Calltype == null ? 0 : (int)r.Calltype,
                 Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
                 Requestdate = r.Createddate,
                 Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
@@ -381,6 +391,7 @@ namespace HalloDoc_BAL.Repositery
                 Requestdate = r.Createddate,
                 Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
                 status = r.Status,
+                CallType = r.Calltype == null?0: (int)r.Calltype,
                 Requesttype = r.Requesttypeid,
                 Requestortype = _context.Requesttypes.Where(q => q.Requesttypeid == r.Requesttypeid).Select(q => q.Name).FirstOrDefault(),
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
@@ -485,7 +496,7 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public bool SaveNotesChanges(string notes, int requestId)
+        public bool SaveNotesChanges(string notes, int requestId,string Role,int UserId)
         {
             try
             {
@@ -493,14 +504,39 @@ namespace HalloDoc_BAL.Repositery
 
                 if(requestNotes == null) {
                     Requestnote requestnote = new Requestnote();
-                    requestnote.Adminnotes = notes;
                     requestnote.Requestid = requestId;
+                    requestnote.Createddate = DateTime.Now;
+
+                    if(Role == "Admin")
+                    {
+                       requestnote.Adminnotes = notes;
+                        requestnote.Createdby = _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
+                    else
+                    {
+                        requestnote.Physiciannotes = notes;
+                        requestnote.Createdby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
                     _context.Requestnotes.Add(requestnote);
                 }
                 else
                 {
-                    requestNotes.Adminnotes = notes;
-                _context.Requestnotes.Update(requestNotes);
+                    if (Role == "Admin")
+                    {
+                        requestNotes.Adminnotes = notes;
+                        requestNotes.Modifiedby = _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
+                    else
+                    {
+                        requestNotes.Physiciannotes = notes;
+                        requestNotes.Modifiedby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                    }
+                    requestNotes.Modifieddate = DateTime.Now;
+                    _context.Requestnotes.Update(requestNotes);
 
 
                 }
@@ -639,7 +675,7 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-        public bool PostOrderById(int id, Order order)
+        public bool PostOrderById(int id, Order order,string Role,int UserId)
         {
 
 
@@ -649,7 +685,18 @@ namespace HalloDoc_BAL.Repositery
 
                 Orderdetail orderdetail = new Orderdetail();
 
+
+                if(Role == "Admin")
+                {
+                    orderdetail.Createdby = _context.Admins.Where(q => q.Adminid == UserId).Select(r => r.Aspnetuserid).FirstOrDefault();
+                }else if(Role == "Physician")
+                {
+                    orderdetail.Createdby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+                }
+
                 orderdetail.Requestid = id;
+                orderdetail.Vendorid = int.Parse(order.Business);
                 orderdetail.Faxnumber = order.FaxNumber;
                 orderdetail.Businesscontact = order.BusinessContact;
                 orderdetail.Noofrefill = int.Parse(order.RefillNumber);

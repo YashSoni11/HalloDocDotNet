@@ -1,0 +1,58 @@
+﻿
+
+
+<ul class="nav  Admintabs" id="pills-tab" role="tablist" style="background-color: var(--pi-form-back-color);height:4rem;">
+    <li class="nav-item" role="presentation">
+
+        <a class="nav-link  tab-link" id="dash-tab" asp-action="Dashboard" asp-controller="ProviderDashboard" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
+    </li>
+    <li class="nav-item" role="presentation">
+
+        <a class="nav-link  tab-link" id="dash-tab"  role="tab" aria-controls="pills-home" aria-selected="true">Invoicing</a>
+    </li>
+    <li class="nav-item" role="presentation">
+
+        <a asp-action="ProviderScheduling" asp-controller="ProviderDashboard" class="nav-link  tab-link" id="dash-tab" role="tab" aria-controls="pills-home" aria-selected="true">My Schedule</a>
+    </li>
+    <li class="nav-item" role="presentation">
+
+        <a asp-action="ProviderProfile" asp-controller="ProviderDashboard" class="nav-link  tab-link" id="dash-tab" role="tab" aria-controls="pills-home" aria-selected="true">My Profile</a>
+    </li>
+  
+
+
+
+   
+</ul>
+
+
+
+
+
+<div id="SideDashBar">
+    <div class="container-fluid">
+
+        <h6 id="username">Welcome,@Context.Request.Cookies["UserName"]</h6>
+    </div>
+    <nav class="nav flex-column" role="tablist">
+
+        <a class="nav-link  tab-link" id="dash-tab" asp-action="Dashboard" asp-controller="ProviderDashboard" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
+        <a class="nav-link  tab-link" id="dash-tab" asp-action="Dashboard" asp-controller="ProviderDashboard" role="tab" aria-controls="pills-home" aria-selected="true">Invoicing</a>
+        <a class="nav-link  tab-link" id="dash-tab" asp-action="Dashboard" asp-controller="ProviderDashboard" role="tab" aria-controls="pills-home" aria-selected="true">My Schedule</a>
+        <a class="nav-link  tab-link" id="dash-tab" asp-action="Dashboard" asp-controller="ProviderDashboard" role="tab" aria-controls="pills-home" aria-selected="true">My Profile</a>
+
+        
+      
+
+
+        @*
+        <a class="nav-link active tab-link" href="#" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
+        <a class="nav-link tab-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Provider Location</a>
+        <a class="nav-link tab-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">My Profile</a>
+        <a class="nav-link tab-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" a role="tab" aria-controls="pills-disabled" aria-selected="false">Providers</a>
+        <a class="nav-link tab-link" id="pills-partners-tab" data-bs-toggle="pill" data-bs-target="#pills-partners" a role="tab" aria-controls="pills-partners" aria-selected="false">Partners</a>
+        <a class="nav-link tab-link" id="pills-Access-tab" data-bs-toggle="pill" data-bs-target="#pills-Access" a role="tab" aria-controls="pills-Access" aria-selected="false">Access</a>
+        <a class="nav-link tab-link" id="pills-Records-tab" data-bs-toggle="pill" data-bs-target="#pills-Records" a role="tab" aria-controls="pills-Records" aria-selected="false">Records</a>*@
+    </nav>
+
+</div>

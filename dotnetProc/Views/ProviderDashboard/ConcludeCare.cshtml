@@ -1,0 +1,160 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.ConcludeCare;
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+<partial name="_ProviderDashTabs" />
+
+
+
+<form method="post" asp-action="PostConcludeCare" asp-controller="ProviderDashboard" asp-route-id="@Model.RequestId">
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>Conclude Care</h3>
+            <a asp-action="Dashboard" asp-controller="ProviderDashboard" class="btn btn-outline-info text-info lightInfo-btn">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </a>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
+
+
+            <div class="row  p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+               
+                <div class="col-12 d-flex justify-content-start flex-column p-4">
+
+                    <p>Patient Name</p>
+
+                    <div class="d-flex align-items-center">
+
+                        <h3 class="text-info ">@Model.PatientName</h3>
+                        
+                    </div>             
+
+                </div>
+
+
+                <div class="col-12 justify-content-between d-flex">
+
+                    <h5 style="width:14rem;">Encounter Form</h5>
+
+                    <div class="input-group mb-3 d-flex" style="justify-content:end;">
+
+
+                        <input type="file"  class="form-control" id="inputGroupFile02" onchange="uploadFile()" multiple style="display:none;">
+
+                        <label class="input-group-text  btn-outline-info text-info lightInfo-btn" for="inputGroupFile02" style="border-radius:9px;background-color:transparent;border:1px solid #0dcaf2;">
+                            <i class='bi bi-cloud-upload text-info mx-1'></i>Upload
+                        </label>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row" style="justify-content:center;">
+        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="border-radius: 0px 0px 0px 0px;background-color:var(--pi-form-back-color);">
+
+            <table class="table ReqtableContainer table-responsive">
+                <thead>
+                    <tr style="background-color:#f1f1f1;">
+                        <th class="reqtableHeader" scope="col">Documents </th>
+                        <th class="reqtableHeader" scope="col">Action </th>
+                        
+                    </tr>
+                </thead>
+                <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+                  @*  @for (int i = 0; i < Model.userAccesses.Count; i++)
+                    {
+*@
+
+
+
+                        <tr class="align-middle">
+                            
+
+                        </tr>
+                    @*}*@
+                </tbody>
+
+            </table>
+
+
+        </div>
+
+       
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 " >
+
+        <h6>Provider Notes</h6>
+        <div class="col-10">
+            <div class="form-floating mb-3">
+                <textarea asp-for="ProviderNotes"  class="form-control" placeholder="Leave a comment here"
+                          id="floatingTextarea2" style="height: 100px"></textarea>
+                <label for="floatingTextarea2">Provider Notes</label>
+
+            </div>
+        </div>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 d-flex justify-content-end" style="border-radius: 0px 0px 10px 10px;background-color:var(--pi-form-back-color);box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;">
+
+            <button type="submit" class="btn btn-info  text-white darkInfo-btn " onclick="()">Conclude Care</button>
+
+
+         </div>
+
+    </div>
+
+
+  
+
+</div>
+
+</form>
+
+<script>
+
+    $(document).ready(function () {
+
+        //handleNavChange('pills-Access-tab')
+     
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+
+
+
+
+</script>

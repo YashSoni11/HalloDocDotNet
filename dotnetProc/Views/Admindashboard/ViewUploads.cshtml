@@ -9,16 +9,35 @@
 <partial name="_DashNavbar" />
 
 
-<partial name="_Dashtabs" />
+
+@if (ViewData["RoleName"] == "Phy")
+{
+    <partial name="_ProviderDashTabs" />
+
+}
+else if (ViewData["RoleName"] == "Adm")
+{
+    <partial name="_Dashtabs" />
+
+}
 
 <div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
         <div class="d-flex col-8 justify-content-end  mb-3 mt-2">
-            <a class="nav-link" asp-controller="Admindashboard" asp-action="DashBoard">
-                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+            @if (ViewData["RoleName"] == "Phy")
+            {
+                <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="ProviderDashboard">
                     <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
-                </button>
-            </a>
+                </a>
+
+            }
+            else if (ViewData["RoleName"] == "Adm")
+            {
+                <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="Admindashboard">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </a>
+
+            }
         </div>
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 

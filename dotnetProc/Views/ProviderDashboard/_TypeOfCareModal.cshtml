@@ -1,0 +1,44 @@
+﻿
+<form method="post" asp-action="SaveTypeOfCare" asp-controller="ProviderDashboard">
+
+
+<div class="modal fade" id="TypeOfCareModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                    <h1 class="modal-title fs-5 text-white" id="staticBackdropLabel">Select Type Of Care</h1>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body  ">
+
+               
+                <input hidden id="TypeCareRequestId" name="RequestId" style="display:none;"/>
+
+                <div class="d-flex  justify-content-center" style="column-gap:1rem;">
+
+
+                    <input class="form-check-input rdInput" type="radio" value="true"  name="HouseCall" id="exampleRadios1" style="display:none" onclick="makeBold('exampleRadios1')">
+                    <label class="form-check-label rdLabel" for="exampleRadios1" style="width:6rem;height:2rem;display:flex;justify-content:center;align-items:center;border:1px solid #0dcaf0;border-radius:4px;white-space:unset;color:#0dcaf0">
+                        House Call
+                    </label>
+                        <input class="form-check-input rdInput " type="radio" value="false" name="HouseCall" id="exampleRadios2" style="display:none" onclick="makeBold('exampleRadios2')">
+                    <label class="form-check-label rdLabel" for="exampleRadios2" style="width:14rem;height:2rem;display:flex;justify-content:center;align-items:center;border:1px solid #0dcaf0;border-radius:4px;white-space:unset;color:#0dcaf0">
+                        Consult
+                    </label>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info  text-white darkInfo-btn">Save</button>
+
+                <button type="button" class="btn btn-outline-info lightInfo-btn"
+                        onclick="">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>

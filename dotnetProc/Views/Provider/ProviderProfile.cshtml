@@ -6,8 +6,20 @@
     Layout = "_Layout";
 }
 
+<partial name="_RequestToAdminModal" />
+
 <partial name="_DashNavbar" />
+
+  @if(ViewData["RoleName"] == "Phy")
+    {
+<partial name="_ProviderDashTabs" />
+
+    }
+    else if(ViewData["RoleName"] == "Adm")
+    {
 <partial name="_Dashtabs" />
+
+    }
 
 
 @{
@@ -23,16 +35,38 @@
             Edit Physician Account
         </h4>
         <div class="d-inline-flex">
-            <a class="nav-link" asp-controller="Admindashboard" asp-action="ProviderMenu">
-                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+            @if (ViewData["RoleName"] == "Phy")
+            {
+                <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="ProviderDashboard">
                     <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
-                </button>
-            </a>
+                </a>
+
+            }
+            else if (ViewData["RoleName"] == "Adm")
+            {
+                <a class="nav-link" asp-controller="Admindashboard" asp-action="ProviderMenu">
+                    <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                        <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                    </button>
+                </a>
+
+            }
+            
         </div>
     </div>
     <div class="container-fluid formContainer  justify-content-center mt-4" style="max-width:1000px">
 
         @*<div class="container-fluid">*@
+
+        <div class="row justify-content-end">
+
+         <div class="col-3">
+                <button data-bs-toggle="modal" data-bs-target="#RequestToAdminModal" class="btn btn-outline-info text-info lightInfo-btn" type="button">
+                   Request To Admin
+                </button>
+         </div>
+           
+        </div>
 
         <input id="adminId" hidden />
         <h5>Account Information</h5>
@@ -88,11 +122,14 @@
 
 
             <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+            @if (ViewData["RoleName"] == "Adm"){
+
                 <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
                 <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
                 <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
                     Cancle
                 </button>
+            }
                 <button type="button"
                         class="btn btn-outline-info text-info lightInfo-btn" onclick="ResetProviderPassword('hiddenProviderPassInp')">
                     Reset Password
@@ -160,6 +197,17 @@
                         </div>
                     </div>
                     <div class="col-6 d-flex justify-content-start flex-wrap mt-4">
+                        @for (int i = 0; i < Model.ProviderInformation.SelectedRegions.Count; i++)
+                        {
+
+                            <div class="form-check">
+                                <input asp-for="@Model.ProviderInformation.SelectedRegions[i].IsSelected" class="form-check-input tbDisabled" type="checkbox" id="flexCheckDefault">
+                                <input hidden asp-for="@Model.ProviderInformation.SelectedRegions[i].regionId" style="display:none" />
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    @Model.ProviderInformation.SelectedRegions[i].regionName
+                                </label>
+                            </div>
+                        }
                         <div>
                             @*    @foreach (var item in Model.RegionList)
                         {
@@ -172,6 +220,9 @@
                     </div>
                 </div>
             </fieldset>
+            @if(ViewData["RoleName"] == "Adm")
+            {
+                
             <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
                 <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn1" onclick="editDetails1()">Edit</button>
                 <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode1" style="display:none;" onclick="()">Save</button>
@@ -179,6 +230,7 @@
                     Cancle
                 </button>
             </div>
+            }
         </form>
         <br />
 
@@ -242,6 +294,8 @@
                         </div>
                     </div>
                 </div>
+            @if (ViewData["RoleName"] == "Adm"){
+
                 <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
                     <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn2" onclick="editDetails2()">Edit</button>
                     <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode2" style="display:none;" onclick="()">Save</button>
@@ -249,7 +303,7 @@
                         Cancle
                     </button>
                 </div>
-          
+          }
         </form>
 
         <div class="my-3"></div>
@@ -292,10 +346,14 @@
                         </label>
                     </div>
                 </div>
+                @if(ViewData["RoleName"] == "Adm")
+                {
+                    
                 <div class=" col-2">
                     <button id="creatCanvasId" type="button" class="btn btn-info  text-white darkInfo-btn" onclick="ShowCanvas()"><i class="bi bi-pencil-fill mx-1"></i>Create</button>
                     <button type="button" class="btn btn-info  text-white darkInfo-btn canvasGroup" onclick="HideCanvas()"><i class="bi bi-x-lg mx-1"></i>Cancle</button>
                 </div>
+                }
            
                 <div class="col-12 d-flex justify-content-center">
                     @if (Model.ProviderProfileInfo?.SignatureImage != null)
@@ -328,6 +386,7 @@
 
 
 
+            @if (ViewData["RoleName"] == "Adm"){
 
 
             <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
@@ -337,6 +396,7 @@
                     Cancle
                 </button>
             </div>
+            }
         </form>
 
         <div class="my-4"></div>
@@ -353,9 +413,13 @@
                 <div class="col-4">
                     <span>Independent Contract Agreement</span>
                 </div>
+                @if(ViewData["RoleName"] == "Adm")
+                {
+                    
                 <div class="col-2">
                     <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
                 </div>
+                }
                 <div class="col-2">
                     <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
                 </div>
@@ -369,9 +433,13 @@
                 <div class="col-4">
                     <span>Background Check</span>
                 </div>
-                <div class="col-2">
-                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                </div>
+                @if (ViewData["RoleName"] == "Adm")
+                {
+
+                    <div class="col-2">
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                    </div>
+                }
                 <div class="col-2">
                     <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
                 </div>
@@ -385,9 +453,13 @@
                 <div class="col-4">
                     <span>HIPAA Compliance</span>
                 </div>
-                <div class="col-2">
-                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                </div>
+                @if (ViewData["RoleName"] == "Adm")
+                {
+
+                    <div class="col-2">
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                    </div>
+                }
                 <div class="col-2">
                     <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">View</button>
                 </div>
@@ -401,9 +473,13 @@
                 <div class="col-4">
                     <span>Non-Disclosure Agreement</span>
                 </div>
-                <div class="col-2">
-                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                </div>
+                @if (ViewData["RoleName"] == "Adm")
+                {
+
+                    <div class="col-2">
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                    </div>
+                }
             </div>
         </div>
         <div class="row my-1">
@@ -414,22 +490,28 @@
                 <div class="col-4">
                     <span>License Document</span>
                 </div>
-                <div class="col-2">
-                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
-                </div>
+                @if (ViewData["RoleName"] == "Adm")
+                {
+
+                    <div class="col-2">
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                    </div>
+                }
             </div>
         </div>
         <div class="border-bottom border-3 mt-2"></div>
 
 
-
-        <div class="col-12 d-flex justify-content-end mt-3" style="column-gap:1rem;">
+        @if (ViewData["RoleName"] == "Adm")
+        {
+            <div class="col-12 d-flex justify-content-end mt-3" style="column-gap:1rem;">
 
             <form class="form-floating" asp-action="DeleteProviderAccount" asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post">
                 <button type="submit" class="btn btn-danger float-end m-1 ">Delete Account</button>
             </form>
             <button type="submit" class="btn btn-info  text-white darkInfo-btn" onclick="()">Save</button>
         </div>
+        }
         <br />
         @*</div>*@
     </div>

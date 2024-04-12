@@ -11,18 +11,37 @@
 <partial name="_DashNavbar" />
 
 
-<partial name="_Dashtabs" />
+
+@if (ViewData["RoleName"] == "Phy")
+{
+    <partial name="_ProviderDashTabs" />
+
+}
+else if (ViewData["RoleName"] == "Adm")
+{
+    <partial name="_Dashtabs" />
+
+}
 
 
 <div class="container-fluid mt-3 ">
     <div class="row justify-content-center">
         <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between mb-3 mt-2">
             <h2>Send Order</h2>
-            <a class="nav-link" asp-controller="Admindashboard" asp-action="Dashboard">
-                <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
+            @if (ViewData["RoleName"] == "Phy")
+            {
+                <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="ProviderDashboard">
                     <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
-                </button>
-            </a>
+                </a>
+
+            }
+            else if (ViewData["RoleName"] == "Adm")
+            {
+                <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="Admindashboard">
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+                </a>
+
+            }
         </div>
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
@@ -59,7 +78,7 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input id="BusinessContact" asp-for="BusinessContact" type="tel" class="form-control" id="floatingInput"
+                                <input id="BusinessContact" asp-for="BusinessContact" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Business contact</label>
                                 <span asp-validation-for="BusinessContact" class="text-danger"></span>
@@ -143,6 +162,15 @@
         let currEle = document.getElementById(prevId)
 
         currEle.classList.add("active");
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
           
     })
 

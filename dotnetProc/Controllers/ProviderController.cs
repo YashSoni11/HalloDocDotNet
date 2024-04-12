@@ -34,9 +34,23 @@ namespace dotnetProc.Controllers
         }
 
         [HttpGet]
-        [Route("providerprofile/{id}")]
+        [Route("Admin/providerprofile/{id}",Name ="AdminProviderProfile")]
+        [Route("Provider/Myprofile/{id}",Name ="ProviderProviderProfile")]
         public IActionResult ProviderProfile(int id)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            if(loggedInUser.Role == "Admin")
+            {
+                ViewData["RoleName"] = "Adm";
+            }else if(loggedInUser.Role == "Physician")
+            {
+                ViewData["RoleName"] = "Phy";
+            }
+
+
+
             ProviderProfileView providerProfileView = _provider.GetProviderData(id);
 
             providerProfileView.PhysicianId = id;
@@ -594,9 +608,10 @@ namespace dotnetProc.Controllers
         }
 
         [HttpGet]
-        [Route("scheduling")]
+        [Route("Admin/scheduling",Name ="AdminSchedule")]
+        [Route("Provider/MySchedule/{id}",Name ="ProviderSchedule")]
 
-        public IActionResult ProviderScheduling()
+        public IActionResult ProviderScheduling(int id)
         {
 
 
