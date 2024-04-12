@@ -10,6 +10,7 @@
 </div>
 
 <partial name="_TypeOfCareModal"/>
+<partial name="_TransferToAdminModal"/>
 
 <partial name="_DashNavbar" />
 
@@ -119,12 +120,12 @@
         GetStatuswiseProviderRequests(['1'], 'big-btn1', 'New');
 
         if (!localStorage.getItem("ActiveLink")) {
-            localStorage.setItem("ActiveLink", "dash-tab");
-            document.getElementById("dash-tab").classList.add("active")
+            localStorage.setItem("ActiveLink", "provider-dash-tab");
+            document.getElementById("provider-dash-tab").classList.add("active")
 
         }
 
-        //handleNavChange("dash-tab");
+        handleNavChange("provider-dash-tab");
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {

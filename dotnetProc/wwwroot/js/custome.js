@@ -971,7 +971,7 @@ const GetPhysicianByRegions = () => {
 
 
             var PhysicianData = JSON.parse(response);
-
+          
 
 
             let PhysicianDropdown = $("#PhysicianInp")
@@ -2021,4 +2021,14 @@ const GetNextMonthWiseProviderShiftTableView = (month, year, dateHeading) => {
         }
 
     })
+}
+
+const GetTransferAdminModalView = (id) => {
+
+
+
+
+    $("#TransferToAdminModalRequestId").val(id);
+
+    $('#TransferToAdminModal').modal('show')
 }

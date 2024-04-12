@@ -29,6 +29,8 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public string? PhysicinName { get; set;}    
 
+        public string? TrasferPhysicianName { get; set; }
+
         public int? AdminId { get; set;}
 
         public string? AdminName { get; set;}   
@@ -36,5 +38,7 @@ namespace HalloDoc_DAL.AdminViewModels
         public DateTime TransferedDate { get; set;}
 
         public string? Description { get; set;}
+
+        public bool? IsTransferToAdmin { get; set; }
     }
 }

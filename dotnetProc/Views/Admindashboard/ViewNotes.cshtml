@@ -73,8 +73,16 @@
                                             int i = 1;
                                             foreach(TransferNotes req in Model.requestnotes.TranferNotes)
                                             {
-                                              
-                                                <p>@i) Admin transfered to @req.PhysicinName on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </p>
+
+                                                if (req.IsTransferToAdmin == true)
+                                                {
+                                                    <p>@i) @req.PhysicinName transferred to Admin on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </p>
+                                                }
+                                                else
+                                                {
+                                                    
+                                                <p>@i) Admin transferred to @req.TrasferPhysicianName on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </p>
+                                                }
                                                 i++; 
                                             }
                                         }

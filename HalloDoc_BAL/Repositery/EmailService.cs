@@ -79,7 +79,7 @@ namespace HalloDoc_BAL.Repositery
 
 
             MailMessage message = new MailMessage();
-            message.From = new MailAddress("yash.soni@etatvasoft.com");
+            message.From = new MailAddress("tatva.dotnet.yashsoni@outlook.com");
             message.Subject = subject;
             message.To.Add(new MailAddress(uemail));
             message.Body = body;
@@ -89,10 +89,10 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-                using (var smtpClient = new SmtpClient("mail.etatvasoft.com"))
+                using (var smtpClient = new SmtpClient("smtp.office365.com"))
                 {
                     smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential("yash.soni@etatvasoft.com", "kaX9Bjj8Sho");
+                    smtpClient.Credentials = new NetworkCredential("tatva.dotnet.yashsoni@outlook.com", "hursiqxmvunkqxnk");
                     smtpClient.EnableSsl = true;
 
                     smtpClient.Send(message);

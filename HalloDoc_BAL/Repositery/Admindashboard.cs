@@ -145,7 +145,20 @@ namespace HalloDoc_BAL.Repositery
 
         public List<Physician> FilterPhysicianByRegion(int regionid)
         {
-            List<Physician> physicians = _context.Physicians.Where(q => q.Regionid == regionid).ToList();
+
+
+            
+
+            List<Physicianregion> physiciansregions = _context.Physicianregions.Where(q => q.Regionid == regionid).ToList();
+
+            List<Physician> physicians = new List<Physician>();
+
+            foreach(Physicianregion physicianregion in physiciansregions)
+            {
+                Physician physician = _context.Physicians.FirstOrDefault(q=>q.Physicianid == physicianregion.Physicianid);
+
+                physicians.Add(physician);
+            }
 
             return physicians;
         }
@@ -154,20 +167,11 @@ namespace HalloDoc_BAL.Repositery
         {
 
             List<ProviderMenu> physicians = new List<ProviderMenu>();
-            if (regionId != 0)
+
+
+            if(regionId == 0)
             {
-              physicians = _context.Physicians.Where(q => q.Regionid == regionId && q.Isdeleted == false).Select(r=> new ProviderMenu()
-            {
-                Name = r.Firstname + " " + r.Lastname,
-                IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
-                Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
-                status = (int)r.Status,
-                ProviderId = r.Physicianid,
-            }).ToList();
-            }
-            else
-            {
-                physicians = _context.Physicians.Where(q=>q.Isdeleted == false).Select(r => new ProviderMenu()
+                 physicians = _context.Physicians.Where(q => q.Isdeleted == false).Select(r => new ProviderMenu()
                 {
 
                     Name = r.Firstname + " " + r.Lastname,
@@ -178,6 +182,38 @@ namespace HalloDoc_BAL.Repositery
 
                 }).ToList();
             }
+            else
+            {
+            List<Physicianregion> physicianregions = _context.Physicianregions.Where(q=>q.Regionid == regionId).ToList();
+
+            foreach(Physicianregion physicianregion in physicianregions)
+            {
+
+                ProviderMenu? physician = _context.Physicians.Where(q => q.Regionid == physicianregion.Regionid && q.Isdeleted == false).Select(r => new ProviderMenu()
+                {
+
+                    Name = r.Firstname + " " + r.Lastname,
+                    IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
+                    Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
+                    status = (int)r.Status,
+                    ProviderId = r.Physicianid,
+
+                }).FirstOrDefault();
+
+                if (physician != null)
+                {
+                    physicians.Add(physician);
+                }
+
+
+            }
+
+            }
+
+      
+           
+               
+            
 
             return physicians;
         }
@@ -353,11 +389,12 @@ namespace HalloDoc_BAL.Repositery
                 PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
                 Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
-                Notes = _context.Requeststatuslogs.Where(q => q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                Notes = _context.Requeststatuslogs.OrderByDescending(q=>q.Createddate).Where(q => q.Requestid == r.Requestid && ((q.Status == 1 && q.Transtoadmin == new BitArray(new[] {true} )) ||  q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
                 {
                     AdminId = r.Adminid,
-                    PhysicianId = r.Transtophysicianid,
-                    PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                    PhysicianId = r.Physicianid,
+                    PhysicinName = r.Status == 1?_context.Physicians.Where(q=>q.Physicianid == r.Physicianid).Select(q=>q.Businessname).FirstOrDefault():null,
+                    TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
                     TransferedDate = r.Createddate,
                     Description = r.Notes
                 }).ToList(),
@@ -399,11 +436,12 @@ namespace HalloDoc_BAL.Repositery
                 RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
                 RegionId = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(q => q.Regionid).FirstOrDefault(),
                 RequestTypeId = r.Requesttypeid,
-                Notes = _context.Requeststatuslogs.Where(q => q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                Notes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && ((q.Status == 1 && q.Transtoadmin == new BitArray(new[] { true })) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
                 {
                     AdminId = r.Adminid,
-                    PhysicianId = r.Transtophysicianid,
-                    PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                    PhysicianId = r.Physicianid,
+                    PhysicinName = r.Status == 1 ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
+                    TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
                     TransferedDate = r.Createddate,
                     Description = r.Notes
                 }).ToList(),
@@ -480,14 +518,16 @@ namespace HalloDoc_BAL.Repositery
 
             List<TransferNotes> transfernotes = new List<TransferNotes>();
 
-             transfernotes = _context.Requeststatuslogs.Where(q => q.Requestid == requestId && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r=> new TransferNotes
-            {
-                AdminId = r.Adminid,
-                PhysicianId = r.Transtophysicianid,
-                PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
-                TransferedDate = r.Createddate,
-                Description = r.Notes
-        }).ToList();
+             transfernotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == requestId && ((q.Status == 1 && q.Transtoadmin == new BitArray(new[] { true })) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+             {
+                 AdminId = r.Adminid,
+                 PhysicianId = r.Physicianid,
+                 PhysicinName = r.Status == 1 ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
+                 TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                 TransferedDate = r.Createddate,
+                 Description = r.Notes,
+                 IsTransferToAdmin = r.Status == 1? _context.Requeststatuslogs.Where(q=>q.Requestid == requestId).Select(q => q.Transtoadmin[0]).FirstOrDefault():false,
+             }).ToList();
 
             
             requestNotes.TranferNotes = transfernotes;

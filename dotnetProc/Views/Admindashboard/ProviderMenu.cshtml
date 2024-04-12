@@ -34,7 +34,7 @@
 
                     <div class="form-floating">
 
-                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion('1',false)">
+                        <select class="form-select form-control" id="ProviderRegionSelector" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onchange="GetProvidersByRegion('1',false)">
                             <option value="0">All Region</option>
 
                             @foreach (Region region in Model.regions)

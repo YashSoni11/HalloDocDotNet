@@ -36,7 +36,7 @@ namespace HalloDoc_BAL.Interface
 
         public List<ViewDocument> GetDocumentsByRequestId(int requestid);
 
-        public bool UploadFile(IFormFile file, int requestId);
+        public bool UploadFile(IFormFile file, int requestId, string Role, int UserId);
 
         public Object GiveResetPasswordLinkObject(string resetid);
 

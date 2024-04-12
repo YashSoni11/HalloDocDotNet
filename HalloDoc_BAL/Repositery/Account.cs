@@ -114,7 +114,10 @@ namespace HalloDoc_BAL.Repositery
 
         public LoggedInUser GetLoggedInUserFromJwt(string token)
         {
-           
+            if (string.IsNullOrEmpty(token))
+            {
+                return new LoggedInUser();
+            }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
@@ -328,7 +331,7 @@ namespace HalloDoc_BAL.Repositery
              return documents;
         }
 
-        public bool UploadFile(IFormFile file, int requestid)
+        public bool UploadFile(IFormFile file, int requestid,string Role,int UserId)
         {
 
             string path = "";
@@ -340,7 +343,17 @@ namespace HalloDoc_BAL.Repositery
                 Filename = file.FileName,
                 Doctype = 1,
                 Createddate = DateTime.Now,
+                Isdeleted = false,
+
             };
+
+            if(Role == "Admin")
+            {
+                requestwisefile.Adminid = UserId;
+            }else if(Role == "Physician")
+            {
+                requestwisefile.Physicianid = UserId;
+            }
 
 
             try

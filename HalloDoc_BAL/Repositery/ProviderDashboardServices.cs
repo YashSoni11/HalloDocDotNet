@@ -4,7 +4,7 @@ using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Context;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -271,13 +271,13 @@ namespace HalloDoc_BAL.Repositery
             string PatientName = _context.Requestclients.Where(q => q.Requestid == requestId).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();
 
 
-            bool isFinlize = (bool)_context.Encounterforms.Where(q => q.Requestid == requestId).Select(q => q.IsFinelized).FirstOrDefault();
+            bool? isFinlize = _context.Encounterforms.Where(q => q.Requestid == requestId).Select(q => q.IsFinelized).FirstOrDefault();
 
             ConcludeCare concludeCare = new ConcludeCare()
             {
                 RequestId = requestId,
                 PatientName = PatientName,
-                IsFinilize = isFinlize,
+                IsFinilize = isFinlize == null?false:(bool)isFinlize,
             };
 
             return concludeCare;
@@ -422,6 +422,44 @@ namespace HalloDoc_BAL.Repositery
             }catch(Exception ex)
             {
                 return new List<MonthWisePhysicianShifts>();
+            }
+        }
+
+
+
+
+        public bool TrasnferToAdminService(string message,int providerId,int requestId)
+        {
+            try
+            {
+
+
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+
+                request.Status = 1;
+                request.Modifieddate = DateTime.Now;
+                request.Physicianid = null;
+
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog();
+
+                requeststatuslog.Status = 1;
+                requeststatuslog.Notes = message;
+                requeststatuslog.Requestid = requestId;
+                requeststatuslog.Createddate = DateTime.Now;
+                requeststatuslog.Transtoadmin = new BitArray(new[] { true });
+                requeststatuslog.Physicianid = providerId;
+
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
+
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
             }
         }
 

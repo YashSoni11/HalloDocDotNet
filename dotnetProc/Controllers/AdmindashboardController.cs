@@ -429,9 +429,12 @@ namespace dotnetProc.Controllers
                     physicians = _dashboard.FilterPhysicianByRegion(regionId);
                 }
 
+                JsonSerializerSettings settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                };
 
-
-                string response = JsonConvert.SerializeObject(physicians);
+                string response = JsonConvert.SerializeObject(physicians,settings);
 
                 return Json(response);
             }
@@ -653,7 +656,7 @@ namespace dotnetProc.Controllers
             }
         }
 
-        [Route("Admindashboard/Uploaddocuments/{id}")]
+        //[Route("Admindashboard/Uploaddocuments/{id}")]
         [HttpPost]
         public IActionResult UploadDocuments(Documents docs, int id)
         {
@@ -674,7 +677,7 @@ namespace dotnetProc.Controllers
             for (int i = 0; i < docs.FormFile.Count; i++)
             {
 
-                response &= _account.UploadFile(docs.FormFile[i], id);
+                response &= _account.UploadFile(docs.FormFile[i], id,loggedInUser.Role,loggedInUser.UserId);
 
             }
 

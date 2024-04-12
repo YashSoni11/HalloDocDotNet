@@ -166,7 +166,7 @@ else if (ViewData["RoleName"] == "Adm")
                                         <div class="col-2">
                                             <input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")">
                                         </div>
-                                        <div id="Docfiles" class="col-8 @doc.filename.Replace(" ","")" style="padding:0rem;">
+                                        <div id="Docfiles" class="col-8 @doc.filename.Replace(" ","") DocuFiles" style="padding:0rem;">
 
                                             @doc.filename
 
@@ -253,9 +253,9 @@ else if (ViewData["RoleName"] == "Adm")
 
         var files = [];
 
-        var filenames = $("#Docfiles");
+        var filenames = $(".DocuFiles");
 
-        //console.log(filenames)
+        //console.log(filenames,"io")
 
         for (let i = 0; i < filenames.length; i++) {
 
@@ -266,7 +266,7 @@ else if (ViewData["RoleName"] == "Adm")
         }
 
 
-        let mail = "yash.soni@etatvasoft.com";
+        let mail = "yashusoni003@gmail.com";
 
         var dataobject = {
             fileArray: files,

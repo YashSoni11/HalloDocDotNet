@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HalloDoc_DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,12 @@ namespace HalloDoc_DAL.ProviderViewModels
 
         public bool IsFinilize { get; set; }
 
-        public IFormFile file { get; set; }
+        public List<IFormFile> FormFiles { get; set; }
+
 
         public string ProviderNotes { get; set; }
+
+       public List<ViewDocument> documents { get; set; }
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿@model HalloDoc_DAL.ProviderViewModels.ConcludeCare;
-
+@using HalloDoc_DAL.ViewModels;
 
 @{
     Layout = "_Layout";
@@ -11,7 +11,6 @@
 
 
 
-<form method="post" asp-action="PostConcludeCare" asp-controller="ProviderDashboard" asp-route-id="@Model.RequestId">
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
 
@@ -46,16 +45,18 @@
                 <div class="col-12 justify-content-between d-flex">
 
                     <h5 style="width:14rem;">Encounter Form</h5>
+                    <form id="ProviderDocForm" asp-action="UploadDocuments" asp-controller="ProviderDashboard" asp-route-id="@Model.RequestId" method="post" enctype="multipart/form-data">
 
                     <div class="input-group mb-3 d-flex" style="justify-content:end;">
 
 
-                        <input type="file"  class="form-control" id="inputGroupFile02" onchange="uploadFile()" multiple style="display:none;">
-
+                            <input asp-for="FormFiles" type="file" class="form-control" id="inputGroupFile02"  multiple style="display:none;">
+                            <button  type="submit">ef</button>
                         <label class="input-group-text  btn-outline-info text-info lightInfo-btn" for="inputGroupFile02" style="border-radius:9px;background-color:transparent;border:1px solid #0dcaf2;">
                             <i class='bi bi-cloud-upload text-info mx-1'></i>Upload
                         </label>
                     </div>
+                    </form>
 
                 </div>
 
@@ -77,25 +78,29 @@
 
             <table class="table ReqtableContainer table-responsive">
                 <thead>
-                    <tr style="background-color:#f1f1f1;">
-                        <th class="reqtableHeader" scope="col">Documents </th>
-                        <th class="reqtableHeader" scope="col">Action </th>
+                    <tr class="" style="background-color:#f1f1f1;">
+                        <th class="reqtableHeader text-start align-middle" scope="col">Documents </th>
+                        <th class="reqtableHeader text-end align-middle" scope="col">Action </th>
                         
                     </tr>
                 </thead>
                 <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
 
-                  @*  @for (int i = 0; i < Model.userAccesses.Count; i++)
-                    {
-*@
+                        @foreach (ViewDocument doc in Model.documents)
+                        {
 
+                            <tr>
+                               
+                                <td class="@doc.filename.Replace(" ","")  text-start" id="@doc.FileId">@doc.filename</td>
+                                
+                                <td class="d-flex text-end" style="column-gap:10px;">
+                                    <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                        <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
+                                    </a>
+                                </td>
+                            </tr>
 
-
-                        <tr class="align-middle">
-                            
-
-                        </tr>
-                    @*}*@
+                        }
                 </tbody>
 
             </table>
@@ -106,6 +111,7 @@
        
 
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 " >
+<form method="post" asp-action="PostConcludeCare" asp-controller="ProviderDashboard" asp-route-id="@Model.RequestId">
 
         <h6>Provider Notes</h6>
         <div class="col-10">
@@ -116,6 +122,7 @@
 
             </div>
         </div>
+</form>
         </div>
 
 
@@ -133,13 +140,12 @@
 
 </div>
 
-</form>
 
 <script>
 
     $(document).ready(function () {
 
-        //handleNavChange('pills-Access-tab')
+        handleNavChange('provider-dash-tab')
      
 
         toastr.remove();
@@ -153,7 +159,10 @@
     })
 
 
+    const UploadProviderFiles = () =>{
 
+        $("#PeoviderDocForm").submit()
+    }
 
 
 

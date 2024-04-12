@@ -178,8 +178,18 @@ else if (ViewData["RoleName"] == "Adm")
                             <div class="form-floating mb-3">
                                 <textarea asp-for="Notes" class="form-control" placeholder="Leave a comment here"
                                           id="floatingTextarea2" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">Admin Notes(optional)</label>
-                               
+
+                                @if(ViewData["ROleName"] == "Adm")
+                                {
+
+                                    <label for="floatingTextarea2">Admin Notes(optional)</label>
+                                }
+
+                               else {
+                                <label for="floatingTextarea2">Provider Notes(optional)</label>
+
+                                }
+
                             </div>
                         </div>
 

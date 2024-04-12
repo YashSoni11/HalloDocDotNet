@@ -94,24 +94,34 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public List<Region> GetAllRegionsByPhysicianId(int PhysicinId)
+        public List<SelectedRegions> GetAllRegionsByPhysicianId(int PhysicinId)
         {
+
+            List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
+
+            List<Region> regions = _context.Regions.ToList();
+
 
             List<Physicianregion> physicianregions = _context.Physicianregions.Where(q => q.Physicianid == PhysicinId).ToList();
 
-
-            List<Region> regions = new List<Region>();
-
-
-            foreach (Physicianregion physicianregion in physicianregions)
+            for (int i = 0; i < regions.Count; i++)
             {
+                SelectedRegions selectedRegions1 = new SelectedRegions();
+                selectedRegions1.regionId = regions[i].Regionid;
+                selectedRegions1.regionName = regions[i].Name;
 
-                Region region = _context.Regions.FirstOrDefault(q => physicianregion.Regionid == q.Regionid);
-
-                regions.Add(region);
+                if (physicianregions != null && physicianregions.Any(q => q.Regionid == regions[i].Regionid))
+                {
+                    selectedRegions1.IsSelected = true;
+                }
+                else
+                {
+                    selectedRegions1.IsSelected = false;
+                }
+                selectedRegions.Add(selectedRegions1);
             }
 
-            return regions;
+            return selectedRegions;
         }
         public ProviderProfileView GetProviderData(int providerId)
         {
@@ -138,8 +148,11 @@ namespace HalloDoc_BAL.Repositery
                 MedicalLicenseNumber = physician.Medicallicense,
                 NPINumber = physician.Npinumber,
                 SyncEmail = physician.Syncemailaddress,
-                Regions = GetAllRegionsByPhysicianId(providerId),
+                SelectedRegions = GetAllRegionsByPhysicianId(providerId),
             };
+
+
+            
 
             ProviderMailingAndBillingInfo providerMailingAndBillingInfo = new ProviderMailingAndBillingInfo()
             {
@@ -246,10 +259,10 @@ namespace HalloDoc_BAL.Repositery
 
                     if (selectedRegion.IsSelected == true && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId) == false))
                     {
-                        Adminregion adminregion = new Adminregion();
-                        adminregion.Regionid = (int)selectedRegion.regionId;
-                        adminregion.Adminid = provideId;
-                        _context.Adminregions.Add(adminregion);
+                        Physicianregion physicianregion = new Physicianregion();
+                        physicianregion.Regionid = (int)selectedRegion.regionId;
+                        physicianregion.Physicianid = provideId;
+                        _context.Physicianregions.Add(physicianregion);
                     }
                     else if (selectedRegion.IsSelected == false && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId) == true))
                     {

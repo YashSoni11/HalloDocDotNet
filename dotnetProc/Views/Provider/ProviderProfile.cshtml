@@ -31,10 +31,24 @@
 
 
     <div class="container-fluid d-flex justify-content-between mt-4" style="max-width:1000px">
-        <h4>
-            Edit Physician Account
-        </h4>
-        <div class="d-inline-flex">
+       
+        @{
+
+
+            if(ViewData["RoleName"] == "Adm")
+            {
+                <h4>
+
+                    Edit Physician Account
+                </h4>
+            }
+            else
+            {
+                <h4>My Profile</h4>
+            }
+        }
+        
+            <div class="d-inline-flex">
             @if (ViewData["RoleName"] == "Phy")
             {
                 <a class="btn btn-outline-info text-info lightInfo-btn" asp-action="Dashboard" asp-controller="ProviderDashboard">
@@ -60,11 +74,15 @@
 
         <div class="row justify-content-end">
 
-         <div class="col-3">
+            @if(ViewData["RoleName"] == "Phy")
+            {
+            <div class="col-3">
                 <button data-bs-toggle="modal" data-bs-target="#RequestToAdminModal" class="btn btn-outline-info text-info lightInfo-btn" type="button">
                    Request To Admin
                 </button>
          </div>
+                
+            }
            
         </div>
 
@@ -201,7 +219,7 @@
                         {
 
                             <div class="form-check">
-                                <input asp-for="@Model.ProviderInformation.SelectedRegions[i].IsSelected" class="form-check-input tbDisabled" type="checkbox" id="flexCheckDefault">
+                                <input asp-for="@Model.ProviderInformation.SelectedRegions[i].IsSelected" class="form-check-input tbDisabled1" type="checkbox" id="flexCheckDefault">
                                 <input hidden asp-for="@Model.ProviderInformation.SelectedRegions[i].regionId" style="display:none" />
                                 <label class="form-check-label" for="flexCheckDefault">
                                     @Model.ProviderInformation.SelectedRegions[i].regionName
@@ -535,13 +553,23 @@
     $(document).ready(function () {
 
         
+       
+        //if(@ViewData["RoleName"] == "Phy")
+        //{
+            
+        //    handleNavChange("provider-profile-tab")
+        //}
+        //else if(@ViewData["RoleName"] == "Adm")
+        //{
+        //let prevId = localStorage.getItem("ActiveLink")
 
+        //let currEle = document.getElementById(prevId)
 
-        let prevId = localStorage.getItem("ActiveLink")
+        //currEle.classList.add("active");
+            
+        //}
 
-        let currEle = document.getElementById(prevId)
-
-        currEle.classList.add("active");
+        
 
         $(".tbDisabled").attr("disabled", "true")
         $(".tbDisabled1").attr("disabled", "true")

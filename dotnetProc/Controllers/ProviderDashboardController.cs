@@ -270,6 +270,10 @@ namespace dotnetProc.Controllers
 
             ConcludeCare concludeCare = _providerDashboard.GetConcludeCareDetails(id);
 
+            List<ViewDocument> docs = _dashboard.GetDocumentsByRequestId(id);
+
+            concludeCare.documents = docs;
+
             return View("ConcludeCare",concludeCare);
         }
 
@@ -419,6 +423,61 @@ namespace dotnetProc.Controllers
 
 
 
+
+        }
+
+        public IActionResult UploadDocuments(ConcludeCare docs, int id)
+        {
+
+          
+
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            bool response = true;
+
+            for (int i = 0; i < docs.FormFiles.Count; i++)
+            {
+
+                response &= _account.UploadFile(docs.FormFiles[i], id,loggedInUser.Role,loggedInUser.UserId);
+
+            }
+
+            return RedirectToAction("ConcludeCareView", new { id = id });
+
+
+
+
+        }
+
+
+        public IActionResult TransferToAdmin(string Message,int RequestId)
+        {
+
+
+          if(string.IsNullOrEmpty(Message) || RequestId == 0)
+            {
+                TempData["ShowNegativeNotification"] = "Please Enter Valid Data!";
+                return RedirectToAction("Dashboard");
+            }
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            bool response = _providerDashboard.TrasnferToAdminService(Message,loggedInUser.UserId, RequestId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Request Transferred To Admin Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing Went Wrong!";
+            }
+
+
+            return RedirectToAction("Dashboard");
 
         }
 

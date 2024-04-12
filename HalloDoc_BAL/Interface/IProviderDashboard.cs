@@ -36,6 +36,7 @@ namespace HalloDoc_BAL.Interface
 
         public List<MonthWisePhysicianShifts> GetPhysicianMonthWiseShifts(int date, int month, int year, int PhysicianId);
 
+        public bool TrasnferToAdminService(string message, int providerId, int requestId);
 
     }
 }

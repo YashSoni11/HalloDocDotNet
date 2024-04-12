@@ -144,7 +144,16 @@
                                 {
                                     if (k == 2)
                                         break;
-                                    <text> @k) Admin transfered to @req.PhysicinName on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </text>
+
+                                        if(dr.status == 1)
+                                        {
+                                            <text> @k) @req.PhysicinName transfered to Admin on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </text>
+                                        }
+                                        else{
+
+                                            
+                                    <text> @k) Admin transfered to @req.TrasferPhysicianName on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </text>
+                                        }
                                     k++;
                                 }
                             }
