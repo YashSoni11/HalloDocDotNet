@@ -1695,6 +1695,41 @@ const GetEmailLogsTableView = () => {
 
 }
 
+const GetPatientHistoryTableView = () => {
+
+
+    let FirstName = $("#ph-Firstname").val();
+    let LastName = $("#ph-Lastname").val();
+    let Email = $("#ph-Email").val();
+    let Phone = $("#ph-Phone").val();
+    
+
+
+
+
+    $.ajax({
+
+        url: "/Provider/GetPatientHistoryTableView",
+        method: "post",
+        data: {
+            FirstName: FirstName, LastName: LastName, Email: Email, Phone: Phone
+        },
+        success: function (response) {
+
+            $("#PatientHistoryTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+
+}
+
 const handleNotificationChange = () => {
 
     if ($("#ProviderChangeSaveBtn").css("display") == "none") {

@@ -1,0 +1,117 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.PatientHistoryTable;
+@using HalloDoc_DAL.AdminViewModels;
+
+
+
+@{
+    
+
+    int k = 0;
+    <table class="table ReqtableContainer">
+        <thead>
+            <tr style="background-color:#f1f1f1;">
+                <th class="reqtableHeader text-center" scope="col">First Name</th>
+                <th class="reqtableHeader text-center" scope="col">Lasgt Name</th>
+                <th class="reqtableHeader text-center" scope="col">Email</th>
+                <th class="reqtableHeader text-center" scope="col">Phone</th>
+                <th class="reqtableHeader text-center" scope="col">Address</th>
+                <th class="reqtableHeader text-center" scope="col">Actions</th>
+               
+               
+            </tr>
+        </thead>
+        <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
+
+
+            @for (int i = 0; i < Model.patientHistories.Count; i++)
+            {
+
+
+
+
+                <tr class="align-middle">
+                    <td class="align-middle text-center">@Model.patientHistories[i].FirstName</td>
+                    <td class="align-middle text-center">@Model.patientHistories[i].LastName</td>
+                    <td class="align-middle text-center">@Model.patientHistories[i].Email</td>
+                    <td class="align-middle text-center">@Model.patientHistories[i].Phone</td>
+                    <td class="align-middle text-center">@Model.patientHistories[i].Email</td>
+                  
+                    <td class="align-middle text-center">
+                        <a type="submit" asp-route-id="@Model.patientHistories[i].UserId" class="btn btn-outline-info text-info lightInfo-btn">
+                            Explore
+                        </a>
+                    </td>
+
+
+
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    <div id="mb-ViewUploadTable" class="row justify-content-center" style="justify-content:center">
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11">
+            <ul style="border-radius:0px 0px 10px 10px;box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;" class="list-group">
+                @* @foreach (Role role in Model.roles)
+            {
+
+            <li class="list-group-item" style="background-color:var(--pi-form-back-color);color:var(--pi-label-color);">
+            <div class="container-fluid" style="row-gap:1rem;">
+            <div class="row mb-3">
+
+
+            <div id="Docfiles" class="col-12">
+
+            Name : <span class="mx-1">@role.Name</span>
+
+            </div>
+            </div>
+            <div class="row mb-3">
+
+            <div class="col-12">
+            Account Type :  <span class="mx-1">@accountTypes[@role.Accounttype-1]</span>
+            </div>
+
+            </div>
+
+            <div class="row">
+            <div class="col-2">
+
+            <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model.roles[k].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+            Edit
+            </a>
+
+            </div>
+
+            <div class="col-2">
+
+            <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model.roles[k].Roleid">
+
+            <button type="submit" class="btn btn-outline-info text-info lightInfo-btn">
+            Delete
+            </button>
+            </form>
+            </div>
+            </div>
+
+            </div>
+            </li>
+            k++;
+            }*@
+            </ul>
+        </div>
+    </div>
+
+    <div class="row p-3">
+        <nav aria-label="Page navigation example mt-3">
+            <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
+                <li class="page-item" onclick="GetAccountAccessTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
+                <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
+                <li class="page-item" onclick="GetAccountAccessTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+            </ul>
+        </nav>
+    </div>
+}
+
+

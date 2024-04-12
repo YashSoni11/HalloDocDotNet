@@ -1660,5 +1660,71 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+
+        public List<PatientHistory> GetPatientHistoryData(string FirstName, string LastName, string Email, string Phone)
+        {
+            try
+            {
+
+                List<User> users = _context.Users.ToList();
+
+                List<PatientHistory> patientHistories = new List<PatientHistory>();
+
+                foreach(User user in users)
+                {
+
+                    PatientHistory patientHistory = new PatientHistory();
+
+                    patientHistory.FirstName = user.Firstname;
+                    patientHistory.LastName = user.Lastname;
+                    patientHistory.Email = user.Email;
+                    patientHistory.Phone = user.Mobile;
+                    patientHistory.Address = user.Street + "," + user.City + "," + user.State + "," + user.Zipcode;
+                    patientHistory.UserId = user.Userid;
+
+
+                    patientHistories.Add(patientHistory);
+                }
+
+
+                bool IsAllFirstName = false;
+                bool IsAllLastName = false;
+                bool IsAllEmail = false;
+                bool IsAllPhone = false;
+
+                if (string.IsNullOrEmpty(FirstName))
+                {
+                    IsAllFirstName = true;
+                }
+
+                if (string.IsNullOrEmpty(LastName))
+                {
+                    IsAllLastName = true;
+                }
+
+                if (string.IsNullOrEmpty(Email))
+                {
+                    IsAllEmail = true;
+                }
+
+                if (string.IsNullOrEmpty(Phone))
+                {
+                    IsAllPhone = true;
+                }
+
+
+
+                patientHistories = patientHistories.Where(q => (IsAllFirstName || q.FirstName.ToLower().Contains(FirstName.ToLower())) && (IsAllLastName || q.LastName.ToLower().Contains(LastName.ToLower())) && (IsAllEmail || q.Email == Email) && (IsAllPhone || q.Phone == Phone)).ToList();
+
+
+                return patientHistories;
+            }
+            catch(Exception ex)
+            {
+                return new List<PatientHistory>();
+            }
+        }
+
+
     }
 }

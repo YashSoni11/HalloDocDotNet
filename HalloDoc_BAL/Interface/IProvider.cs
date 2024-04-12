@@ -83,5 +83,8 @@ namespace HalloDoc_BAL.Interface
 
         public List<SearchRecords> GetFillteredSearchRecordsData(int Status, string PatientName, int RequestType, DateTime FromDate, DateTime ToDate, string ProviderName, string Email, string Phone);
         public List<EmailLogs> GetFillteredEmailLogsData(string ReciverName, int RoleId, string EmailId, DateTime CreateDate, DateTime SentDate);
+
+
+        public List<PatientHistory> GetPatientHistoryData(string FirstName, string LastName, string Email, string Phone);
     }
 }

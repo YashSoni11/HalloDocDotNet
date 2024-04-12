@@ -1171,5 +1171,29 @@ namespace dotnetProc.Controllers
 
         }
 
+        public IActionResult PatientHistoryView()
+        {
+            return View("PatientHistory");
+        }
+
+
+        public IActionResult GetPatientHistoryTableView(string FirstName, string LastName, string Email, string Phone)
+        {
+
+
+            List<PatientHistory> patientHistories = _provider.GetPatientHistoryData(FirstName, LastName, Email, Phone);
+
+
+            PatientHistoryTable patientHistoryTable = new PatientHistoryTable()
+            {
+                TotalPages = 0,
+                currentPage = 0,
+                patientHistories = patientHistories,
+            };
+            
+
+
+            return PartialView("_PatienthistoryTable", patientHistoryTable);
+        }
     }
 }
