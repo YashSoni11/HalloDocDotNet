@@ -22,12 +22,7 @@ namespace HalloDoc_DAL.ProviderViewModels
 
         public ProviderInformation? ProviderInformation { get; set; }
        
-      
-        public IFormFile? ICA { get; set; }
-        public IFormFile? BGCheck { get; set; }
-        public IFormFile? HIPAACompliance { get; set; }
-        public IFormFile? NDA { get; set; }
-        public IFormFile? LicenseDoc { get; set; }
+        public ProviderDocuments? ProviderDocuments { get; set; }
     }
 
 
@@ -124,5 +119,22 @@ namespace HalloDoc_DAL.ProviderViewModels
         public string? AdminNotes { get; set; }
     }
 
+
+    public class ProviderDocuments
+    {
+        public IFormFile ContractAgrrement { get; set; }
+        public bool IsContractAggreeMent { get; set; }
+
+        public IFormFile? BackgroundCheck { get; set; }
+        public bool? IsBackGroundCheck { get; set; }
+
+
+
+        public IFormFile HIPAA { get; set; }
+        public bool IsHipaa { get; set; }
+
+        public IFormFile NonDisclouser { get; set; }
+        public bool IsNonDisClouser { get; set; }
+    }
  
 }

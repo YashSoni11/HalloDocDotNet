@@ -29,7 +29,7 @@ namespace HalloDoc_BAL.Interface
 
         public List<Role> GetAllRoles();
 
-        public bool CreateProviderAccount(CreateProviderAccount createProviderAccount);
+        public bool CreateProviderAccount(CreateProviderAccount createProviderAccount,int adminId);
 
        public List<AccessAreas> GetAreaAccessByAccountType(int accountType, int roleId = 0);   
 
@@ -86,5 +86,7 @@ namespace HalloDoc_BAL.Interface
 
 
         public List<PatientHistory> GetPatientHistoryData(string FirstName, string LastName, string Email, string Phone);
+
+        public bool EditOnBoardingData(ProviderDocuments providerDocuments, int physicianid);
     }
 }

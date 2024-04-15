@@ -25,6 +25,9 @@
     column-gap: 2rem;
 }
 
+#mb-DashReqContainer{
+    display:none;
+}
 
 .tab-link {
     border: 1px solid white;
@@ -53,8 +56,7 @@
 }
 
 .big-btn2 {
-   
-    background-color: #6506a1 !important;
+    background-color: #0dcaf0 !important;
     color: white !important;
 }
 
@@ -74,7 +76,7 @@
 }
 
 .big-btn6 {
-    background-color: #0dcaf0 !important;
+    background-color: #6506a1 !important;
     color: white !important;
 }
 
@@ -276,9 +278,9 @@ border-radius: 6px;
         display: none;
     }
 
-    #tableContainer {
+    /*#tableContainer {
         display:none;
-    }
+    }*/
 
     .ProviderAccordian {
         display: block;
@@ -286,6 +288,10 @@ border-radius: 6px;
 
     .ReqtableContainer {
         display: none;
+    }
+
+    #mb-DashReqContainer{
+        display:block;
     }
 
     .text-vanish {

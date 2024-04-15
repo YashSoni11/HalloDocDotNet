@@ -71,7 +71,7 @@
 
         <div class="col-xl-7 col-lg-7 col-md-12 col-12 d-flex justify-content-evenly  mt-md-3 mt-3" style="align-items:center;">
 
-            <button id="ReqType-Heading0" class="btn  text-vanish ReqType-Heading" style="color:var(--pi-label-color);" onclick="GetFiltteredRequests('0')">All</button>
+            <button id="ReqType-Heading0" class="btn  text-vanish ReqType-Heading" style="color:var(--pi-label-color);border:1px solid var(--pi-label-color);" onclick="GetAllCurrentStatusRequests()">All</button>
             <button id="ReqType-Heading1" onclick="GetFiltteredRequests('1',@Model.TotalPages,false,'1')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-success"></i> Patient</button>
             <button id="ReqType-Heading2" onclick="GetFiltteredRequests('1',@Model.TotalPages,false,'2')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-warning"></i> Family/Freind</button>
             <button id="ReqType-Heading3" onclick="GetFiltteredRequests('1',@Model.TotalPages,false,'3')" class="btn ReqType-Heading"> <i class="bi bi-circle-fill text-primary"></i> Concierge</button>
@@ -259,7 +259,7 @@
 
 
         int i = 1;
-        <div class=" DashboardAccordion accordion" id="accordionExample mt-3">
+            <div class=" DashboardAccordion accordion mt-3" id="mb-DashReqContainer">
 
             @foreach (DashboardRequests dr in Model.Requests)
             {
@@ -501,12 +501,12 @@
 
 
 
-    <div class="row">
+    <div class="row mt-1">
         <nav aria-label="Page navigation example mt-3" >
             <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
-                <li class="page-item" onclick="GetFiltteredRequests(@Model.currentPage-1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
+                <li class="page-item" onclick="GetFiltteredRequests(@Model.currentPage-1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-left"></i></li>
                 <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
-                <li class="page-item" onclick="GetFiltteredRequests(@Model.currentPage+1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+                <li class="page-item" onclick="GetFiltteredRequests(@Model.currentPage+1,@Model.TotalPages,true,'@Model.RequestType')" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-right"></i></li>
             </ul>
         </nav>
 

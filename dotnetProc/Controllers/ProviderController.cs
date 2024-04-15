@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using HalloDoc_BAL.Interface;
+using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ProviderViewModels;
 using HalloDoc_DAL.ViewModels;
@@ -38,6 +39,12 @@ namespace dotnetProc.Controllers
         [Route("Provider/Myprofile/{id}",Name ="ProviderProviderProfile")]
         public IActionResult ProviderProfile(int id)
         {
+
+            if (_authManager.Authorize(HttpContext, 8) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             string token = HttpContext.Request.Cookies["jwt"];
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
@@ -56,6 +63,38 @@ namespace dotnetProc.Controllers
             providerProfileView.PhysicianId = id;
 
             return View(providerProfileView);
+        }
+
+        [HttpPost]
+        public IActionResult EditProviderOnboardingData(ProviderProfileView providerProfileView,int id)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                bool response = _provider.EditOnBoardingData(providerProfileView.ProviderDocuments, id);
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Account Info Saved Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Data Not Saved!";
+
+                }
+
+                return RedirectToAction("ProviderProfile", new { id = id });
+            }
         }
 
 
@@ -255,14 +294,34 @@ namespace dotnetProc.Controllers
         public IActionResult CreateProviderAccountView()
         {
 
+            if (_authManager.Authorize(HttpContext, 8) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
             CreateProviderAccount createProviderAccoun = new CreateProviderAccount();
 
             List<Region> regions = _dashboard.GetAllRegions();
 
             List<Role> roles = _provider.GetAllRoles();
 
-            createProviderAccoun.Regions = regions;
+            List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
+
+            foreach(Region region in regions)
+            {
+
+                SelectedRegions selectedRegion = new SelectedRegions();
+
+                selectedRegion.regionName = region.Name;
+                selectedRegion.IsSelected = false;
+                selectedRegion.regionId = region.Regionid;
+
+                selectedRegions.Add(selectedRegion);
+
+            }
+
+            createProviderAccoun.Regions = selectedRegions;
             createProviderAccoun.roles = roles;
+            createProviderAccoun.ProviderRegions = regions;
 
             return View("CreateProviderAccount", createProviderAccoun);
         }
@@ -286,7 +345,7 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 string hashedPassword = _account.GetHashedPassword(createProviderAccount.Password);
                 if (hashedPassword.IsNullOrEmpty())
                 {
@@ -295,7 +354,7 @@ namespace dotnetProc.Controllers
 
                 }
                 createProviderAccount.Password = hashedPassword;
-                bool response = _provider.CreateProviderAccount(createProviderAccount);
+                bool response = _provider.CreateProviderAccount(createProviderAccount,loggedInUser.UserId);
 
 
 
@@ -546,6 +605,11 @@ namespace dotnetProc.Controllers
         public IActionResult EditRoleView(int id)
         {
 
+            if (_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             Role role = _provider.GetRoleById(id);
 
             CreateRole createRole = new CreateRole();
@@ -609,12 +673,15 @@ namespace dotnetProc.Controllers
 
         [HttpGet]
         [Route("Admin/scheduling",Name ="AdminSchedule")]
-        [Route("Provider/MySchedule/{id}",Name ="ProviderSchedule")]
+     
 
         public IActionResult ProviderScheduling(int id)
         {
 
-
+            if (_authManager.Authorize(HttpContext, 2) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
             ShiftModel shift = new ShiftModel();
 
@@ -908,6 +975,12 @@ namespace dotnetProc.Controllers
         [Route("UserAccess")]
         public IActionResult UserAccessView()
         {
+
+            if (_authManager.Authorize(HttpContext, 15) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             List<Role> roles = _provider.GetAllRoles();
 
             UserAccessMenu userAccessMenu = new UserAccessMenu();
@@ -958,7 +1031,13 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetVendorsView()
         {
-            List<Healthprofessionaltype> healthprofessionaltypes = _provider.GetAllHealthProfessionalTypes();
+
+            if (_authManager.Authorize(HttpContext, 10) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+                List<Healthprofessionaltype> healthprofessionaltypes = _provider.GetAllHealthProfessionalTypes();
 
             Vendors vendors = new Vendors()
             {
@@ -1079,6 +1158,12 @@ namespace dotnetProc.Controllers
 
         public IActionResult AddVendorView()
         {
+
+            if (_authManager.Authorize(HttpContext, 10) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             VendorDetails vendorDetails = new VendorDetails();
 
             vendorDetails.regions = _dashboard.GetAllRegions();
@@ -1130,6 +1215,11 @@ namespace dotnetProc.Controllers
 
         public IActionResult SearchRecordsView()
         {
+            if (_authManager.Authorize(HttpContext, 3) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             return View("SearchRecords");
         }
 
@@ -1160,6 +1250,11 @@ namespace dotnetProc.Controllers
 
         public IActionResult EmailLogsView()
         {
+            if (_authManager.Authorize(HttpContext, 3) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             return View("EmailLogs");
         }
         public IActionResult GetEmailLogsTableView( string ReciverName, int RoleId ,string  EmailId, DateTime CreateDate,DateTime SentDate)
@@ -1188,6 +1283,11 @@ namespace dotnetProc.Controllers
 
         public IActionResult PatientHistoryView()
         {
+            if (_authManager.Authorize(HttpContext, 3) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             return View("PatientHistory");
         }
 

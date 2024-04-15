@@ -171,16 +171,31 @@ namespace HalloDoc_BAL.Repositery
 
             if(regionId == 0)
             {
-                 physicians = _context.Physicians.Where(q => q.Isdeleted == false).Select(r => new ProviderMenu()
+                List<Physician> data = _context.Physicians.Where(q => q.Isdeleted == false).ToList();
+                
+
+
+                foreach(Physician physician in data)
                 {
+                    ProviderMenu temp = new ProviderMenu();
 
-                    Name = r.Firstname + " " + r.Lastname,
-                    IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
-                    Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
-                    status = (int)r.Status,
-                    ProviderId = r.Physicianid,
+                    temp.Name = physician.Firstname + " " + physician.Lastname;
 
-                }).ToList();
+
+
+                    temp.Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault();
+                    temp.ProviderId = physician.Physicianid;
+
+                    temp.status = physician.Status == null ? 1 : (int)physician.Status;
+
+                    bool? noti = _context.Physiciannotifications.Where(q => q.Physicianid == physician.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault();
+
+                    temp.IsNoificationOn = noti == null ? false : (bool)noti;
+
+                    physicians.Add(temp);
+                } 
+                
+              
             }
             else
             {
@@ -1549,9 +1564,25 @@ namespace HalloDoc_BAL.Repositery
 
                     Physiciannotification physiciannotification = _context.Physiciannotifications.Where(q => q.Physicianid == provider.ProviderId).FirstOrDefault();
 
+                    if(physiciannotification == null)
+                    {
+                        Physiciannotification physiciannotification1 = new Physiciannotification();
+
+                        physiciannotification1.Isnotificationstopped = provider.IsNoificationOn;
+
+                        physiciannotification1.Physicianid = provider.ProviderId;
+
+                        _context.Physiciannotifications.Add(physiciannotification1);
+                    }
+                    else
+                    {
+
                     physiciannotification.Isnotificationstopped = provider.IsNoificationOn;
 
                     _context.Physiciannotifications.Update(physiciannotification);
+
+                    }
+
                 }
 
                 _context.SaveChanges();

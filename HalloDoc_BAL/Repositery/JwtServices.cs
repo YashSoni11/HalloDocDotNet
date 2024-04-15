@@ -29,11 +29,11 @@ namespace HalloDoc_BAL.Repositery
         {
             var claims = new List<Claim>
             {
-            
+
                 new Claim("Role", user.Role.ToString()),
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("Firstname", user.Firstname),
-                
+                new Claim("RoleId",user.AspnetRole.ToString()),
                
 
             };

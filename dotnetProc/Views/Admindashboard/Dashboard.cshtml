@@ -26,42 +26,43 @@
 
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
                     <button id="big-btn1" type="button" class="btn  big-btn w-100 ActiveStatus " style="background-color:#c6e5ff;border:1px solid #0d6efd" onclick="getStatusWiseRequests(['1'],'big-btn1','New')">
-                        <h6 style="color:#0d6efd;"><i class="bi bi-envelope-open"></i>New</h6>
+                        <h6 style="color:#0d6efd;"><i class="bi bi-envelope-open"></i><span class="mx-2">New</span></h6>
                         <h4 style="color:#0d6efd;" class="mt-1 text-primary">@Model.RequestTypeCounts.Newrequestcount</h4>
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
-                    <button id="big-btn2" type="button" class="btn  big-btn w-100 " style="background-color:#dcf9ff;border:1px solid #0dcaf0" onclick="getStatusWiseRequests(['2'],'big-btn2','Unpaid')">
-                        <h6 style="color:#0dcaf0;"><i class="bi bi-wallet2 mx-2"></i>Unpaid</h6>
-                        <h4 style="color:#0dcaf0;" class="mt-1">@Model.RequestTypeCounts.Unpaidrequestcount</h4>
+                    <button id="big-btn2" type="button" class="btn  big-btn w-100 " style="background-color:#dcf9ff;border:1px solid #0dcaf0"  onclick="getStatusWiseRequests(['9'],'big-btn2','Pending')">
+
+                        <h6 style="color:#0dcaf0;"><i class="bi bi-hourglass-top"></i><span class="mx-2">Pending</span></h6>
+                        <h4 style="color:#0dcaf0;" class="mt-1">@Model.RequestTypeCounts.Pendingrequestcount</h4>
+
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4  mt-2">
                     <button id="big-btn3" type="button" class="btn  big-btn w-100 " style="background-color:#e4f5ed;border:1px solid #198754" onclick="getStatusWiseRequests(['3','4'],'big-btn3','Active')">
-                        <h6 style="color:#198754"><i class="bi bi-check2-circle"></i>Active</h6>
+                        <h6 style="color:#198754"><i class="bi bi-check2-circle"></i><span class="mx-2">Active</span></h6>
                         <h4 style="color:#198754" class="mt-1 text-success">@Model.RequestTypeCounts.Activerequestcount</h4>
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2 ">
                     <button id="big-btn4" type="button" class="btn big-btn w-100 " style="background-color:#f7ecf7;border:1px solid #f92cf3" onclick="getStatusWiseRequests(['5'],'big-btn4','Conclude')">
-                        <h6 style="color:#f92cf3"><i class="bi bi-arrow-counterclockwise"></i>Conclude</h6>
+                        <h6 style="color:#f92cf3"><i class="bi bi-arrow-counterclockwise "></i><span class="mx-2">Conclude</span></h6>
                         <h4 style="color:#f92cf3" class="mt-1">@Model.RequestTypeCounts.Concluderequestcount</h4>
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2 ">
                     <button id="big-btn5" type="button" class="btn big-btn w-100 " style="background-color:#e4f5ff;border:1px solid #43baff" onclick="getStatusWiseRequests(['6','7','8'],'big-btn5','To Close')">
-                        <h6 style="color:#43baff"><i class="bi bi-calendar2-check-fill"></i>To Close</h6>
+                        <h6 style="color:#43baff"><i class="bi bi-calendar2-check-fill"></i><span class="mx-2">To Close</span></h6>
                         <h4 style="color:#43baff" class="mt-1">@Model.RequestTypeCounts.Tocloserequestcount</h4>
                     </button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-4 mt-2">
-                    <button id="big-btn6" type="button" class="btn  big-btn w-100 " style="background-color:#f0e6f3;border:1px solid #6506a1" onclick="getStatusWiseRequests(['9'],'big-btn6','Pending')">
-
-                        <h6 style="color:#6506a1"><i class="bi bi-hourglass-top"></i>Pending</h6>
-                        <h4 style="color:#6506a1" class="mt-1">@Model.RequestTypeCounts.Pendingrequestcount</h4>
-
+                    <button id="big-btn6" type="button" class="btn  big-btn w-100 " style="background-color:#f0e6f3;border:1px solid #6506a1"  onclick="getStatusWiseRequests(['2'],'big-btn6','Unpaid')">
+                        <h6 style="color:#6506a1"><i class="bi bi-wallet2"></i><span class="mx-2">Unpaid</span></h6>
+                        <h4 style="color:#6506a1"  class="mt-1">@Model.RequestTypeCounts.Unpaidrequestcount</h4>
                     </button>
                 </div>
+             
 
            </div>
           

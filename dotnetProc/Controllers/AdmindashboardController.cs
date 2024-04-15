@@ -25,13 +25,15 @@ namespace dotnetProc.Controllers
         private readonly IAccount _account;
         private readonly IEmailService _emailService;
         private readonly IPatientReq _patientReq;
+        private readonly IAuthManager _authManager;
 
-        public AdmindashboardController(IAdmindashboard dashboard, IAccount account, IEmailService emailService, IPatientReq patientReq)
+        public AdmindashboardController(IAdmindashboard dashboard, IAccount account, IEmailService emailService, IPatientReq patientReq, IAuthManager authManager)
         {
             _dashboard = dashboard;
             _account = account;
             _emailService = emailService;
             _patientReq = patientReq;
+            _authManager = authManager;
         }
 
 
@@ -47,6 +49,10 @@ namespace dotnetProc.Controllers
         [Route("Admindashboard/Dashboard")]
         public IActionResult Dashboard()
         {
+            if (_authManager.Authorize(HttpContext, 6) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -124,6 +130,11 @@ namespace dotnetProc.Controllers
         {
             //int statusint = int.Parse(status);
 
+            if (_authManager.Authorize(HttpContext, 9) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
@@ -161,6 +172,12 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetRequestorTypeWiseRequests(int type, string[] StatusArray, string region, string Name,int currentPage)
         {
+
+            if (_authManager.Authorize(HttpContext, 9) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
@@ -303,6 +320,9 @@ namespace dotnetProc.Controllers
         [Route("ProviderDashboard/Viewrequest/{requestid}",Name="ProviderViewCase")]
         public IActionResult ViewRequest(string requestid)
         {
+
+
+
             string token = HttpContext.Request.Cookies["jwt"];
 
 
@@ -741,6 +761,13 @@ namespace dotnetProc.Controllers
         [Route("Provider/sendorder/{id}",Name ="ProviderSendOrder")]
         public IActionResult SendOrder(string id)
         {
+
+
+            if (_authManager.Authorize(HttpContext, 12) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
             string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
@@ -1547,6 +1574,13 @@ namespace dotnetProc.Controllers
 
                 List<DashboardRequests> dashboardRequests = _dashboard.GetRequestsFromRequestorType(IntType, StatusArray, region, Name);
 
+
+                if(dashboardRequests.Count == 0)
+                {
+                    TempData["ShowNegativeNotification"] = "No data found for exporting!";
+                    return RedirectToAction("Dashboard");
+                }
+
                 string response = _dashboard.GetExcelFile(dashboardRequests);
 
                 if (response != "")
@@ -1578,6 +1612,12 @@ namespace dotnetProc.Controllers
             {
                 List<DashboardRequests> dashboardRequests = _dashboard.GetStatuswiseRequests(StatusArray);
 
+                if (dashboardRequests.Count == 0)
+                {
+                    TempData["ShowNegativeNotification"] = "No data found for exporting!";
+                    return RedirectToAction("Dashboard");
+                }
+
                 string response = _dashboard.GetExcelFile(dashboardRequests);
 
 
@@ -1599,6 +1639,11 @@ namespace dotnetProc.Controllers
         [Route("myprofile")]
         public IActionResult AdminProfile()
         {
+
+            if (_authManager.Authorize(HttpContext, 5) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
             string token = HttpContext.Request.Cookies["jwt"];
 
@@ -1800,7 +1845,12 @@ namespace dotnetProc.Controllers
     [Route("providers")]
     public IActionResult ProviderMenu()
     {
-        List<Region> regions = _dashboard.GetAllRegions();
+            if (_authManager.Authorize(HttpContext, 8) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            List<Region> regions = _dashboard.GetAllRegions();
 
         Providers providers1 = new Providers()
         {
@@ -1850,8 +1900,12 @@ namespace dotnetProc.Controllers
     [Route("providerlocation")]
     public IActionResult ProviderLocations()
     {
+            if (_authManager.Authorize(HttpContext, 17) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
-        List<Physicianlocation> physicianlocations = _dashboard.GetAllPhysicianlocation();
+            List<Physicianlocation> physicianlocations = _dashboard.GetAllPhysicianlocation();
 
 
         return View("providerlocation", physicianlocations);

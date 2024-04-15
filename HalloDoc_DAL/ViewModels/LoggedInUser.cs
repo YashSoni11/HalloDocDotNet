@@ -20,7 +20,7 @@ namespace HalloDoc_DAL.ViewModels
 
         public string Role { get; set; } 
 
-        public string AspnetRole { get; set; }  
+        public int AspnetRole { get; set; }  
 
     }
 }

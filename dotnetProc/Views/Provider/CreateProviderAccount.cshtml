@@ -24,7 +24,7 @@
             </a>
         </div>
         <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
-        <form method="post" asp-action="CreateProviderAccount" asp-controller="Provider">
+        <form method="post" asp-action="CreateProviderAccount" asp-controller="Provider" enctype="multipart/form-data">
 
             <div class="container-fluid  formContainer " style="padding:1rem;">
 
@@ -56,7 +56,7 @@
                             <select asp-for="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
                                 @foreach (Role role in Model.roles)
                                 {
-                                    <option value="@role.Name">@role.Name</option>
+                                    <option value="@role.Roleid">@role.Name</option>
                                 }
                             </select>
                             <label for="floatingInput">Role</label>
@@ -123,30 +123,17 @@
                         </div>
                     </div>
                     <div id="RegionChekboxdiv" class="col-xl-6 col-sm-6 col-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                District of Columbia
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                New York
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Virgnia
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Maryland
-                            </label>
-                        </div>
+                            @for (int i = 0; i < Model.Regions.Count; i++)
+                            {
+
+                                <div class="form-check">
+                                    <input asp-for="@Model.Regions[i].IsSelected" class="form-check-input tbDisabled1" type="checkbox" id="flexCheckDefault">
+                                    <input hidden asp-for="@Model.Regions[i].regionId" style="display:none" />
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        @Model.Regions[i].regionName
+                                    </label>
+                                </div>
+                            }
                     </div>
 
                 </div>
@@ -188,7 +175,7 @@
                             <select asp-for="StateId" class="form-select tbDisabled1 form-control" aria-label="Default select example">
                                
 
-                                @foreach (Region region in Model.Regions)
+                                @foreach (Region region in Model.ProviderRegions)
                                 {                   
                                         <option value="@region.Regionid">@region.Name</option>
                                 }
@@ -267,26 +254,33 @@
                     <div class="row my-1">
                         <div class="wrapper d-flex">
                             <div class="col-1 m-1">
-                                <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                                    <input id="ContractCheck" asp-for="IsContractAggreeMent" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                             </div>
                             <div class="col-4">
                                 <span>Independent Contract Agreement</span>
                             </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                                <div class="input-group col-2">
+                                    <input id="inputGroupFile00" type="file" asp-for="ContractAgrrement" style="display:none" onchange="MarkUploadedFiles('ContractCheck')" />
+                                    <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile00" style="border-radius:5px;">
+                                        Upload
+                                    </label>
                             </div>
                         </div>
                     </div>
                     <div class="row my-1">
                         <div class="wrapper d-flex">
                             <div class="col-1 m-1">
-                                <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                                    @*<input id="BackGroundCheck" asp-for="IsBackGroundCheck" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />*@
                             </div>
                             <div class="col-4">
                                 <span>Background Check</span>
                             </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                            <div class="input-group col-2">
+                                    @*<input id="inputGroupFile01" type="file" asp-for="BackgroundCheck" style="display:none" onchange="MarkUploadedFiles('BackGroundCheck')" />*@
+
+                                    <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile01" style="border-radius:5px;">
+                                        Upload
+                                    </label>
                             </div>
 
                         </div>
@@ -294,27 +288,36 @@
                     <div class="row my-1">
                         <div class="wrapper d-flex">
                             <div class="col-1 m-1">
-                                <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                                    <input id="HIPAACheck" asp-for="IsHipaa" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                             </div>
                             <div class="col-4">
                                 <span>HIPAA Compliance</span>
                             </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                            <div class="input-group col-2">
+                                    <input id="inputGroupFile02" type="file" asp-for="HIPAA" style="display:none" onchange="MarkUploadedFiles('HIPAACheck')" />
+
+                                @*<label type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</label>*@
+                                    <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile02" style="border-radius:5px;">
+                                        Upload
+                                    </label>
                             </div>
 
                         </div>
                     </div>
                     <div class="row my-1">
                         <div class="wrapper d-flex">
-                            <div class="col-1 m-1">
-                                <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                            <div class=" col-1 m-1">
+                                    <input id="NonDisclouserCheck" asp-for="IsNonDisClouser" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                             </div>
                             <div class="col-4">
                                 <span>Non-Disclosure Agreement</span>
                             </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</button>
+                                <div class="input-group col-2">
+                                    <input id="inputGroupFile03" type="file" asp-for="NonDisclouser" style="display:none" onchange="MarkUploadedFiles('NonDisclouserCheck')" />
+
+                                    <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile03" style="border-radius:5px;">
+                                        Upload
+                                    </label>
                             </div>
                         </div>
                     </div>
@@ -365,4 +368,8 @@
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
     })
+
+ 
+
+
 </script>

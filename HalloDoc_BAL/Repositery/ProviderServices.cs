@@ -136,6 +136,7 @@ namespace HalloDoc_BAL.Repositery
                 Status = physician.Status,
                 Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault(),
                 roles = _context.Roles.ToList(),
+                
 
             };
 
@@ -174,6 +175,12 @@ namespace HalloDoc_BAL.Repositery
 
             };
 
+            ProviderDocuments providerDocuments = new ProviderDocuments()
+            {
+                IsContractAggreeMent = physician.Isagreementdoc[0],
+                IsHipaa = physician.Istrainingdoc[0],
+                IsNonDisClouser = physician.Isnondisclosuredoc[0],
+            };
 
 
 
@@ -182,7 +189,8 @@ namespace HalloDoc_BAL.Repositery
             providerProfileView.ProviderMailingAndBillingInfo = providerMailingAndBillingInfo;
             providerProfileView.ProviderProfileInfo = providerProfileInfo;
             providerProfileView.ProviderInformation = providerInformation;
-
+            providerProfileView.ProviderDocuments = providerDocuments;
+            providerProfileView.PhysicianId = providerId;
 
             return providerProfileView;
 
@@ -464,7 +472,7 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public bool CreateProviderAccount(CreateProviderAccount createProviderAccount)
+        public bool CreateProviderAccount(CreateProviderAccount createProviderAccount,int adminId)
         {
 
             try
@@ -498,13 +506,19 @@ namespace HalloDoc_BAL.Repositery
                 physician.Address2 = createProviderAccount.Address2;
                 physician.City = createProviderAccount.City;
                 physician.Regionid = createProviderAccount.StateId;
-                physician.Status = (short)createProviderAccount.Status;
+                physician.Status = 1;
                 physician.Zip = createProviderAccount.Zip;
                 physician.Adminnotes = createProviderAccount.AdminNotes;
                 physician.Altphone = createProviderAccount.AltPhone;
                 physician.Businessname = createProviderAccount.BusinessName;
                 physician.Businesswebsite = createProviderAccount.BusinessWebsite;
+                physician.Mobile = createProviderAccount.Phone;
+                physician.Syncemailaddress = createProviderAccount.Email;
+                physician.Adminnotes = createProviderAccount.AdminNotes;
                 physician.Isdeleted = false;
+                physician.Createdby = _context.Admins.Where(q => q.Adminid == adminId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+
 
 
                 if (createProviderAccount.Photo != null)
@@ -517,11 +531,34 @@ namespace HalloDoc_BAL.Repositery
                 }
 
 
+
                 _context.Physicians.Add(physician);
+                _context.SaveChanges();
+
+               int PhySicianId = _context.Physicians.OrderByDescending(q=>q.Physicianid).First().Physicianid;
+
+                for (int i = 0; i < createProviderAccount.Regions.Count; i++)
+                {
+                    SelectedRegions selectedRegion = createProviderAccount.Regions[i];
+
+                    if (selectedRegion.IsSelected == true)
+                    {
+                        Physicianregion physicianregion = new Physicianregion();
+                        physicianregion.Regionid = (int)selectedRegion.regionId;
+                        physicianregion.Physicianid = PhySicianId;
+                        _context.Physicianregions.Add(physicianregion);
+                    }
+                   
+                }
 
                 _context.SaveChanges();
 
-                return false;
+
+
+                AddProviderDocuments(PhySicianId, createProviderAccount.ContractAgrrement, createProviderAccount.BackgroundCheck, createProviderAccount.HIPAA, createProviderAccount.NonDisclouser);
+
+
+                return true;
 
 
             }
@@ -529,6 +566,72 @@ namespace HalloDoc_BAL.Repositery
             {
                 return false;
             }
+        }
+
+
+        public void AddProviderDocuments(int Physicianid, IFormFile ContractorAgreement, IFormFile BackgroundCheck, IFormFile HIPAA, IFormFile NonDisclosure)
+        {
+            var physicianData = _context.Physicians.FirstOrDefault(x => x.Physicianid == Physicianid);
+
+            string directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Documents", Physicianid.ToString());
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+     
+
+
+            if (ContractorAgreement != null)
+            {
+                string path = Path.Combine(directory, "Independent_Contractor" + Path.GetExtension(ContractorAgreement.FileName));
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    ContractorAgreement.CopyTo(fileStream);
+                }
+
+                physicianData.Isagreementdoc = new BitArray(1, true);
+            }
+
+            if (BackgroundCheck != null)
+            {
+                string path = Path.Combine(directory, "Background" + Path.GetExtension(BackgroundCheck.FileName));
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    BackgroundCheck.CopyTo(fileStream);
+                }
+
+                physicianData.Isbackgrounddoc = new BitArray(1, true);
+            }
+
+            if (HIPAA != null)
+            {
+                string path = Path.Combine(directory, "HIPAA" + Path.GetExtension(HIPAA.FileName));
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    HIPAA.CopyTo(fileStream);
+                }
+
+                physicianData.Istrainingdoc = new BitArray(1, true);
+            }
+
+            if (NonDisclosure != null)
+            {
+                string path = Path.Combine(directory, "Non_Disclosure" + Path.GetExtension(NonDisclosure.FileName));
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    NonDisclosure.CopyTo(fileStream);
+                }
+
+                physicianData.Isnondisclosuredoc = new BitArray(1, true);
+            }
+
+            _context.SaveChanges();
         }
 
         public bool CreateAdminAccount(CreateAdminAccountModel createAdminAccount, int adminId)
@@ -707,7 +810,7 @@ namespace HalloDoc_BAL.Repositery
                         rolemenu.Menuid = createRole.AccessAreas[i].AreaId;
                         _context.Rolemenus.Add(rolemenu);
                     }
-                    else
+                    else if(createRole.AccessAreas[i].IsAreaSelected == false && (_context.Rolemenus.Any(q => q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId) == true))
                     {
                         Rolemenu rolemenu = _context.Rolemenus.FirstOrDefault(q => q.Roleid == Roleid && q.Menuid == createRole.AccessAreas[i].AreaId == true);
                         if (rolemenu != null)
@@ -1717,6 +1820,126 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+
+
+        public bool EditOnBoardingData(ProviderDocuments providerProfileCm, int physicianid)
+        {
+
+
+            try
+            {
+
+            var physicianData = _context.Physicians.FirstOrDefault(x => x.Physicianid == physicianid);
+
+
+                physicianData.Isagreementdoc = new BitArray(1, providerProfileCm.IsContractAggreeMent); 
+                //physicianData.Isbackgrounddoc = providerProfileCm.IsContractAggreeMent == true ? new BitArray(1, true) : new BitArray(0, false);
+                physicianData.Istrainingdoc = new BitArray(1, providerProfileCm.IsHipaa);
+                physicianData.Isnondisclosuredoc =  new BitArray(1, providerProfileCm.IsNonDisClouser);
+
+
+            string directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Documents", physicianData.Physicianid.ToString());
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            if (providerProfileCm.ContractAgrrement != null)
+            {
+                string path = Path.Combine(directory, "Independent_Contractor" + Path.GetExtension(providerProfileCm.ContractAgrrement.FileName));
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    providerProfileCm.ContractAgrrement.CopyTo(fileStream);
+                }
+
+                physicianData.Isagreementdoc = new BitArray(1, true);
+            }
+
+            if (providerProfileCm.BackgroundCheck != null)
+            {
+                string path = Path.Combine(directory, "Background" + Path.GetExtension(providerProfileCm.BackgroundCheck.FileName));
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    providerProfileCm.BackgroundCheck.CopyTo(fileStream);
+                }
+
+                physicianData.Isbackgrounddoc = new BitArray(1, true);
+            }
+
+            if (providerProfileCm.HIPAA != null)
+            {
+                string path = Path.Combine(directory, "HIPAA" + Path.GetExtension(providerProfileCm.HIPAA.FileName));
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    providerProfileCm.HIPAA.CopyTo(fileStream);
+                }
+
+                physicianData.Istrainingdoc = new BitArray(1, true);
+            }
+
+            if (providerProfileCm.NonDisclouser != null)
+            {
+                string path = Path.Combine(directory, "Non_Disclosure" + Path.GetExtension(providerProfileCm.NonDisclouser.FileName));
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    providerProfileCm.NonDisclouser.CopyTo(fileStream);
+                }
+
+                physicianData.Isnondisclosuredoc = new BitArray(1, true);
+            }
+            _context.SaveChanges();
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+
+
+            //if (providerProfileCm.LicenseDocument != null)
+            //{
+            //    string path = Path.Combine(directory, "Licence" + Path.GetExtension(providerProfileCm.LicenseDocument.FileName));
+
+            //    if (File.Exists(path))
+            //    {
+            //        File.Delete(path);
+            //    }
+
+            //    using (var fileStream = new FileStream(path, FileMode.Create))
+            //    {
+            //        providerProfileCm.LicenseDocument.CopyTo(fileStream);
+            //    }
+
+            //    physicianData.Islicensedoc = new BitArray(1, true);
+            //}
+
+
+        }
 
         public List<PatientHistory> GetPatientHistoryData(string FirstName, string LastName, string Email, string Phone)
         {

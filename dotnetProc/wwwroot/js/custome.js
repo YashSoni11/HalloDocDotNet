@@ -494,6 +494,68 @@ const getStatusWiseRequests = (statusarray, id, Statusname) => {
 }
 
 
+const GetAllCurrentStatusRequests = () => {
+
+    let StatusBtns = $(".big-btn");
+
+
+    for (let i = 1; i < StatusBtns.length + 1; i++) {
+
+
+
+        if ($(`#big-btn${i}`).hasClass('ActiveStatus')) {
+
+
+
+            if (i == 1) {                     /*New*/
+                statusarray = ['1'];
+            } else if (i == 2) {              /*Unpaid*/
+                statusarray = ['2']
+            } else if (i == 3) {              /*Active*/
+                statusarray = ['3', '4'];
+            } else if (i == 4) {              /*Conclude*/
+                statusarray = ['5']
+            } else if (i == 5) {               /*ToClose*/
+                statusarray = ['6', '7', '8']
+            } else if (i == 6) {                /*Pending*/
+                statusarray = ['9']
+            }
+
+            break;
+        }
+
+
+
+
+
+    }
+
+
+
+
+    $.ajax({
+        method: "post",
+        url: "/Admindashboard/GetStatuswiseRequests",
+        data: { StatusArray: statusarray, currentPage: 1 },
+        success: function (response) {
+
+            if (response.code == 401) {
+
+                location.reload();
+            } else {
+
+                $("#tableContainer").html(response);
+             
+               
+            }
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
+
+
 const GetFiltteredRequests = (currentPage,totalPages,isPageAction, type) => {
 
     console.log(currentPage, totalPages, isPageAction)
@@ -2031,4 +2093,18 @@ const GetTransferAdminModalView = (id) => {
     $("#TransferToAdminModalRequestId").val(id);
 
     $('#TransferToAdminModal').modal('show')
+}
+
+const MarkUploadedFiles = (id) => {
+
+    console.log("hii")
+
+    if ($(`#${id}`).checked == false) {
+        console.log("hii")
+    $(`#${id}`).click();
+    }
+
+    //console.log($(`#${id}`),"oo")
+
+
 }

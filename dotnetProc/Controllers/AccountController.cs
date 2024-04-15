@@ -186,8 +186,8 @@ namespace dotnetProc.Controllers
 
                            loggedInUser.UserId = admin.Adminid;
                            loggedInUser.Firstname = admin.Firstname;
-                           //loggedInUser.Role = userRole;
-                          loggedInUser.Role = userRole;
+                        loggedInUser.AspnetRole = (int)admin.Roleid;
+                        loggedInUser.Role = userRole;
 
 
                         var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
@@ -214,7 +214,7 @@ namespace dotnetProc.Controllers
 
                             loggedInUser.UserId = physician.Physicianid;
                             loggedInUser.Firstname = physician.Firstname;
-                            //loggedInUser.Role = userRole;
+                            loggedInUser.AspnetRole = (int)physician.Roleid;
                             loggedInUser.Role = userRole;
 
 
