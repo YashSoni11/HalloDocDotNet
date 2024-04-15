@@ -229,8 +229,8 @@
                     </div>
                     <div class="col-xl-6 col-sm-6 col-12 ">
                         <div class="input-group mb-3">
-                            <input asp-for="Photo" type="file" class="form-control" id="inputGroupFile01" placeholder="Select Photo">
-                            <label class="input-group-text bg-info text-white" for="inputGroupFile01">
+                            <input asp-for="Photo" type="file" class="form-control" id="inputGroupFile001" placeholder="Select Photo">
+                            <label class="input-group-text bg-info text-white" for="inputGroupFile001">
                                 <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                             </label>
                         </div>
@@ -265,18 +265,19 @@
                                         Upload
                                     </label>
                             </div>
+                               
                         </div>
                     </div>
                     <div class="row my-1">
                         <div class="wrapper d-flex">
                             <div class="col-1 m-1">
-                                    @*<input id="BackGroundCheck" asp-for="IsBackGroundCheck" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />*@
+                                    <input id="BackGroundCheckk" asp-for="IsBackGroundCheck" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                             </div>
                             <div class="col-4">
                                 <span>Background Check</span>
                             </div>
                             <div class="input-group col-2">
-                                    @*<input id="inputGroupFile01" type="file" asp-for="BackgroundCheck" style="display:none" onchange="MarkUploadedFiles('BackGroundCheck')" />*@
+                                    <input id="inputGroupFile01"  asp-for="BackgroundCheck" style="display:none" onchange="MarkUploadedFiles('BackGroundCheckk')" />
 
                                     <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile01" style="border-radius:5px;">
                                         Upload

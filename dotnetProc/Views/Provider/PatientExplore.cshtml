@@ -1,0 +1,73 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.PatientExplreView;
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-10 col-lg-11 col-md-12 col-sm-11 col-11 justify-content-between">
+            <h3>Patient Record</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+      
+
+    </div>
+
+
+    <div class="row mt-3" style="justify-content:center">
+        <div id="PatientExploreTableContainer" class="col-xl-10 col-lg-11 col-md-12 col-sm-11 col-11 justify-content-between p-0" style="">
+
+
+            @*<partial name="_ProviderTable"/>*@
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        //handleNavChange('provider-menu-tab')
+        GetPatientExploreTableView(1,@Model.UserId);
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+
+
+
+
+
+
+</script>

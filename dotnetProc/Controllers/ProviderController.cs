@@ -1,6 +1,8 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Models;
@@ -1310,5 +1312,86 @@ namespace dotnetProc.Controllers
 
             return PartialView("_PatienthistoryTable", patientHistoryTable);
         }
+
+
+        public IActionResult GetPatientExploreView(int id)
+        {
+            if (_authManager.Authorize(HttpContext, 3) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+            
+
+            if(id == 0 )
+            {
+                TempData["ShowNeagativeNotification"] = "Record not Found";
+
+                return RedirectToAction("PatientHistoryView");
+
+            }
+
+
+
+            PatientExplreView patientExplreView = new PatientExplreView();
+
+            patientExplreView.UserId = id;
+
+
+            return View("PatientExplore",patientExplreView);
+            
+
+
+        }
+
+
+        public IActionResult GetPatientExploreTableView(int currentPage,int UserId)
+        {
+
+            List<PatientExplore> patientExplores = _provider.GetpatientExploreData(UserId);
+
+            PatientExploreTable patientHistoryTable = new PatientExploreTable()
+            {
+                TotalPages = 0,
+                currentPage = currentPage,
+                patientRecords = patientExplores,
+            };
+
+            return PartialView("_PatientExploredTable", patientHistoryTable);
+        }
+
+
+        public IActionResult BlockHistoryView()
+        {
+
+
+            if (_authManager.Authorize(HttpContext, 3) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            return View("BlockHistory");
+
+        }
+
+
+        public IActionResult GetBlockHistoryTableView(int currentPage,string Name,DateTime CreateDate,string Email,string Phone)
+        {
+
+            List<BlockHistories> patientHistories = _provider.GetBlockHistoriesData(Name, CreateDate, Email, Phone);
+
+
+            BlockHistoryTable patientHistoryTable = new BlockHistoryTable()
+            {
+                TotalPages = 0,
+                currentPage = 0,
+                 BlockRecords= patientHistories,
+            };
+
+
+
+            return PartialView("_blockHistoryTableView", patientHistoryTable);
+        }
+
+
     }
 }

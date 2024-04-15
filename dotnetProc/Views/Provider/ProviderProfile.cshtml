@@ -455,7 +455,7 @@
         <div class="row my-1">
             <div class="wrapper d-flex">
                 <div class="col-1 m-1">
-                    <input  type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    <input id="BackGroundCheck" asp-for="ProviderDocuments.IsBackGroundCheck"  type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                 </div>
                 <div class="col-4">
                     <span>Background Check</span>
@@ -464,8 +464,9 @@
                 {
 
                     <div class="input-group col-2" style="width:unset;">
-                     
-                        <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile01" style="border-radius:5px;">
+                            <input id="inputGroupFile001" type="file" asp-for="ProviderDocuments.BackgroundCheck" style="display:none" onchange="MarkUploadedFiles('BackGroundCheck')" />
+
+                            <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile001" style="border-radius:5px;">
                             Upload
                         </label>
                     </div>

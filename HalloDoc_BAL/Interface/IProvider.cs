@@ -88,5 +88,10 @@ namespace HalloDoc_BAL.Interface
         public List<PatientHistory> GetPatientHistoryData(string FirstName, string LastName, string Email, string Phone);
 
         public bool EditOnBoardingData(ProviderDocuments providerDocuments, int physicianid);
+
+        public List<PatientExplore> GetpatientExploreData(int userId);
+
+        public List<BlockHistories> GetBlockHistoriesData(string name, DateTime createdAt, string Email, string Phone);
+
     }
 }

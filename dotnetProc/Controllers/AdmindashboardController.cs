@@ -1215,6 +1215,8 @@ namespace dotnetProc.Controllers
 
                     bool response = _emailService.SendEmail(sendLink.Email, subject, body);
 
+                    _emailService.AddEmailLog(subject, 0, "Link For Patient Form Requests", sendLink.Email, "", response);
+
                     if (response)
                     {
                         TempData["ShowPositiveNotification"] = "Link Sent Successfully.";

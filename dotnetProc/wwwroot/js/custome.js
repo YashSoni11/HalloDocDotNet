@@ -2097,14 +2097,74 @@ const GetTransferAdminModalView = (id) => {
 
 const MarkUploadedFiles = (id) => {
 
-    console.log("hii")
+    console.log("hii", id, $(`#${id}`)[0].checked)
 
-    if ($(`#${id}`).checked == false) {
+    if ($(`#${id}`)[0].checked == false) {
         console.log("hii")
-    $(`#${id}`).click();
+       $(`#${id}`).click();
     }
 
     //console.log($(`#${id}`),"oo")
 
+
+}
+
+
+const GetPatientExploreTableView = (currentPage,userId) => {
+
+
+
+    $.ajax({
+
+        url: "/Provider/GetPatientExploreTableView",
+        method: "post",
+        data: { currentPage: currentPage,userId:userId },
+        success: function (response) {
+
+            $("#PatientExploreTableContainer").html(response);
+
+
+
+          
+
+
+          
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+     
+}
+
+
+const GetBlockHistoryTableView = (currentPage) => {
+
+
+    let Name = $("#br-PatientName").val();
+    let CreateDate = $("#br-createDate").val();
+    let Email = $("#br-Email").val();
+    let Phone = $("#br-Phone").val();
+
+
+    $.ajax({
+
+        url: "/Provider/GetBlockHistoryTableView",
+        method: "post",
+        data: { currentPage: currentPage, Name: Name, CreateDate: CreateDate, Email: Email, Phone: Phone },
+        success: function (response) {
+
+            $("#BlockHistoryTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
 
 }

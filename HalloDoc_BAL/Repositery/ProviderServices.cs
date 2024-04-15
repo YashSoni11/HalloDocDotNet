@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.AdminViewModels;
 using HalloDoc_DAL.Context;
@@ -1714,7 +1715,7 @@ namespace HalloDoc_BAL.Repositery
 
                     DateTime? serviceDate = _context.Requests.Where(q => q.Requestid == rc.Requestid).Select(q => q.Accepteddate).FirstOrDefault();
 
-
+                    searchRecord.RequestId = rc.Requestid;
                     searchRecord.DateOfService = serviceDate == null ? null : serviceDate;
                     searchRecord.CloseCaseDate = _context.Requeststatuslogs.Where(q => q.Requestid == rc.Requestid && (q.Status == 6 || q.Status == 7 || q.Status == 8)).Select(q => q.Createddate).FirstOrDefault();
                     searchRecord.Email = rc.Email;
@@ -1832,8 +1833,8 @@ namespace HalloDoc_BAL.Repositery
             var physicianData = _context.Physicians.FirstOrDefault(x => x.Physicianid == physicianid);
 
 
-                physicianData.Isagreementdoc = new BitArray(1, providerProfileCm.IsContractAggreeMent); 
-                //physicianData.Isbackgrounddoc = providerProfileCm.IsContractAggreeMent == true ? new BitArray(1, true) : new BitArray(0, false);
+                physicianData.Isagreementdoc = new BitArray(1, providerProfileCm.IsContractAggreeMent);
+                physicianData.Isbackgrounddoc = new BitArray(1, providerProfileCm.IsBackGroundCheck);
                 physicianData.Istrainingdoc = new BitArray(1, providerProfileCm.IsHipaa);
                 physicianData.Isnondisclosuredoc =  new BitArray(1, providerProfileCm.IsNonDisClouser);
 
@@ -2005,6 +2006,134 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+
+
+        public List<PatientExplore> GetpatientExploreData(int userId)
+        {
+
+
+            try
+            {
+
+
+                List<Request> requests = _context.Requests.Where(q =>q.Userid == userId).ToList();
+
+
+                List<PatientExplore> patientExplores = new List<PatientExplore>();
+
+
+                foreach (Request request in requests)
+                {
+
+                    PatientExplore patientExplore = new PatientExplore();
+
+                    patientExplore.PatientName = request.Firstname + " " + request.Lastname;
+                    patientExplore.CreatedDate = request.Createddate;
+                    patientExplore.Confirmation = request.Confirmationnumber;
+                    //patientExplore.IsFinalized = _context.Encounterforms.Where(q => q.Requestid == request.Requestid).Select(q => q.IsFinelized).FirstOrDefault();
+                    patientExplore.IsFinalized = false;
+                    patientExplore.RequestId = request.Requestid;
+
+                    if (request.Physicianid != null)
+                    {
+                        patientExplore.Providername = _context.Physicians.Where(q => q.Physicianid == request.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();
+
+                    }
+                    else
+                    {
+                        patientExplore.Providername = null;
+                    }
+
+
+                    if (request.Status >= 6)
+                    {
+                        patientExplore.ConcludeDate = (DateTime)_context.Requeststatuslogs.Where(q => q.Status == 6).Select(q => q.Createddate).FirstOrDefault();
+                    }
+                    else
+                    {
+                        patientExplore.ConcludeDate = null;
+                    }
+
+                    patientExplores.Add(patientExplore);
+
+
+                }
+                    return patientExplores;
+
+            }catch(Exception ex)
+            {
+                return new List<PatientExplore>();
+            }
+
+        }
+
+
+
+        public List<BlockHistories> GetBlockHistoriesData(string name,DateTime createdAt,string Email,string Phone)
+        {
+
+
+            try
+            {
+
+                List<Blockrequest> blockrequests = _context.Blockrequests.ToList();
+
+                List<BlockHistories> patientHistories = new List<BlockHistories>();
+
+                foreach (Blockrequest req in blockrequests)
+                {
+
+                    BlockHistories blockreq = new BlockHistories();
+
+                    blockreq.PatientName = _context.Requests.Where(q => q.Requestid.ToString() == req.Requestid).Select(q => q.Firstname + " "+q.Lastname).FirstOrDefault();
+                    blockreq.PhoneNumber = req.Phonenumber;
+                    blockreq.Email = req.Email;
+                    blockreq.CratedAr = (DateTime)req.Createddate;
+                    blockreq.BlockNotes = req.Reason;
+                    blockreq.IsActive = req.Isactive[0];
+
+
+                    patientHistories.Add(blockreq);
+                }
+
+
+                bool IsAllName = false;
+                bool IsAllDate = false;
+                bool IsAllEmail = false;
+                bool IsAllPhone = false;
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    IsAllName = true;
+                }
+
+                if (createdAt == DateTime.MinValue)
+                {
+                    IsAllDate = true;
+                }
+
+                if (string.IsNullOrEmpty(Email))
+                {
+                    IsAllEmail = true;
+                }
+
+                if (string.IsNullOrEmpty(Phone))
+                {
+                    IsAllPhone = true;
+                }
+
+
+
+                patientHistories = patientHistories.Where(q => (IsAllName || q.PatientName.ToLower().Contains(name.ToLower())) && (IsAllDate || q.CratedAr == createdAt) && (IsAllEmail || q.Email == Email) && (IsAllPhone || q.PhoneNumber == Phone)).ToList();
+
+
+                return patientHistories;
+            }
+            catch (Exception ex)
+            {
+                return new List<BlockHistories>();
+            }
+        }
 
     }
 }

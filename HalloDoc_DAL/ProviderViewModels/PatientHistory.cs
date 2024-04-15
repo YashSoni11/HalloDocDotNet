@@ -32,4 +32,45 @@ namespace HalloDoc_DAL.ProviderViewModels
         public int UserId { get; set; }
 
     }
+
+
+    public class PatientExplreView
+    {
+        public int UserId { get; set; }
+    }
+
+    public class PatientExploreTable
+    {
+        public int rowsPerPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int currentPage { get; set; }
+        public List<PatientExplore> patientRecords { get; set; }
+
+        public int UserId { get; set; }
+
+        public int RequestId { get; set; }
+    }
+
+
+    public class PatientExplore
+    {
+        public string? PatientName { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public string? Confirmation { get; set; }
+
+        public string? Providername { get; set; }
+
+        public DateTime? ConcludeDate { get; set; }
+
+        public int?   status { get; set; }
+
+        public int RequestId { get; set; }
+        public bool? IsFinalized { get; set; }
+
+    }
+        
 }

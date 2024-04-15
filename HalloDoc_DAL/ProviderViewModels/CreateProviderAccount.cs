@@ -104,8 +104,8 @@ namespace HalloDoc_DAL.ProviderViewModels
         public IFormFile ContractAgrrement { get; set; }
         public bool IsContractAggreeMent { get; set; }
 
-        public IFormFile? BackgroundCheck { get; set; }
-        public bool? IsBackGroundCheck { get; set; }
+        public IFormFile BackgroundCheck { get; set; }
+        public bool IsBackGroundCheck { get; set; }
 
 
 

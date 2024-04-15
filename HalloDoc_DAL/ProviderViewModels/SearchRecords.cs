@@ -38,6 +38,7 @@ namespace HalloDoc_DAL.ProviderViewModels
     public class SearchRecords
     {
 
+        public int RequestId { get; set; }
         public string PatientName { get; set; } 
 
         public string RequestorType { get; set; }   
