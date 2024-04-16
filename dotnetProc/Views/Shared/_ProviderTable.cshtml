@@ -149,9 +149,9 @@
     <div class="row p-3">
         <nav aria-label="Page navigation example mt-3">
             <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
-                <li class="page-item" onclick="GetProvidersByRegion(@Model.currentPage-1,@Model.TotalPages,true)" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
+                <li class="page-item" onclick="GetProvidersByRegion(@Model.currentPage-1,@Model.TotalPages,true)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-left"></i></li>
                 <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
-                <li class="page-item" onclick="GetProvidersByRegion(@Model.currentPage+1,@Model.TotalPages,true)" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+                <li class="page-item" onclick="GetProvidersByRegion(@Model.currentPage+1,@Model.TotalPages,true)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-right"></i></li>
             </ul>
         </nav>
     </div>

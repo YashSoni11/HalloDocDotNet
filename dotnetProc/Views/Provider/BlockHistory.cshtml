@@ -66,7 +66,7 @@
                         <button type="reset" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
                             Clear
                         </button>
-                        <button type="button" class="btn btn-info  text-white darkInfo-btn " onclick="GetBlockHistoryTableView('1')">Search</button>
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn " onclick="GetBlockHistoryTableView('1',false)">Search</button>
 
                     </div>
 
@@ -83,7 +83,7 @@
 
 
     <div class="row" style="justify-content:center">
-        <div id="BlockHistoryTableContainer" class="col-xl-10 col-lg-11 col-md-11 col-sm-11 col-11 justify-content-between p-0">
+        <div id="BlockHistoryTableContainer" class="col-xl-10 col-lg-11 col-md-11 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
 
 
             @*<partial name="_ProviderTable"/>*@
@@ -106,8 +106,7 @@
 
     $(document).ready(function () {
 
-        //handleNavChange('provider-menu-tab')
-        GetBlockHistoryTableView('1');
+        GetBlockHistoryTableView('1',false);
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {
@@ -117,6 +116,7 @@
         else if ('@TempData["ShowNegativeNotification"]' != '') {
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
+        handleNavChange('pills-Records-tab')
     })
 
 

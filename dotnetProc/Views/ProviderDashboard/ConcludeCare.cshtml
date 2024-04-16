@@ -50,8 +50,8 @@
                     <div class="input-group mb-3 d-flex" style="justify-content:end;">
 
 
-                            <input asp-for="FormFiles" type="file" class="form-control" id="inputGroupFile02"  multiple style="display:none;">
-                            <button  type="submit">ef</button>
+                            <input asp-for="FormFiles" type="file" class="form-control" id="inputGroupFile02" multiple style="display:none;" onchange="$('#ProviderDocForm').submit()">
+                            @*<button  type="submit">ef</button>*@
                         <label class="input-group-text  btn-outline-info text-info lightInfo-btn" for="inputGroupFile02" style="border-radius:9px;background-color:transparent;border:1px solid #0dcaf2;">
                             <i class='bi bi-cloud-upload text-info mx-1'></i>Upload
                         </label>
@@ -74,7 +74,7 @@
 
 
     <div class="row" style="justify-content:center;">
-        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="border-radius: 0px 0px 0px 0px;background-color:var(--pi-form-back-color);">
+        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="border-radius: 0px 0px 0px 0px;background-color:var(--pi-form-back-color);box-shadow: rgb(0 0 0 / 15%) 0px 0px 3px 0px;">
 
             <table class="table ReqtableContainer table-responsive">
                 <thead>
@@ -93,7 +93,7 @@
                                
                                 <td class="@doc.filename.Replace(" ","")  text-start" id="@doc.FileId">@doc.filename</td>
                                 
-                                <td class="d-flex text-end" style="column-gap:10px;">
+                                <td class="d-flex text-end" style="justify-content:flex-end;">
                                     <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
                                         <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
                                     </a>
@@ -110,8 +110,8 @@
 
        
 
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 " >
-<form method="post" asp-action="PostConcludeCare" asp-controller="ProviderDashboard" asp-route-id="@Model.RequestId">
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 " style="box-shadow: rgb(0 0 0 / 15%) 0px 10px 10px 0px;background-color:var(--pi-form-back-color);">
+<form method="post" id="ConcludeCareForm" asp-action="PostConcludeCare" asp-controller="ProviderDashboard" asp-route-id="@Model.RequestId">
 
         <h6>Provider Notes</h6>
         <div class="col-10">
@@ -126,9 +126,9 @@
         </div>
 
 
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 d-flex justify-content-end" style="border-radius: 0px 0px 10px 10px;background-color:var(--pi-form-back-color);box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;">
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11  p-3 d-flex justify-content-end" style="border-radius: 0px 0px 10px 10px;background-color:var(--pi-form-back-color);box-shadow: rgb(0 0 0 / 15%) 0px 10px 10px 0px;">
 
-            <button type="submit" class="btn btn-info  text-white darkInfo-btn " onclick="()">Conclude Care</button>
+            <button type="submit" class="btn btn-info  text-white darkInfo-btn " onclick="$('#ConcludeCareForm').submit()">Conclude Care</button>
 
 
          </div>

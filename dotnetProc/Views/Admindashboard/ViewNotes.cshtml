@@ -131,6 +131,47 @@
                                 </div>
                             </div>
                         </div>
+                        @if(Model.requestnotes?.CanclledByPatientNote != null)
+                        {
+                            <div class="col-xl-6 col-sm-6 col-12">
+                                <div class="container-fluid mb-3">
+                                    <div class="row mt-5 NotesContainer" style="align-items: center;padding: 1rem;background:var(--accordian-btn-color)">
+
+                                        <div class="col-2">
+                                            <i class="bi bi-person  fs-3" style="color:var(--Notes-icon-color)"></i>
+                                        </div>
+                                        <div class="col-10">
+
+                                            <h6>Canclled By Patient Notes</h6>
+                                            <p>@(Model.requestnotes?.CanclledByPatientNote != null ? Model.requestnotes.CanclledByPatientNote : "Not Available")</p>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.requestnotes?.CanclledByAdminNotes != null)
+                        {
+                            <div class="col-xl-6 col-sm-6 col-12">
+                                <div class="container-fluid mb-3">
+                                    <div class="row mt-5 NotesContainer" style="align-items: center;padding: 1rem;background:var(--accordian-btn-color)">
+
+                                        <div class="col-2">
+                                            <i class="bi bi-person  fs-3" style="color:var(--Notes-icon-color)"></i>
+                                        </div>
+                                        <div class="col-10">
+
+                                            <h6>Canclled By Admin Notes</h6>
+                                            <p>@(Model.requestnotes?.CanclledByAdminNotes != null ? Model.requestnotes.CanclledByAdminNotes : "Not Available")</p>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                         <div class="col-12 mt-5">
                             <div class="form-floating mb-3 ">
                                 <textarea asp-for="AdditionalNotes" rows="10" id="floatingInput"  class="form-control" style="height:140px;"> </textarea>

@@ -29,6 +29,8 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public List<TransferNotes>? Notes { get; set; }
 
+        public string? CancleNotes { get; set; }
+
 
         public int status { get; set; }
 

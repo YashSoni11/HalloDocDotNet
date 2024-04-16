@@ -27,7 +27,7 @@
 
 
     <div class="row mt-3" style="justify-content:center">
-        <div id="PatientExploreTableContainer" class="col-xl-10 col-lg-11 col-md-12 col-sm-11 col-11 justify-content-between p-0" style="">
+        <div id="PatientExploreTableContainer" class="col-xl-10 col-lg-11 col-md-12 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
 
 
             @*<partial name="_ProviderTable"/>*@
@@ -50,8 +50,7 @@
 
     $(document).ready(function () {
 
-        //handleNavChange('provider-menu-tab')
-        GetPatientExploreTableView(1,@Model.UserId);
+        GetPatientExploreTableView('1',false,@Model.UserId);
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {
@@ -61,6 +60,7 @@
         else if ('@TempData["ShowNegativeNotification"]' != '') {
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
+        handleNavChange('pills-Records-tab')
     })
 
 

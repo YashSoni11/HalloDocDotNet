@@ -287,6 +287,15 @@ namespace dotnetProc.Controllers
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
+
+            bool IsFormFinlized = _providerDashboard.IsFormFinlized(id);
+
+            if(IsFormFinlized == false)
+            {
+                TempData["ShowNegativeNotification"] = "Please Finalize Encounter Form!";
+                return RedirectToAction("ConcludeCareView", new { id = id });
+            }
+
             bool response = _providerDashboard.ConcludeCareService(concludeCare, id,loggedInUser.UserId,loggedInUser.Role);
 
 
@@ -300,6 +309,35 @@ namespace dotnetProc.Controllers
             }
 
             return RedirectToAction("Dashboard");
+        }
+
+
+        public IActionResult FinalizeEncounterForm(int requestId)
+        {
+
+            if(requestId == 0)
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
+                return RedirectToAction("EncounterForm", new { id = requestId });
+
+            }
+
+            bool response = _providerDashboard.FinalizeEncounterformService(requestId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Form finalized successsfully.";
+                return RedirectToAction("Dashboard");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
+            return RedirectToAction("EncounterForm", new { id = requestId });
+            }
+
+
+
+
         }
 
 

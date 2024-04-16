@@ -104,7 +104,6 @@
     $(document).ready(function () {
 
         GetVendorsTableView('1', false);
-        //handleNavChange('pills-partners-tab');
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {
@@ -114,6 +113,7 @@
         else if ('@TempData["ShowNegativeNotification"]' != '') {
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
+        handleNavChange('pills-partners-tab');
     })
 
 

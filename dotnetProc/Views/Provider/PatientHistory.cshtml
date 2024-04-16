@@ -70,7 +70,7 @@
                         <button type="reset" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
                             Clear
                         </button>
-                        <button type="button" class="btn btn-info  text-white darkInfo-btn " onclick="GetPatientHistoryTableView()">Search</button>
+                        <button type="button" class="btn btn-info  text-white darkInfo-btn " onclick="GetPatientHistoryTableView('1',false)">Search</button>
 
                     </div>
 
@@ -110,8 +110,7 @@
 
     $(document).ready(function () {
 
-        //handleNavChange('provider-menu-tab')
-        GetPatientHistoryTableView();
+        GetPatientHistoryTableView('1',false);
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {
@@ -121,6 +120,7 @@
         else if ('@TempData["ShowNegativeNotification"]' != '') {
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
+        handleNavChange('pills-Records-tab')
     })
 
 

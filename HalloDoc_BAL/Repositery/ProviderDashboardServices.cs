@@ -283,6 +283,49 @@ namespace HalloDoc_BAL.Repositery
             return concludeCare;
         }
 
+        public bool IsFormFinlized(int requestId)
+        {
+
+
+            bool? isFinlized = _context.Encounterforms.Where(q => q.Requestid == requestId).Select(q => q.IsFinelized).FirstOrDefault();
+
+            if(isFinlized == null)
+            {
+                return false;
+            }
+            else
+            {
+                return (bool)isFinlized;
+            }
+        }
+
+
+        public bool FinalizeEncounterformService(int id)
+        {
+            try
+            {
+
+
+                Encounterform? encounterform = _context.Encounterforms.FirstOrDefault(q => q.Requestid == id);
+
+                if(encounterform == null)
+                {
+                    return false;
+                }
+
+                encounterform.IsFinelized = true;
+
+                _context.Encounterforms.Update(encounterform);
+                _context.SaveChanges();
+
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public bool ConcludeCareService(ConcludeCare concludeCare, int requestId, int UserId, string Role)
         {

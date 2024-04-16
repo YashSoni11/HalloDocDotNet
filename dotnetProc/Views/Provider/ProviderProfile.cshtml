@@ -594,20 +594,7 @@
 
         
        
-        //if(@ViewData["RoleName"] == "Phy")
-        //{
-            
-        //    handleNavChange("provider-profile-tab")
-        //}
-        //else if(@ViewData["RoleName"] == "Adm")
-        //{
-        //let prevId = localStorage.getItem("ActiveLink")
-
-        //let currEle = document.getElementById(prevId)
-
-        //currEle.classList.add("active");
-            
-        //}
+   
 
         
 
@@ -659,6 +646,18 @@
             isDrawing = false;
         }
 
+        if (@ViewData["RoleName"] == "Phy") {
+
+            handleNavChange("provider-profile-tab")
+        }
+        else if (@ViewData["RoleName"] == "Adm") {
+            let prevId = localStorage.getItem("ActiveLink")
+
+            let currEle = document.getElementById(prevId)
+
+            currEle.classList.add("active");
+
+        }
        
 
     })

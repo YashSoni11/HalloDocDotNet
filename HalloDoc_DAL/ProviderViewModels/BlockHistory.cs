@@ -45,6 +45,8 @@ namespace HalloDoc_DAL.ProviderViewModels
         public bool IsActive { get; set; }
 
 
+        public int RequestId { get; set; }
+
     }
 
 }

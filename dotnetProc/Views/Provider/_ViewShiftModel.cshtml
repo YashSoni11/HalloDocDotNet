@@ -6,6 +6,10 @@
 @{
     string[] days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
+    <form asp-action="DeleteShift" asp-controller="Provider" id="DeleteShiftForm" method="post">
+          <input name="ShiftDetailId" value="@Model.ShiftDetailId" style="display:none" hidden/>
+    </form>
+
     <form asp-action="EditShift" asp-controller="Provider" id="EditShiftModalForm" mthod="post">
         <div class="modal fade" id="ViewShiftModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -108,7 +112,7 @@
                         <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none" onclick="editDetails()">Save</button>
                         <button type="button" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none" onclick="cancleEdit()">Cancle</button>
 
-                        <button type="button" class="btn btn-danger  text-white darkInfo-btn">Delete</button>
+                        <button type="button" class="btn btn-danger  text-white darkInfo-btn" onclick="$('#DeleteShiftForm').submit()">Delete</button>
 
                     </div>
                 </div>

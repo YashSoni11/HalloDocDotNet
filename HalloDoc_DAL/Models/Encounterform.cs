@@ -25,7 +25,7 @@ public partial class Encounterform
     public string? Location { get; set; }
 
     [Column("DOB")]
-    public DateOnly? Dob { get; set; }
+    public DateTime? Dob { get; set; }
 
     [Column("phonnumber", TypeName = "character varying")]
     public string? Phonnumber { get; set; }

@@ -404,12 +404,12 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-
-                bool response = _dashboard.UpdateRequestToClose(adminCancleCase, requestId);
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _dashboard.UpdateRequestToClose(adminCancleCase, requestId,loggedInUser.UserId);
 
                 if (response)
                 {
-                    TempData["ShowPositiveNotification"] = "Request Cancled Succesfully.";
+                    TempData["ShowPositiveNotification"] = "Request Canclled Succesfully.";
                 }
                 else
                 {
@@ -626,6 +626,31 @@ namespace dotnetProc.Controllers
 
 
 
+        }
+
+
+        public IActionResult UnBlockRequest(int RequestId)
+        {
+
+            if(RequestId == 0)
+            {
+                TempData["ShowNegativNotification"] = "No Data Found!";
+            }
+
+            bool response = _dashboard.UnblockRequestService(RequestId);
+
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Request Unblocked Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something wen wrong!";
+            }
+
+
+            return RedirectToAction("BlockHistoryView", "Provider");
         }
 
         //[AuthManager("Admin")]

@@ -32,7 +32,7 @@ namespace HalloDoc_BAL.Interface
 
         public string GetPatientName(int id);
 
-        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id);
+        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id,int userId);
 
         public List<Region> GetAllRegions();
 
@@ -43,6 +43,9 @@ namespace HalloDoc_BAL.Interface
         public bool AssignRequest(AdminAssignCase assignRequest, int requestId);
 
         public Request BlockRequest(AdminBlockCase blockRequest, int requestId);
+
+        public bool UnblockRequestService(int RequestId);
+
 
         public List<ViewDocument> GetDocumentsByRequestId(int requestid);
 

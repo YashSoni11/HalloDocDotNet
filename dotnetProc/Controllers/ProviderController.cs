@@ -929,6 +929,35 @@ namespace dotnetProc.Controllers
 
         }
 
+
+
+        public IActionResult DeleteShift(int ShiftDetailId)
+        {
+            if(ShiftDetailId == 0)
+            {
+                TempData["ShowNegativeNotification"] = "No Records Found";
+            }
+
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+
+
+            bool response = _provider.DeleteShiftService(ShiftDetailId, loggedInUser.UserId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Shift Deleted Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+            }
+
+            return RedirectToAction("ProviderScheduling");
+        }
+
         public IActionResult GetWeekWiseShiftTableView(int date, int month, int year, int regionId)
         {
 
@@ -1225,28 +1254,51 @@ namespace dotnetProc.Controllers
             return View("SearchRecords");
         }
 
-        public IActionResult GetSearchRecordsTableView(int Status,string PatientName,int RequestType,DateTime FromDate,DateTime ToDate,string ProviderName,string Email,string Phone)
+        public IActionResult GetSearchRecordsTableView(int currentPage,int Status,string PatientName,int RequestType,DateTime FromDate,DateTime ToDate,string ProviderName,string Email,string Phone)
         {
 
             List<SearchRecords> searchRecords = _provider.GetFillteredSearchRecordsData( Status,  PatientName,  RequestType,  FromDate,  ToDate,  ProviderName,  Email,  Phone);
 
-            //SearchRecordsTable searchRecordsTable = new SearchRecordsTable()
-            //{
-            //    TotalPages = (int)Math.Ceiling((double)vendorLists.Count / 2),
-            //    VendorList = vendorLists.Skip(2 * (currentPage - 1)).Take(5).ToList(),
-            //    currentPage = currentPage,
-            //};
+         
 
             SearchRecordsTable searchRecordsTable = new SearchRecordsTable()
             {
-                TotalPages = 0,
-                currentPage = 0,
-                SearchRecords = searchRecords,
+                TotalPages = (int)Math.Ceiling((double)searchRecords.Count / 5),
+                SearchRecords = searchRecords.Skip(5 * (currentPage - 1)).Take(5).ToList(),
+                currentPage = currentPage,
+     
             };
 
 
             return PartialView("_SearchRecordsTable", searchRecordsTable);
 
+        }
+
+
+
+        public IActionResult DeleteRecord(int requestId)
+        {
+
+             if(requestId == 0)
+            {
+                TempData["ShowNegativeNotification"] = "No Record Found!";
+                return RedirectToAction("SearchRecordsView");
+            }
+
+
+            bool response = _provider.DeleteRecordService(requestId);
+
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Record Deleted Succesfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+            }
+
+            return RedirectToAction("SearchRecordsView", "Provider");
         }
 
 
@@ -1259,23 +1311,18 @@ namespace dotnetProc.Controllers
 
             return View("EmailLogs");
         }
-        public IActionResult GetEmailLogsTableView( string ReciverName, int RoleId ,string  EmailId, DateTime CreateDate,DateTime SentDate)
+        public IActionResult GetEmailLogsTableView(int currentPage, string ReciverName, int RoleId ,string  EmailId, DateTime CreateDate,DateTime SentDate)
         {
 
             List<EmailLogs> emailLogs = _provider.GetFillteredEmailLogsData( ReciverName,  RoleId,   EmailId,  CreateDate,  SentDate);
 
-            //SearchRecordsTable searchRecordsTable = new SearchRecordsTable()
-            //{
-            //    TotalPages = (int)Math.Ceiling((double)vendorLists.Count / 2),
-            //    VendorList = vendorLists.Skip(2 * (currentPage - 1)).Take(5).ToList(),
-            //    currentPage = currentPage,
-            //};
-
+           
             EmailLogsTable emailLogsTable = new EmailLogsTable()
             {
-                TotalPages = 0,
-                currentPage = 0,
-                EmailLogs = emailLogs,
+                TotalPages = (int)Math.Ceiling((double)emailLogs.Count / 2),
+                EmailLogs = emailLogs.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                currentPage = currentPage,
+               
             };
 
 
@@ -1294,7 +1341,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult GetPatientHistoryTableView(string FirstName, string LastName, string Email, string Phone)
+        public IActionResult GetPatientHistoryTableView(int currentPage,string FirstName, string LastName, string Email, string Phone)
         {
 
 
@@ -1303,9 +1350,10 @@ namespace dotnetProc.Controllers
 
             PatientHistoryTable patientHistoryTable = new PatientHistoryTable()
             {
-                TotalPages = 0,
-                currentPage = 0,
-                patientHistories = patientHistories,
+                TotalPages = (int)Math.Ceiling((double)patientHistories.Count / 3),
+                patientHistories = patientHistories.Skip(3 * (currentPage - 1)).Take(3).ToList(),
+                currentPage = currentPage,
+        
             };
             
 
@@ -1351,9 +1399,10 @@ namespace dotnetProc.Controllers
 
             PatientExploreTable patientHistoryTable = new PatientExploreTable()
             {
-                TotalPages = 0,
+                TotalPages = (int)Math.Ceiling((double)patientExplores.Count / 2),
+                patientRecords = patientExplores.Skip(2 * (currentPage - 1)).Take(2).ToList(),
                 currentPage = currentPage,
-                patientRecords = patientExplores,
+                UserId = UserId,
             };
 
             return PartialView("_PatientExploredTable", patientHistoryTable);
@@ -1382,9 +1431,10 @@ namespace dotnetProc.Controllers
 
             BlockHistoryTable patientHistoryTable = new BlockHistoryTable()
             {
-                TotalPages = 0,
-                currentPage = 0,
-                 BlockRecords= patientHistories,
+                TotalPages = (int)Math.Ceiling((double)patientHistories.Count / 2),
+                BlockRecords = patientHistories.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                currentPage = currentPage,
+                
             };
 
 

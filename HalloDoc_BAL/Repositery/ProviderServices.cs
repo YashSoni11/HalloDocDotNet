@@ -176,9 +176,12 @@ namespace HalloDoc_BAL.Repositery
 
             };
 
+
+
             ProviderDocuments providerDocuments = new ProviderDocuments()
             {
                 IsContractAggreeMent = physician.Isagreementdoc[0],
+                IsBackGroundCheck = physician.Isbackgrounddoc[0],
                 IsHipaa = physician.Istrainingdoc[0],
                 IsNonDisClouser = physician.Isnondisclosuredoc[0],
             };
@@ -1231,11 +1234,11 @@ namespace HalloDoc_BAL.Repositery
                 List<ShiftInformation> WeekWiseShifts = new List<ShiftInformation>();
                 weekWisePhysicianShifts.physicianId = physician.Physicianid;
                 weekWisePhysicianShifts.PhysicianName = physician.Firstname + " " + physician.Lastname;
+                    List<Shift> PhysicianShifts = _context.Shifts.Where(q => q.Physicianid == physician.Physicianid).ToList();
 
                 for (int i = 0; i < 7; i++)
                 {
 
-                    List<Shift> PhysicianShifts = _context.Shifts.Where(q => q.Physicianid == physician.Physicianid).ToList();
 
 
                     if (PhysicianShifts.Count == 0)
@@ -1245,7 +1248,7 @@ namespace HalloDoc_BAL.Repositery
                         dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
                         dayWiseShift.dayOfWeek = -1;
                         WeekWiseShifts.Add(dayWiseShift);
-                        break;
+                        //break;
                     }
                     else
                     {
@@ -1294,6 +1297,9 @@ namespace HalloDoc_BAL.Repositery
                     }
                     startOfWeek = startOfWeek.AddDays(1);
                 }
+
+
+                startOfWeek = new DateOnly(year, month, date);
 
                 weekWisePhysicianShifts.WeekWiseShiftInformation = WeekWiseShifts;
 
@@ -1483,6 +1489,29 @@ namespace HalloDoc_BAL.Repositery
             {
                 return false;
             }
+        }
+
+
+        public bool DeleteShiftService(int shiftDetailId,int adminId)
+        {
+            try
+            {
+            Shiftdetail shiftdetail = _context.Shiftdetails.FirstOrDefault(q => q.Shiftdetailid == shiftDetailId);
+
+            shiftdetail.Isdeleted = true;
+            shiftdetail.Modifieddate = DateTime.Now;
+            shiftdetail.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+            _context.Shiftdetails.Update(shiftdetail);
+                _context.SaveChanges();
+
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+
         }
       public List<Healthprofessionaltype> GetAllHealthProfessionalTypes()
         {
@@ -1747,7 +1776,28 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
+        public bool DeleteRecordService(int RequestId)
+        {
 
+
+            try
+            {
+
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == RequestId);
+
+                request.Isdeleted = new BitArray(1,true);
+                request.Modifieddate = DateTime.Now;
+
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
 
         public List<EmailLogs> GetFillteredEmailLogsData(string ReciverName, int RoleId, string EmailId, DateTime CreateDate, DateTime SentDate)
         {
@@ -2091,7 +2141,7 @@ namespace HalloDoc_BAL.Repositery
                     blockreq.CratedAr = (DateTime)req.Createddate;
                     blockreq.BlockNotes = req.Reason;
                     blockreq.IsActive = req.Isactive[0];
-
+                    blockreq.RequestId = int.Parse(req.Requestid);
 
                     patientHistories.Add(blockreq);
                 }

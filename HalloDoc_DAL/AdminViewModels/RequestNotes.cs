@@ -19,7 +19,9 @@ namespace HalloDoc_DAL.AdminViewModels
         public string? AddtionalNotes { get; set; }
 
        
+        public string? CanclledByPatientNote {get;set; }
 
+        public string? CanclledByAdminNotes { get; set; }
 
     }
 

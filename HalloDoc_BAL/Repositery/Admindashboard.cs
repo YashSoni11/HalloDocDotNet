@@ -204,7 +204,7 @@ namespace HalloDoc_BAL.Repositery
             foreach(Physicianregion physicianregion in physicianregions)
             {
 
-                ProviderMenu? physician = _context.Physicians.Where(q => q.Regionid == physicianregion.Regionid && q.Isdeleted == false).Select(r => new ProviderMenu()
+                ProviderMenu? physician = _context.Physicians.Where(q => q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false).Select(r => new ProviderMenu()
                 {
 
                     Name = r.Firstname + " " + r.Lastname,
@@ -298,6 +298,7 @@ namespace HalloDoc_BAL.Repositery
                     Requestid = requestId.ToString(),
                     Createddate = DateTime.Now,
                     Email = request.Email,
+                    Isactive = new BitArray(1, false),
 
                 };
 
@@ -309,6 +310,51 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return request;
+        }
+
+
+        public bool UnblockRequestService(int RequestId)
+        {
+
+
+            try
+            {
+
+
+
+
+                Blockrequest blockRequest = _context.Blockrequests.FirstOrDefault(q => q.Requestid == RequestId.ToString());
+
+
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == RequestId);
+
+
+                blockRequest.Isactive = new BitArray(1, true);
+                blockRequest.Modifieddate = DateTime.Now;
+
+                request.Status = 1;
+                request.Modifieddate = DateTime.Now;
+
+
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = RequestId,
+                    Status = request.Status,
+                    Createddate = DateTime.Now,
+                };
+
+                _context.Blockrequests.Update(blockRequest);
+                _context.Requests.Update(request);
+                _context.Requeststatuslogs.Add(requeststatuslog);
+
+                _context.SaveChanges();
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
         }
 
 
@@ -411,8 +457,8 @@ namespace HalloDoc_BAL.Repositery
                     PhysicinName = r.Status == 1?_context.Physicians.Where(q=>q.Physicianid == r.Physicianid).Select(q=>q.Businessname).FirstOrDefault():null,
                     TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
                     TransferedDate = r.Createddate,
-                    Description = r.Notes
                 }).ToList(),
+                CancleNotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && q.Status == 7).Select(q=>q.Notes).FirstOrDefault(),
 
 
             }).ToList();
@@ -460,7 +506,7 @@ namespace HalloDoc_BAL.Repositery
                     TransferedDate = r.Createddate,
                     Description = r.Notes
                 }).ToList(),
-
+                CancleNotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && (q.Status == 7 || (q.Status == 6 && q.Adminid != null))).Select(q=>q.Notes).FirstOrDefault(),
             }).ToList();
 
             if (type != 0)
@@ -518,18 +564,30 @@ namespace HalloDoc_BAL.Repositery
             {
               
                 AdminNotes = r.Adminnotes,
-                AddtionalNotes = r.Administrativenotes,
                 PhysicianNotes = r.Physiciannotes
 
             }).FirstOrDefault();
 
-            if (requestNotes == null)
-            {
 
-                return requestNotes;
-            }
-            else
+
+            if(requestNotes == null)
             {
+                requestNotes = new RequestNotes();
+            }
+   
+
+
+
+                Requeststatuslog requeststatuslog = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == requestId).FirstOrDefault();
+
+                if(requeststatuslog.Status == 7)
+                {
+                    requestNotes.CanclledByPatientNote = requeststatuslog.Notes;
+                }
+                else if(requeststatuslog.Status == 6 && requeststatuslog.Adminid != null)
+                {
+                    requestNotes.CanclledByAdminNotes = requeststatuslog.Notes;
+                }
 
             List<TransferNotes> transfernotes = new List<TransferNotes>();
 
@@ -548,7 +606,7 @@ namespace HalloDoc_BAL.Repositery
             requestNotes.TranferNotes = transfernotes;
 
             return requestNotes;
-            }
+            
         }
 
         public bool SaveNotesChanges(string notes, int requestId,string Role,int UserId)
@@ -627,7 +685,7 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id)
+        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id,int userId)
         {
             try
             {
@@ -636,18 +694,19 @@ namespace HalloDoc_BAL.Repositery
 
             request.Casetag = adminCancleCase.Reason;
             request.Modifieddate = DateTime.Now;
-            request.Status = 8;
+            request.Status = 6;
 
-            //Requeststatuslog requeststatuslog = new Requeststatuslog
-            //{
-            //    Requestid = (int)adminCancleCase.requestId,
-            //    Status = 8,
-            //    Createddate = DateTime.Now,
-            //    Notes = adminCancleCase.AdditionalNotes
-            //};
+                Requeststatuslog requeststatuslog = new Requeststatuslog
+                {
+                    Requestid = (int)adminCancleCase.requestId,
+                    Status = 6,
+                    Createddate = DateTime.Now,
+                    Notes = adminCancleCase.AdditionalNotes,
+                    Adminid = userId,
+                };
 
-            //_context.Requeststatuslogs.Add(requeststatuslog);
-            _context.Requests.Update(request);
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.Requests.Update(request);
 
             _context.SaveChanges();
                 return true;
@@ -956,7 +1015,7 @@ namespace HalloDoc_BAL.Repositery
 
             if (request != null)
             {
-                request.Status = 8;
+                request.Status = 7;
                 request.Modifieddate = DateTime.Now;
 
                 Requeststatuslog requeststatuslog = new Requeststatuslog()
@@ -1034,135 +1093,150 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-                gfx.DrawString("First Name:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.Firstname != null ? encounterform.Firstname : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+                gfx.DrawString("First Name :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Firstname != null ? encounterform.Firstname : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
+                y += lineHeight;
 
 
-                gfx.DrawString("Last Name:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Lastname != null ? encounterform.Lastname : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));
+                gfx.DrawString("Last Name :-", font, XBrushes.Black, new XPoint(x, y));    
+                gfx.DrawString(encounterform.Lastname != null ? encounterform.Lastname : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
 
                 y += lineHeight;
 
-                gfx.DrawString("Location:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString("Location :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Location != null ? encounterform.Location : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
                 y += lineHeight;
 
-                gfx.DrawString("Date Of Birth:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString("Date Of Birth :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Dob.ToString() != null ? encounterform.Dob.ToString() : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
-
-
-                gfx.DrawString("Created At:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Createdat.ToString() != null ? encounterform.Createdat.ToString() : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y)); ;
-
-                y += lineHeight;
-
-                gfx.DrawString("PhoneNumber:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.Phonnumber != null ? encounterform.Phonnumber : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
-
-
-                gfx.DrawString("Email:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Email != null ? encounterform.Email : "Not Available", font, XBrushes.Black, new XPoint(leftx + 70, y));
-
-                y += lineHeight;
-
-                gfx.DrawString("History of patinet illness Or Injury:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.History != null ? encounterform.History : "Not Available", font, XBrushes.Black, new XPoint(x + 220, y));
                 y += lineHeight;
 
 
-                gfx.DrawString("Medical History:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.MedicalHistory != null ? encounterform.MedicalHistory : "Not Available", font, XBrushes.Black, new XPoint(x + 90, y));
+                gfx.DrawString("Created At :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Createdat.ToString() != null ? encounterform.Createdat.ToString() : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y)); ;
+
                 y += lineHeight;
 
-                gfx.DrawString("Medications:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.Medications != null ? encounterform.Medications : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
-
-
-                gfx.DrawString("Allergies:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Allergies != null ? encounterform.Allergies : "Not Available", font, XBrushes.Black, new XPoint(leftx + 80, y));
-                y += lineHeight;
-
-                gfx.DrawString("Temp:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.Temperature != null ? encounterform.Temperature : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
-
-
-                gfx.DrawString("HR:", font, XBrushes.Black, new XPoint(oneby3x, y));
-                gfx.DrawString(encounterform.Hr != null ? encounterform.Hr : "Not Available", font, XBrushes.Black, new XPoint(oneby3x + 35, y));
-
-
-                gfx.DrawString("RR:", font, XBrushes.Black, new XPoint(oneby3x + 100, y));
-                gfx.DrawString(encounterform.Rr != null ? encounterform.Rr : "Not Available", font, XBrushes.Black, new XPoint(oneby3x + 130, y));
+                gfx.DrawString("PhoneNumber :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Phonnumber != null ? encounterform.Phonnumber : "Not Available", font, XBrushes.Black, new XPoint(x + 90, y));
                 y += lineHeight;
 
 
-                gfx.DrawString("Blood Pressure1:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.BloodPressure1 != null ? encounterform.BloodPressure1 : "Not Available", font, XBrushes.Black, new XPoint(x + 95, y));
+                gfx.DrawString("Email :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Email != null ? encounterform.Email : "Not Available", font, XBrushes.Black, new XPoint(x + 60, y));
 
-                gfx.DrawString("Blood Pressure2:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.BloodPressure2 != null ? encounterform.BloodPressure2 : "Not Available", font, XBrushes.Black, new XPoint(leftx + 95, y));
+                y += lineHeight;
+
+                gfx.DrawString("History of patinet illness Or Injury :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.History != null ? encounterform.History : "Not Available", font, XBrushes.Black, new XPoint(x + 200, y));
                 y += lineHeight;
 
 
-                gfx.DrawString("O2:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString("Medical History :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.MedicalHistory != null ? encounterform.MedicalHistory : "Not Available", font, XBrushes.Black, new XPoint(x + 100, y));
+                y += lineHeight;
+
+                gfx.DrawString("Medications :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Medications != null ? encounterform.Medications : "Not Available", font, XBrushes.Black, new XPoint(x + 90, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Allergies :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Allergies != null ? encounterform.Allergies : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+                y += lineHeight;
+
+                gfx.DrawString("Temp :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Temperature != null ? encounterform.Temperature : "Not Available", font, XBrushes.Black, new XPoint(x + 70, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("HR :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Hr != null ? encounterform.Hr : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("RR :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Rr != null ? encounterform.Rr : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Blood Pressure1 :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.BloodPressure1 != null ? encounterform.BloodPressure1 : "Not Available", font, XBrushes.Black, new XPoint(x + 105, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Blood Pressure2 :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.BloodPressure2 != null ? encounterform.BloodPressure2 : "Not Available", font, XBrushes.Black, new XPoint(x + 105, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("O2 :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.O2 != null ? encounterform.O2 : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-
-
-
-                gfx.DrawString("Pain:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Pain != null ? encounterform.Pain : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
                 y += lineHeight;
 
 
-                gfx.DrawString("Heent:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.Heent != null ? encounterform.Heent : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
 
-
-                gfx.DrawString("CV:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Cv != null ? encounterform.Cv : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
+                gfx.DrawString("Pain :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Pain != null ? encounterform.Pain : "Not Available", font, XBrushes.Black, new XPoint(x + 45, y));
                 y += lineHeight;
 
-                gfx.DrawString("Chest:", font, XBrushes.Black, new XPoint(x, y));
-                gfx.DrawString(encounterform.Chest != null ? encounterform.Chest : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
 
-
-                gfx.DrawString("ABD:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Abd != null ? encounterform.Abd : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
+                gfx.DrawString("Heent :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Heent != null ? encounterform.Heent : "Not Available", font, XBrushes.Black, new XPoint(x + 45, y));
                 y += lineHeight;
 
-                gfx.DrawString("Extr:", font, XBrushes.Black, new XPoint(x, y));
+
+                gfx.DrawString("CV :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Cv != null ? encounterform.Cv : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Chest :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Chest != null ? encounterform.Chest : "Not Available", font, XBrushes.Black, new XPoint(x + 50, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("ABD :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Abd != null ? encounterform.Abd : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Extr :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Extr != null ? encounterform.Extr : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-
-
-                gfx.DrawString("Skin:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Skin != null ? encounterform.Skin : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
                 y += lineHeight;
 
-                gfx.DrawString("Neuro:", font, XBrushes.Black, new XPoint(x, y));
+
+                gfx.DrawString("Skin :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Skin != null ? encounterform.Skin : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
+                y += lineHeight;
+
+                gfx.DrawString("Neuro :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Neuro != null ? encounterform.Neuro : "Not Available", font, XBrushes.Black, new XPoint(x + 35, y));
-
-
-                gfx.DrawString("Other:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Other != null ? encounterform.Other : "Not Available", font, XBrushes.Black, new XPoint(leftx + 35, y));
                 y += lineHeight;
 
-                gfx.DrawString("Diognosis:", font, XBrushes.Black, new XPoint(x, y));
+
+                gfx.DrawString("Other :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Other != null ? encounterform.Other : "Not Available", font, XBrushes.Black, new XPoint(x + 45, y));
+                y += lineHeight;
+
+                gfx.DrawString("Diognosis :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Diognosis != null ? encounterform.Diognosis : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
-
-
-                gfx.DrawString("Treatment Plan:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Treatmentplan != null ? encounterform.Treatmentplan : "Not Available", font, XBrushes.Black, new XPoint(leftx + 100, y));
                 y += lineHeight;
 
-                gfx.DrawString("Medications Dispensed:", font, XBrushes.Black, new XPoint(x, y));
+
+                gfx.DrawString("Treatment Plan :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Treatmentplan != null ? encounterform.Treatmentplan : "Not Available", font, XBrushes.Black, new XPoint(x + 100, y));
+                y += lineHeight;
+
+                gfx.DrawString("Medications Dispensed :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.MedicationsDispesnsed != null ? encounterform.MedicationsDispesnsed : "Not Available", font, XBrushes.Black, new XPoint(x + 150, y));
-
-
-                gfx.DrawString("Procedures:", font, XBrushes.Black, new XPoint(leftx, y));
-                gfx.DrawString(encounterform.Procedures != null ? encounterform.Procedures : "Not Available", font, XBrushes.Black, new XPoint(leftx + 80, y));
                 y += lineHeight;
 
 
-                gfx.DrawString("Followup:", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString("Procedures :-", font, XBrushes.Black, new XPoint(x, y));
+                gfx.DrawString(encounterform.Procedures != null ? encounterform.Procedures : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
+                y += lineHeight;
+
+
+                gfx.DrawString("Followup :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Followup != null ? encounterform.Followup : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
                 y += lineHeight;
 
@@ -1177,7 +1251,7 @@ namespace HalloDoc_BAL.Repositery
 
         public bool SaveEncounterForm(Encounterform encounterform)
         {
-            Encounterform encounterform1 = _context.Encounterforms.Where(q => q.Requestid == encounterform.Requestid).FirstOrDefault();
+            Encounterform? encounterform1 = _context.Encounterforms.Where(q => q.Requestid == encounterform.Requestid).FirstOrDefault();
 
             if (encounterform1 != null)
             {

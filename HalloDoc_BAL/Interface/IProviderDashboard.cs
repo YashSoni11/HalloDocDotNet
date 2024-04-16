@@ -31,6 +31,10 @@ namespace HalloDoc_BAL.Interface
 
         public bool ConcludeCareService(ConcludeCare concludeCare, int requestId, int UserId, string Role);
 
+        public bool IsFormFinlized(int requestId);
+
+
+        public bool FinalizeEncounterformService(int id);
 
         public List<Region> GetAllPhysicianRegions(int PhysicinId);
 

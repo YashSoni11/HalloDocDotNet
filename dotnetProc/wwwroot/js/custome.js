@@ -1773,7 +1773,13 @@ const GetVendorsTableView = (currentPage, isPageAction, totalPages = 0) => {
 
 
 
-const GetSearchRecordsTableView = () => {
+const GetSearchRecordsTableView = (currentPage, isPageAction, totalPages = 0) => {
+
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        return;
+    }
+
 
     let Status = $("#sr-status").val();
     let patientname = $("#sr-patientName").val();
@@ -1790,7 +1796,7 @@ const GetSearchRecordsTableView = () => {
         url: "/Provider/GetSearchRecordsTableView",
         method: "post",
         data: {
-            Status: Status, PatientName: patientname, RequestType: RequestType, FromDate: FromDate, ToDate: toDate, ProviderName: ProviderName, Emai
+            currentPage: currentPage,   Status: Status, PatientName: patientname, RequestType: RequestType, FromDate: FromDate, ToDate: toDate, ProviderName: ProviderName, Emai
                 : Email, Phone: phonumber
         },
         success: function (response) {
@@ -1810,8 +1816,13 @@ const GetSearchRecordsTableView = () => {
 }
 
 
-const GetEmailLogsTableView = () => {
+const GetEmailLogsTableView = (currentPage, isPageAction,totalPages = 0) => {
 
+
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        return;
+    }
 
     let ReciverName = $("#el-ReciverName").val();
     let RoleId = $("#el-Role").val();
@@ -1827,7 +1838,7 @@ const GetEmailLogsTableView = () => {
         url: "/Provider/GetEmailLogsTableView",
         method: "post",
         data: {
-            ReciverName: ReciverName, RoleId: RoleId, EmailId: EmailId, CreateDate: CreateDate, SentDate: SentDate
+            currentPage: currentPage, ReciverName: ReciverName, RoleId: RoleId, EmailId: EmailId, CreateDate: CreateDate, SentDate: SentDate
         },
         success: function (response) {
 
@@ -1845,8 +1856,12 @@ const GetEmailLogsTableView = () => {
 
 }
 
-const GetPatientHistoryTableView = () => {
+const GetPatientHistoryTableView = (currentPage,isPageAction,totalPages) => {
 
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        return;
+    }
 
     let FirstName = $("#ph-Firstname").val();
     let LastName = $("#ph-Lastname").val();
@@ -1862,7 +1877,7 @@ const GetPatientHistoryTableView = () => {
         url: "/Provider/GetPatientHistoryTableView",
         method: "post",
         data: {
-            FirstName: FirstName, LastName: LastName, Email: Email, Phone: Phone
+            currentPage: currentPage, FirstName: FirstName, LastName: LastName, Email: Email, Phone: Phone
         },
         success: function (response) {
 
@@ -2110,8 +2125,12 @@ const MarkUploadedFiles = (id) => {
 }
 
 
-const GetPatientExploreTableView = (currentPage,userId) => {
+const GetPatientExploreTableView = (currentPage,isPageAction  ,userId,totalPages) => {
 
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
 
 
     $.ajax({
@@ -2141,7 +2160,13 @@ const GetPatientExploreTableView = (currentPage,userId) => {
 }
 
 
-const GetBlockHistoryTableView = (currentPage) => {
+const GetBlockHistoryTableView = (currentPage, isPageAction, totalPages = 0 ) => {
+
+
+    if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
+        console.log(isPageAction)
+        return;
+    }
 
 
     let Name = $("#br-PatientName").val();

@@ -66,6 +66,9 @@ namespace HalloDoc_BAL.Interface
         public List<UserAccess> GetAllAspNetUsers(int roleId);
         public bool DeleteRequestedShifts(List<RequestedShiftDetails> requestedShifts, int adminId);
 
+        public bool DeleteShiftService(int shiftDetailId, int adminId);
+
+
         public bool EditShiftService(ViewShift viewShift, int adminId);
 
         public List<VendorList> GetVendorsData(string vendorName, int HealthProfessionId);
@@ -82,6 +85,9 @@ namespace HalloDoc_BAL.Interface
 
 
         public List<SearchRecords> GetFillteredSearchRecordsData(int Status, string PatientName, int RequestType, DateTime FromDate, DateTime ToDate, string ProviderName, string Email, string Phone);
+
+        public bool DeleteRecordService(int RequestId);
+
         public List<EmailLogs> GetFillteredEmailLogsData(string ReciverName, int RoleId, string EmailId, DateTime CreateDate, DateTime SentDate);
 
 
