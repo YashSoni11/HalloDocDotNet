@@ -347,6 +347,15 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
+                bool IsEmailExists = _patientReq.IsEmailExistance(createProviderAccount.Email);
+
+                if (IsEmailExists)
+                {
+                    TempData["ShowNegativeNotification"] = "Email is in use!";
+                    return RedirectToAction("CreateProviderAccountView");
+                }
+
+
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 string hashedPassword = _account.GetHashedPassword(createProviderAccount.Password);
                 if (hashedPassword.IsNullOrEmpty())
@@ -536,8 +545,26 @@ namespace dotnetProc.Controllers
 
             List<Role> roles = _provider.GetAllRoles();
 
+            List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
+
+            foreach (Region region in regions)
+            {
+
+                SelectedRegions selectedRegion = new SelectedRegions();
+
+                selectedRegion.regionName = region.Name;
+                selectedRegion.IsSelected = false;
+                selectedRegion.regionId = region.Regionid;
+
+                selectedRegions.Add(selectedRegion);
+
+            }
+
+            createAdminAccount.SelectedRegions = selectedRegions;
             createAdminAccount.Regions = regions;
             createAdminAccount.roles = roles;
+
+
 
             return View(createAdminAccount);
         }
@@ -865,7 +892,7 @@ namespace dotnetProc.Controllers
         }
 
 
-        public IActionResult ApproveShiftAction(List<RequestedShiftDetails> requestedShiftDetails, int Val)
+        public IActionResult ApproveShiftAction(RequestShiftTable requestShiftTable, int Val)
         {
 
             string token = HttpContext.Request.Cookies["jwt"];
@@ -887,7 +914,7 @@ namespace dotnetProc.Controllers
                 if (Val == 1)
                 {
 
-                    bool response = _provider.ApproveShiftsService(requestedShiftDetails, loggedInUser.UserId);
+                    bool response = _provider.ApproveShiftsService(requestShiftTable.requestedShiftDetails, loggedInUser.UserId);
 
                     if (response)
                     {
@@ -901,7 +928,7 @@ namespace dotnetProc.Controllers
                     }
                 }else if(Val == 2)
                 {
-                    bool response = _provider.DeleteRequestedShifts(requestedShiftDetails, loggedInUser.UserId);
+                    bool response = _provider.DeleteRequestedShifts(requestShiftTable.requestedShiftDetails, loggedInUser.UserId);
 
                     if (response)
                     {

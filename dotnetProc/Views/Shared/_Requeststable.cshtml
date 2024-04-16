@@ -310,16 +310,18 @@
                                             <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Birth: @(dr.Birthdate != null ? dr.Birthdate : "Not Available") </h6>
                                         </div>
                                         <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-envelope mx-1"></i></span>  <h6 class="mt-0">Email: @(dr.Notes != null ? dr.Notes : "Not Available") </h6>
+                                            <span class="AccordianIcons mx-1"><i class="bi bi-envelope mx-1"></i></span>  <h6 class="mt-0">Email: @(dr.Email != null ? dr.Email : "Not Available") </h6>
                                         </div>
                                         <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-telephone mx-1"></i></span>  <h6 class="mt-0">Patient: @(dr.Phone != null ? dr.Phone : "Not Available")</h6>
+                                            <span class="AccordianIcons mx-1"><i class="bi bi-telephone mx-1"></i></span>  <h6 class="mt-0">Patient: @(dr.Username != null ? dr.Username : "Not Available")</h6>
                                         </div>
                                         <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-journal-arrow-up mx-1"></i></span>  <h6 class="mt-0">Tranfer Notes: </h6>
+                                            <span class="AccordianIcons mx-1"><i class="bi bi-journal-arrow-up mx-1"></i></span> 
+                                            
+                                            <h6 class="mt-0">Tranfer Notes: @(dr.Notes?.Count>0? dr.Notes[0]:"Not Available")</h6>
                                         </div>
                                         <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Service: </h6>
+                                            <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Service:</h6>
                                         </div>
                                         <div class="d-flex align-content-center mt-2">
                                             <span class="AccordianIcons mx-1"><i class="bi bi-file-medical mx-1"></i></span>  <h6 class="mt-0">Physician:@(dr.PhysicianName != null ? dr.PhysicianName : "Not Available") </h6>

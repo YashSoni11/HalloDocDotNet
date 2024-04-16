@@ -173,7 +173,7 @@ namespace HalloDoc_BAL.Repositery
                 BusinessName = physician.Businessname,
                 BusinessWebsite = physician.Businesswebsite,
                 SignatureImage = GetImageBytesFromFile(physician.Signature),
-
+                AdminNotes = physician.Adminnotes,
             };
 
 
@@ -497,6 +497,14 @@ namespace HalloDoc_BAL.Repositery
                     return false;
                 }
 
+
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole();
+                aspnetuserrole.Userid = ProviderAspNetUser.Id;
+                aspnetuserrole.Roleid = "Physician";
+
+                _context.Aspnetuserroles.Add(aspnetuserrole);
+
+
                 Physician physician = new Physician();
 
                 physician.Aspnetuserid = ProviderAspNetUser.Id;
@@ -556,6 +564,9 @@ namespace HalloDoc_BAL.Repositery
                 }
 
                 _context.SaveChanges();
+
+
+
 
 
 
@@ -659,6 +670,12 @@ namespace HalloDoc_BAL.Repositery
                     return false;
                 }
 
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole();
+                aspnetuserrole.Userid = AdminAspNetUser.Id;
+                aspnetuserrole.Roleid = "Admin";
+
+                _context.Aspnetuserroles.Add(aspnetuserrole);
+
                 Admin admin = new Admin();
 
 
@@ -682,6 +699,22 @@ namespace HalloDoc_BAL.Repositery
                 _context.Admins.Add(admin);
 
                 _context.SaveChanges();
+
+                int AdminId = _context.Admins.OrderByDescending(q => q.Adminid).First().Adminid;
+
+                for (int i = 0; i < createAdminAccount.SelectedRegions?.Count; i++)
+                {
+                    SelectedRegions selectedRegion = createAdminAccount.SelectedRegions[i];
+
+                    if (selectedRegion.IsSelected == true)
+                    {
+                        Adminregion adminregion = new Adminregion();
+                        adminregion.Regionid = (int)selectedRegion?.regionId;
+                        adminregion.Adminid = AdminId;
+                        _context.Adminregions.Add(adminregion);
+                    }
+
+                }
 
                 return true;
 
@@ -1188,6 +1221,8 @@ namespace HalloDoc_BAL.Repositery
         {
             try
             {
+                bool IsShifts = false;
+
                 foreach (RequestedShiftDetails rd in requestedShiftDetails)
                 {
                     if (rd.IsSelected == true)
@@ -1199,10 +1234,18 @@ namespace HalloDoc_BAL.Repositery
                         shiftdetail.Modifiedby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
 
                         _context.Shiftdetails.Update(shiftdetail);
+
+                        IsShifts = true;
                     }
                 }
 
                 _context.SaveChanges();
+
+                if(IsShifts == false)
+                {
+                    return false;
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -1465,6 +1508,7 @@ namespace HalloDoc_BAL.Repositery
         {
             try
             {
+                bool IsAllShift = false;
 
                 foreach(RequestedShiftDetails shift in requestedShifts) {
 
@@ -1479,8 +1523,15 @@ namespace HalloDoc_BAL.Repositery
 
                     _context.Shiftdetails.Update(shiftdetail);
 
+                        IsAllShift = true;
+
                     }
                  
+                }
+
+                if(IsAllShift == false)
+                {
+                    return false;
                 }
 
                 _context.SaveChanges();
@@ -1742,10 +1793,10 @@ namespace HalloDoc_BAL.Repositery
 
                     searchRecord.RequestorType = _context.Requesttypes.Where(q => q.Requesttypeid == _context.Requests.Where(m => m.Requestid == rc.Requestid).Select(q => q.Requesttypeid).FirstOrDefault()).Select(q => q.Name).FirstOrDefault();
 
-                    DateTime? serviceDate = _context.Requests.Where(q => q.Requestid == rc.Requestid).Select(q => q.Accepteddate).FirstOrDefault();
+                    //DateTime? serviceDate = _context.Encounterforms.Where(q => q.Requestid == rc.Requestid).Select(q => q.Createdat).FirstOrDefault();
 
                     searchRecord.RequestId = rc.Requestid;
-                    searchRecord.DateOfService = serviceDate == null ? null : serviceDate;
+                    //searchRecord.DateOfService = serviceDate == null ? null : serviceDate;
                     searchRecord.CloseCaseDate = _context.Requeststatuslogs.Where(q => q.Requestid == rc.Requestid && (q.Status == 6 || q.Status == 7 || q.Status == 8)).Select(q => q.Createddate).FirstOrDefault();
                     searchRecord.Email = rc.Email;
                     searchRecord.PatientPhone = rc.Phonenumber;
@@ -1753,10 +1804,10 @@ namespace HalloDoc_BAL.Repositery
                     searchRecord.Zip = rc.Zipcode;
                     searchRecord.RequestStatus = Enum.GetName(typeof(Status), _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == rc.Requestid).Select(q => q.Status).FirstOrDefault());
                     searchRecord.Physician = _context.Physicians.Where(q => q.Physicianid == _context.Requests.Where(q => q.Requestid == rc.Requestid).Select(q => q.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault();
-                    searchRecord.PatientNote = "-";
+                    searchRecord.PatientNote = _context.Requeststatuslogs.OrderByDescending(q=>q.Createddate).Where(q=>q.Requestid == rc.Requestid && q.Status == 6).Select(q=>q.Notes).FirstOrDefault();
                     searchRecord.CanclledByProviderNote = "-";
-                    searchRecord.Adminnote = "-";
-                    searchRecord.PhysicianNote = "-";
+                    searchRecord.Adminnote = _context.Requestnotes.Where(q=>q.Requestid == rc.Requestid).Select(q=>q.Adminnotes).FirstOrDefault();
+                    searchRecord.PhysicianNote = _context.Requestnotes.Where(q => q.Requestid == rc.Requestid).Select(q => q.Physiciannotes).FirstOrDefault();
 
                     searchRecords.Add(searchRecord);
 

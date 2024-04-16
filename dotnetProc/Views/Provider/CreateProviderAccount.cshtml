@@ -233,6 +233,7 @@
                             <label class="input-group-text bg-info text-white" for="inputGroupFile001">
                                 <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                             </label>
+                            <span asp-validation-for="Photo" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-12">
@@ -258,12 +259,15 @@
                             </div>
                             <div class="col-4">
                                 <span>Independent Contract Agreement</span>
+                                    <span asp-validation-for="IsContractAggreeMent" class="text-danger"></span>
+
                             </div>
                                 <div class="input-group col-2">
                                     <input id="inputGroupFile00" type="file" asp-for="ContractAgrrement" style="display:none" onchange="MarkUploadedFiles('ContractCheck')" />
                                     <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile00" style="border-radius:5px;">
                                         Upload
                                     </label>
+
                             </div>
                                
                         </div>
@@ -275,6 +279,8 @@
                             </div>
                             <div class="col-4">
                                 <span>Background Check</span>
+                                    <span asp-validation-for="IsBackGroundCheck" class="text-danger"></span>
+
                             </div>
                             <div class="input-group col-2">
                                     <input id="inputGroupFile01"  asp-for="BackgroundCheck" style="display:none" onchange="MarkUploadedFiles('BackGroundCheckk')" />
@@ -293,6 +299,8 @@
                             </div>
                             <div class="col-4">
                                 <span>HIPAA Compliance</span>
+                                    <span asp-validation-for="IsHipaa" class="text-danger"></span>
+
                             </div>
                             <div class="input-group col-2">
                                     <input id="inputGroupFile02" type="file" asp-for="HIPAA" style="display:none" onchange="MarkUploadedFiles('HIPAACheck')" />
@@ -312,6 +320,8 @@
                             </div>
                             <div class="col-4">
                                 <span>Non-Disclosure Agreement</span>
+                                    <span asp-validation-for="IsNonDisClouser" class="text-danger"></span>
+
                             </div>
                                 <div class="input-group col-2">
                                     <input id="inputGroupFile03" type="file" asp-for="NonDisclouser" style="display:none" onchange="MarkUploadedFiles('NonDisclouserCheck')" />

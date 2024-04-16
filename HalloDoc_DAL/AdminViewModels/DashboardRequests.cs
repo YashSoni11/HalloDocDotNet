@@ -13,7 +13,11 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public int Requestid { get; set; }
 
+        public string PatientName { get; set; }
+
         public DateTime Birthdate { get; set; }
+
+        public string Email { get; set; }
 
         public string Requestor { get; set; }
 

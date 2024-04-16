@@ -1,4 +1,5 @@
-﻿using HalloDoc_DAL.Models;
+﻿using HalloDoc_DAL.AdminViewModels;
+using HalloDoc_DAL.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,8 @@ namespace HalloDoc_DAL.ProviderViewModels
         public string? ConfirmEmail { get; set; }
 
         public List<Region>? Regions { get; set; }
+
+        public List<SelectedRegions>? SelectedRegions { get; set; }
 
         [Required(ErrorMessage = "Phonenumber is required.")]
         [DataType(DataType.PhoneNumber)]

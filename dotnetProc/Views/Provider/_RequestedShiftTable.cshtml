@@ -55,6 +55,8 @@
                         <div class="row mb-3">
 
                             <div class="col-2">
+                                <input asp-for="@Model.requestedShiftDetails[i].ShiftDetailId" style="display:none;" hidden />
+
                                 <input asp-for="@Model.requestedShiftDetails[i].IsSelected" class="form-check-input shiftCheckBox" type="checkbox">
                             </div>
                             <div  class="col-8" style="padding:0rem;">

@@ -55,7 +55,7 @@ namespace HalloDoc_BAL.Interface
 
         public bool PostOrderById(int id, Order order, string Role, int UserId);
 
-        public string GetAdminUsername(int id);
+        public string GetAdminUsername(int id,string Role);
 
         public List<Healthprofessionaltype> GetOrderDetails();
 

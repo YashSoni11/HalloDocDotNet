@@ -1574,15 +1574,18 @@ const GetUserAccessTableView = (currentPage, isPageAction, totalPages = 0) => {
 
 const ShiftApproveAction = () => {
 
-    
-
-    if (window.length <= 600) {
-        $("#mb-ApproveInp").val(1);
-        $("#mb-RequestShiftTableForm").submit();
-    } else {
         $("#ApproveInp").val(1);
     $("#RequestShiftTableForm").submit();
-    }
+    
+
+    //if (window.length <= 600) {
+    //    $("#mb-ApproveInp").val(1);
+    //    console.log("petu")
+
+    //    $("#mb-RequestShiftTableForm").submit();
+    //} else {
+    //    console.log("tetu")
+    //}
 
 }
 

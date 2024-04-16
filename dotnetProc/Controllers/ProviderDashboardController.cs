@@ -48,7 +48,7 @@ namespace dotnetProc.Controllers
             {
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                string adminname = _dashboard.GetAdminUsername(loggedInUser.UserId);
+                string adminname = _dashboard.GetAdminUsername(loggedInUser.UserId,loggedInUser.Role);
                 Response.Cookies.Append("UserName", adminname);
 
 

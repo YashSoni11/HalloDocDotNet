@@ -95,24 +95,39 @@ namespace HalloDoc_DAL.ProviderViewModels
         [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
 
         public string BusinessWebsite { get; set; }
-        public IFormFile? Photo { get; set; }
+
+
+        [Required(ErrorMessage = "Photo is required.")]
+
+        public IFormFile Photo { get; set; }
        
 
         public string? AdminNotes { get; set; }
 
-
+        [Required(ErrorMessage = "ContractAgreement is required.")]
         public IFormFile ContractAgrrement { get; set; }
+
+
+        [Required(ErrorMessage = "ContractAgreement is required.")]
         public bool IsContractAggreeMent { get; set; }
 
         public IFormFile BackgroundCheck { get; set; }
+
+        [Required(ErrorMessage = "BackgroundCheck is required.")]
         public bool IsBackGroundCheck { get; set; }
 
 
 
         public IFormFile HIPAA { get; set; }
+
+        [Required(ErrorMessage = "HIPAA is required.")]
+
         public bool IsHipaa { get; set; }
 
         public IFormFile NonDisclouser { get; set; }
+
+        [Required(ErrorMessage = "Non-Disclouser is required.")]
+
         public bool IsNonDisClouser { get; set; }
 
     }

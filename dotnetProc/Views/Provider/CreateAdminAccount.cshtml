@@ -116,30 +116,17 @@
                             </div>
                         </div>
                         <div id="RegionChekboxdiv" class="col-xl-6 col-sm-6 col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    District of Columbia
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    New York
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Virgnia
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Maryland
-                                </label>
-                            </div>
+                            @for (int i = 0; i < Model.SelectedRegions?.Count; i++)
+                            {
+
+                                <div class="form-check">
+                                    <input asp-for="@Model.SelectedRegions[i].IsSelected" class="form-check-input tbDisabled1" type="checkbox" id="flexCheckDefault">
+                                    <input hidden asp-for="@Model.SelectedRegions[i].regionId" style="display:none" />
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        @Model.SelectedRegions[i].regionName
+                                    </label>
+                                </div>
+                            }
                         </div>
 
                     </div>

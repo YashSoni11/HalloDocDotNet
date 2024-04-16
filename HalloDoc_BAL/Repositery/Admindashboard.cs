@@ -119,9 +119,21 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
-        public string GetAdminUsername(int id)
+        public string GetAdminUsername(int id,string Role)
+
+
         {
-            string aspId = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
+            string? aspId = null;
+
+            if(Role == "Admin")
+            {
+             aspId = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+            }else if(Role == "Physician")
+            {
+                 aspId = _context.Physicians.Where(q => q.Physicianid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+            }
 
             string userName = _context.Aspnetusers.Where(q=>q.Id == aspId).Select(r=>r.Username).FirstOrDefault();
 
@@ -439,6 +451,8 @@ namespace HalloDoc_BAL.Repositery
             List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status)).Select(r => new DashboardRequests
             {
                 Requestid = r.Requestid,
+                Email = r.Email,
+     
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                 Requestor = r.Firstname + " " + r.Lastname,
                 CallType = r.Calltype == null ? 0 : (int)r.Calltype,
@@ -483,6 +497,7 @@ namespace HalloDoc_BAL.Repositery
             List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status)).Select(r => new DashboardRequests
             {
                 Requestid = r.Requestid,
+                Email = r.Email,
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                 Requestor = r.Firstname + " " + r.Lastname,
                 Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),

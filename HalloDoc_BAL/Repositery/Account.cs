@@ -125,12 +125,14 @@ namespace HalloDoc_BAL.Repositery
             int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
             string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
             string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
+            int  AspNetRole = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "RoleId").Value);
 
             LoggedInUser loggedInUser = new LoggedInUser()
             {
                 UserId = userId,
                 Firstname = Firstname,
                 Role = Role,
+                AspnetRole = AspNetRole,
             };
 
             return loggedInUser;

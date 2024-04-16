@@ -87,7 +87,6 @@
 
     $(document).ready(function () {
 
-        handleNavChange('pills-Access-tab')
      GetUserAccessTableView('1',false);
 
         toastr.remove();
@@ -98,6 +97,7 @@
         else if ('@TempData["ShowNegativeNotification"]' != '') {
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
+        handleNavChange('pills-Access-tab')
     })
 
 
