@@ -17,6 +17,8 @@ namespace HalloDoc_BAL.Interface
         public List<DashboardRequests> GetAllRequests();
 
         public List<DashboardRequests> GetRequestsByUsername(string name);
+        public bool IsRequestExist(int requestId);
+
 
         public RequestTypeCounts GetAllRequestsCount(List<DashboardRequests> dashboardRequests);
 
@@ -79,7 +81,7 @@ namespace HalloDoc_BAL.Interface
 
         public bool SaveEncounterForm(Encounterform encounterform);
 
-        public Encounterform GetEncounterFormByRequestId(string id);
+        public Encounterform GetEncounterFormByRequestId(int id);
 
         public bool? IsEncounterFormFinlized(int id);
 

@@ -84,6 +84,10 @@ namespace HalloDoc_BAL.Repositery
             return _context.Requests.Where(q=>q.Requestid == requestId).Select(q=>q.Status).FirstOrDefault();
         }
 
+        public bool IsRequestExist(int requestId)
+        {
+            return _context.Requests.Any(q => q.Requestid == requestId && q.Isdeleted == new BitArray(1,false));
+        }
 
         public List<DashboardRequests> GetAllRequests()
         {
@@ -178,71 +182,78 @@ namespace HalloDoc_BAL.Repositery
         public List<ProviderMenu> FilterProviderByRegions(int regionId)
         {
 
-            List<ProviderMenu> physicians = new List<ProviderMenu>();
-
-
-            if(regionId == 0)
-            {
-                List<Physician> data = _context.Physicians.Where(q => q.Isdeleted == false).ToList();
-                
-
-
-                foreach(Physician physician in data)
-                {
-                    ProviderMenu temp = new ProviderMenu();
-
-                    temp.Name = physician.Firstname + " " + physician.Lastname;
-
-
-
-                    temp.Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault();
-                    temp.ProviderId = physician.Physicianid;
-
-                    temp.status = physician.Status == null ? 1 : (int)physician.Status;
-
-                    bool? noti = _context.Physiciannotifications.Where(q => q.Physicianid == physician.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault();
-
-                    temp.IsNoificationOn = noti == null ? false : (bool)noti;
-
-                    physicians.Add(temp);
-                } 
-                
-              
-            }
-            else
-            {
-            List<Physicianregion> physicianregions = _context.Physicianregions.Where(q=>q.Regionid == regionId).ToList();
-
-            foreach(Physicianregion physicianregion in physicianregions)
+            try
             {
 
-                ProviderMenu? physician = _context.Physicians.Where(q => q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false).Select(r => new ProviderMenu()
+                List<ProviderMenu> physicians = new List<ProviderMenu>();
+
+
+                if (regionId == 0)
                 {
+                    List<Physician> data = _context.Physicians.Where(q => q.Isdeleted == false).ToList();
 
-                    Name = r.Firstname + " " + r.Lastname,
-                    IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
-                    Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
-                    status = (int)r.Status,
-                    ProviderId = r.Physicianid,
 
-                }).FirstOrDefault();
 
-                if (physician != null)
+                    foreach (Physician physician in data)
+                    {
+                        ProviderMenu temp = new ProviderMenu();
+
+                        temp.Name = physician.Firstname + " " + physician.Lastname;
+
+
+
+                        temp.Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault();
+                        temp.ProviderId = physician.Physicianid;
+
+                        temp.status = physician.Status == null ? 1 : (int)physician.Status;
+
+                        bool? noti = _context.Physiciannotifications.Where(q => q.Physicianid == physician.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault();
+
+                        temp.IsNoificationOn = noti == null ? false : (bool)noti;
+
+                        physicians.Add(temp);
+                    }
+
+
+                }
+                else
                 {
-                    physicians.Add(physician);
+                    List<Physicianregion> physicianregions = _context.Physicianregions.Where(q => q.Regionid == regionId).ToList();
+
+                    foreach (Physicianregion physicianregion in physicianregions)
+                    {
+
+                        ProviderMenu? physician = _context.Physicians.Where(q => q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false).Select(r => new ProviderMenu()
+                        {
+
+                            Name = r.Firstname + " " + r.Lastname,
+                            IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
+                            Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
+                            status = (int)r.Status,
+                            ProviderId = r.Physicianid,
+
+                        }).FirstOrDefault();
+
+                        if (physician != null)
+                        {
+                            physicians.Add(physician);
+                        }
+
+
+                    }
+
                 }
 
 
+
+
+
+
+                return physicians;
+            }catch(Exception ex)
+            {
+                return new List<ProviderMenu>();
             }
-
-            }
-
-      
-           
-               
-            
-
-            return physicians;
         }
 
         public bool AssignRequest(AdminAssignCase assignCase, int requestId)
@@ -581,6 +592,7 @@ namespace HalloDoc_BAL.Repositery
                 AdminNotes = r.Adminnotes,
                 PhysicianNotes = r.Physiciannotes
 
+
             }).FirstOrDefault();
 
 
@@ -595,11 +607,11 @@ namespace HalloDoc_BAL.Repositery
 
                 Requeststatuslog requeststatuslog = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == requestId).FirstOrDefault();
 
-                if(requeststatuslog.Status == 7)
+                if(requeststatuslog!= null && requeststatuslog.Status == 7)
                 {
                     requestNotes.CanclledByPatientNote = requeststatuslog.Notes;
                 }
-                else if(requeststatuslog.Status == 6 && requeststatuslog.Adminid != null)
+                else if(requeststatuslog != null &&  requeststatuslog.Status == 6 && requeststatuslog.Adminid != null)
                 {
                     requestNotes.CanclledByAdminNotes = requeststatuslog.Notes;
                 }
@@ -1330,11 +1342,11 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public Encounterform GetEncounterFormByRequestId(string id)
+        public Encounterform GetEncounterFormByRequestId(int id)
         {
-            int newid = int.Parse(id);
+          
 
-            return _context.Encounterforms.FirstOrDefault(q => q.Requestid == newid);
+            return _context.Encounterforms.FirstOrDefault(q => q.Requestid == id);
         }
 
         public bool? IsEncounterFormFinlized(int id)

@@ -100,5 +100,32 @@ namespace HalloDoc_BAL.Repositery
                 return false;
             }
         }
+
+
+        public LoggedInUser GetLoggedInUserFromJwt(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return new LoggedInUser();
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
+            string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
+            string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
+            int AspNetRole = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "RoleId").Value);
+
+            LoggedInUser loggedInUser = new LoggedInUser()
+            {
+                UserId = userId,
+                Firstname = Firstname,
+                Role = Role,
+                AspnetRole = AspNetRole,
+            };
+
+            return loggedInUser;
+        }
     }
 }

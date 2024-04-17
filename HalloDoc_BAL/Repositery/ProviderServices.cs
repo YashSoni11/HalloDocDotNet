@@ -2236,5 +2236,13 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+
+        public bool IsRequestBelongToProvider(int physicianId,int requestId)
+        {
+
+            return _context.Requests.Any(q => q.Requestid == requestId && q.Physicianid == physicianId);
+        }
+
+
     }
 }

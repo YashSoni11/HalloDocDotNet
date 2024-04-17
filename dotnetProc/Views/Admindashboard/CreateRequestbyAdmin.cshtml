@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-@model HalloDoc_DAL.AdminViewModels.PatientReqByAdmin;
+@model HalloDoc_DAL.AdminViewModels.PatientReqByAdminModal;
 
 <partial name="_DashNavbar"/>
 
@@ -133,8 +133,12 @@ else if (ViewData["RoleName"] == "Adm")
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
 
-                                <input asp-for="Location.State" type="text" class="form-control" id="state"
-                                       placeholder="name@example.com">
+                                <select asp-for="Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onchange="chekcRegionAvailibility()">
+                                    @for (int i = 0; i < Model.regions.Count; i++)
+                                    {
+                                        <option value="@Model.regions[i].Regionid">@Model.regions[i].Name</option>
+                                    }
+                                </select>
                                 <label for="floatingInput">State</label>
                                 <span asp-validation-for="Location.State" class="text-danger"></span>
 

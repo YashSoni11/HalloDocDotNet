@@ -18,6 +18,7 @@ namespace HalloDoc_BAL.Interface
         public bool ValidateToken(string token,out JwtSecurityToken jwtSecurityToken);
 
 
+        public LoggedInUser GetLoggedInUserFromJwt(string token);
 
 
 

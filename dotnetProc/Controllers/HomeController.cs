@@ -33,6 +33,7 @@ namespace dotnetProc.Controllers
             return View();
         }
 
+        #region Phone,Email,Region,ExistActions
         public IActionResult CheckNumberAvailibility(string Phone)
         {
 
@@ -42,6 +43,14 @@ namespace dotnetProc.Controllers
         }
 
 
+        public IActionResult CheckRegionAvailibility(int region)
+        {
+            bool isExists = _patientReq.IsRegionAvailable(region);
+
+      
+
+            return Json(new { Response = isExists,NegativeMsg= "Currently We Are Not Servicing In your Provided Region !",PositiveMsg="Location is available." });
+        }
 
         public  IActionResult ckeckEmailAvailibility(string email)
         {
@@ -77,21 +86,19 @@ namespace dotnetProc.Controllers
             return Json(new { code = 402 });
 
         }
-       
+        #endregion
 
 
-      
-
-
+        #region RequestTypeMenuActions
         public IActionResult PatientRequest()
         {
 
             return View();
         }
+        #endregion
 
 
-
-
+        #region FormByPatientActions
         [HttpGet]
         [Route("Home/patientform")]
         public IActionResult FormByPatient()
@@ -106,10 +113,6 @@ namespace dotnetProc.Controllers
 
             return View(patientReq);
         }
-
-
-
-
 
 
         [HttpPost]
@@ -181,10 +184,10 @@ namespace dotnetProc.Controllers
                 
             }
         }
+        #endregion
 
 
-
-
+        #region FormByFamilyActions
         [HttpGet]
         public IActionResult FormByFamily()
         {
@@ -257,7 +260,10 @@ namespace dotnetProc.Controllers
 
 
         }
+        #endregion
 
+
+        #region FormByConcieargeActions
         [HttpGet]
         public IActionResult FormByConciearge()
         {
@@ -323,8 +329,10 @@ namespace dotnetProc.Controllers
             return RedirectToAction("FormByConciearge");
 
         }
+        #endregion
 
 
+        #region FormByBusinessActions
         [HttpGet]
         public IActionResult FormByBusinessPartner()
         {
@@ -341,8 +349,6 @@ namespace dotnetProc.Controllers
 
             return View(model);
         }
-
-
 
 
         [HttpPost]
@@ -394,9 +400,10 @@ namespace dotnetProc.Controllers
             return RedirectToAction("FormByBusinessPartner");
 
         }
+        #endregion
 
 
-
+        #region FormForPatientActions
         [HttpGet]
         [Route("/Account/DashBoard/PatientForm")]
         public IActionResult PatientForm()
@@ -425,7 +432,6 @@ namespace dotnetProc.Controllers
 
 
         [HttpPost]
-        [Route("/Account/DashBoard/PatientForm")]
         public IActionResult PatientForm(PatientReq pr)
         {
             bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
@@ -485,13 +491,13 @@ namespace dotnetProc.Controllers
 
             return View(pr);
         }
+        #endregion
 
 
 
 
 
-
-
+        #region FormForOthersActions
         [HttpGet]
         [Route("/Account/DashBoard/FormForOther")]
         public IActionResult FormForOthers()
@@ -559,15 +565,8 @@ namespace dotnetProc.Controllers
             return View(pr);
 
         }
+        #endregion
 
-        public IActionResult CheckRegionAvailibility(int region)
-        {
-            bool isExists = _patientReq.IsRegionAvailable(region);
-
-      
-
-            return Json(new { Response = isExists,NegativeMsg= "Currently We Are Not Servicing In your Provided Region !",PositiveMsg="Location is available." });
-        }
         public IActionResult Privacy()
         {
             return View();

@@ -327,6 +327,11 @@ namespace HalloDoc_BAL.Repositery
                 Isdeleted = new BitArray(1, false),
             };
             
+            if(Role == "Physician" || Role == "Admin")
+            {
+                request.Userid = null;
+            }
+
             if(Role == "Physician")
             {
                 request.Status = 9;

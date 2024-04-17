@@ -1,4 +1,5 @@
-﻿using HalloDoc_DAL.ViewModels;
+﻿using HalloDoc_DAL.Models;
+using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace HalloDoc_DAL.AdminViewModels
 {
-    public class PatientReqByAdmin
+    public class PatientReqByAdminModal
     {
 
       
@@ -44,6 +45,7 @@ namespace HalloDoc_DAL.AdminViewModels
 
         public AddressModel Location { get; set; }
 
+        public List<Region>? regions { get; set; }
         
     }
 }

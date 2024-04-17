@@ -12,24 +12,29 @@ namespace HalloDoc_BAL.Interface
     public interface IAccount
     {
 
+        public string GetHashedPassword(string password);
         public Aspnetuser ValidateLogin(UserCred um);
 
+        #region Get User,Admin,PhysicianByAspNetId Services
         public User GetUserByAspNetId(string aspnetuserid);
 
         public Admin GetAdminByAspNetId(string aspnetuserid);
 
         public Physician GetPhysicianByAspNetId(string aspnetuserid);
+        #endregion
         public void StoreResetid(string resetid, DateTime expirationTime, string email);
 
+        #region Get AspNetUser By ResetId,Email
         public Aspnetuser GetAspnetuserByResetId(string resetid);
         public Aspnetuser GetAspnetuserByEmail(string email);
+        #endregion
+
 
         public Aspnetuser UpdateAspnetuserPassByEmail(string Email, string Newpassword);
         public List<DashBoardRequests> GetUserRequests(int userid);
 
         public User GetUserByUserId(int userid);
 
-        public string GetHashedPassword(string password);
 
 
         public UserProfile UpdateUserByUserId(UserInformation um,int userId);

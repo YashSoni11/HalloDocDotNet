@@ -36,6 +36,8 @@ namespace dotnetProc.Controllers
             _authManager = authManager;
         }
 
+
+        #region ProviderProfile
         [HttpGet]
         [Route("Admin/providerprofile/{id}",Name ="AdminProviderProfile")]
         [Route("Provider/Myprofile/{id}",Name ="ProviderProviderProfile")]
@@ -290,7 +292,10 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("ProviderMenu", "Admindashboard");
             }
         }
+        #endregion
 
+
+        #region CreateProviderActions
         [HttpGet]
         [Route("createprovideraccount")]
         public IActionResult CreateProviderAccountView()
@@ -389,7 +394,10 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("CreateProviderAccountView");
             }
         }
+        #endregion
 
+
+        #region AccountAccessActions
 
         [HttpGet]
         [Route("accountaccess")]
@@ -424,7 +432,9 @@ namespace dotnetProc.Controllers
 
             return PartialView("_AccountAccessTable", accountAccessTable);
         }
+        #endregion
 
+        #region RoleActions
         public IActionResult CreateRole()
         {
 
@@ -536,6 +546,79 @@ namespace dotnetProc.Controllers
         }
 
         [HttpGet]
+        [Route("editrole/{id}")]
+        public IActionResult EditRoleView(int id)
+        {
+
+            if (_authManager.Authorize(HttpContext, 4) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            Role role = _provider.GetRoleById(id);
+
+            CreateRole createRole = new CreateRole();
+
+            createRole.Roleid = id;
+            createRole.RoleName = role.Name;
+            createRole.AccountType = role.Accounttype;
+            createRole.AccessAreas = _provider.GetAreaAccessByAccountType(role.Accounttype, id);
+
+
+            return View("EditRole", createRole);
+
+        }
+
+
+        [HttpPost]
+
+        public IActionResult EditRole(CreateRole createRole, int id)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+            if (istokenExpired || token.IsNullOrEmpty())
+            {
+
+                TempData["ShowNegativeNotification"] = "Session timed out!";
+                return RedirectToAction("Login", "Account");
+            }
+            else if (ModelState.IsValid)
+            {
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+                bool response = _provider.EditRoleService(createRole, loggedInUser.UserId, id);
+
+
+
+                if (response)
+                {
+                    TempData["ShowPositiveNotification"] = "Role Edited Successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
+
+                }
+
+                return RedirectToAction("AccountAccess");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("EditRoleView", new { id = id });
+            }
+
+        }
+        #endregion
+
+        #region CreatAdminAccountActions
+        [HttpGet]
         [Route("createadmin")]
         public IActionResult CreateAdminAccount()
         {
@@ -628,78 +711,9 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("CreateAdminAccount", createAdminAccount);
             }
         }
+        #endregion
 
-        [HttpGet]
-        [Route("editrole/{id}")]
-        public IActionResult EditRoleView(int id)
-        {
-
-            if (_authManager.Authorize(HttpContext, 4) == false)
-            {
-                return RedirectToAction("AccessDenied", "Account");
-            }
-
-            Role role = _provider.GetRoleById(id);
-
-            CreateRole createRole = new CreateRole();
-
-            createRole.Roleid = id;
-            createRole.RoleName = role.Name;
-            createRole.AccountType = role.Accounttype;
-            createRole.AccessAreas = _provider.GetAreaAccessByAccountType(role.Accounttype, id);
-
-
-            return View("EditRole", createRole);
-
-        }
-
-
-        [HttpPost]
-
-        public IActionResult EditRole(CreateRole createRole, int id)
-        {
-
-            string token = HttpContext.Request.Cookies["jwt"];
-
-
-            bool istokenExpired = _account.IsTokenExpired(token);
-
-            if (istokenExpired || token.IsNullOrEmpty())
-            {
-
-                TempData["ShowNegativeNotification"] = "Session timed out!";
-                return RedirectToAction("Login", "Account");
-            }
-            else if (ModelState.IsValid)
-            {
-
-                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.EditRoleService(createRole, loggedInUser.UserId, id);
-
-
-
-                if (response)
-                {
-                    TempData["ShowPositiveNotification"] = "Role Edited Successfully.";
-
-                }
-                else
-                {
-                    TempData["ShowNegativeNotification"] = "Something Went Wrong!";
-
-                }
-
-                return RedirectToAction("AccountAccess");
-            }
-            else
-            {
-                TempData["ShowNegativeNotification"] = "Not Valid Data!";
-
-                return RedirectToAction("EditRoleView", new { id = id });
-            }
-
-        }
-
+        #region SchedulingActions
         [HttpGet]
         [Route("Admin/scheduling",Name ="AdminSchedule")]
      
@@ -859,6 +873,52 @@ namespace dotnetProc.Controllers
         }
 
 
+        public IActionResult GetWeekWiseShiftTableView(int date, int month, int year, int regionId)
+        {
+
+
+            List<WeekWisePhysicianShifts> weekWiseShifts = _provider.GetAllPhysicianWeekWiseShifts(date, month, year, regionId);
+
+            Physicianshifts shift = new Physicianshifts();
+
+            shift.weekWiseShifts = weekWiseShifts;
+
+            shift.StartOfWeek = new DateTime(year, month, date);
+            shift.lastDate = new DateTime(year, month, date).AddDays(7);
+
+            return PartialView("_WeekWiseShiftTable", shift);
+        }
+
+
+
+        public IActionResult GetViewShiftModel(int shiftdetailId)
+        {
+            List<Region> regions = _dashboard.GetAllRegions();
+            List<Physician> physicians = _provider.GetPhysicinForShiftsByRegionService(0);
+
+            ViewShift viewShift = _provider.GetShiftDetailsById(shiftdetailId);
+
+
+
+            viewShift.regions = regions;
+            viewShift.physicians = physicians;
+
+
+            return PartialView("_ViewShiftModel", viewShift);
+        }
+        public IActionResult GetMonthWiseShiftTableView(int date, int month, int year, int regionId)
+        {
+            List<MonthWisePhysicianShifts> MonthWiseshifts = _provider.GetAllPhysicianMonthWiseShifts(date, month, year, regionId);
+            Physicianshifts shift = new Physicianshifts();
+            shift.monthWiseShifts = MonthWiseshifts;
+
+            shift.lastDate = new DateTime(year, month, date);
+
+            return PartialView("_MonthWiseShiftTable", shift);
+        }
+        #endregion
+
+        #region RequestedShiftActions
         public IActionResult RequestedShiftView()
         {
             RequestedShiftModal requestedShiftModal = new RequestedShiftModal();
@@ -984,51 +1044,9 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("ProviderScheduling");
         }
+        #endregion
 
-        public IActionResult GetWeekWiseShiftTableView(int date, int month, int year, int regionId)
-        {
-
-
-            List<WeekWisePhysicianShifts> weekWiseShifts = _provider.GetAllPhysicianWeekWiseShifts(date, month, year, regionId);
-
-            Physicianshifts shift = new Physicianshifts();
-
-            shift.weekWiseShifts = weekWiseShifts;
-
-            shift.StartOfWeek = new DateTime(year, month, date);
-            shift.lastDate = new DateTime(year, month, date).AddDays(7);
-
-            return PartialView("_WeekWiseShiftTable", shift);
-        }
-
-
-
-        public IActionResult GetViewShiftModel(int shiftdetailId)
-        {
-            List<Region> regions = _dashboard.GetAllRegions();
-            List<Physician> physicians = _provider.GetPhysicinForShiftsByRegionService(0);
-
-            ViewShift viewShift = _provider.GetShiftDetailsById(shiftdetailId);
-
-
-
-            viewShift.regions = regions;
-            viewShift.physicians = physicians;
-
-
-            return PartialView("_ViewShiftModel", viewShift);
-        }
-        public IActionResult GetMonthWiseShiftTableView(int date, int month, int year, int regionId)
-        {
-            List<MonthWisePhysicianShifts> MonthWiseshifts = _provider.GetAllPhysicianMonthWiseShifts(date, month, year, regionId);
-            Physicianshifts shift = new Physicianshifts();
-            shift.monthWiseShifts = MonthWiseshifts;
-
-            shift.lastDate = new DateTime(year, month, date);
-
-            return PartialView("_MonthWiseShiftTable", shift);
-        }
-
+        #region UserAccessActions
         [HttpGet]
         [Route("UserAccess")]
         public IActionResult UserAccessView()
@@ -1068,25 +1086,9 @@ namespace dotnetProc.Controllers
 
             return PartialView("_UserAccessTable", userAccessTable);
         }
+        #endregion
 
-
-        public IActionResult RedirectToAspEditAccount(int account, int id)
-        {
-            if (account == 0)
-            {
-                return RedirectToAction("EditAdminProfile", "Admindashboard", new { id = id });
-            }
-            else if (account == 1)
-            {
-                return RedirectToAction("ProviderProfile", new { id = id });
-            }
-            else
-            {
-                return RedirectToAction("UserAccessView");
-            }
-        }
-
-
+        #region VendorsActions
         public IActionResult GetVendorsView()
         {
 
@@ -1270,7 +1272,10 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("GetVendorsView");
             }
         }
+        #endregion
 
+
+        #region SearchRecordsActions
         public IActionResult SearchRecordsView()
         {
             if (_authManager.Authorize(HttpContext, 3) == false)
@@ -1327,8 +1332,9 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("SearchRecordsView", "Provider");
         }
+        #endregion
 
-
+        #region EmailLogsActions
         public IActionResult EmailLogsView()
         {
             if (_authManager.Authorize(HttpContext, 3) == false)
@@ -1356,7 +1362,9 @@ namespace dotnetProc.Controllers
             return PartialView("_EmailLogsTable", emailLogsTable);
 
         }
+        #endregion
 
+        #region PatientHistoryActions
         public IActionResult PatientHistoryView()
         {
             if (_authManager.Authorize(HttpContext, 3) == false)
@@ -1434,8 +1442,9 @@ namespace dotnetProc.Controllers
 
             return PartialView("_PatientExploredTable", patientHistoryTable);
         }
+        #endregion
 
-
+        #region BlockHistoryActions
         public IActionResult BlockHistoryView()
         {
 
@@ -1468,7 +1477,22 @@ namespace dotnetProc.Controllers
 
             return PartialView("_blockHistoryTableView", patientHistoryTable);
         }
-
+        #endregion
+        public IActionResult RedirectToAspEditAccount(int account, int id)
+        {
+            if (account == 0)
+            {
+                return RedirectToAction("EditAdminProfile", "Admindashboard", new { id = id });
+            }
+            else if (account == 1)
+            {
+                return RedirectToAction("ProviderProfile", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("UserAccessView");
+            }
+        }
 
     }
 }

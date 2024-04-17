@@ -33,7 +33,7 @@ namespace dotnetProc.Controllers
             _jwtServices = jwtServices;
         }
 
-
+        #region CreateAccountActions
         [HttpGet]
         [Route("Createaccount/{createid}")]
         public IActionResult Createaccount(int createid)
@@ -129,9 +129,11 @@ namespace dotnetProc.Controllers
             }
 
         }
+        #endregion
 
+
+        #region LoginLogoutActions
         [HttpGet]
-
         public IActionResult Login(string message)
         {
 
@@ -158,10 +160,6 @@ namespace dotnetProc.Controllers
         public IActionResult Login(UserCred um)
         {
 
-
-            //if (ModelState.IsValid)
-            //{
-                //var user  =  await _context.Aspnetusers.FirstOrDefaultAsync(u=>um.Email == u.Email && um.Password == u.Passwordhash);
 
                 Aspnetuser aspuser = _account.ValidateLogin(um);
                
@@ -289,7 +287,10 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("Login");
         }
+        #endregion
 
+
+        #region ForgotPassActions
         [HttpGet]
         [Route("/Account/ForgotPass")]
         public IActionResult ForgotPass()
@@ -323,15 +324,11 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("Login", "Account");
         }
+        #endregion
 
 
-        [HttpGet]
-        [Route("Account/Error")]
-        public IActionResult Error()
-        {
-            return View();
-        }
 
+        #region ResetPassActions
         [HttpGet]
         [Route("ResetPassword/{resetid}")]
         public IActionResult ResetPassword(string resetid)
@@ -400,30 +397,10 @@ namespace dotnetProc.Controllers
             return RedirectToAction("Login", "Account");
 
         }
+        #endregion
 
 
-
-
-        //public IActionResult GiveResetLink(string email)
-        //{
-
-        //    string resetid = Guid.NewGuid().ToString();
-
-        //    HttpContext.Session.SetString("resetid", resetid);
-
-        //    string subject = "Password Reset";
-
-        //    string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
-
-        //    string body = "Please click on <a asp-route-id='"+resetid+"' href='"+resetLink+"'+>ResetPassword</a> to reset your password";
-
-        //    _emailService.SendEmail(email, subject, body);
-
-        //    return RedirectToAction("Login", "Account");
-
-        //}
-
-        //[AuthManager("Patient")]
+        #region UserDashboardActions
         [HttpGet]
         public IActionResult DashBoard(string message)
         {
@@ -556,8 +533,9 @@ namespace dotnetProc.Controllers
 
              
         }
+        #endregion
 
-
+        #region ErrorAccessActions
         [HttpGet]
         [Route("Accessdenied")]
         public IActionResult AccessDenied()
@@ -565,6 +543,33 @@ namespace dotnetProc.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("Account/Error")]
+        public IActionResult Error()
+        {
+            return View();
+        }
+        #endregion
+
+
+        //public IActionResult GiveResetLink(string email)
+        //{
+
+        //    string resetid = Guid.NewGuid().ToString();
+
+        //    HttpContext.Session.SetString("resetid", resetid);
+
+        //    string subject = "Password Reset";
+
+        //    string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+
+        //    string body = "Please click on <a asp-route-id='"+resetid+"' href='"+resetLink+"'+>ResetPassword</a> to reset your password";
+
+        //    _emailService.SendEmail(email, subject, body);
+
+        //    return RedirectToAction("Login", "Account");
+
+        //}
 
     }
 }

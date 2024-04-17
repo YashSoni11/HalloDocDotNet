@@ -110,7 +110,7 @@
                         </div>
                         <div class="col-6">
                             <div class="form-floating mb-3">
-                                <input asp-for="PatientIfo.BirthDate" type="date" class="form-control" id="floatingInput"
+                                <input asp-for="PatientIfo.BirthDate" type="date" class="form-control" id="myDateInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Date Of Birth</label>
                                 <span asp-validation-for="PatientIfo.BirthDate" class="text-danger"></span>
@@ -247,5 +247,12 @@
 }
 
 <script>
-    $(".reg-nav").remove();
+    $(document).ready(function () {
+
+        var currentDate = new Date().toISOString().split('T')[0];
+
+
+        document.getElementById('myDateInput').setAttribute('max', currentDate);
+        $(".reg-nav").remove();
+    })
 </script>

@@ -32,10 +32,12 @@ namespace dotnetProc.Controllers
         }
 
 
-
-
+        #region ProviderDashBoardActions
+        [HttpGet]
+        [Route("Provider/Dashboard")]
         public IActionResult Dashboard()
         {
+
 
 
             string token = HttpContext.Request.Cookies["jwt"];
@@ -112,8 +114,6 @@ namespace dotnetProc.Controllers
 
 
         }
-
-
         public IActionResult GetRequestorTypeWiseProviderRequests(int type, string[] StatusArray, string Name, int currentPage)
         {
             string token = HttpContext.Request.Cookies["jwt"];
@@ -153,8 +153,11 @@ namespace dotnetProc.Controllers
                 return PartialView("_ProviderRequestTable", provideRequestTable);
             }
         }
+        #endregion
 
 
+
+        #region AcceptRequest
         public IActionResult AcceptRequest(int requestId)
         {
 
@@ -175,14 +178,18 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("Dashboard");
         }
+        #endregion
 
+
+        #region ViewRequest
         [HttpGet]
-        //[Route("ProviderDashboard/Viewrequest/{requestid}")]
         public IActionResult ViewRequest(int requestid)
         {
             return RedirectToRoute("ProviderViewCase", new { requestid = requestid });
         }
+        #endregion
 
+        #region ViewRequestNotes
         [HttpGet]
         public IActionResult GetRequestNotes(int id)
         {
@@ -190,35 +197,76 @@ namespace dotnetProc.Controllers
 
             return RedirectToRoute("ProviderviewNotes",new {id=id});
         }
+        #endregion
 
+
+        #region ViewUploads
         [HttpGet]
 
         public IActionResult ViewUploads(int id)
         {
             return RedirectToRoute("ProviderViewUploads", new { id = id });
         }
+        #endregion
 
 
+        #region SendOrder
         [HttpGet]
         public IActionResult SendOrder(string id)
         {
             return RedirectToRoute("ProviderSendOrder", new {id=id});
         }
+        #endregion
 
+
+        #region EncounterFormActions
         [HttpGet]
 
         public IActionResult EncounterForm(string id)
         {
             return RedirectToRoute("ProviderEncounterForm", new { id = id });
         }
+        public IActionResult FinalizeEncounterForm(int requestId)
+        {
 
+            if(requestId == 0)
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
+                return RedirectToAction("EncounterForm", new { id = requestId });
+
+            }
+
+            bool response = _providerDashboard.FinalizeEncounterformService(requestId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Form finalized successsfully.";
+                return RedirectToAction("Dashboard");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
+            return RedirectToAction("EncounterForm", new { id = requestId });
+            }
+
+
+
+
+        }
+        #endregion
+
+
+        #region PatientReqByAdmin
         [HttpGet]
 
         public IActionResult PatientReqByAdmin()
         {
             return RedirectToRoute("ProviderPatientReq");
         }
+        #endregion
 
+
+        #region SelectTypeOfCareActions
         [HttpPost]
 
         public IActionResult SaveTypeOfCare(int RequestId,bool HouseCall) 
@@ -239,8 +287,10 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("Dashboard");
         }
+        #endregion
 
 
+        #region HouseCallActions
         [HttpPost]
 
         public IActionResult PostHouseCallAction(int id)
@@ -262,7 +312,10 @@ namespace dotnetProc.Controllers
 
 
         }
+        #endregion
 
+
+        #region ConcludeCareActions
         [HttpGet]
         [Route("Provider/ConcludeCare/{id}")]
         public IActionResult ConcludeCareView(int id)
@@ -311,36 +364,35 @@ namespace dotnetProc.Controllers
 
             return RedirectToAction("Dashboard");
         }
-
-
-        public IActionResult FinalizeEncounterForm(int requestId)
+        public IActionResult UploadDocuments(ConcludeCare docs, int id)
         {
 
-            if(requestId == 0)
+          
+
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            bool response = true;
+
+            for (int i = 0; i < docs.FormFiles.Count; i++)
             {
-                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
-                return RedirectToAction("EncounterForm", new { id = requestId });
+
+                response &= _account.UploadFile(docs.FormFiles[i], id,loggedInUser.Role,loggedInUser.UserId);
 
             }
 
-            bool response = _providerDashboard.FinalizeEncounterformService(requestId);
-
-            if (response)
-            {
-                TempData["ShowPositiveNotification"] = "Form finalized successsfully.";
-                return RedirectToAction("Dashboard");
-            }
-            else
-            {
-                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
-            return RedirectToAction("EncounterForm", new { id = requestId });
-            }
+            return RedirectToAction("ConcludeCareView", new { id = id });
 
 
 
 
         }
+        #endregion
 
+
+
+        #region ProviderProfileActions
 
         [HttpGet]
 
@@ -352,8 +404,10 @@ namespace dotnetProc.Controllers
 
             return RedirectToRoute("ProviderProviderProfile", new { id = loggedInUser.UserId });
         }
+        #endregion
 
 
+        #region ProviderScheduling
         [HttpGet]
         [Route("Provider/MySchedule")]
         public IActionResult ProviderScheduling()
@@ -396,6 +450,7 @@ namespace dotnetProc.Controllers
             return PartialView("_ProviderMonthWiseShiftTable", shift);
         }
 
+
         public IActionResult GetProviderCreateShiftView()
         {
 
@@ -407,7 +462,8 @@ namespace dotnetProc.Controllers
             CreateShift createShift = new CreateShift();
 
             createShift.regions = _providerDashboard.GetAllPhysicianRegions(loggedInUser.UserId);
-           
+            createShift.PhysicianId = loggedInUser.UserId;
+            
 
 
             return PartialView("_ProviderCreateShiftModal", createShift);
@@ -464,33 +520,12 @@ namespace dotnetProc.Controllers
 
 
         }
-
-        public IActionResult UploadDocuments(ConcludeCare docs, int id)
-        {
-
-          
-
-            string token = HttpContext.Request.Cookies["jwt"];
-            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-
-
-            bool response = true;
-
-            for (int i = 0; i < docs.FormFiles.Count; i++)
-            {
-
-                response &= _account.UploadFile(docs.FormFiles[i], id,loggedInUser.Role,loggedInUser.UserId);
-
-            }
-
-            return RedirectToAction("ConcludeCareView", new { id = id });
+        #endregion
 
 
 
 
-        }
-
-
+        #region TransfetToAdminActions
         public IActionResult TransferToAdmin(string Message,int RequestId)
         {
 
@@ -519,8 +554,10 @@ namespace dotnetProc.Controllers
             return RedirectToAction("Dashboard");
 
         }
+        #endregion
 
 
+        #region RequestEditToAdminAction
         public IActionResult RequestToAdmin(string RequestMessage)
         {
 
@@ -556,6 +593,7 @@ namespace dotnetProc.Controllers
             return RedirectToAction("Dashboard");
 
         }
+        #endregion
 
     }
 }

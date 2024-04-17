@@ -57,6 +57,9 @@ namespace HalloDoc_BAL.Repositery
             }
 
 
+          
+
+
             int roleId = int.Parse(jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "RoleId").Value);
 
             bool isRistricted = IsRistricted(RoleMenuId, roleId);
