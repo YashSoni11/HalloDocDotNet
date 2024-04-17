@@ -33,13 +33,16 @@ namespace HalloDoc_BAL.Repositery
                 new Claim("Role", user.Role.ToString()),
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("Firstname", user.Firstname),
-                new Claim("RoleId",user.AspnetRole.ToString()),
+                
                
 
             };
 
 
-         
+            if (user.Role != "Patient")
+            {
+                claims.Add(new Claim("RoleId", user.AspnetRole.ToString()));
+              }
 
 
             var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes(configuration["JWT:Key"]));

@@ -1580,15 +1580,15 @@ namespace HalloDoc_BAL.Repositery
                 {
                     SelectedRegions selectedRegion = ap.accountInfo.SelectedRegions[i];
 
-                    if (selectedRegion.IsSelected == true && (_context.Adminregions.Any(q=>q.Adminid == adminId && q.Adminregionid == selectedRegion.regionId) == false))
+                    if (selectedRegion.IsSelected == true && (_context.Adminregions.Any(q=>q.Adminid == adminId && q.Regionid == selectedRegion.regionId) == false))
                     {
                         Adminregion adminregion = new Adminregion();
                         adminregion.Regionid = (int)selectedRegion.regionId;
                         adminregion.Adminid = adminId;
                         _context.Adminregions.Add(adminregion);
-                    }else if(selectedRegion.IsSelected == false && (_context.Adminregions.Any(q => q.Adminid == adminId && q.Adminregionid == selectedRegion.regionId) == true))
+                    }else if(selectedRegion.IsSelected == false && (_context.Adminregions.Any(q => q.Adminid == adminId && q.Regionid == selectedRegion.regionId) == true))
                     {
-                        Adminregion adminregion = _context.Adminregions.FirstOrDefault(q => q.Adminid == adminId && q.Adminregionid == selectedRegion.regionId);
+                        Adminregion adminregion = _context.Adminregions.FirstOrDefault(q => q.Adminid == adminId && q.Regionid == selectedRegion.regionId);
                         _context.Adminregions.Remove(adminregion);
                     }
                 }

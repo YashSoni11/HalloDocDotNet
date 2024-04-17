@@ -14,5 +14,8 @@ namespace HalloDoc_BAL.Interface
 
         public bool SendEmail(string email,string subject,string body);
 
+        public bool SendCreateAccountLink(string email,int requestId);
+
+
     }
 }

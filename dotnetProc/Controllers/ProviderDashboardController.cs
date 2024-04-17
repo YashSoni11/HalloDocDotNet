@@ -5,6 +5,7 @@ using HalloDoc_DAL.ProviderViewModels;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace dotnetProc.Controllers
 {
@@ -513,6 +514,43 @@ namespace dotnetProc.Controllers
             {
                 TempData["ShowNegativeNotification"] = "Somthing Went Wrong!";
             }
+
+
+            return RedirectToAction("Dashboard");
+
+        }
+
+
+        public IActionResult RequestToAdmin(string RequestMessage)
+        {
+
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
+            string subject = "Request For Edit MyAccount";
+
+           
+
+            string body = RequestMessage+ "<br/>";
+
+            body += "My Id:-" + loggedInUser.UserId;
+          
+
+
+            bool response = _emailService.SendEmail("yashusoni003@gmail.com", subject, body);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Request Sent Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+            }
+
+
+            bool reponse1 = _emailService.AddEmailLog("Profile Edit Request", loggedInUser.UserId, "Request For Profile Edit", "yashusoni003@gmail.com", "", response);
 
 
             return RedirectToAction("Dashboard");

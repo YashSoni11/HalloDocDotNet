@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HalloDoc_DAL.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -55,5 +56,13 @@ namespace HalloDoc_DAL.ViewModels
         public IFormFile? FileUpload { get; set; } = null;
 
         public string? Relation { get; set; } = null;
+
+
+        public List<Region>? regions { get; set; }
+
+        [Required(ErrorMessage = "Region is Required.")]
+
+        public int RegionId { get; set; }
+
     }
 }

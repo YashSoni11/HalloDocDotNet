@@ -646,11 +646,13 @@
             isDrawing = false;
         }
 
-        if (@ViewData["RoleName"] == "Phy") {
+      
+
+        if ('@ViewData["RoleName"]' == "Phy") {
 
             handleNavChange("provider-profile-tab")
         }
-        else if (@ViewData["RoleName"] == "Adm") {
+        else if ('@ViewData["RoleName"]' == "Adm") {
             let prevId = localStorage.getItem("ActiveLink")
 
             let currEle = document.getElementById(prevId)

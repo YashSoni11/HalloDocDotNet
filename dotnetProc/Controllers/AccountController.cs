@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using HalloDoc_BAL.Repositery;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace dotnetProc.Controllers
@@ -35,9 +36,10 @@ namespace dotnetProc.Controllers
 
         [HttpGet]
         [Route("Createaccount/{createid}")]
-        public IActionResult Createaccount(string createid)
+        public IActionResult Createaccount(int createid)
         {
 
+            ViewData["RequestId"] = createid;
         
             return View();
             
@@ -46,57 +48,83 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
         [Route("Createaccount/{createid}")]
-        public IActionResult Createaccount(UserCred user)
+        public IActionResult Createaccount(UserCred user ,int RequestId)
         {
 
-
-
-
-
-            if (user.Password == user.Confirmpassword)
+            if(RequestId == 0)
             {
-                Requestclient requestclient = _patientReq.GetRequestClientByEmail(user.Email);
+                TempData["ErrorPassword"] = "No Record Found!";
+                return RedirectToAction("Createaccount", "Account");
+            }
 
 
+            if (ModelState.IsValid)
+            {
 
-                PatientReq patientReq = new PatientReq
+
+                bool IsEmailExists = _patientReq.IsEmailExistance(user.Email);
+
+                if (IsEmailExists)
                 {
+                    TempData["ErrorPassword"] = "Account is in use!";
+                    return RedirectToAction("Createaccount", "Account", new { createid = RequestId});
+                }
 
-                    FirstName = requestclient.Firstname,
-                    LastName = requestclient.Lastname,
-                    Email = requestclient.Email,
-                    Password = user.Password,
-                    Phonenumber = requestclient.Phonenumber,
-
-                };
-
-                AddressModel addressModel = new AddressModel
+                if (user.Password == user.Confirmpassword)
                 {
-                    State = requestclient.State,
-                    Street = requestclient.Street,
-                    City = requestclient.City,
-                    ZipCode = requestclient.Zipcode
-                };
+                    Requestclient requestclient = _patientReq.GetRequestByRequestId(RequestId);
+
+                    if (requestclient == null)
+                    {
+                        TempData["ErrorPassword"] = "No Record Found!";
+                        return RedirectToAction("Createaccount", "Account", new { createid = RequestId });
+                    }
 
 
-                Aspnetuser aspnetuser = _patientReq.AddAspNetUser(patientReq, user.Password);
+                        PatientReq patientReq = new PatientReq
+                    {
 
-                int userid = _patientReq.AddUser(aspnetuser.Id, patientReq, addressModel);
+                        FirstName = requestclient.Firstname,
+                        LastName = requestclient.Lastname,
+                        Email = requestclient.Email,
+                        Password = user.Password,
+                        Phonenumber = requestclient.Phonenumber,
 
-                Request request = _patientReq.UpdateRequestByRequestId(requestclient.Requestid,userid);
+                    };
 
-            
+                    AddressModel addressModel = new AddressModel
+                    {
+                        State = (int)requestclient.Regionid,
+                        Street = requestclient.Street,
+                        City = requestclient.City,
+                        ZipCode = requestclient.Zipcode
+                    };
 
-            
+
+                    Aspnetuser aspnetuser = _patientReq.AddAspNetUser(patientReq, user.Password);
+
+                    int userid = _patientReq.AddUser(aspnetuser.Id, patientReq, addressModel);
+
+                    Request request = _patientReq.UpdateRequestByRequestId(requestclient.Requestid, userid);
 
 
 
-                return RedirectToAction("Login", "Account");
 
+
+
+
+                    return RedirectToAction("Login", "Account");
+
+                }
+                else
+                {
+                    TempData["ErrorPassword"] = "Password Do not Match!";
+                    return RedirectToAction("Createaccount", "Account");
+                }
             }
             else
             {
-                TempData["ErrorPassword"] = "Password Do not Match!";
+                TempData["ErrorPassword"] = "Not Valid Data!";
                 return RedirectToAction("Createaccount", "Account");
             }
 
@@ -163,7 +191,7 @@ namespace dotnetProc.Controllers
 
                        loggedInUser.UserId = user.Userid;
                        loggedInUser.Firstname = user.Firstname;
-                    //loggedInUser.Role = userRole;
+                    
                     loggedInUser.Role = userRole;
 
 
@@ -419,7 +447,7 @@ namespace dotnetProc.Controllers
 
             AddressModel address = new AddressModel
             {
-                State = user.State,
+                State = user.Regionid == null?0:(int)user.Regionid,
                 City = user.City,
                 Street = user.Street,
                 ZipCode = user.Zipcode

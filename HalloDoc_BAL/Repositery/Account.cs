@@ -39,6 +39,21 @@ namespace HalloDoc_BAL.Repositery
             December
         }
 
+
+        public enum Status
+        {
+            Unassigned = 1,
+            Unpaid,
+            MDEnRoute,
+            MDOnSite,
+            Conclude,
+            Cancelled,
+            CancelledByPatient,
+            Closed,
+            Accepted,
+            Clear,
+        }
+
         public Object GiveResetPasswordLinkObject(string resetid)
         {
 
@@ -260,10 +275,39 @@ namespace HalloDoc_BAL.Repositery
             {
                 requestid = r.Requestid,
                 createDate = r.Createddate,
-                Status = r.Status,
+                //Status = Enum.GetName(typeof(Status),r.Status),
+                Status = "UnAssigned",
                 totalDocuments = _context.Requestwisefiles.Where(u => u.Requestid == r.Requestid).Count(),
                 providerName = _context.Physicians.FirstOrDefault(u => u.Physicianid == r.Physicianid).Firstname,
             }).ToList();
+
+
+
+
+            //var data = (from r in _context.Requests
+            //            join rc in _context.Requestwisefiles on r.Requestid equals rc.Requestid
+            //            join p in _context.Physicians on r.Physicianid equals p.Physicianid into prJoin
+            //            from p in prJoin.DefaultIfEmpty()
+            //            where r.Isdeleted[0] == false && r.Userid == userid
+            //            select new
+            //            {
+            //                Request = r,
+            //                Requestwisefiles = rc,
+            //                Physicians = p,     
+            //            }).ToList();
+
+
+
+            //List<DashBoardRequests> requests1 = data.Select(q => new DashBoardRequests {
+            //    requestid = q.Request.Requestid,
+            //    createDate = q.Request.Createddate,
+            //    //Status = Enum.GetName(typeof(Status),r.Status),
+            //    Status = "UnAssigned",
+            //    totalDocuments = q.Requestwisefiles.Where(u => u.Requestid == r.Requestid).Count(),
+            //    providerName = _context.Physicians.FirstOrDefault(u => u.Physicianid == r.Physicianid).Firstname,
+
+            //});
+
 
             return requests;
         }
@@ -289,7 +333,7 @@ namespace HalloDoc_BAL.Repositery
                 curUser.Strmonth = ((Months)um.User.Birthdate.Month).ToString();
                 curUser.Street = um.User.Address.Street;
                 curUser.City = um.User.Address.City;
-                curUser.State = um.User.Address.State;
+                curUser.State =   _context.Regions.Where(q=>q.Regionid ==  um.User.Address.State).Select(q=>q.Name).FirstOrDefault();
                 curUser.Zipcode = um.User.Address.ZipCode;
 
                  _context.Users.Update(curUser);

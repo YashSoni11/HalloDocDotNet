@@ -125,7 +125,7 @@
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
                                 <input asp-for="PatientInfo.Email" type="email" class="form-control emailInp" id="floatingInput"
-                                       placeholder="name@example.com" onblur="checkEmailAvailibility()">
+                                       placeholder="name@example.com" onblur="checkEmailAvailibility(event.target)">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="PatientInfo.Email" class="text-danger"></span>
                                 @{
@@ -163,31 +163,31 @@
                         <h4 class="mb-3">Patient Location</h4>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="patientLocation.Street" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="PatientInfo.Location.Street" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Street</label>
-                                <span asp-validation-for="patientLocation.Street" class="text-danger"></span>
+                                <span asp-validation-for="PatientInfo.Location.Street" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="patientLocation.City" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="PatientInfo.Location.City" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">City</label>
-                                <span asp-validation-for="patientLocation.City" class="text-danger"></span>
+                                <span asp-validation-for="PatientInfo.Location.City" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="patientLocation.State"  class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onchange="chekcRegionAvailibility()">
-                                    <option selected="">Region</option>
-                                    <option value="Gujarat">Gujarat</option>
-                                    <option value="Maharastra">Maharastra</option>
-                                    <option value="Punjab">Punjab</option>
+                                <select asp-for="PatientInfo.Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onchange="chekcRegionAvailibility()">
+                                    @for (int i = 0; i < Model.PatientInfo.regions.Count; i++)
+                                    {
+                                        <option value="@Model.PatientInfo.regions[i].Regionid">@Model.PatientInfo.regions[i].Name</option>
+                                    }
                                 </select>
-                                <span asp-validation-for="patientLocation.State" class="text-danger"></span>
+                                <span asp-validation-for="PatientInfo.Location.State" class="text-danger"></span>
                                 @{
                                     if (TempData["IsRegionAvailable"] != null)
                                     {
@@ -200,16 +200,16 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="patientLocation.ZipCode" type="number" class="form-control" id="floatingInput"
+                                <input asp-for="PatientInfo.Location.ZipCode" type="number" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Zip Code</label>
-                                <span asp-validation-for="patientLocation.ZipCode" class="text-danger"></span>
+                                <span asp-validation-for="PatientInfo.Location.ZipCode" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="patientLocation.RoomNo" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="PatientInfo.Location.RoomNo" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Room #/ Suite (optional)</label>
                             </div>

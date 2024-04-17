@@ -16,7 +16,7 @@ namespace HalloDoc_DAL.ViewModels
 
         public string Relation {get; set; } 
 
-        public AddressModel patientLocation { get; set; }
+        public AddressModel? patientLocation { get; set; }
 
         public bool ValidEmail { get; set; }
 

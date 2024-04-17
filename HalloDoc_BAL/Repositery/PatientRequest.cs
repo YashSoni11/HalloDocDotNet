@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
-
+using System.Collections;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -68,7 +68,7 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
-        public object GetInfoValidation(string email, string phone, string region)
+        public object GetInfoValidation(string email, string phone, int region)
         {
             bool isemailexist =  IsEmailExistance(email);
             bool isemailblocked =  IsEmailBlocked(email);
@@ -86,6 +86,12 @@ namespace HalloDoc_BAL.Repositery
 
             return result;
         }
+
+        public Requestclient GetRequestByRequestId(int requestId)
+        {
+            return _context.Requestclients.FirstOrDefault(q => q.Requestid == requestId);
+        }
+
 
 
         public int GetCurrentRequestsCount()
@@ -167,7 +173,7 @@ namespace HalloDoc_BAL.Repositery
                 Email = pr.Email,
                 Mobile = pr.Phonenumber,
                 Zipcode = pr.Location.ZipCode,
-                State = pr.Location.State,
+                State = _context.Regions.Where(q=>q.Regionid == pr.Location.State).Select(q=>q.Name).FirstOrDefault(),
                 City = pr.Location.City,
                 Street = pr.Location.Street,
                 Intdate = pr.BirthDate.Day,
@@ -234,22 +240,37 @@ namespace HalloDoc_BAL.Repositery
         public Aspnetuser AddAspNetUser(PatientReq pr, string password)
         {
 
-            Aspnetuser aspNetUser1 = new Aspnetuser
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                Username = pr.FirstName + "_" + pr.LastName,
-                Email = pr.Email,
-                Passwordhash = GetHashedPassword(password),
-                Phonenumber = pr.Phonenumber,
-                Createddate = DateTime.Now
-            };
+                Aspnetuser aspNetUser1 = new Aspnetuser
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Username = pr.FirstName + "_" + pr.LastName,
+                    Email = pr.Email,
+                    Passwordhash = GetHashedPassword(password),
+                    Phonenumber = pr.Phonenumber,
+                    Createddate = DateTime.Now
+                };
 
 
-            _context.Aspnetusers.Add(aspNetUser1);
+                _context.Aspnetusers.Add(aspNetUser1);
 
-            _context.SaveChanges();
 
-            return aspNetUser1;
+
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole();
+
+                aspnetuserrole.Userid = aspNetUser1.Id;
+                aspnetuserrole.Roleid = "Patient";
+
+                _context.Aspnetuserroles.Add(aspnetuserrole);
+                _context.SaveChanges();
+
+                return aspNetUser1;
+            }
+            catch(Exception ex) 
+            {
+                return new Aspnetuser();
+            }
         }
 
 
@@ -262,7 +283,7 @@ namespace HalloDoc_BAL.Repositery
                 Email = patientReq.Email,
                 Mobile = patientReq.Phonenumber,
                 Zipcode = patinetLocation.ZipCode,
-                State = patinetLocation.State,
+                State = _context.Regions.Where(q => q.Regionid == patinetLocation.State).Select(q => q.Name).FirstOrDefault(),
                 City = patinetLocation.City,
                 Street = patinetLocation.Street,
                 Intdate = patientReq.BirthDate.Day,
@@ -271,6 +292,10 @@ namespace HalloDoc_BAL.Repositery
                 Createddate = DateTime.Now,
                 Aspnetuserid = AspNetUserId,
                 Createdby = AspNetUserId,
+                Isdeleted = new BitArray(1, false),
+                Regionid = patinetLocation.State,
+                Status=1,
+
             };
 
             _context.Users.Add(user);
@@ -279,11 +304,12 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state,string Role)
+        public Request AddRequest(CmnInformation cm, int userId, string requestType,int state,string Role)
         {
 
+             string? statName = _context.Regions.Where(q=>q.Regionid == state).Select(q=>q.Name).FirstOrDefault();
 
-            string confirmatinumber = GetConfirmationNumber(cm.FirstName, cm.LastName, state);
+            string confirmatinumber = GetConfirmationNumber(cm.FirstName, cm.LastName, statName);
 
 
             Request request = new Request
@@ -296,9 +322,11 @@ namespace HalloDoc_BAL.Repositery
                 Createddate = DateTime.Now,
                 Confirmationnumber = confirmatinumber,
                 Email = cm.Email,
-                Createduserid = userId
+                Createduserid = userId,
+                Userid = userId == 0?null:userId,
+                Isdeleted = new BitArray(1, false),
             };
-
+            
             if(Role == "Physician")
             {
                 request.Status = 9;
@@ -343,9 +371,11 @@ namespace HalloDoc_BAL.Repositery
                 Strmonth = ((Months)pr.BirthDate.Month).ToString(),
                 Street = patientAddress.Street,
                 City = patientAddress?.City,
-                State = patientAddress?.State,
+                State = _context.Regions.Where(q=>q.Regionid == patientAddress.State).Select(q=>q.Name).FirstOrDefault(),
                 Zipcode = patientAddress.ZipCode,
                 Notes = pr.Symptoms,
+                Regionid = patientAddress.State,
+                Address = patientAddress.Street+","+patientAddress.City+","+patientAddress.State+","+patientAddress.ZipCode,
             };
 
             _context.Requestclients.Add(requestclient);
@@ -416,7 +446,7 @@ namespace HalloDoc_BAL.Repositery
                 Conciergename = name,
                 Street = partnerLocation.Street,
                 City = partnerLocation.City,
-                State = partnerLocation.State,
+                State = _context.Regions.Where(q=>q.Regionid ==  partnerLocation.State).Select(q=>q.Name).FirstOrDefault(),
                 Zipcode = partnerLocation.ZipCode,
                 Createddate = DateTime.Now,
 
@@ -463,6 +493,7 @@ namespace HalloDoc_BAL.Repositery
              Request request = _context.Requests.FirstOrDefault(q=>q.Requestid == requestId);
 
             request.Userid = userId;
+            request.Createduserid = userId;
 
             _context.Requests.Update(request);
 
@@ -471,9 +502,9 @@ namespace HalloDoc_BAL.Repositery
             return request; 
         }
 
-        public bool  IsRegionAvailable(string region)
+        public bool  IsRegionAvailable(int region)
         {
-            return _context.Regions.Any(q=>q.Name.ToLower() == region.ToLower());
+            return _context.Regions.Any(q=>q.Regionid == region);
         }
 
 

@@ -16,6 +16,8 @@ using AutoMapper;
 using HalloDoc_DAL.Context;
 using System.Collections;
 using Org.BouncyCastle.Asn1.Ocsp;
+using HalloDoc_DAL.ViewModels;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -30,6 +32,30 @@ namespace HalloDoc_BAL.Repositery
             _context = context;
         }
 
+
+        public bool SendCreateAccountLink(string email,int requestId)
+        {
+
+            try
+            {
+                string createid = requestId.ToString();
+
+                string subject = "Create Account";
+                string creatlink = "https://localhost:7008/CreateAccount/" + createid;
+
+                string body = "Please click on <a asp-route-id='" + createid + "' href='" + creatlink + "'+>Create Account</a> to create your account";
+
+
+                bool IsSent = SendEmail("yashusoni003@gmail.com", subject, body);
+
+                AddEmailLog(subject, 0, "Create Account Link", email, "", IsSent);
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
 
         public bool AddEmailLog(string subject,int requestId, string emailTemplet, string UserEmail, string ConfirmationNumber, bool IsEmailSent)
         {

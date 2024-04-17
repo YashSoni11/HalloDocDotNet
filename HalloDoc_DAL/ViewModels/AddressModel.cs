@@ -22,9 +22,7 @@ namespace HalloDoc_DAL.ViewModels
         public string City { get; set; }
 
         [Required(ErrorMessage = "State is Required.")]
-        [MaxLength(30, ErrorMessage = "Could Not Enter More Than 30 Charachters.")]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only Alphabets are Allowed.")]
-        public string State { get; set; }
+        public int State { get; set; }
 
 
         [Required(ErrorMessage = "Zipcode is Required.")]

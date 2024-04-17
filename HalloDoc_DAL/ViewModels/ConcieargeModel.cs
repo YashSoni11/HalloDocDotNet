@@ -9,7 +9,7 @@ namespace HalloDoc_DAL.ViewModels
 {
     public class ConcieargeModel
     {
-        public UserCred UserCred { get; set; }
+       
 
         public CmnInformation concieargeInformation { get; set; }
 
@@ -17,9 +17,9 @@ namespace HalloDoc_DAL.ViewModels
 
         public AddressModel concieargeLocation { get; set; }
 
-        public string propertyName { get; set; }
+       
 
-        public int patientRoomNo { get; set; }
+        public int? patientRoomNo { get; set; }
 
 
     }

@@ -1572,20 +1572,18 @@ const GetUserAccessTableView = (currentPage, isPageAction, totalPages = 0) => {
 
 }
 
-const ShiftApproveAction = () => {
+const ShiftApproveAction = (le) => {
 
+
+  
+    if ($(window).width() <= 600) {
+        $("#mb-ApproveInp").val(1);
+        $("#mb-RequestShiftTableForm").submit();
+    } else {
         $("#ApproveInp").val(1);
-    $("#RequestShiftTableForm").submit();
-    
-
-    //if (window.length <= 600) {
-    //    $("#mb-ApproveInp").val(1);
-    //    console.log("petu")
-
-    //    $("#mb-RequestShiftTableForm").submit();
-    //} else {
-    //    console.log("tetu")
-    //}
+        $("#RequestShiftTableForm").submit();
+       
+    }
 
 }
 
@@ -1593,7 +1591,7 @@ const ShiftDeleteAction = () => {
 
     
 
-    if (window.length <= 600) {
+    if ($(window).width() <= 600) {
         $("#mb-ApproveInp").val(2);
         $("#mb-RequestShiftTableForm").submit();
     } else {

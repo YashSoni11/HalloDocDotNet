@@ -246,7 +246,7 @@
                                     <div class="col-12 d-flex justify-content-end">
 
                                         <div class="linkTypeBtn" style="background-color:#f7e7ff;color:#990df0;border:1px solid #990df0;border-radius:10px;width:10rem;">
-                                            <a class=" btn" asp-action="ViewRequest" asp-route-requestid="@dr.Requestid" asp-controller="Admindashboard">View Case</a>
+                                            <a class=" btn" asp-action="ViewRequest" asp-route-requestid="@dr.Requestid" asp-controller="ProviderDashboard">View Case</a>
                                         </div>
 
                                     </div>
@@ -255,28 +255,22 @@
                                 <div class="row">
 
                                     <div class="col-12">
+
                                         <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Birth: @(dr.Birthdate != null ? dr.Birthdate : "Not Available") </h6>
+                                            <span class="AccordianIcons mx-1"><i class="bi bi-telephone mx-1"></i></span>  <h6 class="mt-0">Email: @(dr.Email != null ? dr.Email : "Not Available")</h6>
                                         </div>
-                                        <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-envelope mx-1"></i></span>  <h6 class="mt-0">Email: @(dr.Notes != null ? dr.Notes : "Not Available") </h6>
-                                        </div>
+
                                         <div class="d-flex align-content-center mt-2">
                                             <span class="AccordianIcons mx-1"><i class="bi bi-telephone mx-1"></i></span>  <h6 class="mt-0">Patient: @(dr.Phone != null ? dr.Phone : "Not Available")</h6>
                                         </div>
-                                        <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-journal-arrow-up mx-1"></i></span>  <h6 class="mt-0">Tranfer Notes: </h6>
-                                        </div>
+                               
                                         <div class="d-flex align-content-center mt-2">
                                             <span class="AccordianIcons mx-1"><i class="bi bi-calendar mx-1"></i></span>  <h6 class="mt-0">Date of Service: </h6>
                                         </div>
                                         <div class="d-flex align-content-center mt-2">
                                             <span class="AccordianIcons mx-1"><i class="bi bi-file-medical mx-1"></i></span>  <h6 class="mt-0">Physician:@(dr.PhysicianName != null ? dr.PhysicianName : "Not Available") </h6>
                                         </div>
-                                        <div class="d-flex align-content-center mt-2">
-                                            <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  <h6 class="mt-0">Requestor:@(dr.Requestor != null ? dr.Requestor : "Not Available") </h6>
-                                        </div>
-
+                                       
 
 
                                     </div>
@@ -285,37 +279,29 @@
 
                                 <div class="row mt-3 gy-3">
                                     @{
+
                                         if (status[dr.status] == "New")
-                                        {
-                                            <div class="col-6">
-
-                                                <div class="linkTypeBtn" style="background:#950cdb;">
-                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetAssginCasePopup(@dr.Requestid,'DashBoardModalPopUp')">
-                                                        Accept
-                                                    </button>
-                                                </div>
-
-                                            </div>
-
-                                        }
-                                      
-                                        if (status[dr.status] == "New" || status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose" || status[dr.status] == "Unpaid")
                                         {
                                             <div class="col-6">
 
                                                 <div class="linkTypeBtn ">
-                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetViewnotes(@dr.Requestid)">View Notes</button>
+                                                    <form method="post" asp-action="AcceptRequest" asp-controller="ProviderDashboard" asp-route-requestId="@dr.Requestid">
+
+
+                                                    <button type="submit" class="btn text-white" style="font-size:12px;" asp-action="GetRequestNotes" asp-controller="ProviderDashboard" asp-route-id="@dr.Requestid">Accept</button>
+                                                    
+                                                    </form>
                                                 </div>
 
                                             </div>
 
                                         }
-                                        if (status[dr.status] == "New")
+                                        if (status[dr.status] == "New" || status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude")
                                         {
                                             <div class="col-6">
 
-                                                <div class="linkTypeBtn " style="background:#eb1f1f;">
-                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetBlockCasePopup(@dr.Requestid,'DashBoardModalPopUp')">Block Patient</button>
+                                                <div class="linkTypeBtn ">
+                                                    <a class="btn text-white" style="font-size:12px;" asp-action="GetRequestNotes" asp-controller="ProviderDashboard" asp-route-id="@dr.Requestid">View Notes</a>
                                                 </div>
 
                                             </div>
@@ -326,7 +312,7 @@
                                             <div class="col-6">
 
                                                 <div class="linkTypeBtn " style="background:#0099f3;">
-                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetTransferCasePopup(@dr.Requestid,'DashBoardModalPopUp')">Transfer</button>
+                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetTransferAdminModalView(@dr.Requestid,'DashBoardModalPopUp')">Transfer</button>
                                                 </div>
 
                                             </div>
@@ -343,60 +329,65 @@
                                             </div>
 
                                         }
-                                        if (status[dr.status] == "Pending" || status[dr.status] == "Toclose")
-                                        {
-                                            <div class="col-6">
-
-                                                <div class="linkTypeBtn" style="background:#dba50c;">
-                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetClearCasePopup(@dr.Requestid,'DashBoardModalPopUp')">Clear Case</button>
-                                                </div>
-
-                                            </div>
-
-                                        }
-                                        if (status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Unpaid" || status[dr.status] == "Toclose")
+                                 
+                                        if (status[dr.status] == "Pending" || status[dr.status] == "Active" || status[dr.status] == "Conclude")
                                         {
                                             <div class="col-6">
 
                                                 <div class="linkTypeBtn">
-                                                    <a class="btn text-white" style="font-size:12px;" asp-action="ViewUploads" asp-route-id="@dr.Requestid" asp-controller="Admindashboard">View Uploads</a>
+                                                    <a class="btn text-white" style="font-size:12px;" asp-action="ViewUploads" asp-route-id="@dr.Requestid" asp-controller="ProviderDashboard">View Uploads</a>
                                                 </div>
 
                                             </div>
 
                                         }
-                                        if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
+                                        if (status[dr.status] == "Active" || status[dr.status] == "Conclude")
                                         {
                                             <div class="col-6">
 
                                                 <div class="linkTypeBtn" style="background:#dba50c;">
-                                                    <a class="btn text-white" style="font-size:12px;" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="Admindashboard">Orders</a>
+                                                    <a class="btn text-white" style="font-size:12px;" asp-action="SendOrder" asp-route-id="@dr.Requestid" asp-controller="ProviderDashboard">Orders</a>
                                                 </div>
 
                                             </div>
 
                                         }
-                                        if (status[dr.status] == "Active" || status[dr.status] == "Conclude" || status[dr.status] == "Toclose")
+                                        if (status[dr.status] == "Active")
+                                        {
+                                            <div class="col-6">
+
+                                                <div class="linkTypeBtn" style="background:#0dcaf0;">
+                                                    <form method="post" asp-action="PostHouseCallAction" asp-controller="ProviderDashboard" asp-route-id="@dr.Requestid">
+                                                        <button type="submit" class="btn text-white">House Call</button>
+                                                    </form>
+                                                </div>
+
+                                            </div>
+
+                                        }
+                                        if (status[dr.status] == "Active" || status[dr.status] == "Conclude")
                                         {
                                             <div class="col-6">
 
                                                 <div class="linkTypeBtn ">
-                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetEncounterCaseView(@dr.Requestid,'DashBoardModalPopUp')">Encounter</button>
+                                                    <button class="btn text-white" style="font-size:12px;" onclick="GetEncounterCaseView(@dr.Requestid,'EncounterCaseModal',false)">Encounter</button>
                                                 </div>
 
                                             </div>
 
                                         }
-                                        if (status[dr.status] == "Toclose")
+                                        if ( status[dr.status] == "Conclude")
                                         {
                                             <div class="col-6">
 
-                                                <div class="linkTypeBtn">
-                                                    <a class="btn text-white" style="font-size:12px;" asp-action="CloseCase" asp-route-id="@dr.Requestid" asp-controller="Admindashboard">Close Case</a>
-
+                                                <div class="linkTypeBtn" style="background:#dba50c;">
+                                                    <a class="btn text-white" style="font-size:12px;" asp-action="ConcludeCareView" asp-controller="ProviderDashboard" asp-route-id="@dr.Requestid">Conclude Care</a>
                                                 </div>
+
                                             </div>
+
                                         }
+                                      
                                     }
 
 

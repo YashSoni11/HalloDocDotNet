@@ -12,7 +12,7 @@ namespace HalloDoc_DAL.ViewModels
 
         public DateTime createDate { get; set; }
 
-        public short Status { get; set; }
+        public string Status { get; set; }
 
         public int totalDocuments { get; set; }
 

@@ -90,7 +90,7 @@
             @{
                 int i = 0;
 
-                <div class="accordion" id="accordionExample">
+                <div class="accordion" id="mb-Documents">
                     @foreach (DashBoardRequests request in Model.UserRequests)
                     {
 
@@ -101,7 +101,7 @@
                                     @request.createDate.ToString("MMM dd, yyyy")
                                 </button>
                             </h2>
-                            <div id="collapse_@i" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div id="collapse_@i" class="accordion-collapse collapse " data-bs-parent="#mb-Documents">
                                 <div class="accordion-body d-flex align-content-center justify-content-between">
                                     <h5>Status : @request.Status</h5>
                                     <a class="nav-link mx-3" asp-route-id="@request.requestid" asp-action="ViewDocuments" asp-controller="Account">
@@ -123,7 +123,7 @@
 
 
 
-            <table class="table mt-5 UserTable">
+            <table id="UserRequestTableContainer" class="table mt-5 UserTable">
                 <thead class="table-secondary">
                     <tr>
                         <th class="align-middle text-center" scope="col">Created Date</th>

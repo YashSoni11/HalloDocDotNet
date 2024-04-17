@@ -16,6 +16,8 @@ namespace HalloDoc_BAL.Interface
 
       public Object CheckEmail(string email);
 
+        public Requestclient GetRequestByRequestId (int requestId);   
+
         public bool IsEmailExistance(string email);
         public Aspnetuser GetAspNetUserByEmail(string email);
 
@@ -25,7 +27,7 @@ namespace HalloDoc_BAL.Interface
 
         public int AddUser(string AspNetUserId, PatientReq pr, AddressModel Location);
 
-        public Request AddRequest(CmnInformation cm, int userId, string requestType,string state,string Role);
+        public Request AddRequest(CmnInformation cm, int userId, string requestType,int state,string Role);
 
         public bool AddRequestClient(PatientReq patientReq,int requestId, AddressModel Location);
 
@@ -49,17 +51,20 @@ namespace HalloDoc_BAL.Interface
 
 
        public Requestclient GetRequestClientByEmail(string email);
+ 
+
+
 
         public Request UpdateRequestByRequestId(int requestId,int userId);
 
-        public bool  IsRegionAvailable(string  region);
+        public bool  IsRegionAvailable(int  region);
 
         public bool  IsEmailBlocked(string email);
 
         public bool IsPhoneBlocked(string phone);
 
 
-        public object GetInfoValidation(string email, string phone, string region);
+        public object GetInfoValidation(string email, string phone, int region);
 
     }
 }
