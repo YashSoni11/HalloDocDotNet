@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -35,12 +34,12 @@ public partial class Role
     [Column("modifieddate", TypeName = "timestamp without time zone")]
     public DateTime? Modifieddate { get; set; }
 
-    [Column("isdeleted")]
-    public bool? Isdeleted { get; set; } = null!;
-
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
+
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [InverseProperty("Role")]
     public virtual ICollection<Rolemenu> Rolemenus { get; } = new List<Rolemenu>();

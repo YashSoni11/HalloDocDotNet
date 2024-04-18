@@ -304,20 +304,19 @@ namespace dotnetProc.Controllers
         public IActionResult ForgotPass(UserEmail um)
         {
 
-            string resetid = Guid.NewGuid().ToString();
-
-            string hashedresetid = _account.GetHashedPassword(resetid);
+            
+            
 
             DateTime expiretime = DateTime.Now.AddMinutes(60);
 
-             _account.StoreResetid(hashedresetid, expiretime,um.Email);
+           int tokenId =   _account.StoreResetid(expiretime,um.Email);
 
 
             string subject = "Password Reset";
 
-            string resetLink = "https://localhost:7008/ResetPassword/" + resetid;
+            string resetLink = "https://localhost:7008/ResetPassword/" + tokenId;
 
-            string body = "Please click on <a asp-route-id='" + resetid + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
+            string body = "Please click on <a asp-route-id='" + tokenId + "' href='" + resetLink + "'+>ResetPassword</a> to reset your password";
 
 
             _emailService.SendEmail(um.Email, subject, body);
@@ -331,24 +330,24 @@ namespace dotnetProc.Controllers
         #region ResetPassActions
         [HttpGet]
         [Route("ResetPassword/{resetid}")]
-        public IActionResult ResetPassword(string resetid)
+        public IActionResult ResetPassword(int resetid)
         {
 
-            string hashedresetid = _account.GetHashedPassword(resetid);
+           
 
-          Aspnetuser aspnetuser = _account.GetAspnetuserByResetId(hashedresetid);
-
-
+          Token ResetToken = _account.GetTokenByTokenId(resetid);
 
 
-            if (aspnetuser == null)
+
+
+            if (ResetToken == null)
             {
 
                 TempData["IsValidResetLink"] = "Not a Valid Link.";
 
                 return RedirectToAction("Error", "Account");
             }
-            else if (DateTime.Now > aspnetuser.Toekenexpire)
+            else if (DateTime.Now > ResetToken.Tokenexpire)
             {
                 TempData["IsValidResetLink"] = "Your Link is expired.";
 
@@ -367,20 +366,20 @@ namespace dotnetProc.Controllers
         [HttpPost]
         [Route("ResetPassword/{resetid}")]
 
-        public IActionResult ResetPassword(ForgotPassword fr,string resetid)
+        public IActionResult ResetPassword(ForgotPassword fr,int resetid)
         {
-             string hashedresetid = _account.GetHashedPassword(resetid);
+            
 
-            Aspnetuser aspnetuser = _account.GetAspnetuserByResetId(hashedresetid);
+            Token ResetToken = _account.GetTokenByTokenId(resetid);
 
-            if (aspnetuser == null)
+            if (ResetToken == null)
             {
                 TempData["IsValidResetLink"] = "Not a Valid Link!";
                 return RedirectToAction("Error", "Account");
             }
             else if(fr.NewPassword != fr.ConfirmPassword)
             {
-                TempData["ErrorPassword"] = "Passwords Do Not Match!";
+                TempData["ShowNegativeNotification"] = "Passwords Do Not Match!";
 
                 return View();
 
@@ -388,7 +387,8 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                   Aspnetuser user = _account.UpdateAspnetuserPassByEmail(aspnetuser.Email, fr.NewPassword);
+                   Aspnetuser user = _account.UpdateAspnetuserPassByEmail(ResetToken.UserId, fr.NewPassword,ResetToken.Tokenid);
+                TempData["ShowPositiveNotification"] = "Passwords Updated Successfully!";
 
             }
 

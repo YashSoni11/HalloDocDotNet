@@ -1,6 +1,5 @@
 ﻿using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Context;
-using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

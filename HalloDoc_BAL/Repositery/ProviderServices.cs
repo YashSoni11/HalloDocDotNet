@@ -1705,7 +1705,7 @@ namespace HalloDoc_BAL.Repositery
                     IsSearchById = true;
                 }
 
-                List<VendorList> vendorLists = _context.Healthprofessionals.Where(q=>(IsSearchByName || q.Vendorname.ToLower().Contains(vendorName.ToLower())  ) && (IsSearchById || q.Profession == HealthProfessionId ) && q.Isdeleted == false ).Select(r => new VendorList
+                List<VendorList> vendorLists = _context.Healthprofessionals.Where(q=>(IsSearchByName || q.Vendorname.ToLower().Contains(vendorName.ToLower())  ) && (IsSearchById || q.Profession == HealthProfessionId ) && q.Isdeleted == new BitArray(1,false) ).Select(r => new VendorList
                 {
                     VendorId = r.Vendorid,
                     BusinessContact = r.Businesscontact,
@@ -1803,7 +1803,7 @@ namespace HalloDoc_BAL.Repositery
             {
                 Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
 
-                healthprofessional.Isdeleted = true;
+                healthprofessional.Isdeleted = new BitArray(1,true);
                 healthprofessional.Modifieddate = DateTime.Now;
 
                 _context.Healthprofessionals.Update(healthprofessional);
@@ -1837,7 +1837,7 @@ namespace HalloDoc_BAL.Repositery
                 healthprofessional.Zip = vendorDetails.ZipCode;
                 healthprofessional.Regionid = vendorDetails.regionId;
                 healthprofessional.Createddate = DateTime.Now;
-                healthprofessional.Isdeleted = false;
+                healthprofessional.Isdeleted = new BitArray(1,false);
 
 
                 _context.Healthprofessionals.Add(healthprofessional);

@@ -77,57 +77,62 @@ namespace HalloDoc_BAL.Repositery
         }
         public string GetAspNetRolesByAspNetId(string id)
         {
-            try
-            {
             return _context.Aspnetuserroles.Where(q=>q.Userid == id).Select(q=>q.Roleid).FirstOrDefault();
-
-            }catch(Exception ex)
-            {
-                return "";
-            }
         }
 
 
         public string GetHashedPassword(string password)
         {
-
-            try
-            {
-                if (string.IsNullOrEmpty(password))
-                {
-                    return "";
-                }
-
-                using (SHA256 hash = SHA256.Create())
-                {
-                    byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-
-                    StringBuilder builder = new StringBuilder();
-
-                    for (int i = 0; i < bytes.Length; i++)
-                    {
-                        builder.Append(bytes[i].ToString("x2")); // Convert byte to hexadecimal string
-                    }
-
-                    return builder.ToString();
-                }
-            }catch(Exception ex)
+            if (string.IsNullOrEmpty(password))
             {
                 return "";
             }
 
+            using (SHA256 hash = SHA256.Create())
+            {
+                byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2")); // Convert byte to hexadecimal string
+                }
+
+                return builder.ToString();
+            }
+
         }
 
-        public void StoreResetid(string resetid, DateTime expirationtime, string email)
+        public int StoreResetid( DateTime expirationtime, string email)
         {
-            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q => q.Email == email);
-
-            if (aspnetuser != null)
+            try
             {
-                aspnetuser.Resettoken = resetid;
-                aspnetuser.Toekenexpire = expirationtime;
-            _context.Aspnetusers.Update(aspnetuser);
+
+            string AspNetId = _context.Aspnetusers.Where(q => q.Email == email).Select(q=>q.Id).FirstOrDefault();
+                int tokenId = _context.Tokens.OrderByDescending(q => q.Createdate).Select(q=>q.Tokenid).FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(AspNetId))
+            {
+                Token token = new Token();
+                token.Tokenid = tokenId+1;
+                token.UserId = AspNetId;
+                token.Tokenexpire = expirationtime;
+                token.Createdate = DateTime.Now;
+                token.Isused = false;
+
+            
+            _context.Tokens.Add(token);
             _context.SaveChanges();
+
+
+                return token.Tokenid;
+            }
+
+                return 0;
+            }catch(Exception ex)
+            {
+                return 0;
             }
 
         }
@@ -143,40 +148,28 @@ namespace HalloDoc_BAL.Repositery
 
         public LoggedInUser GetLoggedInUserFromJwt(string token)
         {
-            try
-            {
-
-                if (string.IsNullOrEmpty(token))
-                {
-                    return new LoggedInUser();
-                }
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-
-                int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
-                string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
-                string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
-                int AspNetRole = 0;
-                if (Role != "Patient")
-                {
-
-                 AspNetRole = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "RoleId").Value);
-                }
-
-                LoggedInUser loggedInUser = new LoggedInUser()
-                {
-                    UserId = userId,
-                    Firstname = Firstname,
-                    Role = Role,
-                    AspnetRole = AspNetRole,
-                };
-
-                return loggedInUser;
-            }catch(Exception ex)
+            if (string.IsNullOrEmpty(token))
             {
                 return new LoggedInUser();
             }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            int userId = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value);
+            string Firstname = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Firstname").Value;
+            string Role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role").Value;
+            int  AspNetRole = int.Parse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == "RoleId").Value);
+
+            LoggedInUser loggedInUser = new LoggedInUser()
+            {
+                UserId = userId,
+                Firstname = Firstname,
+                Role = Role,
+                AspnetRole = AspNetRole,
+            };
+
+            return loggedInUser;
         }
 
         public bool IsTokenExpired(string token)
@@ -214,236 +207,186 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Aspnetuser GetAspnetuserByResetId(string resetid)
+        public Token GetTokenByTokenId(int tokenId)
         {
-            try
-            {
+            Token token = _context.Tokens.Where(q => q.Tokenid == tokenId && q.Isused == false).FirstOrDefault();
 
-            Aspnetuser aspnetuser = _context.Aspnetusers.Where(q => q.Resettoken == resetid).FirstOrDefault();
-
-            return aspnetuser;
-            }catch(Exception ex)
-            {
-                return new Aspnetuser();
-            }
-
+            return token;
         }
 
         public Aspnetuser ValidateLogin(UserCred um)
         {
 
-            try
-            {
+            string pass = GetHashedPassword(um.Password);
 
+            Aspnetuser user = _context.Aspnetusers.FirstOrDefault(u => um.Email == u.Email && pass == u.Passwordhash);
 
-                string pass = GetHashedPassword(um.Password);
-
-                Aspnetuser user = _context.Aspnetusers.FirstOrDefault(u => um.Email == u.Email && pass == u.Passwordhash);
-
-                return user;
-            }catch(Exception ex)
-            {
-                return new Aspnetuser();
-            }
+            return user;
         }
 
         public Aspnetuser GetAspnetuserByEmail(string email)
         {
 
-            try
-            {
-
             Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
 
             return aspnetuser;
-            }
-            catch(Exception ex)
-            {
-                return new Aspnetuser();
-            }
-
 
         }
         public User GetUserByAspNetId(string id)
         {
-
-            try
-            {
+             
             User user  = _context.Users.FirstOrDefault(u=>u.Aspnetuserid == id);
 
             return user;
-
-            }catch(Exception ex)
-            {
-                return new User();
-            }
-             
 
         }
 
         public Admin GetAdminByAspNetId(string aspnetuserid)
         {
-            try
-            {
+            Admin user = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspnetuserid);
 
-                Admin user = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspnetuserid);
-
-                return user;
-            }catch(Exception ex)
-            {
-
-                return new Admin();
-            }
+            return user;
         }
 
         public Physician GetPhysicianByAspNetId(string aspnetuserid)
         {
-            try
-            {
-
             return _context.Physicians.FirstOrDefault(q => q.Aspnetuserid == aspnetuserid);
-            }catch(Exception ex)
-            {
-                return new Physician();
-            }
         }
 
 
         public List<Region> GetAllRegions()
         {
-            try
-            {
             List<Region> regions = _context.Regions.ToList();
 
             return regions;
-
-            }catch(Exception ex)
-            {
-                return new List<Region>();
-            }
         }
 
         public User GetUserByUserId(int  userId)
         {
-
-            try
-            {
-
             User user = _context.Users.FirstOrDefault(u => u.Userid == userId);
+ 
 
+      
             return user;
-            }catch(Exception ex)
-            {
-                return new User();
-            }
         }
 
-        public Aspnetuser UpdateAspnetuserPassByEmail(string Email, string Newpassword)
+        public Aspnetuser UpdateAspnetuserPassByEmail(string aspnetId, string Newpassword,int tokenId)
         {
-            try
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == aspnetId);
+            Token token = _context.Tokens.FirstOrDefault(q=>q.Tokenid == tokenId);
+
+            if (aspnetuser != null)
             {
-                Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == Email);
+                aspnetuser.Passwordhash = GetHashedPassword(Newpassword);
+                aspnetuser.Modifieddate = DateTime.Now;
+                token.Isused = true;
 
-                if (aspnetuser != null)
-                {
-                    aspnetuser.Passwordhash = GetHashedPassword(Newpassword);
-                    aspnetuser.Modifieddate = DateTime.Now;
+                _context.Aspnetusers.Update(aspnetuser);
+                _context.SaveChanges();
 
-                    _context.Aspnetusers.Update(aspnetuser);
-                    _context.SaveChanges();
-
-                }
-
-                return aspnetuser;
-            }catch(Exception ex)
-            {
-                return new Aspnetuser();
             }
+
+            return aspnetuser;
         }
 
         public List<DashBoardRequests> GetUserRequests(int userid)
         {
-            try
-            {
 
-                List<DashBoardRequests> requests = _context.Requests.Where(u => u.Userid == userid).Select(r => new DashBoardRequests
-                {
-                    requestid = r.Requestid,
-                    createDate = r.Createddate,
-                    //Status = Enum.GetName(typeof(Status),r.Status),
-                    Status = "UnAssigned",
-                    totalDocuments = _context.Requestwisefiles.Where(u => u.Requestid == r.Requestid).Count(),
-                    providerName = _context.Physicians.FirstOrDefault(u => u.Physicianid == r.Physicianid).Firstname,
-                }).ToList();
+            List<DashBoardRequests> requests = _context.Requests.Where(u => u.Userid == userid).Select(r => new DashBoardRequests
+            {
+                requestid = r.Requestid,
+                createDate = r.Createddate,
+                //Status = Enum.GetName(typeof(Status),r.Status),
+                Status = "UnAssigned",
+                totalDocuments = _context.Requestwisefiles.Where(u => u.Requestid == r.Requestid).Count(),
+                providerName = _context.Physicians.FirstOrDefault(u => u.Physicianid == r.Physicianid).Firstname,
+            }).ToList();
+
+
+
+
+            //var data = (from r in _context.Requests
+            //            join rc in _context.Requestwisefiles on r.Requestid equals rc.Requestid
+            //            join p in _context.Physicians on r.Physicianid equals p.Physicianid into prJoin
+            //            from p in prJoin.DefaultIfEmpty()
+            //            where r.Isdeleted[0] == false && r.Userid == userid
+            //            select new
+            //            {
+            //                Request = r,
+            //                Requestwisefiles = rc,
+            //                Physicians = p,     
+            //            }).ToList();
+
+
+
+            //List<DashBoardRequests> requests1 = data.Select(q => new DashBoardRequests {
+            //    requestid = q.Request.Requestid,
+            //    createDate = q.Request.Createddate,
+            //    //Status = Enum.GetName(typeof(Status),r.Status),
+            //    Status = "UnAssigned",
+            //    totalDocuments = q.Requestwisefiles.Where(u => u.Requestid == r.Requestid).Count(),
+            //    providerName = _context.Physicians.FirstOrDefault(u => u.Physicianid == r.Physicianid).Firstname,
+
+            //});
+
+
             return requests;
-            }catch(Exception ex)
-            {
-                return new List<DashBoardRequests>();
-            }
-
         }
 
 
         public  UserProfile UpdateUserByUserId(UserInformation um,int UserId)
         {
 
-            try
-            {
-                User curUser = _context.Users.FirstOrDefault(u => u.Userid == UserId);
+        
 
-                if (curUser != null)
+            User curUser = _context.Users.FirstOrDefault(u => u.Userid == UserId);
+
+            if(curUser != null)
+            {
+
+
+                curUser.Firstname = um.User.Firstname;
+                curUser.Lastname = um.User.Lastname;
+                curUser.Email = um.User.Email;
+                curUser.Mobile = um.User.Phonnumber;
+                curUser.Intdate = um.User.Birthdate.Day;
+                curUser.Intyear = um.User.Birthdate.Year;
+                curUser.Strmonth = ((Months)um.User.Birthdate.Month).ToString();
+                curUser.Street = um.User.Address.Street;
+                curUser.City = um.User.Address.City;
+                curUser.State =   _context.Regions.Where(q=>q.Regionid ==  um.User.Address.State).Select(q=>q.Name).FirstOrDefault();
+                curUser.Zipcode = um.User.Address.ZipCode;
+
+                 _context.Users.Update(curUser);
+                _context.SaveChanges();
+
+                AddressModel newAddress = new AddressModel
                 {
+                    State = um.User.Address.State,
+                    City = um.User.Address.City,
+                    Street = um.User.Address.Street,
+                    ZipCode = um.User.Address.ZipCode,
+                };
 
+                UserProfile updatedUser = new UserProfile
+                {
+                    Firstname = um.User.Firstname,
+                    Lastname = um.User.Lastname,
+                    Email = um.User.Email,
+                    Birthdate = um.User.Birthdate,
+                    Phonnumber = um.User.Phonnumber,
+                    Address = newAddress,
 
-                    curUser.Firstname = um.User.Firstname;
-                    curUser.Lastname = um.User.Lastname;
-                    curUser.Email = um.User.Email;
-                    curUser.Mobile = um.User.Phonnumber;
-                    curUser.Intdate = um.User.Birthdate.Day;
-                    curUser.Intyear = um.User.Birthdate.Year;
-                    curUser.Strmonth = ((Months)um.User.Birthdate.Month).ToString();
-                    curUser.Street = um.User.Address.Street;
-                    curUser.City = um.User.Address.City;
-                    curUser.State = _context.Regions.Where(q => q.Regionid == um.User.Address.State).Select(q => q.Name).FirstOrDefault();
-                    curUser.Zipcode = um.User.Address.ZipCode;
-
-                    _context.Users.Update(curUser);
-                    _context.SaveChanges();
-
-                    AddressModel newAddress = new AddressModel
-                    {
-                        State = um.User.Address.State,
-                        City = um.User.Address.City,
-                        Street = um.User.Address.Street,
-                        ZipCode = um.User.Address.ZipCode,
-                    };
-
-                    UserProfile updatedUser = new UserProfile
-                    {
-                        Firstname = um.User.Firstname,
-                        Lastname = um.User.Lastname,
-                        Email = um.User.Email,
-                        Birthdate = um.User.Birthdate,
-                        Phonnumber = um.User.Phonnumber,
-                        Address = newAddress,
-
-                    };
-                    return updatedUser;
-
-                }
-                return new UserProfile();
-            }catch(Exception ex)
-            {
-                return new UserProfile();
+                };
+            return updatedUser;
 
             }
+            return new UserProfile();
         }
 
 
         public List<ViewDocument> GetDocumentsByRequestId(int requestId)
         {
-            try
-            {
 
             List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId && u.Isdeleted != true).Select(r => new ViewDocument
             {
@@ -453,10 +396,6 @@ namespace HalloDoc_BAL.Repositery
             }).ToList();
 
              return documents;
-            }catch(Exception ex)
-            {
-                return new List<ViewDocument>();
-            }
         }
 
         public bool UploadFile(IFormFile file, int requestid,string Role,int UserId)

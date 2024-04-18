@@ -22,15 +22,17 @@ namespace HalloDoc_BAL.Interface
 
         public Physician GetPhysicianByAspNetId(string aspnetuserid);
         #endregion
-        public void StoreResetid(string resetid, DateTime expirationTime, string email);
+        public int StoreResetid(DateTime expirationtime, string email);
+
 
         #region Get AspNetUser By ResetId,Email
-        public Aspnetuser GetAspnetuserByResetId(string resetid);
+        public Token GetTokenByTokenId(int tokenId);
+
         public Aspnetuser GetAspnetuserByEmail(string email);
         #endregion
 
 
-        public Aspnetuser UpdateAspnetuserPassByEmail(string Email, string Newpassword);
+        public Aspnetuser UpdateAspnetuserPassByEmail(string Email, string Newpassword, int tokenId);
         public List<DashBoardRequests> GetUserRequests(int userid);
 
         public User GetUserByUserId(int userid);
