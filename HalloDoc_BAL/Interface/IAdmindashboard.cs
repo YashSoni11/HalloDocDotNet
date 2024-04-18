@@ -37,12 +37,16 @@ namespace HalloDoc_BAL.Interface
         public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id,int userId);
 
         public List<Region> GetAllRegions();
+        public bool CancleByPatientService(AdminCancleCase adminCancleCase, int id, int userId);
+
 
         public List<Physician> GetAllPhysician();
 
         public List<Physician> FilterPhysicianByRegion(int regionid);
 
-        public bool AssignRequest(AdminAssignCase assignRequest, int requestId);
+        public bool IsRequestAssigned(int RequestId);
+
+        public bool AssignRequest(AdminAssignCase assignRequest, int requestId,int adminId);
 
         public Request BlockRequest(AdminBlockCase blockRequest, int requestId);
 
@@ -71,7 +75,7 @@ namespace HalloDoc_BAL.Interface
 
         public bool ClearCaseByRequestid(string id,int adminId);
 
-        public bool  CancleAgrrementByRequstId(CancleAgreement cancleAgreement,string requestId);
+        public bool  CancleAgrrementByRequstId(CancleAgreement cancleAgreement,string requestId,int UserId);
 
         public bool AgreeAgreementByRequestId(string requestId);
 

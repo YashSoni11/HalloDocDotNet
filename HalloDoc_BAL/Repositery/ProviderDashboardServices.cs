@@ -171,6 +171,7 @@ namespace HalloDoc_BAL.Repositery
                 requeststatuslog.Requestid = requestId;
                 requeststatuslog.Status = request.Status;
                 requeststatuslog.Createddate = DateTime.Now;
+                requeststatuslog.Physicianid = physicianId;
 
                 _context.Requests.Update(request);
                 _context.Requeststatuslogs.Add(requeststatuslog);
@@ -365,6 +366,14 @@ namespace HalloDoc_BAL.Repositery
                 requeststatuslog.Status = request.Status;
                 requeststatuslog.Requestid = request.Requestid;
                 requeststatuslog.Createddate = DateTime.Now;
+
+                if(Role == "Admin")
+                {
+                    requeststatuslog.Adminid = UserId;
+                }else if(Role == "Physician")
+                {
+                    requeststatuslog.Physicianid = UserId;
+                }
 
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.Requests.Update(request);

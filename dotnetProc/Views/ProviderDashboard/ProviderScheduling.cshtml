@@ -105,7 +105,6 @@
 
     $(document).ready(function () {
 
-        handleNavChange('provider-schedule-tab')
 
         //GetDayWiseShiftTableView('DayBtn')
 
@@ -123,6 +122,7 @@
         else if ('@TempData["ShowNegativeNotification"]' != '') {
             toastr.error('@TempData["ShowNegativeNotification"]')
         }
+        handleNavChange('provider-schedule-tab')
     })
 
 

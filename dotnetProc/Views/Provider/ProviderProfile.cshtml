@@ -349,7 +349,7 @@
 
                 <div class="col-xl-6 col-sm-6 col-12 ">
                     <div class="input-group mb-3">
-                        <input asp-for="ProviderProfileInfo.Photo" type="file" class="form-control" id="inputGroupFile01" placeholder="Select Photo">
+                        <input asp-for="ProviderProfileInfo.Photo" type="file" class="form-control tbDisabled3" id="inputGroupFile01" placeholder="Select Photo">
                         <label class="input-group-text bg-info text-white" for="inputGroupFile01">
                             <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                         </label>
@@ -358,7 +358,7 @@
 
                 <div class="col-xl-4 col-sm-4 col-10 ">
                     <div class="input-group mb-3">
-                        <input asp-for="ProviderProfileInfo.Signature" type="file" class="form-control" id="inputGroupFile02" placeholder="Select Signature">
+                        <input asp-for="ProviderProfileInfo.Signature" type="file" class="form-control tbDisabled3" id="inputGroupFile02" placeholder="Select Signature">
                         <label class="input-group-text bg-info text-white" for="inputGroupFile02">
                             <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                         </label>
@@ -422,142 +422,143 @@
         <div class="border-bottom border-3 mb-3"></div>
 
         <h5>Onboarding</h5>
-          <form id="OnBoardingForm"  asp-action="EditProviderOnboardingData" asp-asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post" enctype="multipart/form-data">
+         <div class="container-fluid">
+        <form id="OnBoardingForm" asp-action="EditProviderOnboardingData" asp-asp-controller="Provider" asp-route-id="@Model.PhysicianId" method="post" enctype="multipart/form-data">
 
-        <div class="row my-1">
-            <div class="wrapper d-flex">
-                <div class="col-1 m-1">
-                    <input id="ContractCheck" asp-for="ProviderDocuments.IsContractAggreeMent" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                </div>
-                <div class="col-4">
-                    <span>Independent Contract Agreement</span>
-                </div>
-                @if(ViewData["RoleName"] == "Adm")
-                {
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input id="ContractCheck" asp-for="ProviderDocuments.IsContractAggreeMent" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>Independent Contract Agreement</span>
+                    </div>
+                    @if (ViewData["RoleName"] == "Adm")
+                    {
 
-                    <div class="input-group col-2" style="width:unset;">
-                        <input id="inputGroupFile00" type="file" asp-for="ProviderDocuments.ContractAgrrement" style="display:none" onchange="MarkUploadedFiles('ContractCheck')" />
+                        <div class="input-group col-2" style="width:unset;">
+                            <input id="inputGroupFile00" type="file" asp-for="ProviderDocuments.ContractAgrrement" style="display:none" onchange="MarkUploadedFiles('ContractCheck')" />
 
-                        <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile00" style="border-radius:5px;">
-                            Upload
-                        </label>
+                            <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile00" style="border-radius:5px;">
+                                Upload
+                            </label>
+                        </div>
+                    }
+                    @if (Model.ProviderDocuments.IsContractAggreeMent)
+                    {
+
+                        <div class="col-2 mx-2">
+                            <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Independent_Contractor.png" target="_blank">View</a>
+                        </div>
+                    }
                 </div>
-                }
-                @if (Model.ProviderDocuments.IsContractAggreeMent)
-                {
-                    
-                <div class="col-2 mx-2">
-                    <a  class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Independent_Contractor.png"  target="_blank">View</a>
-                </div>
-                }
             </div>
-        </div>
-        <div class="row my-1">
-            <div class="wrapper d-flex">
-                <div class="col-1 m-1">
-                    <input id="BackGroundCheck" asp-for="ProviderDocuments.IsBackGroundCheck"  type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                </div>
-                <div class="col-4">
-                    <span>Background Check</span>
-                </div>
-                @if (ViewData["RoleName"] == "Adm")
-                {
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input id="BackGroundCheck" asp-for="ProviderDocuments.IsBackGroundCheck" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>Background Check</span>
+                    </div>
+                    @if (ViewData["RoleName"] == "Adm")
+                    {
 
-                    <div class="input-group col-2" style="width:unset;">
+                        <div class="input-group col-2" style="width:unset;">
                             <input id="inputGroupFile001" type="file" asp-for="ProviderDocuments.BackgroundCheck" style="display:none" onchange="MarkUploadedFiles('BackGroundCheck')" />
 
                             <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile001" style="border-radius:5px;">
-                            Upload
-                        </label>
-                    </div>
-                }
-                
+                                Upload
+                            </label>
+                        </div>
+                    }
+
                     <div class="col-2 mx-2">
                         <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Independent_Contractor.png" target="_blank">View</a>
 
                     </div>
-                
+
+                </div>
             </div>
-        </div>
-        <div class="row my-1">
-            <div class="wrapper d-flex">
-                <div class="col-1 m-1">
-                    <input asp-for="ProviderDocuments.IsHipaa" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                </div>
-                <div class="col-4">
-                    <span>HIPAA Compliance</span>
-                </div>
-                @if (ViewData["RoleName"] == "Adm")
-                {
-
-                    <div class="input-group col-2" style="width:unset;">
-                        <input id="inputGroupFile02" type="file" asp-for="ProviderDocuments.HIPAA" style="display:none" onchange="MarkUploadedFiles('HIPAACheck')" />
-
-                        @*<label type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</label>*@
-                        <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile02" style="border-radius:5px;">
-                            Upload
-                        </label>
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input asp-for="ProviderDocuments.IsHipaa" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                     </div>
-                }
-                @if (Model.ProviderDocuments.IsHipaa)
-                {
-                    
-                <div class="col-2 mx-2">
-                    <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/HIPAA.png" target="_blank">View</a>
-
-                </div>
-                }
-            </div>
-        </div>
-        <div class="row my-1">
-            <div class="wrapper d-flex">
-                <div class="col-1 m-1">
-                    <input asp-for="ProviderDocuments.IsNonDisClouser" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                </div>
-                <div class="col-4">
-                    <span>Non-Disclosure Agreement</span>
-                </div>
-                @if (ViewData["RoleName"] == "Adm")
-                {
-
-                    <div class="input-group col-2" style="width:unset;">
-                        <input id="inputGroupFile03" type="file" asp-for="ProviderDocuments.NonDisclouser" style="display:none" onchange="MarkUploadedFiles('NonDisclouserCheck')" />
-
-                        <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile03" style="border-radius:5px;">
-                            Upload
-                        </label>
+                    <div class="col-4">
+                        <span>HIPAA Compliance</span>
                     </div>
-                }
-                @if (Model.ProviderDocuments.IsNonDisClouser)
-                {
-                    
-                <div class="col-2 mx-2">
-                    <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Non_Disclouser.png" target="_blank">View</a>
+                    @if (ViewData["RoleName"] == "Adm")
+                    {
 
+                        <div class="input-group col-2" style="width:unset;">
+                            <input id="inputGroupFile02" type="file" asp-for="ProviderDocuments.HIPAA" style="display:none" onchange="MarkUploadedFiles('HIPAACheck')" />
+
+                            @*<label type="button" class="btn btn-info  text-white darkInfo-btn" onclick="()">Upload</label>*@
+                            <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile02" style="border-radius:5px;">
+                                Upload
+                            </label>
+                        </div>
+                    }
+                    @if (Model.ProviderDocuments.IsHipaa)
+                    {
+
+                        <div class="col-2 mx-2">
+                            <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/HIPAA.png" target="_blank">View</a>
+
+                        </div>
+                    }
                 </div>
-                }
             </div>
-        </div>
-        <div class="row my-1">
-            <div class="wrapper d-flex">
-                <div class="col-1 m-1">
-                    <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
-                </div>
-                <div class="col-4">
-                    <span>License Document</span>
-                </div>
-                @if (ViewData["RoleName"] == "Adm")
-                {
-
-                    <div class=" input-group col-2">
-
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input asp-for="ProviderDocuments.IsNonDisClouser" type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
                     </div>
-                }
+                    <div class="col-4">
+                        <span>Non-Disclosure Agreement</span>
+                    </div>
+                    @if (ViewData["RoleName"] == "Adm")
+                    {
+
+                        <div class="input-group col-2" style="width:unset;">
+                            <input id="inputGroupFile03" type="file" asp-for="ProviderDocuments.NonDisclouser" style="display:none" onchange="MarkUploadedFiles('NonDisclouserCheck')" />
+
+                            <label class="input-group-text btn btn-info  text-white darkInfo-btn" for="inputGroupFile03" style="border-radius:5px;">
+                                Upload
+                            </label>
+                        </div>
+                    }
+                    @if (Model.ProviderDocuments.IsNonDisClouser)
+                    {
+
+                        <div class="col-2 mx-2">
+                            <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Non_Disclouser.png" target="_blank">View</a>
+
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
-        <div class="border-bottom border-3 mt-2"></div>
+            <div class="row my-1">
+                <div class="wrapper d-flex">
+                    <div class="col-1 m-1">
+                        <input type="checkbox" style="height:20px;width:20px" class="btn-outline-info" />
+                    </div>
+                    <div class="col-4">
+                        <span>License Document</span>
+                    </div>
+                    @if (ViewData["RoleName"] == "Adm")
+                    {
+
+                        <div class=" input-group col-2">
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="border-bottom border-3 mt-2"></div>
 
         </form>
+        </div>
         @if (ViewData["RoleName"] == "Adm")
         {
             <div class="col-12 d-flex justify-content-end mt-3" style="column-gap:1rem;">

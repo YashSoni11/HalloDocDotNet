@@ -1393,6 +1393,8 @@ const GetRegionsWiseShiftTable = () => {
     } else if (TableMode == "Week") {
         Controller = "GetWeekWiseShiftTableView"
 
+    } else if (TableMode == "Month") {
+        Controller = "GetMonthWiseShiftTableView"
     }
 
     var date = localStorage.getItem("currentDate");

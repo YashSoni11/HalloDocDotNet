@@ -130,7 +130,7 @@ namespace HalloDoc_BAL.Repositery
 
         public bool IsEmailBlocked(string email)
         {
-            return _context.Blockrequests.Any(x => x.Email == email);   
+            return _context.Blockrequests.Any(x => x.Email == email && x.Isactive == new BitArray(1,false));   
         }
 
         public bool IsPhoneBlocked(string phone)
@@ -276,6 +276,8 @@ namespace HalloDoc_BAL.Repositery
 
         public int AddUser(string AspNetUserId,PatientReq patientReq,AddressModel patinetLocation)
         {
+            try
+            {
             User user = new User
             {
                 Firstname = patientReq.FirstName,
@@ -301,6 +303,12 @@ namespace HalloDoc_BAL.Repositery
             _context.Users.Add(user);
             _context.SaveChanges();
             return user.Userid;
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
 
@@ -412,6 +420,9 @@ namespace HalloDoc_BAL.Repositery
 
         public Business AddBusiness(CmnInformation cm,AddressModel partnerLocation)
         {
+            try
+            {
+
             Business business = new Business
             {
                 Name = cm.FirstName,
@@ -424,12 +435,18 @@ namespace HalloDoc_BAL.Repositery
             _context.Businesses.Add(business);
             _context.SaveChanges();
             return business;
+            }catch(Exception ex)
+            {
+                return new Business();
+            }
 
 
         }
 
         public bool AddConciergeRequest(int concieargeId,int requestId) 
         {
+            try
+            {
 
             Requestconcierge requestconcierge = new Requestconcierge
             {
@@ -440,12 +457,18 @@ namespace HalloDoc_BAL.Repositery
             _context.Requestconcierges.Add(requestconcierge);
             _context.SaveChanges();
             return true;
+
+            }catch(Exception ex)
+            {
+                return false;
+            }
         
         }
 
         public Concierge Addconciearge(AddressModel partnerLocation,string name) 
         {
-
+            try
+            {
             Concierge concierge = new Concierge
             {
                 Conciergename = name,
@@ -461,10 +484,19 @@ namespace HalloDoc_BAL.Repositery
             _context.SaveChanges();
 
             return concierge;
+
+            }catch(Exception ex)
+            {
+                return new Concierge();
+            }
+
         }
 
         public void AddConcieargeData(ConcieargeModel concieargeModel,int user)
         {
+            try
+            {
+
             Request patientRequest = AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.PatinentInfo.Location.State,"Patient");
 
             bool response = AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
@@ -474,6 +506,11 @@ namespace HalloDoc_BAL.Repositery
             bool response2 = AddConciergeRequest(concierge.Conciergeid, patientRequest.Requestid);
 
             return;
+
+            }catch(Exception ex)
+            {
+                return;
+            }
 
         }
 
@@ -494,8 +531,10 @@ namespace HalloDoc_BAL.Repositery
 
         public Request UpdateRequestByRequestId(int requestId,int userId)
         {
+            try
+            {
 
-             Request request = _context.Requests.FirstOrDefault(q=>q.Requestid == requestId);
+            Request request = _context.Requests.FirstOrDefault(q=>q.Requestid == requestId);
 
             request.Userid = userId;
             request.Createduserid = userId;
@@ -505,6 +544,12 @@ namespace HalloDoc_BAL.Repositery
             _context.SaveChanges();
 
             return request; 
+            }
+            catch (Exception ex)
+            {
+                return new Request();
+            }
+
         }
 
         public bool  IsRegionAvailable(int region)

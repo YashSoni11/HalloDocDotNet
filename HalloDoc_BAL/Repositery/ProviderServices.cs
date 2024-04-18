@@ -97,7 +97,8 @@ namespace HalloDoc_BAL.Repositery
 
         public List<SelectedRegions> GetAllRegionsByPhysicianId(int PhysicinId)
         {
-
+            try
+            {
             List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
 
             List<Region> regions = _context.Regions.ToList();
@@ -123,80 +124,95 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return selectedRegions;
+
+            }
+            catch (Exception ex)
+            {
+                return new List<SelectedRegions>();
+            }
         }
         public ProviderProfileView GetProviderData(int providerId)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == providerId);
-
-
-            ProviderProfileView providerProfileView = new ProviderProfileView();
-
-            ProviderAccountInfo providerAccountInfo = new ProviderAccountInfo()
+            try
             {
-                UserName = _context.Aspnetusers.Where(q => q.Id == physician.Aspnetuserid).Select(r => r.Username).FirstOrDefault(),
-                Status = physician.Status,
-                Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault(),
-                roles = _context.Roles.ToList(),
-                
 
-            };
 
-            ProviderInformation providerInformation = new ProviderInformation()
+                Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == providerId);
+
+
+                ProviderProfileView providerProfileView = new ProviderProfileView();
+
+                ProviderAccountInfo providerAccountInfo = new ProviderAccountInfo()
+                {
+                    UserName = _context.Aspnetusers.Where(q => q.Id == physician.Aspnetuserid).Select(r => r.Username).FirstOrDefault(),
+                    Status = physician.Status,
+                    Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault(),
+                    roles = _context.Roles.ToList(),
+
+
+                };
+
+                ProviderInformation providerInformation = new ProviderInformation()
+                {
+                    FirstName = physician.Firstname,
+                    LastName = physician.Lastname,
+                    Email = physician.Email,
+                    PhoneNumber = physician.Mobile,
+                    MedicalLicenseNumber = physician.Medicallicense,
+                    NPINumber = physician.Npinumber,
+                    SyncEmail = physician.Syncemailaddress,
+                    SelectedRegions = GetAllRegionsByPhysicianId(providerId),
+                };
+
+
+
+
+                ProviderMailingAndBillingInfo providerMailingAndBillingInfo = new ProviderMailingAndBillingInfo()
+                {
+                    Address1 = physician.Address1,
+                    Address2 = physician.Address2,
+                    City = physician.City,
+                    StateId = physician.Regionid,
+                    StateName = _context.Regions.Where(q => q.Regionid == physician.Regionid).Select(r => r.Name).FirstOrDefault(),
+                    Phone = physician.Altphone,
+                    Zip = physician.Zip,
+                    regions = _context.Regions.ToList(),
+                };
+
+                ProviderProfileInfo providerProfileInfo = new ProviderProfileInfo()
+                {
+                    BusinessName = physician.Businessname,
+                    BusinessWebsite = physician.Businesswebsite,
+                    SignatureImage = GetImageBytesFromFile(physician.Signature),
+                    AdminNotes = physician.Adminnotes,
+                };
+
+
+
+                ProviderDocuments providerDocuments = new ProviderDocuments()
+                {
+                    IsContractAggreeMent = physician.Isagreementdoc[0],
+                    IsBackGroundCheck = physician.Isbackgrounddoc[0],
+                    IsHipaa = physician.Istrainingdoc[0],
+                    IsNonDisClouser = physician.Isnondisclosuredoc[0],
+                };
+
+
+
+
+                providerProfileView.AccountInfo = providerAccountInfo;
+                providerProfileView.ProviderMailingAndBillingInfo = providerMailingAndBillingInfo;
+                providerProfileView.ProviderProfileInfo = providerProfileInfo;
+                providerProfileView.ProviderInformation = providerInformation;
+                providerProfileView.ProviderDocuments = providerDocuments;
+                providerProfileView.PhysicianId = providerId;
+
+                return providerProfileView;
+            }
+            catch (Exception ex)
             {
-                FirstName = physician.Firstname,
-                LastName = physician.Lastname,
-                Email = physician.Email,
-                PhoneNumber = physician.Mobile,
-                MedicalLicenseNumber = physician.Medicallicense,
-                NPINumber = physician.Npinumber,
-                SyncEmail = physician.Syncemailaddress,
-                SelectedRegions = GetAllRegionsByPhysicianId(providerId),
-            };
-
-
-            
-
-            ProviderMailingAndBillingInfo providerMailingAndBillingInfo = new ProviderMailingAndBillingInfo()
-            {
-                Address1 = physician.Address1,
-                Address2 = physician.Address2,
-                City = physician.City,
-                StateId = physician.Regionid,
-                StateName = _context.Regions.Where(q => q.Regionid == physician.Regionid).Select(r => r.Name).FirstOrDefault(),
-                Phone = physician.Altphone,
-                Zip = physician.Zip,
-                regions = _context.Regions.ToList(),
-            };
-
-            ProviderProfileInfo providerProfileInfo = new ProviderProfileInfo()
-            {
-                BusinessName = physician.Businessname,
-                BusinessWebsite = physician.Businesswebsite,
-                SignatureImage = GetImageBytesFromFile(physician.Signature),
-                AdminNotes = physician.Adminnotes,
-            };
-
-
-
-            ProviderDocuments providerDocuments = new ProviderDocuments()
-            {
-                IsContractAggreeMent = physician.Isagreementdoc[0],
-                IsBackGroundCheck = physician.Isbackgrounddoc[0],
-                IsHipaa = physician.Istrainingdoc[0],
-                IsNonDisClouser = physician.Isnondisclosuredoc[0],
-            };
-
-
-
-
-            providerProfileView.AccountInfo = providerAccountInfo;
-            providerProfileView.ProviderMailingAndBillingInfo = providerMailingAndBillingInfo;
-            providerProfileView.ProviderProfileInfo = providerProfileInfo;
-            providerProfileView.ProviderInformation = providerInformation;
-            providerProfileView.ProviderDocuments = providerDocuments;
-            providerProfileView.PhysicianId = providerId;
-
-            return providerProfileView;
+                return new ProviderProfileView();
+            }
 
         }
 
@@ -586,6 +602,10 @@ namespace HalloDoc_BAL.Repositery
 
         public void AddProviderDocuments(int Physicianid, IFormFile ContractorAgreement, IFormFile BackgroundCheck, IFormFile HIPAA, IFormFile NonDisclosure)
         {
+
+            try
+            {
+
             var physicianData = _context.Physicians.FirstOrDefault(x => x.Physicianid == Physicianid);
 
             string directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Documents", Physicianid.ToString());
@@ -647,6 +667,10 @@ namespace HalloDoc_BAL.Repositery
             }
 
             _context.SaveChanges();
+            }catch(Exception ex)
+            {
+                return;
+            }
         }
 
         public bool CreateAdminAccount(CreateAdminAccountModel createAdminAccount, int adminId)
@@ -728,6 +752,9 @@ namespace HalloDoc_BAL.Repositery
 
         public List<AccessAreas> GetAreaAccessByAccountType(int accountType, int roleId = 0)
         {
+            try
+            {
+
             List<AccessAreas> menus = _context.Menus.Where(q => q.Accounttype == accountType).Select(r => new AccessAreas
             {
                 AreaId = r.Menuid,
@@ -746,6 +773,11 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return menus;
+
+            }catch(Exception ex)
+            {
+                return new List<AccessAreas>();
+            }
         }
 
         public bool CreateRole(CreateRole createRole, int adminId)
@@ -867,20 +899,48 @@ namespace HalloDoc_BAL.Repositery
 
         public List<Physician> GetPhysicinForShiftsByRegionService(int regionId)
         {
-            List<Physician> physicians = new List<Physician>();
-            if (regionId != 0)
+
+            try
             {
-                physicians = _context.Physicians.Where(q => q.Regionid == regionId && q.Isdeleted == false).ToList();
+
+            bool IsAllRegion = false;
+
+            if(regionId == 0)
+            {
+                IsAllRegion = true;
             }
-            else
+
+            List<Physicianregion> physiciansregions = _context.Physicianregions.Where(q => IsAllRegion || q.Regionid == regionId).ToList();
+
+            Dictionary<int, int> phyisicianId = new Dictionary<int, int>();
+
+
+            List<Physician> physicians = new List<Physician>();
+
+            foreach (Physicianregion physicianregion in physiciansregions)
             {
-                physicians = _context.Physicians.Where(q => q.Isdeleted == false).ToList();
+                Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == physicianregion.Physicianid);
+
+                if (!phyisicianId.ContainsKey(physician.Physicianid))
+                {
+                physicians.Add(physician);
+                    phyisicianId[physician.Physicianid] = 1;
+
+                }
+
             }
 
             return physicians;
+            }catch(Exception ex)
+            {
+                return new List<Physician>();
+            }
+
         }
         public List<DayWisePhysicianShifts> GetAllPhysicianDayWiseShifts(int date, int month, int year, int regionId)
         {
+            try
+            {
 
 
             List<Shiftdetail> shiftdetails = _context.Shiftdetails.Where(q=>q.Isdeleted == false).ToList();
@@ -903,11 +963,24 @@ namespace HalloDoc_BAL.Repositery
 
                 if (PhysicianShifts.Count == 0)
                 {
+                    DayWisePhysicianShifts dayWisePhysicianShift = new DayWisePhysicianShifts();
+
+                    List<ShiftInformation> shiftList = new List<ShiftInformation>();
+
                     ShiftInformation dayWiseShift = new ShiftInformation();
                     dayWiseShift.physicianId = physician.Physicianid;
                     dayWiseShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
                     dayWiseShift.status = -1;
-                    dayWiseShifts.Add(dayWiseShift);
+                    dayWisePhysicianShift.physicianId = physician.Physicianid;
+                    dayWisePhysicianShift.PhysicianName = physician.Firstname + " " + physician.Lastname;
+
+                    shiftList.Add(dayWiseShift);
+
+                    dayWisePhysicianShift.DayWiseShiftInformation = shiftList;
+
+                    dayWisePhysicianShifts.Add(dayWisePhysicianShift);
+
+
                 }
                 else
                 {
@@ -960,11 +1033,18 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return dayWisePhysicianShifts;
+            }
+            catch (Exception ex)
+            {
+                return new List<DayWisePhysicianShifts>();
+            }
         }
 
 
         public List<ShiftInformation> GetDayWiseAllShiftInformation(int date, int month, int year, int regionId){
 
+            try
+            {
 
             List<ShiftInformation> shiftInformation = _context.Shiftdetails.Where(q => q.Shiftdate.Day == date && q.Shiftdate.Month == month && q.Shiftdate.Year == year && q.Isdeleted == false).Select(r => new ShiftInformation
             {
@@ -976,6 +1056,11 @@ namespace HalloDoc_BAL.Repositery
             }).ToList();
 
             return shiftInformation;
+            }catch(Exception ex)
+            {
+                return new List<ShiftInformation>();
+            }
+
 
          }
 
@@ -1183,6 +1268,9 @@ namespace HalloDoc_BAL.Repositery
         public List<RequestedShiftDetails> GetRequestedShiftDetails(int regionId)
         {
 
+            try
+            {
+
             List<RequestedShiftDetails> requestedShiftDetails = new List<RequestedShiftDetails>();
             if (regionId == 0)
             {
@@ -1214,6 +1302,11 @@ namespace HalloDoc_BAL.Repositery
 
 
             return requestedShiftDetails;
+
+            }catch(Exception ex)
+            {
+                return new List<RequestedShiftDetails>();
+            }
         }
 
 
@@ -1257,6 +1350,8 @@ namespace HalloDoc_BAL.Repositery
 
         public List<WeekWisePhysicianShifts> GetAllPhysicianWeekWiseShifts(int date, int month, int year, int regionId)
         {
+            try
+            {
 
             List<Shiftdetail> shiftdetails = _context.Shiftdetails.Where(q=>q.Isdeleted == false).ToList();
 
@@ -1354,6 +1449,13 @@ namespace HalloDoc_BAL.Repositery
 
 
             return weekWisePhysicianShiftsList;
+            }
+            catch (Exception ex)
+            {
+                return new List<WeekWisePhysicianShifts>();
+                
+            }
+
         }
 
         public ViewShift GetShiftDetailsById(int shiftDetailsId)
@@ -1399,7 +1501,8 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-
+            try
+            {
 
             List<Physician> physicians = GetPhysicinForShiftsByRegionService(regionId);
 
@@ -1448,10 +1551,19 @@ namespace HalloDoc_BAL.Repositery
             }
 
             return MonthWisePhysicianShiftsList;
+            }
+            catch (Exception ex)
+            {
+                return new List<MonthWisePhysicianShifts>();
+            }
+
         }
 
         public List<UserAccess> GetAllAspNetUsers(int roleId)
         {
+
+            try
+            {
             List<UserAccess> users = new List<UserAccess>();
 
             bool isAllRole = false;
@@ -1501,6 +1613,12 @@ namespace HalloDoc_BAL.Repositery
            //users =  users.Concat(patientsUsers).ToList();
 
             return users;
+
+            }catch(Exception ex)
+            {
+                return new List<UserAccess>();
+            }
+
         }
 
 

@@ -26,7 +26,7 @@
 
     string[] colors = { "#74d36e", "#ffb545", "#75ccff", "#e9aee7" };
     string[] requestorType = { "Patient", "Family/Friend", "Concierge", "Business" };
-    string[] status = { "", "New", "Unpaid", "Active", "Active", "Conclude", "Conclude", "Conclude", "Toclose", "Pending", "" };
+    string[] status = { "", "New", "Unpaid", "Active", "Active", "Conclude", "Toclose", "Toclose", "Toclose", "Pending", "" };
 
 
     <div class="row justify-content-between">
@@ -192,7 +192,7 @@
                                                     </button>
                                                 </li>
                                             }
-                                            if (status[dr.status] == "New" || status[dr.status] == "Toclose")
+                                            if (status[dr.status] == "New")
                                             {
                                                 <li>
                                                     <button class="dropdown-item"

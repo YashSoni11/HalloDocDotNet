@@ -172,32 +172,46 @@
                                
                                 @if( ViewData["RoleName"] == "Adm" && Model.Status == 1)
                                 {
-                                 <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="GetAssginCasePopup(@Model.RequestId,'ViewCaseModalContainer')">Assign</button>
+                                    <button type="button" class="btn btn-info  text-white darkInfo-btn" onclick="GetAssginCasePopup(@Model.RequestId,'ViewCaseModalContainer')">
+                                        <i class="bi bi-card-checklist show-icon">
+                                        </i><span class="text-vanish">Assign</span>
+                                    </button>
                                     
                                 }
 
                                 @if(ViewData["RoleName"] == "Adm")
                                 {
-                                    
-                                    <a asp-action="GetRequestNotes" asp-controller="Admindashboard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</a>
+
+                                    <a asp-action="GetRequestNotes" asp-controller="Admindashboard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">
+                                        <i class="bi bi-sticky show-icon">
+                                        </i><span class="text-vanish">ViewNotes</span>
+                                    </a>
                                 }else if(ViewData["RoleName"] == "Phy")
                                 {
-                                    <a asp-action="GetRequestNotes" asp-controller="ProviderDashBoard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">ViewNotes</a>
+                                    <a asp-action="GetRequestNotes" asp-controller="ProviderDashBoard" asp-route-id="@Model.RequestId" type="button" class="btn btn-info  text-white darkInfo-btn editBtn">
+                                        ViewNotes
+                                    </a>
 
                                 }
 
 
                                 @if(ViewData["RoleName"] == "Adm")
                                 {
-                                    
-                                <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">Edit</button>
+
+                                    <button type="button" class="btn btn-info  text-white darkInfo-btn editBtn" onclick="editDetails()">
+                                        <i class="bi bi-pencil show-icon">
+                                        </i><span class="text-vanish">Edit</span>
+                                    </button>
                                 <button type="submit" class="btn btn-info  text-white darkInfo-btn editMode" style="display:none;" onclick="()">Save</button>
                                 <button type="button" class="btn btn-outline-info text-info lightInfo-btn editMode" style="display:none;" onclick="cancleEdit()">
                                     Cancle Edit
                                 </button>
                                 @if(Model.Status == 1 || Model.Status == 8)
                                 {
-                                    <button type="button" onclick="GetCancleCase(@Model.RequestId,'ViewCaseModalContainer')" class="btn btn-danger  text-white darkInfo-btn">Cancle</button>
+                                        <button type="button" onclick="GetCancleCase(@Model.RequestId,'ViewCaseModalContainer')" class="btn btn-danger  text-white darkInfo-btn">
+                                            <i class="bi bi-x-lg show-icon">
+                                            </i><span class="text-vanish">Cancle</span>
+                                        </button>
                                     
                                 }
                                 }

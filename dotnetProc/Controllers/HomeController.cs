@@ -432,7 +432,7 @@ namespace dotnetProc.Controllers
 
 
         [HttpPost]
-        public IActionResult PatientForm(PatientReq pr)
+        public IActionResult PostPatientForm(PatientReq pr)
         {
             bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
             bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
@@ -441,7 +441,7 @@ namespace dotnetProc.Controllers
 
 
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
                 TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
@@ -458,9 +458,9 @@ namespace dotnetProc.Controllers
                     TempData["IsRegionAvailable"] = "Region is not available.";
                 }
 
-                return View(pr);
+                return RedirectToAction("PatientForm");
             }
-            else if (ModelState.IsValid)
+            else if ((!ModelState.IsValid && pr.Password == null && pr.ConfirmPassword == null) ||  ModelState.IsValid)
             {
 
                 string token = Request.Cookies["jwt"];
@@ -489,7 +489,8 @@ namespace dotnetProc.Controllers
             return RedirectToAction("DashBoard", "Account");
             }
 
-            return View(pr);
+            return RedirectToAction("PatientForm");
+
         }
         #endregion
 

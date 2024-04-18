@@ -792,9 +792,18 @@ namespace dotnetProc.Controllers
             }
             else if (ModelState.IsValid)
             {
+                bool IsAssigned = _dashboard.IsRequestAssigned(requestId);
+
+                if(IsAssigned)
+                {
+                    TempData["ShowNegativeNotification"] = "Request Already Assigned!";
+                    return RedirectToAction("Dashboard", "Admindashboard");
 
 
-                bool response = _dashboard.AssignRequest(adminAssignCase, requestId);
+                }
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+                bool response = _dashboard.AssignRequest(adminAssignCase, requestId,loggedInUser.UserId);
 
 
                 if (response)
@@ -1247,7 +1256,13 @@ namespace dotnetProc.Controllers
 
         public IActionResult PostCancleAgreement(CancleAgreement cancleAgreement, string requestId)
         {
-            bool response = _dashboard.CancleAgrrementByRequstId(cancleAgreement, requestId);
+
+
+            string token = HttpContext.Request.Cookies["jwt"];
+
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            bool response = _dashboard.CancleAgrrementByRequstId(cancleAgreement, requestId,loggedInUser.UserId);
 
             if (response)
             {
@@ -1839,7 +1854,7 @@ namespace dotnetProc.Controllers
                 if (isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
                 {
 
-                    TempData["isemailblocked"] = "Account with this email is blocked.";
+                    TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
@@ -1853,7 +1868,7 @@ namespace dotnetProc.Controllers
                         TempData["ShowNegativeNotification"] = "Region is not available.";
                     }
 
-                    return View("CreateRequestbyAdmin", patientReqByAdmin);
+                    return loggedInUser.Role == "Admin" ? RedirectToRoute("AdminPatientReq") : RedirectToRoute("ProviderPatientReq");
                 }
 
 

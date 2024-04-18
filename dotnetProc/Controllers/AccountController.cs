@@ -469,14 +469,16 @@ namespace dotnetProc.Controllers
         {
 
 
-            int LoginId = (int)HttpContext.Session.GetInt32("LoginId");
+            var token = Request.Cookies["jwt"];
+          
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
 
-            UserProfile newUser = _account.UpdateUserByUserId(Um, LoginId);
+            UserProfile newUser = _account.UpdateUserByUserId(Um, loggedInUser.UserId);
 
 
 
-            List<DashBoardRequests> userRequests = _account.GetUserRequests(LoginId);
+            List<DashBoardRequests> userRequests = _account.GetUserRequests(loggedInUser.UserId);
 
           
 
