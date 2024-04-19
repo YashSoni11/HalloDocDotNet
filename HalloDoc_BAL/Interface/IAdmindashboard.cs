@@ -48,7 +48,7 @@ namespace HalloDoc_BAL.Interface
 
         public bool AssignRequest(AdminAssignCase assignRequest, int requestId,int adminId);
 
-        public Request BlockRequest(AdminBlockCase blockRequest, int requestId);
+        public Request BlockRequest(AdminBlockCase blockRequest, int requestId,int adminId);
 
         public bool UnblockRequestService(int RequestId);
 

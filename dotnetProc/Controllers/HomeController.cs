@@ -117,14 +117,14 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
    
-        public IActionResult PostFormByPatient(PatientReq pr)
+        public IActionResult PostFormByPatient(PatientReqModal pr)
         {
 
 
-             bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
-            bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
-            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.Phonenumber);
-            bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.Location.State);
+             bool isemailexist = _patientReq.IsEmailExistance(pr.patientReq.Email);
+            bool isemailblocked = _patientReq.IsEmailBlocked(pr.patientReq.Email);
+            bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.patientReq.Phonenumber);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.patientReq.Location.State);
 
            
             
@@ -151,29 +151,29 @@ namespace dotnetProc.Controllers
             {
 
 
-            int user = _patientReq.GetUserIdByEmail(pr.Email);
+            int user = _patientReq.GetUserIdByEmail(pr.patientReq.Email);
 
             if(user == 0)
             {
-                Aspnetuser asp1 = _patientReq.AddAspNetUser(pr, pr.Password);
+                Aspnetuser asp1 = _patientReq.AddAspNetUser(pr.patientReq, pr.Password);
 
-                user = _patientReq.AddUser(asp1.Id, pr, pr.Location);
+                user = _patientReq.AddUser(asp1.Id, pr.patientReq, pr.patientReq.Location);
             }
 
             CmnInformation patientInfo = new CmnInformation
             {
-                FirstName = pr.FirstName,
-                LastName = pr.LastName,
-                Email = pr.Email,
-                PhoneNumber = pr.Phonenumber
+                FirstName = pr.patientReq.FirstName,
+                LastName = pr.patientReq.LastName,
+                Email = pr.patientReq.Email,
+                PhoneNumber = pr.patientReq.Phonenumber
             };
 
 
-            Request patientRequest = _patientReq.AddRequest(patientInfo, user, "Patient",pr.Location.State, "Patient");
+            Request patientRequest = _patientReq.AddRequest(patientInfo, user, "Patient",pr.patientReq.Location.State, "Patient");
 
-            bool response =  _patientReq.AddRequestClient(pr, patientRequest.Requestid,pr.Location);
+            bool response =  _patientReq.AddRequestClient(pr.patientReq, patientRequest.Requestid,pr.patientReq.Location);
 
-            bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
+            bool response1 = _patientReq.UploadFile(pr.patientReq.FileUpload, patientRequest.Requestid);
 
 
             return RedirectToAction("Login","Account");
@@ -235,12 +235,12 @@ namespace dotnetProc.Controllers
 
             }
 
-            else if ((!ModelState.IsValid && familyFriendModel.PatientInfo.Password == null && familyFriendModel.PatientInfo.ConfirmPassword == null) || ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
 
-            int user = _patientReq.GetUserIdByEmail(familyFriendModel.PatientInfo.Email);
+         
 
-            Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, user,"Family",familyFriendModel.PatientInfo.Location.State, "Patient" );
+            Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, 0,"Family",familyFriendModel.PatientInfo.Location.State, "Patient" );
 
             bool response = _patientReq.AddRequestClient(familyFriendModel.PatientInfo, patientRequest.Requestid, familyFriendModel.PatientInfo.Location);
 
@@ -307,11 +307,11 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("FormByConciearge");
             }
 
-            else if( (!ModelState.IsValid && concieargeModel.PatinentInfo.Location == null && concieargeModel.PatinentInfo.Password == null && concieargeModel.PatinentInfo.ConfirmPassword == null) ||  ModelState.IsValid)
+            else if( (!ModelState.IsValid && concieargeModel.PatinentInfo.Location == null) ||  ModelState.IsValid)
             {
-                int user = _patientReq.GetUserIdByEmail(concieargeModel.PatinentInfo.Email);
 
-                Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, user, "Concierge",concieargeModel.concieargeLocation.State, "Patient");
+
+                Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, 0, "Concierge",concieargeModel.concieargeLocation.State, "Patient");
             Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
 
             bool response = _patientReq.AddRequestClient(concieargeModel.PatinentInfo, patientRequest.Requestid, concieargeModel.concieargeLocation);
@@ -378,12 +378,12 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("FormByBusinessPartner");
             }
-            else if ((!ModelState.IsValid &&  businessReqModel.PatientIfo.Password == null && businessReqModel.PatientIfo.ConfirmPassword == null) || ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
 
-            int user = _patientReq.GetUserIdByEmail(businessReqModel.PatientIfo.Email);
+            
 
-            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, user, "Business",businessReqModel.PatinentLocaiton.State, "Patient");
+            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, 0, "Business",businessReqModel.PatinentLocaiton.State, "Patient");
 
             bool response = _patientReq.AddRequestClient(businessReqModel.PatientIfo, patientRequest.Requestid, businessReqModel.PatinentLocaiton);
 
@@ -460,7 +460,7 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("PatientForm");
             }
-            else if ((!ModelState.IsValid && pr.Password == null && pr.ConfirmPassword == null) ||  ModelState.IsValid)
+            else if (ModelState.IsValid)
             {
 
                 string token = Request.Cookies["jwt"];
@@ -495,20 +495,25 @@ namespace dotnetProc.Controllers
         #endregion
 
 
-
-
-
         #region FormForOthersActions
         [HttpGet]
         [Route("/Account/DashBoard/FormForOther")]
         public IActionResult FormForOthers()
         {
-            return View();
+
+
+            List<Region> regions = _account.GetAllRegions();
+
+            PatientReq patientReq = new PatientReq();
+            patientReq.regions = regions;
+
+
+            return View(patientReq);
         }
 
         [HttpPost]
         [Route("/Account/DashBoard/FormForOther")]
-        public IActionResult FormForOthers(PatientReq pr)
+        public IActionResult PostFormForOthers(PatientReq pr)
         {
             bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
             bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
@@ -517,24 +522,24 @@ namespace dotnetProc.Controllers
 
 
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable)
+            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+                TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
                 if (IsPhoneBlocked)
                 {
-                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                    TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                 }
 
                 if (IsregionAvailable == false)
                 {
-                    TempData["IsRegionAvailable"] = "Region is not available.";
+                    TempData["ShowNegativeNotification"] = "Region is not available.";
                 }
 
-                return View(pr);
+                return RedirectToAction("FormForOthers");
             }
             else if (ModelState.IsValid)
             {
@@ -557,13 +562,17 @@ namespace dotnetProc.Controllers
 
             bool response = _patientReq.AddRequestClient(pr, patientRequest.Requestid, pr.Location);
 
+
             bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
+
+
+                _emailService.SendCreateAccountLink(pr.Email, patientRequest.Requestid);
 
             return RedirectToAction("DashBoard","Account");
 
             }
 
-            return View(pr);
+            return RedirectToAction("Dashboard","Account");
 
         }
         #endregion

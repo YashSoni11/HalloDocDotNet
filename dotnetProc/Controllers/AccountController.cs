@@ -87,7 +87,7 @@ namespace dotnetProc.Controllers
                         FirstName = requestclient.Firstname,
                         LastName = requestclient.Lastname,
                         Email = requestclient.Email,
-                        Password = user.Password,
+                        //Password = user.Password,
                         Phonenumber = requestclient.Phonenumber,
 
                     };
@@ -387,7 +387,7 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                   Aspnetuser user = _account.UpdateAspnetuserPassByEmail(ResetToken.UserId, fr.NewPassword,ResetToken.Tokenid);
+                   Aspnetuser user = _account.UpdateAspnetuserPassByEmail(ResetToken.Userid, fr.NewPassword,ResetToken.Tokenid);
                 TempData["ShowPositiveNotification"] = "Passwords Updated Successfully!";
 
             }
@@ -451,8 +451,8 @@ namespace dotnetProc.Controllers
             {
                 UserRequests = userRequests,
                 User = userProfile,
-                Regions = regions
-
+                Regions = regions,
+                StateName = user.State
             };
 
           
@@ -465,7 +465,7 @@ namespace dotnetProc.Controllers
 
 
         [HttpPost]
-        public IActionResult DashBoard(UserInformation Um)
+        public IActionResult PostDashBoard(UserInformation Um)
         {
 
 
@@ -494,7 +494,7 @@ namespace dotnetProc.Controllers
 
 
 
-            return View(userinfo);
+            return RedirectToAction("Dashboard");
 
         }
 

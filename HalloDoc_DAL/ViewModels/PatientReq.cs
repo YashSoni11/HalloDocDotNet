@@ -10,7 +10,23 @@ using System.Threading.Tasks;
 
 namespace HalloDoc_DAL.ViewModels
 {
-    public  class PatientReq
+
+    public class PatientReqModal { 
+    
+       public PatientReq patientReq { get; set; }
+
+
+        [Required(ErrorMessage = "Password is required.")]
+        public string Password { get; set; }
+
+        [Compare("Password", ErrorMessage = "The password and confirm password do not match.")]
+        [Required(ErrorMessage = "Confirmpassword is required.")]
+        public string ConfirmPassword { get; set; }
+
+    }
+
+
+    public class PatientReq
     {
         [Required(ErrorMessage ="Symptoms is Required.")]
         [MaxLength(500,ErrorMessage ="Could Not Enter More Than 500 Charachters.")]
@@ -38,12 +54,7 @@ namespace HalloDoc_DAL.ViewModels
         public string Email { get; set; }
 
   
-        [Required(ErrorMessage ="Password is required.")]
-        public string Password { get; set; }
 
-        [Compare("Password", ErrorMessage = "The password and confirm password do not match.")]
-        [Required(ErrorMessage = "Confirmpassword is required.")]
-        public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage ="Phonenumber is required.")]
         [DataType(DataType.PhoneNumber)]
@@ -55,7 +66,8 @@ namespace HalloDoc_DAL.ViewModels
 
         public IFormFile? FileUpload { get; set; } = null;
 
-        public string? Relation { get; set; } = null;
+        [Required(ErrorMessage = "Relation is required")]
+        public string Relation { get; set; } = null;
 
 
         public List<Region>? regions { get; set; }

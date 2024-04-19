@@ -285,16 +285,16 @@ namespace HalloDoc_BAL.Repositery
                 {
                     SelectedRegions selectedRegion = pi.SelectedRegions[i];
 
-                    if (selectedRegion.IsSelected == true && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId) == false))
+                    if (selectedRegion.IsSelected == true && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Regionid == selectedRegion.regionId) == false))
                     {
                         Physicianregion physicianregion = new Physicianregion();
                         physicianregion.Regionid = (int)selectedRegion.regionId;
                         physicianregion.Physicianid = provideId;
                         _context.Physicianregions.Add(physicianregion);
                     }
-                    else if (selectedRegion.IsSelected == false && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId) == true))
+                    else if (selectedRegion.IsSelected == false && (_context.Physicianregions.Any(q => q.Physicianid == provideId && q.Regionid == selectedRegion.regionId) == true))
                     {
-                        Physicianregion physicianregion = _context.Physicianregions.FirstOrDefault(q => q.Physicianid == provideId && q.Physicianregionid == selectedRegion.regionId);
+                        Physicianregion physicianregion = _context.Physicianregions.FirstOrDefault(q => q.Physicianid == provideId && q.Regionid == selectedRegion.regionId);
                         _context.Physicianregions.Remove(physicianregion);
                     }
                 }
@@ -919,9 +919,9 @@ namespace HalloDoc_BAL.Repositery
 
             foreach (Physicianregion physicianregion in physiciansregions)
             {
-                Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == physicianregion.Physicianid);
+                Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == physicianregion.Physicianid &&q.Isdeleted == false);
 
-                if (!phyisicianId.ContainsKey(physician.Physicianid))
+                if (physician != null && !phyisicianId.ContainsKey(physician.Physicianid))
                 {
                 physicians.Add(physician);
                     phyisicianId[physician.Physicianid] = 1;
@@ -1133,7 +1133,7 @@ namespace HalloDoc_BAL.Repositery
 
                             DateTime currentDate = futureDate;
 
-                            for (int i = 1; i < createShift.RepeatUpto; i++)
+                            for (int i = 1; i <= createShift.RepeatUpto; i++)
                             {
                                 Shiftdetail repeatShifts = new Shiftdetail();
 
@@ -1705,7 +1705,7 @@ namespace HalloDoc_BAL.Repositery
                     IsSearchById = true;
                 }
 
-                List<VendorList> vendorLists = _context.Healthprofessionals.Where(q=>(IsSearchByName || q.Vendorname.ToLower().Contains(vendorName.ToLower())  ) && (IsSearchById || q.Profession == HealthProfessionId ) && q.Isdeleted == new BitArray(1,false) ).Select(r => new VendorList
+                List<VendorList> vendorLists = _context.Healthprofessionals.Where(q=>(IsSearchByName || q.Vendorname.ToLower().Contains(vendorName.ToLower())  ) && (IsSearchById || q.Profession == HealthProfessionId ) && q.Isdeleted == false ).Select(r => new VendorList
                 {
                     VendorId = r.Vendorid,
                     BusinessContact = r.Businesscontact,
@@ -1803,7 +1803,7 @@ namespace HalloDoc_BAL.Repositery
             {
                 Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
 
-                healthprofessional.Isdeleted = new BitArray(1,true);
+                healthprofessional.Isdeleted = true;
                 healthprofessional.Modifieddate = DateTime.Now;
 
                 _context.Healthprofessionals.Update(healthprofessional);
@@ -1837,7 +1837,7 @@ namespace HalloDoc_BAL.Repositery
                 healthprofessional.Zip = vendorDetails.ZipCode;
                 healthprofessional.Regionid = vendorDetails.regionId;
                 healthprofessional.Createddate = DateTime.Now;
-                healthprofessional.Isdeleted = new BitArray(1,false);
+                healthprofessional.Isdeleted = false;
 
 
                 _context.Healthprofessionals.Add(healthprofessional);

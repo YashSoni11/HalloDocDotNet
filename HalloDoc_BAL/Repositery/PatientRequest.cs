@@ -339,6 +339,10 @@ namespace HalloDoc_BAL.Repositery
             {
                 request.Userid = null;
             }
+            if(requestType  != "Patient" && Role == "Patient" && userId != 0)
+            {
+                request.Userid = null;
+            }
 
             if(Role == "Physician")
             {

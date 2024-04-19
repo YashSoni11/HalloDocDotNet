@@ -16,5 +16,7 @@ namespace HalloDoc_DAL.ViewModels
 
         public List<Region> Regions { get; set; }
 
+        public string? StateName { get; set; } 
+
     }
 }

@@ -870,9 +870,9 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-
-                Request request = _dashboard.BlockRequest(adminBlockCase, requestId);
+                Request request = _dashboard.BlockRequest(adminBlockCase, requestId,loggedInUser.UserId);
 
 
                 if (request != null)

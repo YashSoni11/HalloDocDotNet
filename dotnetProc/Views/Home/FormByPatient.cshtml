@@ -1,4 +1,4 @@
-﻿@model HalloDoc_DAL.ViewModels.PatientReq;
+﻿@model HalloDoc_DAL.ViewModels.PatientReqModal;
 
 @{
     Layout = "NavAndFooter";
@@ -27,34 +27,34 @@
                         <h4 class="mt-3 mb-3">Patient Information</h4>
                         <div class="col-12">
                             <div class="form-floating mb-3">
-                                <textarea asp-for="Symptoms" class="form-control" placeholder="Leave a comment here"
+                                <textarea asp-for="patientReq.Symptoms" class="form-control" placeholder="Leave a comment here"
                                           id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Enter Brief Details of symptoms(optional)</label>
-                                <span class="text-danger">@Html.ValidationMessageFor(q=>q.Symptoms)</span>
+                                <span class="text-danger">@Html.ValidationMessageFor(q=>q.patientReq.Symptoms)</span>
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="FirstName"
+                                <input asp-for="patientReq.FirstName"
                                 type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">First Name</label>
-                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.FirstName" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="LastName" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="patientReq.LastName" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Last Name</label>
-                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.LastName" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-floating mb-3">
-                                <input asp-for="BirthDate" type="date" class="form-control BirthdateInp" id="myDateInput"
+                                <input asp-for="patientReq.BirthDate" type="date" class="form-control BirthdateInp" id="myDateInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Date Of Birth</label>
                                 <span   id="BirthdayError" class="text-danger"></span>
@@ -68,10 +68,10 @@
 
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Email" type="email" class="form-control emailInp" id="floatingInput"
+                                <input asp-for="patientReq.Email" type="email" class="form-control emailInp" id="floatingInput"
                                        placeholder="name@example.com" onblur="checkEmailAvailibility(event.target)">
                                 <label for="floatingInput">Email</label>
-                                <span asp-validation-for="Email" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.Email" class="text-danger"></span>
                                 @{
                                     if (TempData["IsEmailExist"] != null)
                                     {
@@ -85,10 +85,10 @@
                 
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3 phoneInputDiv">
-                                <input asp-for="Phonenumber" style='height: 57px;' type="tel" id='phonInput' class="form-control"
+                                <input asp-for="patientReq.Phonenumber" style='height: 57px;' type="tel" id='phonInput' class="form-control"
                                        id="floatingInput" onblur="checkPhoneNumberAvailibility()">
                                 <label for="floatingInput"></label>
-                                <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.Phonenumber" class="text-danger"></span>
                                 @{
                                     if (TempData["IsPhoneBlocked"] != null)
                                     {
@@ -127,32 +127,32 @@
                         <h4 class="mb-3">Patient Location</h4>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Location.Street" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="patientReq.Location.Street" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Street</label>
-                                <span asp-validation-for="Location.Street" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.Location.Street" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Location.City" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="patientReq.Location.City" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">City</label>
-                                <span asp-validation-for="Location.City" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.Location.City" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
 
-                                <select id="regionInp" asp-for="Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onblur="chekcRegionAvailibility('regionInp')">
-                                    @for(int i= 0; i < Model.regions.Count; i++)
+                                <select id="regionInp" asp-for="patientReq.Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onblur="chekcRegionAvailibility('regionInp')">
+                                    @for (int i = 0; i < Model.patientReq.regions.Count; i++)
                                     {
-                                        <option value="@Model.regions[i].Regionid" >@Model.regions[i].Name</option>
+                                        <option value="@Model.patientReq.regions[i].Regionid">@Model.patientReq.regions[i].Name</option>
                                     }
                                 </select>                  
-                                <span asp-validation-for="Location.State" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.Location.State" class="text-danger"></span>
                                 @{
                                     if (TempData["IsRegionAvailable"] != null)
                                     {
@@ -166,16 +166,16 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Location.ZipCode"  type="number" class="form-control" id="floatingInput"
+                                <input asp-for="patientReq.Location.ZipCode" type="number" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Zip Code</label>
-                                <span asp-validation-for="Location.ZipCode" class="text-danger"></span>
+                                <span asp-validation-for="patientReq.Location.ZipCode" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Location.RoomNo" type="text"  class="form-control" id="floatingInput"
+                                <input asp-for="patientReq.Location.RoomNo" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Room #/ Suite (optional)</label>
                                 
@@ -200,7 +200,7 @@
                         <div class="col-12 ">
                             <div class="input-group mb-3">
 
-                                <input type="file" asp-for="FileUpload" class="form-control" id="inputGroupFile02">
+                                <input type="file" asp-for="patientReq.FileUpload" class="form-control" id="inputGroupFile02">
                                 <label class="input-group-text bg-info text-white" for="inputGroupFile02">
                                     <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                                 </label>
@@ -211,7 +211,7 @@
                     <div class="row justify-content-end p-3">
                         <div class="d-flex col-3 justify-content-end" style="column-gap: 1rem;">
                             <button type="submit" class="btn btn-info  text-white darkInfo-btn" >Submit</button>
-                            <button type="button" class="btn btn-outline-info text-info lightInfo-btn" onclick="window.location.reload() ">
+                            <button type="reset" class="btn btn-outline-info text-info lightInfo-btn">
                                 Cancle
                             </button>
                         </div>

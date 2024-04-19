@@ -943,8 +943,8 @@ namespace dotnetProc.Controllers
             RequestShiftTable requestShiftTable = new RequestShiftTable()
             {
                 regionId = regionId,
-                TotalPages = (int)Math.Ceiling((double)details.Count / 2),
-                requestedShiftDetails = details.Skip(2 * (currentPage - 1)).Take(2).ToList(),
+                TotalPages = (int)Math.Ceiling((double)details.Count / 5),
+                requestedShiftDetails = details.Skip(5 * (currentPage - 1)).Take(5).ToList(),
                 currentPage = currentPage,
             };
 

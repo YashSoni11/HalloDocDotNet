@@ -179,10 +179,10 @@
                 </div>
 
 
-                <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
+                <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">  
 
 
-                    <form asp-controller="Account" asp-action="DashBoard" method="post">
+                    <form asp-controller="Account" asp-action="PostDashBoard" method="post">
 
 
                         <div class="container-fluid formContainer mb-5">
@@ -214,28 +214,16 @@
                             <div class="row mt-3">
                                 <h4 class="mb-3">Contact Information</h4>
 
-                                <div class="col-xl-3 col-sm-3 col-12">
-                                    <div class="form-floating mb-3">
+                                
 
-                                        <select class="form-control form-select form-select-sm tbDisabled" aria-label="Default select example" style="height:3rem;padding:13px;">
-
-                                            <option selected>Open this select menu</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-xl-4 col-sm-5 col-12">
+                                <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3 phoneInputDiv">
                                         <input asp-for="@Model.User.Phonnumber" style='height: 57px;' type="tel" id='phonInput' class="form-control tbDisabled"
                                                id="floatingInput">
                                         <label for="floatingInput"></label>
                                     </div>
                                 </div>
-                                <div class="col-xl-5 col-sm-5 col-12">
+                                <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
                                         <input asp-for="@Model.User.Email" type="email" class="form-control emailInp tbDisabled" id="floatingInput"
                                                placeholder="name@example.com">
@@ -265,10 +253,14 @@
                                 <div class="col-xl-6 col-sm-6 col-12">
                                     <div class="form-floating mb-3">
                                         <select id="sl" asp-for="@Model.User.Address.State" class="form-control form-select tbDisabled" aria-label="Default select example" style="height:3rem;padding:13px;">
-                                            <option selected="">@Model.User.Address.State</option>
+                                            <option value="@Model.User.Address.State" selected>@Model.StateName</option>
                                             @foreach (Region region in Model.Regions)
                                             {
+                                                if(region.Regionid != Model.User.Address.State)
+                                                {
                                                 <option value="@region.Regionid">@region.Name</option>
+                                                    
+                                                }
                                             }
 
                                         </select>

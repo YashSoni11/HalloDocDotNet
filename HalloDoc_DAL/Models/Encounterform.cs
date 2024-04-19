@@ -24,7 +24,7 @@ public partial class Encounterform
     [Column("location", TypeName = "character varying")]
     public string? Location { get; set; }
 
-    [Column("DOB")]
+    [Column("DOB", TypeName = "timestamp without time zone")]
     public DateTime? Dob { get; set; }
 
     [Column("phonnumber", TypeName = "character varying")]
@@ -103,15 +103,15 @@ public partial class Encounterform
     [Column("requestid")]
     public int Requestid { get; set; }
 
-    [Column("createdat")]
+    [Column("createdat", TypeName = "timestamp without time zone")]
     public DateTime? Createdat { get; set; }
 
-    [Column("history")]
+    [Column("history", TypeName = "character varying")]
     public string? History { get; set; }
 
-    [Column("medical_history")]
+    [Column("medical_history", TypeName = "character varying")]
     public string? MedicalHistory { get; set; }
 
     [Column("isfinelized")]
-    public bool? IsFinelized { get; set; }
+    public bool IsFinelized { get; set; }
 }

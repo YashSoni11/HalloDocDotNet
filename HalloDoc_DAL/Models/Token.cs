@@ -6,22 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_DAL.Models;
 
-[Table("tokens")]
+[Table("token")]
 public partial class Token
 {
     [Key]
     [Column("tokenid")]
     public int Tokenid { get; set; }
 
-    [Column(TypeName = "character varying")]
-    public string UserId { get; set; } = null!;
+    [Column("userid", TypeName = "character varying")]
+    public string Userid { get; set; } = null!;
+
+    [Column("createdate", TypeName = "timestamp without time zone")]
+    public DateTime Createdate { get; set; }
+
+    [Column("tokenexpire", TypeName = "timestamp without time zone")]
+    public DateTime? Tokenexpire { get; set; }
 
     [Column("isused")]
     public bool Isused { get; set; }
-
-    [Column("tokenexpire", TypeName = "timestamp without time zone")]
-    public DateTime Tokenexpire { get; set; }
-
-    [Column("createdate", TypeName = "timestamp without time zone")]
-    public DateTime? Createdate { get; set; }
 }

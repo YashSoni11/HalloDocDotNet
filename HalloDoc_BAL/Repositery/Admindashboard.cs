@@ -54,6 +54,7 @@ namespace HalloDoc_BAL.Repositery
             Closed,
             Accepted,
             Clear,
+            Blocked,
         }
 
 
@@ -218,7 +219,7 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<Physician> physicians = _context.Physicians.ToList();
+            List<Physician> physicians = _context.Physicians.Where(q=>q.Isdeleted == false).ToList();
 
             return physicians;
             }
@@ -242,9 +243,9 @@ namespace HalloDoc_BAL.Repositery
 
             foreach(Physicianregion physicianregion in physiciansregions)
             {
-                Physician physician = _context.Physicians.FirstOrDefault(q=>q.Physicianid == physicianregion.Physicianid);
+                Physician physician = _context.Physicians.FirstOrDefault(q=>q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false);
 
-                if (!phyicianId.ContainsKey(physician.Physicianid))
+                if (physician != null &&  !phyicianId.ContainsKey(physician.Physicianid))
                 {
                     phyicianId[physician.Physicianid] = 1;
                    physicians.Add(physician);
@@ -302,9 +303,12 @@ namespace HalloDoc_BAL.Repositery
                 else
                 {
                     List<Physicianregion> physicianregions = _context.Physicianregions.Where(q => q.Regionid == regionId).ToList();
+                    Dictionary<int, int> physicinaId = new Dictionary<int, int>();
 
                     foreach (Physicianregion physicianregion in physicianregions)
                     {
+
+
 
                         ProviderMenu? physician = _context.Physicians.Where(q => q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false).Select(r => new ProviderMenu()
                         {
@@ -317,8 +321,9 @@ namespace HalloDoc_BAL.Repositery
 
                         }).FirstOrDefault();
 
-                        if (physician != null)
+                        if (physician != null && !physicinaId.ContainsKey(physician.ProviderId))
                         {
+                            physicinaId[physician.ProviderId] = 1;
                             physicians.Add(physician);
                         }
 
@@ -384,7 +389,7 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public Request BlockRequest(AdminBlockCase blockRequest, int requestId)
+        public Request BlockRequest(AdminBlockCase blockRequest, int requestId,int UserId)
         {
 
             try
@@ -395,7 +400,7 @@ namespace HalloDoc_BAL.Repositery
             if (request != null)
             {
                 request.Modifieddate = DateTime.Now;
-                request.Status = 10;
+                request.Status = 11;
 
 
 
@@ -405,6 +410,7 @@ namespace HalloDoc_BAL.Repositery
                     Status = request.Status,
                     Notes = blockRequest.ReasonForBlocking,
                     Createddate = DateTime.Now,
+                    Adminid = UserId
                 };
 
                 Blockrequest blockrequest = new Blockrequest()

@@ -25,6 +25,7 @@
                                 <div class="form-floating mb-3">
 
                                     <select asp-for="regionId" id="sl" class="form-select form-control" aria-label="Default select example" onchange="GetPhysicianByRegions()">
+                                        <option value="0">All Region</option>
 
                                         @foreach (Region region in Model.regions)
                                         {
