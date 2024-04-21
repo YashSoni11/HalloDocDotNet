@@ -160,14 +160,17 @@ namespace dotnetProc.Controllers
                 user = _patientReq.AddUser(asp1.Id, pr.patientReq, pr.patientReq.Location);
             }
 
-            CmnInformation patientInfo = new CmnInformation
-            {
-                FirstName = pr.patientReq.FirstName,
-                LastName = pr.patientReq.LastName,
-                Email = pr.patientReq.Email,
-                PhoneNumber = pr.patientReq.Phonenumber
+                CmnInformation patientInfo = new CmnInformation
+                {
+                    FirstName = pr.patientReq.FirstName,
+                    LastName = pr.patientReq.LastName,
+                    Email = pr.patientReq.Email,
+                    PhoneNumber = pr.patientReq.Phonenumber,
+                    Relation = "Patient",
+
             };
 
+               
 
             Request patientRequest = _patientReq.AddRequest(patientInfo, user, "Patient",pr.patientReq.Location.State, "Patient");
 
@@ -238,7 +241,8 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-         
+                familyFriendModel.FamilyFriendsIfo.Relation = familyFriendModel.Relation;
+                 
 
             Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, 0,"Family",familyFriendModel.PatientInfo.Location.State, "Patient" );
 
@@ -310,6 +314,7 @@ namespace dotnetProc.Controllers
             else if( (!ModelState.IsValid && concieargeModel.PatinentInfo.Location == null) ||  ModelState.IsValid)
             {
 
+                concieargeModel.concieargeInformation.Relation = concieargeModel.Relation;
 
                 Request patientRequest = _patientReq.AddRequest(concieargeModel.concieargeInformation, 0, "Concierge",concieargeModel.concieargeLocation.State, "Patient");
             Concierge concierge = _patientReq.Addconciearge(concieargeModel.concieargeLocation, concieargeModel.concieargeInformation.FirstName);
@@ -381,7 +386,8 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-            
+
+                businessReqModel.BusinessInfo.Relation = "Business";
 
             Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, 0, "Business",businessReqModel.PatinentLocaiton.State, "Patient");
 
@@ -479,6 +485,7 @@ namespace dotnetProc.Controllers
                 PhoneNumber = pr.Phonenumber
             };
 
+                patientInfo.Relation = "Patient";
 
             Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, "Patient", pr.Location.State, "Patient");
 
@@ -554,9 +561,11 @@ namespace dotnetProc.Controllers
                 FirstName = user.Firstname,
                 LastName = user.Lastname,
                 Email = user.Email,
-                PhoneNumber = user.Mobile
+                PhoneNumber = user.Mobile,
+                Relation = pr.Relation,
             };
 
+                 
 
             Request patientRequest = _patientReq.AddRequest(patientInfo, loggedInUser.UserId, pr.Relation,pr.Location.State,"Patient");
 

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using 
+
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace HalloDoc_DAL.ViewModels
 {
@@ -13,7 +16,7 @@ namespace HalloDoc_DAL.ViewModels
 
         public PatientReq PatientInfo { get; set; }
 
-
+        [Required(ErrorMessage ="Relation is required.")]
         public string Relation {get; set; } 
 
         public AddressModel? patientLocation { get; set; }

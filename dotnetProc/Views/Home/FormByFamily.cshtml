@@ -67,10 +67,15 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="Relation" type="text" class="form-control" id="floatingInput"
-                                       placeholder="name@example.com">
+                                <select id="sl" asp-for="Relation" class="form-control form-select tbDisabled" aria-label="Default select example">
+                                    <option value="Family" selected>Family</option>
+                                    <option value="Conciearge">Conciearge</option>
+                                    <option value="Business">Business</option>
+                                   
+
+                                </select>
                                 <label for="floatingInput">Relation With Patient</label>
-                                @*<span asp-validation-for="FamilyFriendsIfo.Relation" class="text-danger"></span>*@
+                                <span asp-validation-for="Relation" class="text-danger"></span>
 
                             </div>
                         </div>

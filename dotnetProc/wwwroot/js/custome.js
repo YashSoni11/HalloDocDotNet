@@ -144,7 +144,7 @@ const changeTheme = () => {
 
 const checkAll = (ClassName, target) => {
 
-    
+    console.log(ClassName)
 
     var checks = $(`.${ClassName}`)
 

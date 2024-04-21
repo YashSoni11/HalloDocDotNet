@@ -92,6 +92,15 @@ namespace HalloDoc_BAL.Repositery
             return _context.Requestclients.FirstOrDefault(q => q.Requestid == requestId);
         }
 
+        public Requestclient GetRequestByIdAndEmail(int requestId, string email)
+        {
+
+            return _context.Requestclients.FirstOrDefault(q => q.Requestid == requestId && email == q.Email);
+
+
+
+        }
+
 
 
         public int GetCurrentRequestsCount()
@@ -331,6 +340,7 @@ namespace HalloDoc_BAL.Repositery
                 Confirmationnumber = confirmatinumber,
                 Email = cm.Email,
                 Createduserid = userId,
+                Relationname = cm.Relation,
                 Userid = userId == 0?null:userId,
                 Isdeleted = new BitArray(1, false),
             };
@@ -392,6 +402,7 @@ namespace HalloDoc_BAL.Repositery
                 Zipcode = patientAddress.ZipCode,
                 Notes = pr.Symptoms,
                 Regionid = patientAddress.State,
+                
                 Address = patientAddress.Street+","+patientAddress.City+","+patientAddress.State+","+patientAddress.ZipCode,
             };
 

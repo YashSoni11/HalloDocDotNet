@@ -17,7 +17,8 @@ namespace HalloDoc_DAL.ViewModels
 
         public AddressModel concieargeLocation { get; set; }
 
-       
+        [Required(ErrorMessage ="Relation is requried.")]
+       public string Relation { get; set; }
 
         public int? patientRoomNo { get; set; }
 

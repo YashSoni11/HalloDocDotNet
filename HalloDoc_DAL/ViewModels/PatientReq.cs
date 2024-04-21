@@ -61,13 +61,16 @@ namespace HalloDoc_DAL.ViewModels
         [Phone(ErrorMessage ="Please Enter Valid Phonenumber")]
         public string Phonenumber { get; set; }
 
-        
+        public string? Password { get; set; }
+
+      
+        public string? ConfirmPassword { get; set; }
         public AddressModel Location { get; set; }
 
         public IFormFile? FileUpload { get; set; } = null;
 
         [Required(ErrorMessage = "Relation is required")]
-        public string Relation { get; set; } = null;
+        public string Relation { get; set; }
 
 
         public List<Region>? regions { get; set; }

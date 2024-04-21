@@ -28,6 +28,7 @@ namespace HalloDoc_DAL.ViewModels
         [Phone(ErrorMessage = "Please Enter Valid Phonenumber")]
         public string PhoneNumber { get; set; }
 
+        public string? Relation { get; set; }
 
     }
 }

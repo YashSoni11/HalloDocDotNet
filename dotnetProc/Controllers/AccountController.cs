@@ -72,7 +72,7 @@ namespace dotnetProc.Controllers
 
                 if (user.Password == user.Confirmpassword)
                 {
-                    Requestclient requestclient = _patientReq.GetRequestByRequestId(RequestId);
+                    Requestclient requestclient = _patientReq.GetRequestByIdAndEmail(RequestId,user.Email );
 
                     if (requestclient == null)
                     {
@@ -508,7 +508,8 @@ namespace dotnetProc.Controllers
             Documents documents = new Documents
             {
                 ViewDocuments = docs,
-                FormFile = null
+                FormFile = null,
+                requestId = id
             };
 
 
@@ -517,21 +518,23 @@ namespace dotnetProc.Controllers
 
 
         [HttpPost]
-        public IActionResult ViewDocuments(Documents docs)
+        public IActionResult PostViewDocuments(Documents docs,int id)
         {
 
-            string path = HttpContext.Request.Path;
+            var token = Request.Cookies["jwt"];
 
-            string[] paths = path.Split('/');
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-            int requestId = int.Parse(paths[paths.Length - 1]);
+            foreach(IFormFile file in docs.FormFile)
+            {
+
+            bool response = _account.UploadFile(file, id,loggedInUser.Role,loggedInUser.UserId);
+            }
 
 
-            //bool response = _account.UploadFile(docs.FormFile, requestId);
 
-            
 
-            return RedirectToAction("ViewDocuments",requestId);
+            return RedirectToAction("ViewDocuments", new {id=id});
 
              
         }
