@@ -12,6 +12,7 @@ using ClosedXML;
 using ClosedXML.Excel;
 using System.Security.Principal;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using HalloDoc_DAL.ProviderViewModels;
 
 
 
@@ -543,6 +544,17 @@ namespace dotnetProc.Controllers
 
                 if (TryValidateModel(ap.accountInfo))
                 {
+
+                    bool IsEmailExists = _patientReq.IsEmailExistance(ap.accountInfo.Email);
+
+                    if (IsEmailExists)
+                    {
+                        TempData["ShowNegativeNotification"] = "Account with this email already exsist!";
+                        return loggedInUser.UserId == ap.adminId ? RedirectToAction("AdminProfile") : RedirectToAction("EditAdminProfile", new { id = ap.adminId });
+
+
+                    }
+
 
                     bool response = _dashboard.SaveAdminAccountInfo(ap, ap.adminId);
 

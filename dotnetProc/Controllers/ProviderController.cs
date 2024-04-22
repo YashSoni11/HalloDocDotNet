@@ -118,6 +118,9 @@ namespace dotnetProc.Controllers
             }
             else
             {
+
+
+
                 bool response = _provider.SaveProviderAccountInfo(providerProfileView.AccountInfo, id);
 
                 if (response)
@@ -183,6 +186,15 @@ namespace dotnetProc.Controllers
             }
             else
             {
+                bool IsEmailExists = _patientReq.IsEmailExistance(providerProfileView.ProviderInformation.Email);
+
+                if (IsEmailExists)
+                {
+                    TempData["ShowNegativeNotification"] = "Account with this email already exsist!";
+                    return RedirectToAction("ProviderProfile", new { id = id });
+
+                }
+
                 bool response = _provider.SaveProviderInformation(providerProfileView.ProviderInformation, id);
 
                 if (response)

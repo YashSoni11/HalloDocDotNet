@@ -150,7 +150,7 @@
                                         if (k == 2)
                                             break;
 
-                                        if (dr.status == 1)
+                                        if (dr.status == 1 && req.PhysicinName != null)
                                         {
                                             <text> @k) @req.PhysicinName transfered to Admin on @req.TransferedDate.ToString("dd MMM,yyyy"):@req.Description </text>
                                         }
