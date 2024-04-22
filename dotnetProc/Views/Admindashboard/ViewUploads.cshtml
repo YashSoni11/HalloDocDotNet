@@ -133,7 +133,7 @@ else if (ViewData["RoleName"] == "Adm")
 
                                 <tr>
                                     <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
-                                    <td  class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
+                                    <td  id="@doc.FileId">@doc.filename</td>
                                     <td>@doc.uploadDate</td>
                                     <td class="d-flex" style="column-gap:10px;">
                                         <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
@@ -330,15 +330,15 @@ else if (ViewData["RoleName"] == "Adm")
     const downloadChekedFiles = () => {
 
         var chkecks = $(".fileCheckBox")
-
+        console.log(chkecks)
 
         for (let i = 0; i < chkecks.length; i++) {
 
             if (chkecks[i].checked) {
 
                 let ide = chkecks[i].id;
-
-                document.getElementsByClassName(`${ide}`)[0].click()
+                console.log(ide)
+               document.getElementsByClassName(`${ide}`)[0].click()
 
             }
 

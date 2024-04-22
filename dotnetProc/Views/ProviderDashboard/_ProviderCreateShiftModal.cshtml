@@ -42,7 +42,7 @@
                             <div class="col-12">
                                 <div class="form-floating mb-3">
 
-                                    <input asp-for="ShiftDate" type="date" min="@DateTime.UtcNow.Date" class="form-control" id="myDateInput"
+                                    <input asp-for="ShiftDate" type="date"  class="form-control" id="myDateInput"
                                            placeholder="name@example.com">
                                     <label for="PhysicianInp">ShiftDate</label>
                                     <span asp-validation-for="ShiftDate" class="text-danger"></span>
@@ -53,7 +53,7 @@
                             <div class="col-6">
                                 <div class="form-floating mb-3">
 
-                                    <input asp-for="StartTime" min="@DateTime.Now.ToString("hh:mm tt")" type="time" class="form-control" id="floatingInput"
+                                    <input asp-for="StartTime"  type="time" class="form-control" id="floatingInput"
                                            placeholder="name@example.com">
                                     <label for="PhysicianInp">Start</label>
                                     <span asp-validation-for="StartTime" class="text-danger"></span>
@@ -63,7 +63,7 @@
                             <div class="col-6">
                                 <div class="form-floating mb-3">
 
-                                    <input asp-for="EndTime" min="@DateTime.Now.ToString("hh:mm tt")" type="time" class="form-control" id="floatingInput"
+                                    <input asp-for="EndTime"  type="time" class="form-control" id="floatingInput"
                                            placeholder="name@example.com">
                                     <label for="PhysicianInp">End</label>
                                     <span asp-validation-for="EndTime" class="text-danger"></span>

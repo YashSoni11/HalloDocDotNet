@@ -88,7 +88,7 @@
                     <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="ExportFile()"><i class="bi bi-share mx-1"></i><span class="text-vanish">Export</span></button>
 
                     <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white" onclick="ExportAllRecords()"><i class="bi bi-box-arrow-up-right mx-1"></i><span class="text-vanish">Export All</span></button>
-                    <button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-person-workspace mx-1 "></i><span class="text-vanish">Request DTY Support</span></button>
+                    @*<button style='width: 100%;' type="button" class="btn btn-info mt-3 text-white"><i class="bi bi-person-workspace mx-1 "></i><span class="text-vanish">Request DTY Support</span></button>*@
 
                  </div>  
                
@@ -225,14 +225,12 @@
                 } else {
                    
                      var filename = "table_data.xlsx"; 
-                    //var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";        
-                    //var blob = new Blob([response], { type: contentType });
                     var link = document.createElement('a');
                     link.href = response.url;
                     link.download = filename;
                     link.click();
                     toastr.success("File Exported Successfully.")
-                    //window.location.href. = response.url;
+                  
                 }
             },
             error: function (err) {

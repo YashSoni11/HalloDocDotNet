@@ -38,6 +38,10 @@ namespace dotnetProc.Controllers
         public IActionResult Dashboard()
         {
 
+            if (_authManager.Authorize(HttpContext, 19) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
 
             string token = HttpContext.Request.Cookies["jwt"];
@@ -185,6 +189,12 @@ namespace dotnetProc.Controllers
         [HttpGet]
         public IActionResult ViewRequest(int requestid)
         {
+            if (_authManager.Authorize(HttpContext, 19) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+
             return RedirectToRoute("ProviderViewCase", new { requestid = requestid });
         }
         #endregion
@@ -193,6 +203,11 @@ namespace dotnetProc.Controllers
         [HttpGet]
         public IActionResult GetRequestNotes(int id)
         {
+            if (_authManager.Authorize(HttpContext, 19) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
 
 
             return RedirectToRoute("ProviderviewNotes",new {id=id});
@@ -205,6 +220,12 @@ namespace dotnetProc.Controllers
 
         public IActionResult ViewUploads(int id)
         {
+            if (_authManager.Authorize(HttpContext, 19) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+
             return RedirectToRoute("ProviderViewUploads", new { id = id });
         }
         #endregion
@@ -214,6 +235,13 @@ namespace dotnetProc.Controllers
         [HttpGet]
         public IActionResult SendOrder(string id)
         {
+
+            if (_authManager.Authorize(HttpContext, 21) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+
             return RedirectToRoute("ProviderSendOrder", new {id=id});
         }
         #endregion
@@ -261,6 +289,13 @@ namespace dotnetProc.Controllers
 
         public IActionResult PatientReqByAdmin()
         {
+
+            if (_authManager.Authorize(HttpContext, 19) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+
             return RedirectToRoute("ProviderPatientReq");
         }
         #endregion
@@ -320,7 +355,10 @@ namespace dotnetProc.Controllers
         [Route("Provider/ConcludeCare/{id}")]
         public IActionResult ConcludeCareView(int id)
         {
-            
+            if (_authManager.Authorize(HttpContext, 19) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
             ConcludeCare concludeCare = _providerDashboard.GetConcludeCareDetails(id);
 
@@ -412,6 +450,13 @@ namespace dotnetProc.Controllers
         [Route("Provider/MySchedule")]
         public IActionResult ProviderScheduling()
         {
+
+            if (_authManager.Authorize(HttpContext, 20) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+
             ShiftModel shift = new ShiftModel();
 
           

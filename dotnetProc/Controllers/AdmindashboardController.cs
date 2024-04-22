@@ -302,16 +302,16 @@ namespace dotnetProc.Controllers
         public IActionResult ViewRequest(int requestid)
         {
 
-            if (_authManager.Authorize(HttpContext, 9) == false)
-            {
-                return RedirectToAction("AccessDenied", "Account");
-            }
-
-
             string token = HttpContext.Request.Cookies["jwt"];
 
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            if (loggedInUser.Role != "Physician" && _authManager.Authorize(HttpContext, 9) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
 
             if (loggedInUser.Role == "Physician")
             {
@@ -494,7 +494,7 @@ namespace dotnetProc.Controllers
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 string hashedPassword = _account.GetHashedPassword(AdminPassword);
 
-                bool response = _dashboard.ResetAdminPassword(adminId, hashedPassword);
+                bool response = _dashboard.ResetAdminPassword(loggedInUser.UserId, hashedPassword);
 
                 if (response)
                 {
@@ -929,12 +929,13 @@ namespace dotnetProc.Controllers
         public IActionResult ViewUploads(int id)
         {
 
-            if (_authManager.Authorize(HttpContext, 9) == false)
+            string token = HttpContext.Request.Cookies["jwt"];
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+            if(loggedInUser.Role == "Physician" &&  _authManager.Authorize(HttpContext, 9) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
 
-            string token = HttpContext.Request.Cookies["jwt"];
 
             bool istokenExpired = _account.IsTokenExpired(token);
 
@@ -945,7 +946,6 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
                 if (loggedInUser.Role == "Physician")
                 {
@@ -1066,6 +1066,7 @@ namespace dotnetProc.Controllers
         {
 
             dynamic Data = JsonConvert.DeserializeObject(DocFiles);
+
 
 
 
@@ -1444,15 +1445,15 @@ namespace dotnetProc.Controllers
         public IActionResult EncounterForm(int id)
         {
 
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            if (_authManager.Authorize(HttpContext, 9) == false)
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            if (loggedInUser.Role != "Physician"   &&  _authManager.Authorize(HttpContext, 9) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
 
-            string token = HttpContext.Request.Cookies["jwt"];
-
-            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
             if (loggedInUser.Role == "Admin")
             {

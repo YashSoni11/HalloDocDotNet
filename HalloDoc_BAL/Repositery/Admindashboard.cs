@@ -23,6 +23,7 @@ using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using ClosedXML;
 using ClosedXML.Excel;
+using HalloDoc_DAL.ProviderViewModels;
 //using System.Drawing;
 
 namespace HalloDoc_BAL.Repositery
@@ -130,7 +131,7 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-            List<DashboardRequests> requests = _context.Requests.Select(r => new DashboardRequests
+            List<DashboardRequests> requests = _context.Requests.Where(q=>q.Isdeleted == new BitArray(1,false)).Select(r => new DashboardRequests
             {
                 Requestid = r.Requestid,
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
@@ -413,18 +414,32 @@ namespace HalloDoc_BAL.Repositery
                     Adminid = UserId
                 };
 
-                Blockrequest blockrequest = new Blockrequest()
-                {
-                    Phonenumber = request.Phonenumber,
-                    Reason = blockRequest.ReasonForBlocking,
-                    Requestid = requestId.ToString(),
-                    Createddate = DateTime.Now,
-                    Email = request.Email,
-                    Isactive = new BitArray(1, false),
 
-                };
+                    Blockrequest blockRequest1 = _context.Blockrequests.FirstOrDefault(q => q.Requestid == requestId.ToString());
 
-                _context.Blockrequests.Add(blockrequest);
+                    if(blockRequest1 == null)
+                    {
+                        Blockrequest blockrequest = new Blockrequest()
+                        {
+                            Phonenumber = request.Phonenumber,
+                            Reason = blockRequest.ReasonForBlocking,
+                            Requestid = requestId.ToString(),
+                            Createddate = DateTime.Now,
+                            Email = request.Email,
+                            Isactive = new BitArray(1, false),
+
+                        };
+                         _context.Blockrequests.Add(blockrequest);
+                    }
+                    else
+                    {
+                        blockRequest1.Modifieddate = DateTime.Now;
+                        blockRequest1.Isactive = new BitArray(1, false);
+                        blockRequest1.Reason = blockRequest.ReasonForBlocking;
+
+                        _context.Blockrequests.Update(blockRequest1);
+                    }
+
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.Requests.Update(request);
                 _context.SaveChanges();
@@ -1138,9 +1153,10 @@ namespace HalloDoc_BAL.Repositery
 
             var files = data["fileArray"];
             string uemail = data["UserMail"];
+            uemail = "yashusoni003@gmail.com";
 
             var message = new MailMessage();
-            message.From = new MailAddress("yash.soni@etatvasoft.com");
+            message.From = new MailAddress("tatva.dotnet.yashsoni@outlook.com");
             message.Subject = "Documents";
             message.Body = "Please Find the attached documents.";
             message.IsBodyHtml = true;
@@ -1157,19 +1173,19 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-                using (var smtpClient = new SmtpClient("mail.etatvasoft.com"))
+
+                using (var smtpClient = new SmtpClient("smtp.office365.com"))
                 {
                     smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential("yash.soni@etatvasoft.com", "kaX9Bjj8Sho");
+                    smtpClient.Credentials = new NetworkCredential("tatva.dotnet.yashsoni@outlook.com", "hursiqxmvunkqxnk");
                     smtpClient.EnableSsl = true;
 
                     smtpClient.Send(message);
 
                     return true;
                 }
-
             }
-            catch (Exception er)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -2071,6 +2087,9 @@ namespace HalloDoc_BAL.Repositery
                 return "";
             }
         }
+
+
+
 
 
 

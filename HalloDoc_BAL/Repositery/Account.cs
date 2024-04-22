@@ -43,7 +43,7 @@ namespace HalloDoc_BAL.Repositery
 
      
 
-        public string[] Statuss = { "Unassigned", "Unpaid", "MDEnRoute", "MDOnSite", "Conclude", "Cancelled", "CancelledByPatient", "Closed", "Accepted", "Clear", "Blocked" };
+        public string[] Statuss = {"", "Unassigned", "Unpaid", "MDEnRoute", "MDOnSite", "Conclude", "Cancelled", "CancelledByPatient", "Closed", "Accepted", "Clear", "Blocked" };
 
         public Object GiveResetPasswordLinkObject(string resetid)
         {

@@ -133,14 +133,7 @@
                                        placeholder="name@example.com" onblur="checkEmailAvailibility(event.target)">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="PatientInfo.Email" class="text-danger"></span>
-                                @{
-                                    if (TempData["IsEmailExist"] != null)
-                                    {
-
-                                        <span class="text-danger">@TempData["IsEmailExist"]</span>
-
-                                    }
-                                }
+                               
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -149,14 +142,7 @@
                                        id="floatingInput" onblur="checkPhoneNumberAvailibility()">
                                 <label for="floatingInput"></label>
                                 <span asp-validation-for="PatientInfo.Phonenumber" class="text-danger"></span>
-                                @{
-                                    if (TempData["IsPhoneBlocked"] != null)
-                                    {
-
-                                        <span class="text-danger">@TempData["IsPhoneBlocked"]</span>
-
-                                    }
-                                }
+                               
                             </div>
                         </div>
 
@@ -193,14 +179,7 @@
                                     }
                                 </select>
                                 <span asp-validation-for="PatientInfo.Location.State" class="text-danger"></span>
-                                @{
-                                    if (TempData["IsRegionAvailable"] != null)
-                                    {
-
-                                        <span class="text-danger">@TempData["IsRegionAvailable"]</span>
-
-                                    }
-                                }
+                                
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -272,9 +251,7 @@
 
 
         document.getElementById('myDateInput').setAttribute('max', currentDate);
-    $(".reg-nav").remove();
-    })
-
+           $(".reg-nav").remove();
     toastr.remove();
     if ('@TempData["ShowPositiveNotification"]' != '') {
 
@@ -283,5 +260,7 @@
     else if ('@TempData["ShowNegativeNotification"]' != '') {
         toastr.error('@TempData["ShowNegativeNotification"]')
     }
+    })
+
 
   </script>

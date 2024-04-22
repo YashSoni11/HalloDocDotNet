@@ -510,7 +510,7 @@ const GetAllCurrentStatusRequests = () => {
             if (i == 1) {                     /*New*/
                 statusarray = ['1'];
             } else if (i == 2) {              /*Unpaid*/
-                statusarray = ['2']
+                statusarray = ['9']
             } else if (i == 3) {              /*Active*/
                 statusarray = ['3', '4'];
             } else if (i == 4) {              /*Conclude*/
@@ -518,7 +518,7 @@ const GetAllCurrentStatusRequests = () => {
             } else if (i == 5) {               /*ToClose*/
                 statusarray = ['6', '7', '8']
             } else if (i == 6) {                /*Pending*/
-                statusarray = ['9']
+                statusarray = ['2']
             }
 
             break;
@@ -585,7 +585,7 @@ const GetFiltteredRequests = (currentPage,totalPages,isPageAction, type) => {
             if (i == 1) {                     /*New*/
                 statusarray = ['1'];
             } else if (i == 2) {              /*Unpaid*/
-                statusarray = ['2']
+                statusarray = ['9']
             } else if (i == 3) {              /*Active*/
                 statusarray = ['3', '4'];
             } else if (i == 4) {              /*Conclude*/
@@ -593,7 +593,7 @@ const GetFiltteredRequests = (currentPage,totalPages,isPageAction, type) => {
             } else if (i == 5) {               /*ToClose*/
                 statusarray = ['6', '7', '8']
             } else if (i == 6) {                /*Pending*/
-                statusarray = ['9']
+                statusarray = ['2']
             }
 
             break;
@@ -677,7 +677,7 @@ const GetEncounterCaseView = (id,modalId,IsAdmin) => {
         data: { requestId: id },
         success: function (response) {
             console.log(response)
-            if (response.status == 3) {
+            if (IsAdmin == false && response.status == 3) {
                 $("#TypeOfCareModal").modal("show");
                 $("#TypeCareRequestId").val(id);
             }
@@ -1819,6 +1819,50 @@ const GetSearchRecordsTableView = (currentPage, isPageAction, totalPages = 0) =>
 }
 
 
+const ExportSearchRecordsData = () => {
+
+
+    let Status = $("#sr-status").val();
+    let patientname = $("#sr-patientName").val();
+    let RequestType = $("#sr-requestType").val();
+    let FromDate = $("#sr-FromDate").val();
+    let toDate = $("#sr-ToDate").val();
+    let ProviderName = $("#sr-ProviderName").val();
+    let Email = $("#sr-Email").val();
+    let phonumber = $("#sr-phoneNumber").val();
+
+
+    $.ajax({
+
+        url: "/Provider/ExportSearchRecordsData",
+        method: "post",
+        data: {
+            currentPage: 1, Status: Status, PatientName: patientname, RequestType: RequestType, FromDate: FromDate, ToDate: toDate, ProviderName: ProviderName, Emai
+                : Email, Phone: phonumber
+        },
+        success: function (response) {
+
+
+            var filename = "table_data.xlsx";
+            var link = document.createElement('a');
+            link.href = response.url;
+            link.download = filename;
+            link.click();
+            toastr.success("File Exported Successfully.")
+
+           
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+}
+
+
 const GetEmailLogsTableView = (currentPage, isPageAction,totalPages = 0) => {
 
 
@@ -1993,7 +2037,7 @@ const GetRequestorTypeWiseProviderRequests = (currentPage, totalPages, isPageAct
             if (i == 1) {                     /*New*/
                 statusarray = ['1'];
             } else if (i == 2) {              /*Unpaid*/
-                statusarray = ['2']
+                statusarray = ['9']
             } else if (i == 3) {              /*Active*/
                 statusarray = ['3', '4'];
             } else if (i == 4) {              /*Conclude*/
@@ -2001,7 +2045,7 @@ const GetRequestorTypeWiseProviderRequests = (currentPage, totalPages, isPageAct
             } else if (i == 5) {               /*ToClose*/
                 statusarray = ['6', '7', '8']
             } else if (i == 6) {                /*Pending*/
-                statusarray = ['9']
+                statusarray = ['2']
             }
 
             break;

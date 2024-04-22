@@ -101,5 +101,8 @@ namespace HalloDoc_BAL.Interface
 
 
         public bool IsRequestBelongToProvider(int physicianId,int requestId);
+
+        public string GetSearchRecordsExcelFIle(List<SearchRecords> sr);
+
     }
 }

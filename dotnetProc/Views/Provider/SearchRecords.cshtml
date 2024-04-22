@@ -8,6 +8,11 @@
     Layout = "_Layout";
 }
 
+@{
+     string[] Status = { "", "Unassigned", "Unpaid", "MDEnRoute", "MDOnSite", "Conclude", "Cancelled", "CancelledByPatient", "Closed", "Accepted", "Clear", "Blocked" };
+
+}
+
 <partial name="_DashNavbar" />
 
 
@@ -19,7 +24,7 @@
 
         <div class="d-flex col-xl-10 col-lg-11 col-md-12 col-sm-12 col-12 justify-content-between">
             <h3>Search Records</h3>
-            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="ExportSearchRecordsData()">
                 <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Export Data To Excel
             </button>
         </div>
@@ -34,13 +39,13 @@
 
                     <div class="form-floating">
 
-                            <select asp-for="requestStatus" class="form-select form-control" id="sr-status" aria-label="Floating label select example" style="background-color:var(--pi-back-color);" onclick="GetProvidersByRegion('1',false)">
-                            <option value="0">All Region</option>
+                            <select asp-for="requestStatus" class="form-select form-control" id="sr-status" aria-label="Floating label select example" style="background-color:var(--pi-back-color);">
+                            <option value="0">All Status</option>
 
-                           @* @foreach (Region region in Model.regions)
+                            @for(int i= 1;i<Status.Length;i++)
                             {
-                                <option value="@region.Regionid">@region.Name</option>
-                            }*@
+                                <option value="@i">@Status[i]</option>
+                            }
                         </select>
                         <label for="ProviderRegionSelector">Select Request Status</label>
                     </div>

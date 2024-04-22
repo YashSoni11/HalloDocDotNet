@@ -111,7 +111,10 @@ namespace dotnetProc.Controllers
             PatientReq patientReq = new PatientReq();
             patientReq.regions = regions;
 
-            return View(patientReq);
+            PatientReqModal patientReqModal = new PatientReqModal();
+            patientReqModal.patientReq = patientReq;
+
+            return View(patientReqModal);
         }
 
 
@@ -125,29 +128,29 @@ namespace dotnetProc.Controllers
             bool isemailblocked = _patientReq.IsEmailBlocked(pr.patientReq.Email);
             bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.patientReq.Phonenumber);
             bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.patientReq.Location.State);
-
+            pr.patientReq.Relation = "Patient";
            
             
             if(isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["IsEmailExist"] = isemailexist == true?  "Account with this email already created.": TempData["IsEmailExist"] = "Account with this email is blocked.";
+                TempData["ShowNegativeNotification"] = isemailexist == true?  "Account with this email already created.": TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
                 if (IsPhoneBlocked)
                 {
-                  TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked."; 
+                  TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked."; 
                 }
 
                 if (IsregionAvailable == false)
                 {
-                    TempData["IsRegionAvailable"] = "Region is not available.";
+                    TempData["ShowNegativeNotification"] = "Region is not available.";
                 }
 
                 return RedirectToAction("FormByPatient");
             }
-            else  if (ModelState.IsValid)
+            else  if (!ModelState.IsValid)
             {
 
 
@@ -178,12 +181,15 @@ namespace dotnetProc.Controllers
 
             bool response1 = _patientReq.UploadFile(pr.patientReq.FileUpload, patientRequest.Requestid);
 
-
-            return RedirectToAction("Login","Account");
+                
+                TempData["ShowPositiveNotification"] = "Request Submited Successfully.";
+              return RedirectToAction("Login","Account");
             }
             else
             {
-               return RedirectToAction("FormByPatient");
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
+
+                return RedirectToAction("FormByPatient");
                 
             }
         }
@@ -221,18 +227,18 @@ namespace dotnetProc.Controllers
             if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+                TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
                 if (IsPhoneBlocked)
                 {
-                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                    TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                 }
 
                 if (IsregionAvailable == false)
                 {
-                    TempData["IsRegionAvailable"] = "Region is not available.";
+                    TempData["ShowNegativeNotification"] = "Region is not available.";
                 }
                 return RedirectToAction("FormByFamily");
 
@@ -251,16 +257,30 @@ namespace dotnetProc.Controllers
 
             bool response1 = _patientReq.UploadFile(familyFriendModel.PatientInfo.FileUpload,patientRequest.Requestid);
 
-
-               
-
                 bool IsSent = _emailService.SendCreateAccountLink(familyFriendModel.PatientInfo.Email,patientRequest.Requestid);
+
+                if(patientRequest != null)
+                {
+                    TempData["ShowPositiveNotification"] = "Request submited successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                }
+
 
 
                 return RedirectToAction("Login", "Account");
             }
-
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid data!";
             return RedirectToAction("FormByFamily");
+
+            }
+
 
 
         }
@@ -294,18 +314,18 @@ namespace dotnetProc.Controllers
             if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+                TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
                 if (IsPhoneBlocked)
                 {
-                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                    TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                 }
 
                 if (IsregionAvailable == false)
                 {
-                    TempData["IsRegionAvailable"] = "Region is not available.";
+                    TempData["ShowNegativeNotification"] = "Region is not available.";
                 }
 
                 return RedirectToAction("FormByConciearge");
@@ -328,10 +348,25 @@ namespace dotnetProc.Controllers
                 bool IsSent = _emailService.SendCreateAccountLink(concieargeModel.PatinentInfo.Email,patientRequest.Requestid);
 
 
+                if (patientRequest != null)
+                {
+                    TempData["ShowPositiveNotification"] = "Request submited successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                }
+
                 return RedirectToAction("Login", "Account");
             }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
-            return RedirectToAction("FormByConciearge");
+                return RedirectToAction("FormByConciearge");
+            }
 
         }
         #endregion
@@ -367,18 +402,18 @@ namespace dotnetProc.Controllers
             if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+                TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
                 if (IsPhoneBlocked)
                 {
-                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                    TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                 }
 
                 if (IsregionAvailable == false)
                 {
-                    TempData["IsRegionAvailable"] = "Region is not available.";
+                    TempData["ShowNegativeNotification"] = "Region is not available.";
                 }
 
                 return RedirectToAction("FormByBusinessPartner");
@@ -399,11 +434,25 @@ namespace dotnetProc.Controllers
 
                 bool IsSent = _emailService.SendCreateAccountLink(businessReqModel.PatientIfo.Email, patientRequest.Requestid);
 
+                if (patientRequest != null)
+                {
+                    TempData["ShowPositiveNotification"] = "Request submited successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                }
 
                 return RedirectToAction("Login", "Account");
             }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
-            return RedirectToAction("FormByBusinessPartner");
+                return RedirectToAction("FormByBusinessPartner");
+            }
 
         }
         #endregion
@@ -450,18 +499,18 @@ namespace dotnetProc.Controllers
             if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["IsEmailExist"] = isemailexist == true ? "Account with this email already created." : TempData["IsEmailExist"] = "Account with this email is blocked.";
+                TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
                 if (IsPhoneBlocked)
                 {
-                    TempData["IsPhoneBlocked"] = "Account With This Number Is Blocked.";
+                    TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                 }
 
                 if (IsregionAvailable == false)
                 {
-                    TempData["IsRegionAvailable"] = "Region is not available.";
+                    TempData["ShowNegativeNotification"] = "Region is not available.";
                 }
 
                 return RedirectToAction("PatientForm");
@@ -493,10 +542,28 @@ namespace dotnetProc.Controllers
 
             bool response1 = _patientReq.UploadFile(pr.FileUpload, patientRequest.Requestid);
 
-            return RedirectToAction("DashBoard", "Account");
-            }
 
-            return RedirectToAction("PatientForm");
+                if (patientRequest != null)
+                {
+                    TempData["ShowPositiveNotification"] = "Request submited successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                }
+
+
+                return RedirectToAction("DashBoard", "Account");
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid data!";
+
+                return RedirectToAction("PatientForm");
+
+            }
 
         }
         #endregion
@@ -577,11 +644,29 @@ namespace dotnetProc.Controllers
 
                 _emailService.SendCreateAccountLink(pr.Email, patientRequest.Requestid);
 
-            return RedirectToAction("DashBoard","Account");
+
+                if (patientRequest != null)
+                {
+                    TempData["ShowPositiveNotification"] = "Request submited successfully.";
+
+                }
+                else
+                {
+                    TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+
+                }
+
+
+                return RedirectToAction("DashBoard","Account");
 
             }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Vaid data!";
 
-            return RedirectToAction("Dashboard","Account");
+                return RedirectToAction("Dashboard","Account");
+            }
+
 
         }
         #endregion

@@ -43,14 +43,14 @@ namespace dotnetProc.Controllers
         [Route("Provider/Myprofile/{id}",Name ="ProviderProviderProfile")]
         public IActionResult ProviderProfile(int id)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-            if (_authManager.Authorize(HttpContext, 8) == false)
+            if (loggedInUser.Role != "Physician" && _authManager.Authorize(HttpContext, 8) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
 
-            string token = HttpContext.Request.Cookies["jwt"];
-            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
             if(loggedInUser.Role == "Admin")
             {
@@ -790,7 +790,7 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
-                if (_provider.IsValidShift(createShift))
+                if (_provider.IsValidShift(createShift) )
                 {
                     TempData["ShowNegativeNotification"] = "Shift Already Exists!";
                     return RedirectToAction("ProviderScheduling");
@@ -840,13 +840,20 @@ namespace dotnetProc.Controllers
             }
             else if (ModelState.IsValid)
             {
+                CreateShift shift = new CreateShift();
+                shift.ShiftDate = viewShift.ShiftDate;
+                shift.PhysicianId = viewShift.physicianId;
+                shift.StartTime = new DateTime(1, 1, 1);
+                shift.StartTime += new TimeOnly(viewShift.startTime.Hour, viewShift.startTime.Minute).ToTimeSpan();
+                shift.EndTime = new DateTime(1,1,1);
+                shift.EndTime += new TimeOnly(viewShift.endTime.Hour, viewShift.endTime.Minute).ToTimeSpan();
 
-                //if (_provider.IsValidShift(createShift))
-                //{
-                //    TempData["ShowNegativeNotification"] = "Shift Already Exists!";
-                //    return RedirectToAction("ProviderScheduling");
+                if (_provider.IsValidShift(shift))
+                {
+                    TempData["ShowNegativeNotification"] = "Shift Already Exists!";
+                    return RedirectToAction("ProviderScheduling");
 
-                //}
+                }
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 bool response = _provider.EditShiftService(viewShift, loggedInUser.UserId);
@@ -1152,7 +1159,7 @@ namespace dotnetProc.Controllers
                 
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.EditVendor(vendorDetails,id, loggedInUser.UserId);
+                bool response = _provider.EditVendor(vendorDetails, loggedInUser.UserId,id);
 
                 if (response)
                 {
@@ -1306,7 +1313,25 @@ namespace dotnetProc.Controllers
 
         }
 
+        public IActionResult ExportSearchRecordsData(int currentPage, int Status, string PatientName, int RequestType, DateTime FromDate, DateTime ToDate, string ProviderName, string Email, string Phone)
+        {
+            List<SearchRecords> searchRecords = _provider.GetFillteredSearchRecordsData(Status, PatientName, RequestType, FromDate, ToDate, ProviderName, Email, Phone);
 
+            //searchRecords = searchRecords.Skip(5 * (currentPage - 1)).Take(5).ToList();
+
+
+            string response = _provider.GetSearchRecordsExcelFIle(searchRecords);
+
+            if (response != "")
+            {
+                return Json(new { Url = response });
+            }
+            else
+            {
+                return Json(new { code = 403 });
+            }
+
+        }
 
         public IActionResult DeleteRecord(int requestId)
         {
@@ -1478,6 +1503,13 @@ namespace dotnetProc.Controllers
             return PartialView("_blockHistoryTableView", patientHistoryTable);
         }
         #endregion
+
+
+
+
+
+
+
         public IActionResult RedirectToAspEditAccount(int account, int id)
         {
             if (account == 0)

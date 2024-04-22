@@ -107,14 +107,7 @@
                                     }
                                 </select>
                                 <span asp-validation-for="concieargeLocation.State" class="text-danger"></span>
-                                @{
-                                    if (TempData["IsRegionAvailable"] != null)
-                                    {
-
-                                        <span class="text-danger">@TempData["IsRegionAvailable"]</span>
-
-                                    }
-                                }
+                               
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -182,14 +175,7 @@
                                        placeholder="name@example.com" onblur="checkEmailAvailibility()">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="PatinentInfo.Email" class="text-danger"></span>
-                                @{
-                                    if (TempData["IsEmailExist"] != null)
-                                    {
-
-                                        <span class="text-danger">@TempData["IsEmailExist"]</span>
-
-                                    }
-                                }
+                               
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
@@ -198,14 +184,7 @@
                                        id="floatingInput" onblur="checkPhoneNumberAvailibility()">
                                 <label for="floatingInput"></label>
                                 <span asp-validation-for="PatinentInfo.Phonenumber" class="text-danger"></span>
-                                @{
-                                    if (TempData["IsPhoneBlocked"] != null)
-                                    {
-
-                                        <span class="text-danger">@TempData["IsPhoneBlocked"]</span>
-
-                                    }
-                                }
+                               
                             </div>
                         </div>
 
@@ -263,5 +242,15 @@
 
         document.getElementById('myDateInput').setAttribute('max', currentDate);
         $(".reg-nav").remove();
+
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
     })
 </script>

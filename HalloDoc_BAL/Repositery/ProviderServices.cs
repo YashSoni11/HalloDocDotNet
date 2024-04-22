@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using HalloDoc_BAL.Interface;
@@ -147,7 +148,7 @@ namespace HalloDoc_BAL.Repositery
                     UserName = _context.Aspnetusers.Where(q => q.Id == physician.Aspnetuserid).Select(r => r.Username).FirstOrDefault(),
                     Status = physician.Status,
                     Role = _context.Roles.Where(q => q.Roleid == physician.Roleid).Select(r => r.Name).FirstOrDefault(),
-                    roles = _context.Roles.ToList(),
+                    roles = _context.Roles.Where(q=>q.Isdeleted == false).ToList(),
 
 
                 };
@@ -1214,7 +1215,9 @@ namespace HalloDoc_BAL.Repositery
 
                 foreach(Shift shift in shifts)
                 {
-                    shiftdetails.Concat(_context.Shiftdetails.Where(q => q.Shiftid == shift.Shiftid).ToList()).ToList();
+
+                    List<Shiftdetail> shiftdetails1 = _context.Shiftdetails.Where(q => q.Shiftid == shift.Shiftid && q.Isdeleted == false).ToList();
+                    shiftdetails = shiftdetails.Concat(shiftdetails1).ToList();
                 }
 
 
@@ -2359,6 +2362,89 @@ namespace HalloDoc_BAL.Repositery
         {
 
             return _context.Requests.Any(q => q.Requestid == requestId && q.Physicianid == physicianId);
+        }
+
+        public string GetSearchRecordsExcelFIle(List<SearchRecords> sr)
+        {
+            try
+            {
+
+                string[] header = { "Patientname", "Requestor", "Date of Service", "Close Case Date", "Email", "Phone", "Address", "Zip", "RequestStatus", "Physician" };
+
+                using (var package = new XLWorkbook())
+                {
+
+                    var worksheet = package.Worksheets.Add("Sheet1");
+                    int row = 1;
+                    for (int i = 0; i < header.Length; i++)
+                    {
+                        worksheet.Cell(row, i + 1).Value = header[i];
+                    }
+
+                    row++;
+                    int j = 0;
+                    foreach (SearchRecords req in sr)
+                    {
+
+                        worksheet.Cell(row, j + 1).Value = req.PatientName;
+
+                        j++;
+
+                        worksheet.Cell(row, j + 1).Value = req.RequestorType;
+
+                        j++;
+
+                        worksheet.Cell(row, j + 1).Value = req.DateOfService;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.CloseCaseDate;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Email;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.PatientPhone;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Address;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Zip;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.RequestStatus;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Physician;
+                        j++;
+                        //worksheet.Cell(row, j + 1).Value = req.Notes;
+
+                        j = 0;
+                        row++;
+
+
+
+
+                    }
+
+                    byte[] fileBytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        package.SaveAs(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        fileBytes = stream.ToArray();
+                        string fileName = Guid.NewGuid().ToString() + ".xlsx";
+                        string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
+
+                        string path = Path.Combine(filePath, fileName);
+
+                        System.IO.File.WriteAllBytes(path, fileBytes);
+
+                        string fileUrl = path;
+
+                        return "https://localhost:7008/Upload/" + fileName;
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
         }
 
 
