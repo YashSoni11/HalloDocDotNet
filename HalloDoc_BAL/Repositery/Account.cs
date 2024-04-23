@@ -77,6 +77,22 @@ namespace HalloDoc_BAL.Repositery
                 return "";
             }
         }
+        public bool IsRequestBelongsToUser(int id)
+        {
+            Request request =  _context.Requests.Where(q => q.Requestid == id && q.Userid != null && q.Createduserid != 0).FirstOrDefault();
+
+
+            if(request != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
 
 
         public string GetHashedPassword(string password)

@@ -69,8 +69,8 @@ namespace HalloDoc_DAL.ViewModels
 
         public IFormFile? FileUpload { get; set; } = null;
 
-        [Required(ErrorMessage = "Relation is required")]
-        public string Relation { get; set; }
+        //[Required(ErrorMessage = "Relation is required")]
+        public string? Relation { get; set; }
 
 
         public List<Region>? regions { get; set; }

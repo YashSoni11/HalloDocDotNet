@@ -40,6 +40,16 @@ namespace dotnetProc.Controllers
         {
 
             ViewData["RequestId"] = createid;
+
+
+          
+
+            if(_account.IsRequestBelongsToUser(createid))
+            {
+                TempData["IsValidResetLink"] = "Not a Valid Link.";
+
+                return RedirectToAction("Error", "Account");
+            }
         
             return View();
             
@@ -53,7 +63,7 @@ namespace dotnetProc.Controllers
 
             if(RequestId == 0)
             {
-                TempData["ErrorPassword"] = "No Record Found!";
+                TempData["ShowNegativeNotification"] = "No Record Found!";
                 return RedirectToAction("Createaccount", "Account");
             }
 
@@ -66,7 +76,7 @@ namespace dotnetProc.Controllers
 
                 if (IsEmailExists)
                 {
-                    TempData["ErrorPassword"] = "Account is in use!";
+                    TempData["ShowNegativeNotification"] = "Account is in use!";
                     return RedirectToAction("Createaccount", "Account", new { createid = RequestId});
                 }
 
@@ -76,7 +86,7 @@ namespace dotnetProc.Controllers
 
                     if (requestclient == null)
                     {
-                        TempData["ErrorPassword"] = "No Record Found!";
+                        TempData["ShowNegativeNotification"] = "No Record Found!";
                         return RedirectToAction("Createaccount", "Account", new { createid = RequestId });
                     }
 
@@ -111,6 +121,7 @@ namespace dotnetProc.Controllers
 
 
 
+                    TempData["ShowPositiveNotification"] = "Account Created Successfully.";
 
 
                     return RedirectToAction("Login", "Account");
@@ -118,13 +129,13 @@ namespace dotnetProc.Controllers
                 }
                 else
                 {
-                    TempData["ErrorPassword"] = "Password Do not Match!";
+                    TempData["ShowNegativeNotification"] = "Password Do not Match!";
                     return RedirectToAction("Createaccount", "Account");
                 }
             }
             else
             {
-                TempData["ErrorPassword"] = "Not Valid Data!";
+                TempData["ShowNegativeNotification"] = "Not Valid Data!";
                 return RedirectToAction("Createaccount", "Account");
             }
 

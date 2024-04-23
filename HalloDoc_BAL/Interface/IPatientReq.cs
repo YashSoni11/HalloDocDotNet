@@ -21,6 +21,10 @@ namespace HalloDoc_BAL.Interface
         public Requestclient GetRequestByIdAndEmail(int requestId, string email);
 
         public bool IsEmailExistance(string email);
+
+
+        public bool IsValidAccountEmail(string email, int userId, string Role);
+
         public Aspnetuser GetAspNetUserByEmail(string email);
 
         public int GetUserIdByEmail (string email);

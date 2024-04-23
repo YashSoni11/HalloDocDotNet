@@ -343,13 +343,15 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
 
-        public IActionResult PostViewRequest(ClientRequest clientRequest, string requestid)
+        public IActionResult PostViewRequest(ClientRequest clientRequest, string requestId)
         {
-            int newrequestid = int.Parse(requestid);
+            int newrequestid = int.Parse(requestId);
+
+           
 
             ClientRequest clientRequest1 = _dashboard.UpdateClientRequest(clientRequest, newrequestid);
 
-            return View(clientRequest1);
+            return RedirectToRoute("AdminViewCase", new { requestid = newrequestid});
         }
         #endregion
 
@@ -545,9 +547,9 @@ namespace dotnetProc.Controllers
                 if (TryValidateModel(ap.accountInfo))
                 {
 
-                    bool IsEmailExists = _patientReq.IsEmailExistance(ap.accountInfo.Email);
+                    bool IsEmailExists = _patientReq.IsValidAccountEmail(ap.accountInfo.Email,loggedInUser.UserId,loggedInUser.Role);
 
-                    if (IsEmailExists)
+                    if (IsEmailExists == false)
                     {
                         TempData["ShowNegativeNotification"] = "Account with this email already exsist!";
                         return loggedInUser.UserId == ap.adminId ? RedirectToAction("AdminProfile") : RedirectToAction("EditAdminProfile", new { id = ap.adminId });
@@ -1248,8 +1250,11 @@ namespace dotnetProc.Controllers
         #region AgreementActions
         [HttpGet]
         [Route("Reviewagreement/{id}")]
-        public IActionResult ReviewAgreement(string id)
+        public IActionResult ReviewAgreement(int id)
         {
+
+
+             
 
             return View();
 
@@ -1861,22 +1866,29 @@ namespace dotnetProc.Controllers
                 bool isemailblocked = _patientReq.IsEmailBlocked(patientReqByAdmin.Email);
                 bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(patientReqByAdmin.Phonenumber);
                 bool IsregionAvailable = _patientReq.IsRegionAvailable(patientReqByAdmin.Location.State);
+                bool isEmailExists = _patientReq.IsEmailExistance(patientReqByAdmin.Email);
 
 
 
-                if (isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+                if (isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false || isEmailExists == false)
                 {
 
+
+                    if (isEmailExists == false)
+                    {
+                        TempData["ShowNegativeNotification"] = "Account does not exist!";
+
+                    }
+                    else if(isemailblocked){
+
                     TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
-
-
-
-                    if (IsPhoneBlocked)
+                    }
+                   else if (IsPhoneBlocked)
                     {
                         TempData["ShowNegativeNotification"] = "Account With This Number Is Blocked.";
                     }
 
-                    if (IsregionAvailable == false)
+                  else  if (IsregionAvailable == false)
                     {
                         TempData["ShowNegativeNotification"] = "Region is not available.";
                     }

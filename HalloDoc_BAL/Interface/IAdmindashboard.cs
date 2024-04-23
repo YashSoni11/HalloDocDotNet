@@ -126,5 +126,8 @@ namespace HalloDoc_BAL.Interface
 
         public int GetRequestStatusByRequestId(int requestId);
 
+
+        //public bool IsRequestIsForReviewAggreeMent(int requestid);
+
     }
 }

@@ -76,7 +76,7 @@
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
                                 <input asp-for="Email" type="email" class="form-control emailInp" id="floatingInput"
-                                       placeholder="name@example.com" onblur="checkEmailAvailibility()">
+                                       placeholder="name@example.com" onblur="checkEmailAvailibility()" disabled>
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="Email" class="text-danger"></span>
 

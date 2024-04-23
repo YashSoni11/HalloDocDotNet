@@ -780,7 +780,7 @@ namespace HalloDoc_BAL.Repositery
                  TrasferPhysicianName =r.Transtophysicianid!= null? _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault():null,
                  TransferedDate = r.Createddate,
                  Description = r.Notes,
-                 IsTransferToAdmin = r.Status == 1 && r.Transtoadmin == new BitArray(1,true)? _context.Requeststatuslogs.Where(q => q.Requestid == requestId).Select(q => q.Transtoadmin[0]).FirstOrDefault() : false,
+                 IsTransferToAdmin = r.Status == 1 && r.Transtoadmin == new BitArray(1, true) ? true : false,
              }).ToList();
 
             
@@ -1119,6 +1119,7 @@ namespace HalloDoc_BAL.Repositery
             {
                 request.Physicianid = int.Parse(adminAssignCase.SelectedPhycisianId);
                 request.Modifieddate = DateTime.Now;
+                    request.Status = 1;
 
             }
 
@@ -1865,6 +1866,9 @@ namespace HalloDoc_BAL.Repositery
                 return false;
             }
         }
+
+     
+
 
         public bool SaveAdminAccountInfo(AdminProfile ap,int adminId)
         {

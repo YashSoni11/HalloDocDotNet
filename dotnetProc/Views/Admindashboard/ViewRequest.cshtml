@@ -60,7 +60,7 @@
             <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 ">
 
 
-                <form asp-controller="Home" asp-action="ViewRequest" method="post">
+                <form asp-controller="Admindashboard" asp-action="PostViewRequest" asp-route-requestId="@Model.RequestId" method="post">
 
 
                     <div class="container-fluid formContainer mb-5">

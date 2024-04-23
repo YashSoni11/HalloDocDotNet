@@ -186,9 +186,10 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                bool IsEmailExists = _patientReq.IsEmailExistance(providerProfileView.ProviderInformation.Email);
+                bool IsEmailExists = _patientReq.IsValidAccountEmail(providerProfileView.ProviderInformation.Email,id, "Physician");
 
-                if (IsEmailExists)
+
+                if (IsEmailExists == false)
                 {
                     TempData["ShowNegativeNotification"] = "Account with this email already exsist!";
                     return RedirectToAction("ProviderProfile", new { id = id });

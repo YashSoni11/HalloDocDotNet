@@ -57,5 +57,6 @@ namespace HalloDoc_BAL.Interface
 
         public string GetAspNetRolesByAspNetId(string id);
 
+        public bool IsRequestBelongsToUser(int id);
     }
 }

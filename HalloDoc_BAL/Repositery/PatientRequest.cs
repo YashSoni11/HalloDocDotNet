@@ -54,17 +54,31 @@ namespace HalloDoc_BAL.Repositery
         public string GetHashedPassword(string password)
         {
 
-            SHA256 hash = SHA256.Create();
-
-            byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-
-            StringBuilder builder = new StringBuilder();
-
-            for (int i = 0; i < bytes.Length; i++)
+            try
             {
-                builder.Append(bytes[i]);
+                if (string.IsNullOrEmpty(password))
+                {
+                    return "";
+                }
+
+                using (SHA256 hash = SHA256.Create())
+                {
+                    byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                    StringBuilder builder = new StringBuilder();
+
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        builder.Append(bytes[i].ToString("x2")); // Convert byte to hexadecimal string
+                    }
+
+                    return builder.ToString();
+                }
             }
-            return builder.ToString();
+            catch (Exception ex)
+            {
+                return "";
+            }
 
         }
 
@@ -101,6 +115,42 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
+        public bool IsValidAccountEmail(string email, int userId,string Role)
+        {
+            if(Role == "Admin")
+            {
+                string aspId = _context.Admins.Where(q => q.Isdeleted == false && q.Adminid == userId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                if(aspId != null)
+                {
+                    string uemail = _context.Aspnetusers.Where(q=>q.Id == aspId).Select(q=>q.Email).FirstOrDefault();
+
+                    if(uemail == email || (_context.Aspnetusers.Any(q=>q.Email == email) == false))
+                    {
+                        return true;
+                    }
+
+                    
+                }
+                return false;
+                 
+            }else
+            {
+                string aspId = _context.Physicians.Where(q => q.Isdeleted == false && q.Physicianid == userId).Select(q => q.Aspnetuserid).FirstOrDefault();
+
+                if (aspId != null)
+                {
+                    string uemail = _context.Aspnetusers.Where(q => q.Id == aspId).Select(q => q.Email).FirstOrDefault();
+
+                    if (uemail == email || (_context.Aspnetusers.Any(q => q.Email == email) == false))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+             
+        }
 
 
         public int GetCurrentRequestsCount()
