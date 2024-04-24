@@ -9,12 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetProc", "dotnetProc\do
 		{EE04F3FC-71B8-4910-AC71-65B837BF4F24} = {EE04F3FC-71B8-4910-AC71-65B837BF4F24}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HalloDoc_BAL", "HalloDoc_BAL\HalloDoc_BAL.csproj", "{E5A94B9E-7DEF-4A5B-BA02-A6C28CDE07F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HalloDoc_BAL", "HalloDoc_BAL\HalloDoc_BAL.csproj", "{E5A94B9E-7DEF-4A5B-BA02-A6C28CDE07F0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EE04F3FC-71B8-4910-AC71-65B837BF4F24} = {EE04F3FC-71B8-4910-AC71-65B837BF4F24}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HalloDoc_DAL", "HalloDoc_DAL\HalloDoc_DAL.csproj", "{EE04F3FC-71B8-4910-AC71-65B837BF4F24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HalloDoc_DAL", "HalloDoc_DAL\HalloDoc_DAL.csproj", "{EE04F3FC-71B8-4910-AC71-65B837BF4F24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assignment", "Assignment", "{D1B5D6D7-03F1-4533-BEC2-5D2C510F5E57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
