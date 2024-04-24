@@ -1,0 +1,104 @@
+﻿@model DAL.ViewModels.CatagoryViewModel;
+@using DAL.Models;
+
+
+
+
+<table class="table ReqtableContainer table-responsive">
+    <thead>
+        <tr style="background-color:#f1f1f1;">
+            <th class="reqtableHeader" scope="col">Task ID</th>
+            <th class="reqtableHeader" scope="col">Task Name</th>
+            <th class="reqtableHeader" scope="col">Assigne</th>
+            <th class="reqtableHeader" scope="col">Description</th>
+            <th class="reqtableHeader" scope="col">Due Date</th>
+            <th class="reqtableHeader" scope="col">Category</th>
+            <th class="reqtableHeader" scope="col">City</th>
+            <th class="reqtableHeader" scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+        @for (int i = 0; i < Model.tasks.Count; i++)
+        {
+
+
+
+
+            <tr class="align-middle">
+                <td style="display:none"></td>
+                <td class="align-middle">@Model.tasks[i].Taskid</td>
+
+                <td class="align-middle">@Model.tasks[i].Taskname </td>
+                <td class="align-middle">@Model.tasks[i].Assignee</td>
+                <td class="align-middle">@Model.tasks[i].Description</td>
+                <td class="align-middle">@Model.tasks[i].Duedate</td>
+                <td class="align-middle">@Model.tasks[i].Categoryid</td>
+                <td class="align-middle">@Model.tasks[i].City</td>
+                
+
+
+                <td class="d-flex" style="column-gap:5px;">
+
+                      <button onclick="GetEditTaskView('@Model.tasks[i].Taskid')" class="btn btn-success">
+                            Edit
+                        </button>
+
+                    <form method="post" asp-action="DeleteTask" asp-controller="Home" asp-route-taskid="@Model.tasks[i].Taskid">
+                       
+                        <button type="submit" class="btn btn-danger">
+                            Delete
+                        </button>
+
+                    </form>
+
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+
+<div class="row mt-1 p-3" style="justify-content:end;">
+
+    <div class="col-1">
+        <div class="form-floating">
+            <select id="rowsPerPage" asp-for="rowsPerPage" class="form-control form-select " aria-label="Default select example" onchange="GetFillteredTaskk('1',false)">
+
+                <option value="2" selected>2</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                @if (Model.rowsPerPage != 2)
+                {
+                    
+                }
+                @if (Model.rowsPerPage != 5)
+                {
+                }
+                @if (Model.rowsPerPage != 10)
+                {
+                }
+
+
+            </select>
+            <label for="floatingInput">Rows</label>
+           
+        </div>
+
+    </div>
+    <div class="col-2">
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
+            <li class="page-item" onclick="GetFillteredTaskk(@Model.currentPages-1,true, @Model.totalPages)" style="cursor:pointer;"><i class="bi bi-chevron-left"></i></li>
+            <li class="page-item text-white bg-success" style="padding-left: 1rem;padding-right: 1rem;cursor:pointer;">@Model.currentPages</li>
+            <li class="page-item" onclick="GetFillteredTaskk(@Model.currentPages+1,true,@Model.totalPages)" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+        </ul>
+    </nav>
+    </div>
+
+</div>

@@ -1,9 +1,32 @@
+using BAL.Interface;
+using BAL.Reposetary;
+using DAL.Context;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
+
+
+
+var con = builder.Configuration.GetConnectionString("PSSQL");
+
+builder.Services.AddDbContext<CategoryContext>(q => q.UseNpgsql(con));
+builder.Services.AddScoped<ITask, TaskServices>();
+
+
+
+
+
+
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

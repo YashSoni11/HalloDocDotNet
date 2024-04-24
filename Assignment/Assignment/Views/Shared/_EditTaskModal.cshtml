@@ -1,0 +1,109 @@
+﻿@model DAL.ViewModels.EditTask;
+
+<form id="EditTaskForm" mthod="post" asp-action="PostEditTask" asp-controller="Home">
+    <input asp-for="TaskId" hidden style="display:none;"/>
+    <div class="modal fade" id="EditTaskModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="CancleCaseContent">
+                <div class="modal-header  bg-success">
+                    <h1 class="modal-title fs-5 text-white" id="staticBackdropLabel">Edit Task</h1>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body container-fluid ">
+
+
+
+
+                    <div class="row" style="column-gap:1rem;">
+
+
+                        <div class="col-xl-5 col-sm-5 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="TaskName" type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Task Name</label>
+                                <span asp-validation-for="TaskName" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-5 col-sm-5 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Assignee" type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Assignee</label>
+                                <span asp-validation-for="Assignee" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-5 col-sm-5 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="Description" type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Description</label>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-5 col-sm-5 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="DueDate" type="date" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">DueDate</label>
+                                <span asp-validation-for="DueDate" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-5 col-sm-5 col-12">
+                            <div class="form-floating mb-3">
+                                <select id="sl" asp-for="city" class="form-control form-select tbDisabled" aria-label="Default select example">
+                                    <option value="Mumbai" selected>Mumbai</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Ahemedabad">Ahemedabad</option>
+
+
+                                </select>
+                                <label for="floatingInput">City</label>
+                                <span asp-validation-for="DueDate" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-5 col-sm-5 col-12">
+                            <div class="form-floating mb-3">
+                                <input asp-for="catagory" type="text" class="form-control" id="floatingInput"
+                                       placeholder="name@example.com">
+                                <label for="floatingInput">Category</label>
+                                <span asp-validation-for="catagory" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="justify-content:center;flex-direction:row;">
+
+
+                    <div class="col-3">
+
+                        <button type="button" onclick="document.getElementById('EditTaskForm').reset()" class="btn w-100" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+
+                            Cancle
+                        </button>
+                    </div>
+                    <div class="col-3">
+
+                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

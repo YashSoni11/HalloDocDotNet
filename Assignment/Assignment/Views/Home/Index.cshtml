@@ -1,8 +1,134 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+
+
+
+
+@{
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div id="ActionModalContaier">
+
 </div>
+
+
+<div class="container-fluid bg-success" >
+
+     <div class="row p-3" style="align-items:center;justify-content:center;">
+
+         <div class=" d-flex col-8" style="justify-content:center;">
+          <h3 class="text-white d-flex" style="">Task Managment System</h3>
+
+         </div>
+
+     </div>
+
+</div>
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+      @*  <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>Vendor(s)</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+*@
+
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
+
+
+            <div class="row  justify-content-lg-between justify-content-sm-center  justify-content-center p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+                <div class="form-floating col-lg-4 col-sm-10">
+
+                    <button class="btn btn-success text-white" onclick="GetAddTaskView()">Add Task</button>
+
+                </div>
+                <div class="col-lg-4 col-sm-10">
+                    <div class="form-floating ">
+
+                        <div id="iuu" class="d-flex form-floating mb-3 bg-transparent" style="border:1px solid #d7d7d7; border-radius: 4px;">
+                            <input value="" type="search" class="form-control  bg-transparent border-0 emailInput " id="searchinp"
+                                   placeholder="name@example.com">
+                            <label id="userLabel" for="searchinp">Search Patient</label>
+                            <span class="" style="align-self:center;" id="userLabelIcon" onclick="GetFillteredTaskk('1',false)"><i class=' bi bi-search' style="color: var( --pi-label-color);"></i></span>
+
+                        </div>
+                    </div>
+
+
+                  
+                </div>
+
+
+
+
+
+
+               
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row" style="justify-content:center">
+        <div id="TaskTableContainer" class="col-xl-10 col-lg-10 col-md-10 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+
+            @*<partial name="_ProviderTable"/>*@
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+</div>
+
+@section Scripts{
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+
+<script>
+
+    $(document).ready(function () {
+
+        GetFillteredTaskk('1',false);
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+      
+    })
+
+
+
+
+
+
+
+</script>
