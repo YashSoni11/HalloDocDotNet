@@ -86,10 +86,14 @@ const GetCategoriesByName = (target) => {
         success: function (response) {
 
 
-
             var CategoryData = JSON.parse(response);
 
+            console.log(CategoryData.length)
+
             if (CategoryData.length == 0) {
+
+                $("#CategoryDrop").css("display", "none");
+
                 return;
             }
 
@@ -107,7 +111,9 @@ const GetCategoriesByName = (target) => {
             })
 
             console.log($("#CategoryList"))
-            $("#CategoryList").click();
+            $("#CategoryDrop").css("display", "block");
+
+           
              
         },
         error: function (err) {

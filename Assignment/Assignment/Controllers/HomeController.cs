@@ -52,6 +52,8 @@ namespace Assignment.Controllers
         public  IActionResult GetCatagoriesList(string name)
         {
 
+
+
               List<Category> categories = _task.GetCatagoriesFromName(name);
 
             JsonSerializerSettings settings = new JsonSerializerSettings()

@@ -31,3 +31,7 @@ body {
 #CategoryList{
     display:none;
 }
+
+#CategoryDrop{
+    display:none;
+}

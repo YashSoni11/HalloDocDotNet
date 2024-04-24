@@ -55,6 +55,10 @@ namespace BAL.Reposetary
 
         public List<Category> GetCatagoriesFromName(string name)
         {
+            if(string.IsNullOrEmpty(name))
+            {
+                return new List<Category>();
+            }
 
             return _context.Categories.Where(q => q.Name.ToLower().Contains(name.ToLower())).ToList();
         }
