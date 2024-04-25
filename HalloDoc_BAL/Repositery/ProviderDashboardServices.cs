@@ -26,7 +26,7 @@ namespace HalloDoc_BAL.Repositery
 
         public List<DashboardRequests> GetAllProviderRequests(int physicianId)
         {
-            List<DashboardRequests> requests = _context.Requests.Where(q => q.Physicianid == physicianId).Select(r => new DashboardRequests
+            List<DashboardRequests> requests = _context.Requests.Where(q => q.Physicianid == physicianId && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
             {
                 Requestid = r.Requestid,
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
@@ -59,7 +59,7 @@ namespace HalloDoc_BAL.Repositery
 
             var statuskey = status.Keys.ToList();
 
-            List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Physicianid == PhysicianId).Select(r => new DashboardRequests
+            List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Physicianid == PhysicianId && q.Isdeleted == new BitArray(1,false)).Select(r => new DashboardRequests
             {
                 Requestid = r.Requestid,
                 Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),

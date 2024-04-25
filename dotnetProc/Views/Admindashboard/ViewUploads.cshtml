@@ -133,7 +133,7 @@ else if (ViewData["RoleName"] == "Adm")
 
                                 <tr>
                                     <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
-                                    <td  id="@doc.FileId">@doc.filename</td>
+                                    <td class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
                                     <td>@doc.uploadDate</td>
                                     <td class="d-flex" style="column-gap:10px;">
                                         <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
@@ -158,6 +158,7 @@ else if (ViewData["RoleName"] == "Adm")
                     <ul id="mb-ViewUploadTable" class="list-group">
                         @foreach (ViewDocument doc in Model.ViewDocuments)
                         {
+                            <div style="display:none;" class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</div>
 
                             <li class="list-group-item" style="background-color:var(--pi-back-color);color:var(--pi-label-color);">
                                 <div class="container-fluid" style="row-gap:1rem;">
@@ -301,7 +302,7 @@ else if (ViewData["RoleName"] == "Adm")
                 let ide = chkecks[i].id;
 
                 let deleteId = document.getElementsByClassName(`${ide}`)[0].id;
-                console.log(deleteId)
+                console.log(deleteId,"ii")
 
                 DeleteFileIdArray.push(deleteId);
 

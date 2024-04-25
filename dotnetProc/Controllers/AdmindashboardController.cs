@@ -207,16 +207,16 @@ namespace dotnetProc.Controllers
         public IActionResult GetRequestNotes(int id)
         {
 
-            if (_authManager.Authorize(HttpContext, 9) == false)
-            {
-                return RedirectToAction("AccessDenied", "Account");
-            }
-
             string token = HttpContext.Request.Cookies["jwt"];
 
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
+
+            if (loggedInUser.Role != "Physician" &&  _authManager.Authorize(HttpContext, 9) == false)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
             if (loggedInUser.Role == "Physician")
             {
                 if (_provider.IsRequestBelongToProvider(loggedInUser.UserId, id) == false)
@@ -308,7 +308,7 @@ namespace dotnetProc.Controllers
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-            if (loggedInUser.Role != "Physician" && _authManager.Authorize(HttpContext, 9) == false)
+            if (loggedInUser.Role != "Physician"  &&  _authManager.Authorize(HttpContext, 9) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
@@ -547,7 +547,9 @@ namespace dotnetProc.Controllers
                 if (TryValidateModel(ap.accountInfo))
                 {
 
-                    bool IsEmailExists = _patientReq.IsValidAccountEmail(ap.accountInfo.Email,loggedInUser.UserId,loggedInUser.Role);
+
+
+                    bool IsEmailExists = _patientReq.IsValidAccountEmail(ap.accountInfo.Email,ap.adminId,loggedInUser.Role);
 
                     if (IsEmailExists == false)
                     {
@@ -945,7 +947,7 @@ namespace dotnetProc.Controllers
 
             string token = HttpContext.Request.Cookies["jwt"];
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-            if(loggedInUser.Role == "Physician" &&  _authManager.Authorize(HttpContext, 9) == false)
+            if(loggedInUser.Role != "Physician" &&  _authManager.Authorize(HttpContext, 9) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
@@ -1666,8 +1668,19 @@ namespace dotnetProc.Controllers
         public IActionResult SendOrder(int id)
         {
 
+            string token = HttpContext.Request.Cookies["jwt"];
 
-            if (_authManager.Authorize(HttpContext, 12) == false)
+            bool istokenExpired = _account.IsTokenExpired(token);
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+            if (istokenExpired)
+            {
+                TempData["ShowNegativeNotification"] = "You need to login!";
+                return RedirectToAction("Login", "Account");
+            }
+          
+
+            if (loggedInUser.Role != "Physician" && _authManager.Authorize(HttpContext, 12) == false)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
@@ -1678,19 +1691,7 @@ namespace dotnetProc.Controllers
                 return RedirectToAction("Error", "Account");
             }
 
-            string token = HttpContext.Request.Cookies["jwt"];
 
-            bool istokenExpired = _account.IsTokenExpired(token);
-
-            if (istokenExpired)
-            {
-                TempData["ShowNegativeNotification"] = "You need to login!";
-                return RedirectToAction("Login", "Account");
-            }
-            else
-            {
-
-                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 if (loggedInUser.Role == "Physician")
                 {
                     if (_provider.IsRequestBelongToProvider(loggedInUser.UserId, id) == false)
@@ -1710,7 +1711,7 @@ namespace dotnetProc.Controllers
                 order.RequestId = id.ToString();
 
                 return View(order);
-            }
+            
         }
 
 

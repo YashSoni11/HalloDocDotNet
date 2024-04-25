@@ -811,7 +811,7 @@ namespace dotnetProc.Controllers
                 }
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
-                bool response = _provider.CreateShiftService(createShift, loggedInUser.UserId);
+                bool response = _provider.CreateShiftService(createShift, loggedInUser.UserId,loggedInUser.Role);
 
                 if (response)
                 {

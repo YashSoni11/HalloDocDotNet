@@ -75,7 +75,10 @@ namespace HalloDoc_BAL.Repositery
 
         public bool IsRistricted(int id,int roleId)
         {
-             return  _context.Rolemenus.Where(q=>q.Roleid == roleId).Any(r=>r.Menuid == id);
+           
+            
+
+             return  _context.Rolemenus.Where(q=>q.Roleid == roleId ).Any(r=>r.Menuid == id);
         }
 
 

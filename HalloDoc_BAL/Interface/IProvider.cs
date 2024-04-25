@@ -48,7 +48,7 @@ namespace HalloDoc_BAL.Interface
         public List<Physician> GetPhysicinForShiftsByRegionService(int regionId);
 
 
-        public bool CreateShiftService(CreateShift createShift,int adminId);
+        public bool CreateShiftService(CreateShift createShift,int adminId,string Role);
 
         public List<RequestedShiftDetails> GetRequestedShiftDetails(int regionId);
 

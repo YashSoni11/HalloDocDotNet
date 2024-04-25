@@ -681,23 +681,6 @@
 
     }
 
-    const ResetProviderPassword = (id) => {
-
-
-        var passwordValue = $("#providerPassInp").val();
-
-        if (passwordValue == '') {
-            toastr.error("Please Enter Password!");
-            return;
-        }
-
-        $(`#${id}`).val(passwordValue);
-
-
-        $("#ProviderPasswordForm").submit();
-
-    }
-
     const ClearCanvas = () => {
 
         const canvas = document.getElementById("signatureCanvas");
@@ -716,5 +699,23 @@
 
 
     }
+
+    const ResetProviderPassword = (id) => {
+
+
+        var passwordValue = $("#providerPassInp").val();
+
+        if (passwordValue == '') {
+            toastr.error("Please Enter Password!");
+            return;
+        }
+
+        $(`#${id}`).val(passwordValue);
+
+
+        $("#ProviderPasswordForm").submit();
+
+    }
+
 
 </script>

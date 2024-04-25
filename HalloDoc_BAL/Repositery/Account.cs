@@ -320,7 +320,7 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-                Admin user = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspnetuserid);
+                Admin user = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspnetuserid && u.Isdeleted == false);
 
                 return user;
             }catch(Exception ex)

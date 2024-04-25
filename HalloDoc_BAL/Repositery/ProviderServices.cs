@@ -1066,7 +1066,7 @@ namespace HalloDoc_BAL.Repositery
          }
 
 
-        public bool CreateShiftService(CreateShift createShift, int adminId)
+        public bool CreateShiftService(CreateShift createShift, int adminId,string Role)
         {
 
 
@@ -1078,9 +1078,19 @@ namespace HalloDoc_BAL.Repositery
                 shift.Physicianid = createShift.PhysicianId;
                 shift.Startdate = new DateOnly(createShift.ShiftDate.Year, createShift.ShiftDate.Month, createShift.ShiftDate.Day);
                 shift.Repeatupto = createShift.RepeatUpto;
-                shift.Createdby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
                 shift.Isrepeat = createShift.IsReapet;
                 shift.Createddate = DateTime.Now;
+
+
+                if(Role == "Admin")
+                {
+                    shift.Createdby = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+                }else if(Role == "Physician")
+                {
+                    shift.Createdby = _context.Physicians.Where(q => q.Physicianid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
+
+                }
 
                 _context.Shifts.Add(shift);
 
@@ -1277,7 +1287,7 @@ namespace HalloDoc_BAL.Repositery
             List<RequestedShiftDetails> requestedShiftDetails = new List<RequestedShiftDetails>();
             if (regionId == 0)
             {
-                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false && q.Status == 0).Select(r => new RequestedShiftDetails
+                requestedShiftDetails = _context.Shiftdetails.Where(q => q.Isdeleted == false).Select(r => new RequestedShiftDetails
                 {
                     PhysicianName = _context.Physicians.Where(q => q.Physicianid == _context.Shifts.Where(q => q.Shiftid == r.Shiftid).Select(r => r.Physicianid).FirstOrDefault()).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                     Day = r.Shiftdate,
@@ -1576,26 +1586,26 @@ namespace HalloDoc_BAL.Repositery
                 isAllRole = true;
             }
 
-            List<UserAccess> adminUsers = _context.Admins.Where(q=>q.Roleid == roleId || isAllRole).Select(r => new UserAccess
+            List<UserAccess> adminUsers = _context.Admins.Where(q=> (isAllRole || q.Roleid == roleId) &&q.Isdeleted == false  ).Select(r => new UserAccess
             {
                 UserId = r.Adminid,
                 AccountName = _context.Aspnetusers.Where(q=>q.Id == r.Aspnetuserid).Select(q=>q.Username).FirstOrDefault(),
                 PhoneNumber = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Phonenumber).FirstOrDefault(),
                 status =  r.Status == null?0: (int)r.Status,
-                OpenRequest = 0,
+                OpenRequest = _context.Requests.Where(q=>q.Createduserid == r.Adminid && q.Isdeleted == new BitArray(1, false)).Count(),
                 AccountType = 0,
             }).ToList();
 
            users =  users.Concat(adminUsers).ToList();
 
-            List<UserAccess> physicianUsers = _context.Physicians.Where(q => q.Roleid == roleId || isAllRole).Select(r => new UserAccess
+            List<UserAccess> physicianUsers = _context.Physicians.Where(q =>( isAllRole||  q.Roleid == roleId) && q.Isdeleted == false ).Select(r => new UserAccess
             {
                 UserId = r.Physicianid,
                 AccountName = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Username).FirstOrDefault(),
                 PhoneNumber = _context.Aspnetusers.Where(q => q.Id == r.Aspnetuserid).Select(q => q.Phonenumber).FirstOrDefault(),
                 status = r.Status == null ? 0 : (int)r.Status,
 
-                OpenRequest = 0,
+                OpenRequest = _context.Requests.Where(q => q.Createduserid == r.Physicianid && q.Isdeleted == new BitArray(1, false)).Count(),
                 AccountType = 1,
             }).ToList();
 
@@ -2238,7 +2248,7 @@ namespace HalloDoc_BAL.Repositery
             {
 
 
-                List<Request> requests = _context.Requests.Where(q =>q.Userid == userId).ToList();
+                List<Request> requests = _context.Requests.Where(q =>q.Userid == userId && q.Isdeleted == new BitArray(1, false)).ToList();
 
 
                 List<PatientExplore> patientExplores = new List<PatientExplore>();
