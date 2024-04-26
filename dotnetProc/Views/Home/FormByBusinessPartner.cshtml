@@ -151,46 +151,46 @@
                         <h4 class="mb-3">Patient Location</h4>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="PatinentLocaiton.Street" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="PatientIfo.Location.Street" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Street</label>
-                                <span asp-validation-for="PatinentLocaiton.Street" class="text-danger"></span>
+                                <span asp-validation-for="PatientIfo.Location.Street" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="PatinentLocaiton.City" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="PatientIfo.Location.City" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">City</label>
-                                <span asp-validation-for="PatinentLocaiton.City" class="text-danger"></span>
+                                <span asp-validation-for="PatientIfo.Location.City" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select id="regionInp" asp-for="PatinentLocaiton.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
+                                <select id="regionInp" asp-for="PatientIfo.Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;">
                                     @for (int i = 0; i < Model.PatientIfo.regions.Count; i++)
                                     {
                                         <option value="@Model.PatientIfo.regions[i].Regionid">@Model.PatientIfo.regions[i].Name</option>
                                     }
                                 </select>
-                                <span asp-validation-for="PatinentLocaiton.State" class="text-danger"></span>
+                                <span asp-validation-for="PatientIfo.Location.State" class="text-danger"></span>
                                 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="PatinentLocaiton.ZipCode" type="number" class="form-control" id="floatingInput"
+                                <input asp-for="PatientIfo.Location.ZipCode" type="number" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Zip Code</label>
-                                <span asp-validation-for="PatinentLocaiton.ZipCode" class="text-danger"></span>
+                                <span asp-validation-for="PatientIfo.Location.ZipCode" class="text-danger"></span>
 
                             </div>
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <input asp-for="PatinentLocaiton.RoomNo" type="text" class="form-control" id="floatingInput"
+                                <input asp-for="PatientIfo.Location.RoomNo" type="text" class="form-control" id="floatingInput"
                                        placeholder="name@example.com">
                                 <label for="floatingInput">Room #/ Suite (optional)</label>
                             </div>

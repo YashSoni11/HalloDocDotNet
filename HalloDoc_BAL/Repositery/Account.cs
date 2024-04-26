@@ -426,20 +426,32 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public  UserProfile UpdateUserByUserId(UserInformation um,int UserId)
+        public  bool UpdateUserByUserId(UserInformation um,int UserId)
         {
 
             try
             {
                 User curUser = _context.Users.FirstOrDefault(u => u.Userid == UserId);
+                Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q => q.Id == curUser.Aspnetuserid);
 
                 if (curUser != null)
                 {
 
 
+
+                    if(curUser.Email != um.User.Email)
+                    {
+                        bool IsEmailNotValid = _context.Aspnetusers.Any(q=>q.Email == um.User.Email);
+
+                        if(IsEmailNotValid)
+                        {
+                            return false;
+                        }
+                    }
+
                     curUser.Firstname = um.User.Firstname;
                     curUser.Lastname = um.User.Lastname;
-                    curUser.Email = um.User.Email;
+                       curUser.Email = um.User.Email;
                     curUser.Mobile = um.User.Phonnumber;
                     curUser.Intdate = um.User.Birthdate.Day;
                     curUser.Intyear = um.User.Birthdate.Year;
@@ -449,7 +461,11 @@ namespace HalloDoc_BAL.Repositery
                     curUser.State = _context.Regions.Where(q => q.Regionid == um.User.Address.State).Select(q => q.Name).FirstOrDefault();
                     curUser.Zipcode = um.User.Address.ZipCode;
 
+                    aspnetuser.Email = um.User.Email;
+                    aspnetuser.Modifieddate = DateTime.Now;
+
                     _context.Users.Update(curUser);
+                    _context.Aspnetusers.Update(aspnetuser);
                     _context.SaveChanges();
 
                     AddressModel newAddress = new AddressModel
@@ -470,13 +486,13 @@ namespace HalloDoc_BAL.Repositery
                         Address = newAddress,
 
                     };
-                    return updatedUser;
+                    return true;
 
                 }
-                return new UserProfile();
+                return false;
             }catch(Exception ex)
             {
-                return new UserProfile();
+                return false;
 
             }
         }

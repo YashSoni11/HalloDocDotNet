@@ -22,7 +22,7 @@
         <div class="d-flex col-8 justify-content-end  mb-3 mt-2">
             <a asp-controller="Account" asp-action="DashBoard" class="nav-link">
                 <button class="btn btn-outline-info text-info lightInfo-btn" type="button">
-                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Bacgk
+                    <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
                 </button>
             </a>
         </div>
@@ -76,7 +76,7 @@
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
                                 <input asp-for="Email" type="email" class="form-control emailInp" id="floatingInput"
-                                       placeholder="name@example.com" onblur="checkEmailAvailibility()" disabled>
+                                       placeholder="name@example.com" onblur="checkEmailAvailibility()">
                                 <label for="floatingInput">Email</label>
                                 <span asp-validation-for="Email" class="text-danger"></span>
 

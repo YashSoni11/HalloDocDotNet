@@ -84,6 +84,17 @@
     color: white !important;
 }
 
+/*
+.ActiveStauts:after{
+     
+    bottom:-1rem;
+    left:0;
+    width:5rem;
+    height:5rem;
+    background-color:red;
+
+}
+*/
 .action-btn {
     border: 1px solid white;
     color: white;

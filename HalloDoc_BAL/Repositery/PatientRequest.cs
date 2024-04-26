@@ -397,7 +397,7 @@ namespace HalloDoc_BAL.Repositery
             
             if(Role == "Physician" || Role == "Admin")
             {
-                request.Userid = null;
+                request.Userid = _context.Users.Where(q=>q.Email == cm.Email).Select(q=>q.Userid).FirstOrDefault();
             }
             if(requestType  != "Patient" && Role == "Patient" && userId != 0)
             {

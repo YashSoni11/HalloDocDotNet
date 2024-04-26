@@ -7,127 +7,143 @@
 
 
     int k = 0;
-    <table class="table ReqtableContainer">
-        <thead>
-            <tr style="background-color:#f1f1f1;">
-                <th class="reqtableHeader text-center" scope="col">Patient Name</th>
-                <th class="reqtableHeader text-center" scope="col">Phone Number</th>
-                <th class="reqtableHeader text-center" scope="col">Email</th>
-                <th class="reqtableHeader text-center" scope="col">CreatedAt</th>
-                <th class="reqtableHeader text-center" scope="col">Notes</th>
-                <th class="reqtableHeader text-center" scope="col">IsActive</th>
-                <th class="reqtableHeader text-center" scope="col">Action</th>
 
-
-            </tr>
-        </thead>
-        <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
-
-
-            @for (int i = 0; i < Model.BlockRecords.Count; i++)
-            {
-
-
-
-
-                <tr class="align-middle">
-                    <td class="align-middle text-center">@Model.BlockRecords[i].PatientName</td>
-                    <td class="align-middle text-center">@Model.BlockRecords[i].PhoneNumber</td>
-                    <td class="align-middle text-center">@Model.BlockRecords[i].Email</td>
-                    <td class="align-middle text-center">@Model.BlockRecords[i].CratedAr</td>
-                    <td class="align-middle text-center">@Model.BlockRecords[i].BlockNotes</td>
-                    <td class="align-middle text-center"><input type="checkbox" asp-for="@Model.BlockRecords[i].IsActive"/></td>
-
-                    <td class="align-middle text-center">
-                        <a asp-action="UnBlockRequest" asp-controller="Admindashboard" asp-route-RequestId="@Model.BlockRecords[i].RequestId" class="btn btn-outline-info text-info lightInfo-btn">
-                            Unblock
-                        </a>
-                    </td>
-
+    if (Model.BlockRecords.Count != 0)
+    {
+        <table class="table ReqtableContainer">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader text-center" scope="col">Patient Name</th>
+                    <th class="reqtableHeader text-center" scope="col">Phone Number</th>
+                    <th class="reqtableHeader text-center" scope="col">Email</th>
+                    <th class="reqtableHeader text-center" scope="col">CreatedAt</th>
+                    <th class="reqtableHeader text-center" scope="col">Notes</th>
+                    <th class="reqtableHeader text-center" scope="col">IsActive</th>
+                    <th class="reqtableHeader text-center" scope="col">Action</th>
 
 
                 </tr>
-            }
-        </tbody>
+            </thead>
+            <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
 
-    </table>
 
-    <div class="ProviderAccordian accordion" id="accordionExample mt-3">
-        @for (int i = 0; i < Model.BlockRecords.Count; i++)
-        {
+                @for (int i = 0; i < Model.BlockRecords.Count; i++)
+                {
 
-            <div class="accordion-item" style="background:var(--pi-form-back-color);">
-                <h2 class="accordion-header" id="heading@(k)">
-                    <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(k)" aria-expanded="true" aria-controls="collapse@(k)">
-                        <div class="row" style="row-gap:1rem;">
 
-                            <div class="col-12 d-flex" style="align-items:center;">
-                                <h4>@Model.BlockRecords[k].PatientName</h4>
+
+
+                    <tr class="align-middle">
+                        <td class="align-middle text-center">@Model.BlockRecords[i].PatientName</td>
+                        <td class="align-middle text-center">@Model.BlockRecords[i].PhoneNumber</td>
+                        <td class="align-middle text-center">@Model.BlockRecords[i].Email</td>
+                        <td class="align-middle text-center">@Model.BlockRecords[i].CratedAr</td>
+                        <td class="align-middle text-center">@Model.BlockRecords[i].BlockNotes</td>
+                        <td class="align-middle text-center"><input type="checkbox" asp-for="@Model.BlockRecords[i].IsActive"/></td>
+
+                        <td class="align-middle text-center">
+                            <a asp-action="UnBlockRequest" asp-controller="Admindashboard" asp-route-RequestId="@Model.BlockRecords[i].RequestId" class="btn btn-outline-info text-info lightInfo-btn">
+                                Unblock
+                            </a>
+                        </td>
+
+
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+        <div class="ProviderAccordian accordion" id="accordionExample mt-3">
+            @for (int i = 0; i < Model.BlockRecords.Count; i++)
+            {
+
+                <div class="accordion-item" style="background:var(--pi-form-back-color);">
+                    <h2 class="accordion-header" id="heading@(k)">
+                        <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(
+                k
+                )" aria-expanded="true" aria-controls="collapse@(k)">
+                            <div class="row" style="row-gap:1rem;">
+
+                                <div class="col-12 d-flex" style="align-items:center;">
+                                    <h4>@Model.BlockRecords[k].PatientName</h4>
+                                </div>
+                                <div class="col-12">
+                                    @Model.BlockRecords[k].Email
+                                </div>
+
                             </div>
-                            <div class="col-12">
-                                @Model.BlockRecords[k].Email
+
+                        </button>
+                    </h2>
+                    <div id="collapse@(k)" class="accordion-collapse collapse" aria-labelledby="heading@(k)" data-bs-parent="#accordionExample">
+                        <div class="accordion-body container-fluid">
+
+
+                            <div class="row" style="row-gap:1rem;color:var(--pi-label-color);">
+
+                                <div class="col-12">
+
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  Phone: <span>@Model.BlockRecords[k].PhoneNumber</span>
+
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Created Date: <span>@Model.BlockRecords[k].CratedAr</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Notes: <span>@Model.BlockRecords[k].BlockNotes</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Is Active: <span>@Model.BlockRecords[k].IsActive</span>
+                                </div>
+
+
                             </div>
+                            <div class="row mt-3">
+                                <div class="col-12 d-flex justify-content-end " style="row-gap:1rem;">
+
+                                    <button class="btn btn-outline-info text-info lightInfo-btn">
+                                        Unblock
+                                    </button>
+
+                                </div>
+                            </div>
+
+
+
+
+
+
 
                         </div>
-
-                    </button>
-                </h2>
-                <div id="collapse@(k)" class="accordion-collapse collapse" aria-labelledby="heading@(k)" data-bs-parent="#accordionExample">
-                    <div class="accordion-body container-fluid">
-
-
-                        <div class="row" style="row-gap:1rem;color:var(--pi-label-color);">
-
-                            <div class="col-12">
-
-                                <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  Phone: <span>@Model.BlockRecords[k].PhoneNumber</span>
-
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Created Date: <span>@Model.BlockRecords[k].CratedAr</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Notes: <span>@Model.BlockRecords[k].BlockNotes</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Is Active: <span>@Model.BlockRecords[k].IsActive</span>
-                            </div>
-
-
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12 d-flex justify-content-end " style="row-gap:1rem;">
-
-                                <button class="btn btn-outline-info text-info lightInfo-btn">
-                                    Unblock
-                                </button>
-
-                            </div>
-                        </div>
-
-
-
-
-
-
-
                     </div>
                 </div>
+                k++;
+            }
+        </div>
+
+
+        <div class="row p-3">
+            <nav aria-label="Page navigation example mt-3">
+                <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
+                    <li class="page-item" onclick="GetBlockHistoryTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-left"></i></li>
+                    <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
+                    <li class="page-item" onclick="GetBlockHistoryTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-right"></i></li>
+                </ul>
+            </nav>
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <div class="col-7">
+                <h4 class="alert alert-info fs-3  d-flex" role="alert" style="margin-top:7rem;justify-content:center;">
+                    No Records Found!
+                </h4>
             </div>
-            k++;
-        }
-    </div>
-
-
-    <div class="row p-3">
-        <nav aria-label="Page navigation example mt-3">
-            <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
-                <li class="page-item" onclick="GetBlockHistoryTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-left"></i></li>
-                <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
-                <li class="page-item" onclick="GetBlockHistoryTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-right"></i></li>
-            </ul>
-        </nav>
-    </div>
+        </div>
+    }
 }
 
 

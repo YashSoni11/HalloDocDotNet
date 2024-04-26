@@ -7,109 +7,124 @@
     string[] accountTypes = { "Admin", "Physician", "Patient" };
 
     int k = 0;
-    <table class="table ReqtableContainer">
-        <thead>
-            <tr style="background-color:#f1f1f1;">
-                <th class="reqtableHeader text-center" scope="col">Name</th>
-                <th class="reqtableHeader text-center" scope="col">Account Type</th>
-                <th class="reqtableHeader text-center" scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
 
+    if (Model.roles.Count != 0)
+    {
 
-            @for (int i = 0; i < Model.roles.Count; i++)
-            {
-
-
-
-
-                <tr class="align-middle">
-                    <td class="align-middle text-center">@Model.roles[i].Name</td>
-                    <td class="align-middle text-center">@accountTypes[@Model.roles[i].Accounttype-1]</td>
-                    <td class="align-middle text-center" style="display: flex;justify-content: center;column-gap: 1rem;">
-
-
-                        <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model.roles[i].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
-                            Edit
-                        </a>
-                        <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model.roles[i].Roleid">
-
-                            <button type="submit" class="btn btn-outline-info text-info lightInfo-btn">
-                                Delete
-                            </button>
-                        </form>
-
-
-                    </td>
-
+        <table class="table ReqtableContainer">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader text-center" scope="col">Name</th>
+                    <th class="reqtableHeader text-center" scope="col">Account Type</th>
+                    <th class="reqtableHeader text-center" scope="col">Actions</th>
                 </tr>
-            }
-        </tbody>
+            </thead>
+            <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
 
-    </table>
 
-    <div id="mb-ViewUploadTable" class="row justify-content-center" style="justify-content:center">
-        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11">
-            <ul style="border-radius:0px 0px 10px 10px;box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;" class="list-group">
-                @foreach (Role role in Model.roles)
+                @for (int i = 0; i < Model.roles.Count; i++)
                 {
 
-                    <li class="list-group-item" style="background-color:var(--pi-form-back-color);color:var(--pi-label-color);">
-                        <div class="container-fluid" style="row-gap:1rem;">
-                            <div class="row mb-3">
 
 
-                                <div id="Docfiles" class="col-12">
 
-                                    Name : <span class="mx-1">@role.Name</span>
+                    <tr class="align-middle">
+                        <td class="align-middle text-center">@Model.roles[i].Name</td>
+                        <td class="align-middle text-center">@accountTypes[@Model.roles[i].Accounttype-1]</td>
+                        <td class="align-middle text-center" style="display: flex;justify-content: center;column-gap: 1rem;">
 
-                                </div>
-                            </div>
-                            <div class="row mb-3">
 
-                                <div class="col-12">
-                                    Account Type :  <span class="mx-1">@accountTypes[@role.Accounttype-1]</span>
-                                </div>
+                            <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model.roles[i].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                Edit
+                            </a>
+                            <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model.roles[i].Roleid">
 
-                            </div>
+                                <button type="submit" class="btn btn-outline-info text-info lightInfo-btn">
+                                    Delete
+                                </button>
+                            </form>
 
-                            <div class="row">
-                                <div class="col-2">
 
-                                    <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model.roles[k].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
-                                        Edit
-                                    </a>
+                        </td>
 
-                                </div>
-
-                                <div class="col-2">
-
-                                    <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model.roles[k].Roleid">
-
-                                        <button type="submit" class="btn btn-outline-info text-info lightInfo-btn">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-
-                        </div>
-                    </li>
-                    k++;
+                    </tr>
                 }
-            </ul>
-        </div>
-    </div>
+            </tbody>
 
-    <div class="row p-3">
-        <nav aria-label="Page navigation example mt-3">
-            <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
-                <li class="page-item" onclick="GetAccountAccessTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);"><i class="bi bi-chevron-left" style="color:var(--pi-label-color);"></i></li>
-                <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
-                <li class="page-item" onclick="GetAccountAccessTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);"><i class="bi bi-chevron-right" style="color:var(--pi-label-color);"></i></li>
-            </ul>
-        </nav>
-    </div>
+        </table>
+
+        <div id="mb-ViewUploadTable" class="row justify-content-center" style="justify-content:center">
+            <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11">
+                <ul style="border-radius:0px 0px 10px 10px;box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;" class="list-group">
+                    @foreach (Role role in Model.roles)
+                    {
+
+                        <li class="list-group-item" style="background-color:var(--pi-form-back-color);color:var(--pi-label-color);">
+                            <div class="container-fluid" style="row-gap:1rem;">
+                                <div class="row mb-3">
+
+
+                                    <div id="Docfiles" class="col-12">
+
+                                        Name : <span class="mx-1">@role.Name</span>
+
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+
+                                    <div class="col-12">
+                                        Account Type :  <span class="mx-1">@accountTypes[@role.Accounttype-1]</span>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-2">
+
+                                        <a asp-action="EditRoleView" asp-controller="Provider" asp-route-id="@Model.roles[k].Roleid" class="btn btn-outline-info text-info lightInfo-btn" onclick="()">
+                                            Edit
+                                        </a>
+
+                                    </div>
+
+                                    <div class="col-2">
+
+                                        <form class="form-floating" method="post" asp-action="DeletRole" asp-controller="Provider" asp-route-roleId="@Model.roles[k].Roleid">
+
+                                            <button type="submit" class="btn btn-outline-info text-info lightInfo-btn">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        k++;
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="row p-3">
+            <nav aria-label="Page navigation example mt-3">
+                <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
+                    <li class="page-item" onclick="GetAccountAccessTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);"><i class="bi bi-chevron-left" style="color:var(--pi-label-color);"></i></li>
+                    <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
+                    <li class="page-item" onclick="GetAccountAccessTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);"><i class="bi bi-chevron-right" style="color:var(--pi-label-color);"></i></li>
+                </ul>
+            </nav>
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <div class="col-7">
+                <h4 class="alert alert-info fs-3  d-flex" role="alert" style="margin-top:7rem;justify-content:center;">
+                    No Records Found!
+                </h4>
+            </div>
+        </div>
+    }
 }
 

@@ -1144,7 +1144,7 @@ namespace HalloDoc_BAL.Repositery
 
                             DateTime currentDate = futureDate;
 
-                            for (int i = 1; i <= createShift.RepeatUpto; i++)
+                            for (int i = 1; i < createShift.RepeatUpto; i++)
                             {
                                 Shiftdetail repeatShifts = new Shiftdetail();
 

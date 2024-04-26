@@ -351,6 +351,15 @@ namespace dotnetProc.Controllers
 
             ClientRequest clientRequest1 = _dashboard.UpdateClientRequest(clientRequest, newrequestid);
 
+            if(clientRequest1 != null)
+            {
+                TempData["ShowPostiveNotification"] = "Case Updated Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Something went wrong!";
+            }
+
             return RedirectToRoute("AdminViewCase", new { requestid = newrequestid});
         }
         #endregion

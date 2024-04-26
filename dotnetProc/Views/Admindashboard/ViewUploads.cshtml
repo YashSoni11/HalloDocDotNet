@@ -136,7 +136,7 @@ else if (ViewData["RoleName"] == "Adm")
                                     <td class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
                                     <td>@doc.uploadDate</td>
                                     <td class="d-flex" style="column-gap:10px;">
-                                        <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                        <a class="nav-link lg-@doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
                                             <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
                                         </a>
                                         <form method="post" asp-action="DeleteFileById" asp-controller="Admindashboard" asp-route-id="@doc.FileId">
@@ -165,7 +165,7 @@ else if (ViewData["RoleName"] == "Adm")
                                     <div class="row mb-3">
 
                                         <div class="col-2">
-                                            <input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")">
+                                            <input class="form-check-input mb-fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")">
                                         </div>
                                         <div id="Docfiles" class="col-8 @doc.filename.Replace(" ","") DocuFiles" style="padding:0rem;">
 
@@ -288,10 +288,14 @@ else if (ViewData["RoleName"] == "Adm")
     }
 
     const DeleteAllFiles = () => {
+        var chkecks;
 
+        if(window.innerWidth>=600){
 
-
-        var chkecks = $(".fileCheckBox")
+         chkecks = $(".fileCheckBox")
+        }else{
+            chkecks = $(".mb-fileCheckBox")
+        }
 
         var DeleteFileIdArray = [];
 
@@ -331,7 +335,7 @@ else if (ViewData["RoleName"] == "Adm")
     const downloadChekedFiles = () => {
 
         var chkecks = $(".fileCheckBox")
-        console.log(chkecks)
+        console.log(chkecks,"oo")
 
         for (let i = 0; i < chkecks.length; i++) {
 
@@ -339,7 +343,7 @@ else if (ViewData["RoleName"] == "Adm")
 
                 let ide = chkecks[i].id;
                 console.log(ide)
-               document.getElementsByClassName(`${ide}`)[0].click()
+               document.getElementsByClassName(`lg-${ide}`)[0].click()
 
             }
 

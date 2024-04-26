@@ -224,7 +224,7 @@ namespace dotnetProc.Controllers
 
 
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+            if (isemailexist == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
                 TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
@@ -247,15 +247,19 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
+
+
+
+
                 familyFriendModel.FamilyFriendsIfo.Relation = familyFriendModel.Relation;
                  
 
-            Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, 0,"Family",familyFriendModel.PatientInfo.Location.State, "Patient" );
+               Request patientRequest = _patientReq.AddRequest(familyFriendModel.FamilyFriendsIfo, 0,"Family",familyFriendModel.PatientInfo.Location.State, "Patient" );
+  
+               bool response = _patientReq.AddRequestClient(familyFriendModel.PatientInfo, patientRequest.Requestid, familyFriendModel.PatientInfo.Location);
 
-            bool response = _patientReq.AddRequestClient(familyFriendModel.PatientInfo, patientRequest.Requestid, familyFriendModel.PatientInfo.Location);
 
-
-            bool response1 = _patientReq.UploadFile(familyFriendModel.PatientInfo.FileUpload,patientRequest.Requestid);
+               bool response1 = _patientReq.UploadFile(familyFriendModel.PatientInfo.FileUpload,patientRequest.Requestid);
 
                 bool IsSent = _emailService.SendCreateAccountLink(familyFriendModel.PatientInfo.Email,patientRequest.Requestid);
 
@@ -311,7 +315,7 @@ namespace dotnetProc.Controllers
             bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(concieargeModel.PatinentInfo.Phonenumber);
             bool IsregionAvailable = _patientReq.IsRegionAvailable(concieargeModel.concieargeLocation.State);
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+            if (isemailexist == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
                 TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
@@ -397,9 +401,9 @@ namespace dotnetProc.Controllers
             bool isemailexist = _patientReq.IsEmailExistance(businessReqModel.PatientIfo.Email);
             bool isemailblocked = _patientReq.IsEmailBlocked(businessReqModel.PatientIfo.Email);
             bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(businessReqModel.PatientIfo.Phonenumber);
-            bool IsregionAvailable = _patientReq.IsRegionAvailable(businessReqModel.PatinentLocaiton.State);
+            bool IsregionAvailable = _patientReq.IsRegionAvailable(businessReqModel.PatientIfo.Location.State);
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+            if (isemailexist == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
                 TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
@@ -424,11 +428,11 @@ namespace dotnetProc.Controllers
 
                 businessReqModel.BusinessInfo.Relation = "Business";
 
-            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, 0, "Business",businessReqModel.PatinentLocaiton.State, "Patient");
+            Request patientRequest = _patientReq.AddRequest(businessReqModel.BusinessInfo, 0, "Business",businessReqModel.PatientIfo.Location.State, "Patient");
 
-            bool response = _patientReq.AddRequestClient(businessReqModel.PatientIfo, patientRequest.Requestid, businessReqModel.PatinentLocaiton);
+            bool response = _patientReq.AddRequestClient(businessReqModel.PatientIfo, patientRequest.Requestid, businessReqModel.PatientIfo.Location);
 
-            Business business = _patientReq.AddBusiness(businessReqModel.BusinessInfo, businessReqModel.PatinentLocaiton);
+            Business business = _patientReq.AddBusiness(businessReqModel.BusinessInfo, businessReqModel.PatientIfo.Location);
 
             bool response2 = _patientReq.AddBusinessRequest(business.Businessid, patientRequest.Requestid);
 
@@ -489,17 +493,17 @@ namespace dotnetProc.Controllers
         [HttpPost]
         public IActionResult PostPatientForm(PatientReq pr)
         {
-            bool isemailexist = _patientReq.IsEmailExistance(pr.Email);
+            
             bool isemailblocked = _patientReq.IsEmailBlocked(pr.Email);
             bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.Phonenumber);
             bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.Location.State);
 
 
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+            if ( isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
-                TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
+                 TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
 
 
@@ -522,11 +526,19 @@ namespace dotnetProc.Controllers
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-         
+               
 
                 User user = _patientReq.GetUserDataById(loggedInUser.UserId);
 
-            CmnInformation patientInfo = new CmnInformation
+                if(user.Email != pr.Email)
+                {
+                    TempData["ShowNegativeNotification"] = "Not Valid Email!";
+                    return RedirectToAction("PatientForm");
+
+                }
+
+
+                CmnInformation patientInfo = new CmnInformation
             {
                 FirstName = pr.FirstName,
                 LastName = pr.LastName,
@@ -596,7 +608,7 @@ namespace dotnetProc.Controllers
 
 
 
-            if (isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+            if (isemailexist == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
             {
 
                 TempData["ShowNegativeNotification"] = isemailexist == true ? "Account with this email already created." : TempData["ShowNegativeNotification"] = "Account with this email is blocked.";

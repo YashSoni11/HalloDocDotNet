@@ -12,15 +12,15 @@ namespace HalloDoc_DAL.ViewModels
         public CmnInformation BusinessInfo { get; set; }
 
 
-        public string PropertyName { get; set; }
+        public string? PropertyName { get; set; }
 
-        public string CaseNumber { get; set; }
+        public string? CaseNumber { get; set; }
 
 
 
         public PatientReq PatientIfo { get; set; }  
 
-        public AddressModel PatinentLocaiton { get; set; }
+       
 
 
 

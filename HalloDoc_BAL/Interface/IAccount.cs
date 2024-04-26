@@ -39,7 +39,7 @@ namespace HalloDoc_BAL.Interface
 
 
 
-        public UserProfile UpdateUserByUserId(UserInformation um,int userId);
+        public bool UpdateUserByUserId(UserInformation um,int userId);
 
         public List<ViewDocument> GetDocumentsByRequestId(int requestid);
 

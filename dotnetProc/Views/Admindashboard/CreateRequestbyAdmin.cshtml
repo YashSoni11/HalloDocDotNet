@@ -133,7 +133,7 @@ else if (ViewData["RoleName"] == "Adm")
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
 
-                                <select asp-for="Location.State" class="form-select" aria-label="Default select example" style="height:3rem;padding:13px;" onchange="chekcRegionAvailibility()">
+                                <select id="AdminState" asp-for="Location.State" class="form-select" aria-label="Default select example" >
                                     @for (int i = 0; i < Model.regions.Count; i++)
                                     {
                                         <option value="@Model.regions[i].Regionid">@Model.regions[i].Name</option>
@@ -165,7 +165,7 @@ else if (ViewData["RoleName"] == "Adm")
 
                         <div class="col-xl-2 col-sm-4 col-6 d-flex  align-content-center">
                             <div class="form-floating mb-3 d-flex justify-content-center align-content-center">
-                                <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="chekcRegionAvailibility('state')">
+                                <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="chekcRegionAvailibility('AdminState')">
                                    Verify
                                 </button>
                             </div>

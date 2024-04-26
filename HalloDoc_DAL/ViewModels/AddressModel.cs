@@ -11,7 +11,7 @@ namespace HalloDoc_DAL.ViewModels
     {
 
 
-        public string? RoomNo { get; set; } = null;
+        public string? RoomNo { get; set; }
 
         [Required(ErrorMessage ="Street is Required.")]
         public string Street { get; set; }

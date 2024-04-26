@@ -485,23 +485,18 @@ namespace dotnetProc.Controllers
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
 
-            UserProfile newUser = _account.UpdateUserByUserId(Um, loggedInUser.UserId);
+            bool response  = _account.UpdateUserByUserId(Um, loggedInUser.UserId);
 
 
-
-            List<DashBoardRequests> userRequests = _account.GetUserRequests(loggedInUser.UserId);
-
-          
-
-            UserInformation userinfo = new UserInformation
+             if(response)
             {
-                UserRequests = userRequests,
-                User = newUser,
-              
 
-            };
-
-
+                TempData["ShowPositiveNotification"] = "User Updated Successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Not Valid Operation!";
+            }
 
 
 

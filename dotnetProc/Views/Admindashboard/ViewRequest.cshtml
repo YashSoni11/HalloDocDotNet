@@ -255,5 +255,19 @@
       currEle.classList.add("active");
 
         $(".tbDisabled").attr("disabled", "true")
+
+
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
     })
+
+
+
 </script>

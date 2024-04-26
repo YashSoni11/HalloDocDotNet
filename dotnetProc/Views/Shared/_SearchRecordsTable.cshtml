@@ -7,164 +7,169 @@
     string[] accountTypes = { "Admin", "Physician", "Patient" };
 
     int k = 0;
-    <table class="table ReqtableContainer">
-        <thead>
-            <tr style="background-color:#f1f1f1;">
-                <th class="reqtableHeader text-center" scope="col">Patient Name</th>
-                <th class="reqtableHeader text-center" scope="col">Requestor</th>
-                <th class="reqtableHeader text-center" scope="col">Date Of Service</th>
-                <th class="reqtableHeader text-center" scope="col">Close Case Date</th>
-                <th class="reqtableHeader text-center" scope="col">Email</th>
-                <th class="reqtableHeader text-center" scope="col">Phone Number</th>
-                <th class="reqtableHeader text-center" scope="col">Address</th>
-                <th class="reqtableHeader text-center" scope="col">Zip</th>
-                <th class="reqtableHeader text-center" scope="col">Request Status</th>
-                <th class="reqtableHeader text-center" scope="col">Physician</th>
-                <th class="reqtableHeader text-center" scope="col">Physician Note</th>
-                <th class="reqtableHeader text-center" scope="col">Canclled By Provider Note</th>
-                <th class="reqtableHeader text-center" scope="col">Admin Note</th>
-                <th class="reqtableHeader text-center" scope="col">Patient Note</th>
-                <th class="reqtableHeader text-center" scope="col">Delete Permanently</th>
-            </tr>
-        </thead>
-        <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
+
+    if (Model.SearchRecords.Count != 0)
+    {
+        <table class="table ReqtableContainer">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader text-center" scope="col">Patient Name</th>
+                    <th class="reqtableHeader text-center" scope="col">Requestor</th>
+                    <th class="reqtableHeader text-center" scope="col">Date Of Service</th>
+                    <th class="reqtableHeader text-center" scope="col">Close Case Date</th>
+                    <th class="reqtableHeader text-center" scope="col">Email</th>
+                    <th class="reqtableHeader text-center" scope="col">Phone Number</th>
+                    <th class="reqtableHeader text-center" scope="col">Address</th>
+                    <th class="reqtableHeader text-center" scope="col">Zip</th>
+                    <th class="reqtableHeader text-center" scope="col">Request Status</th>
+                    <th class="reqtableHeader text-center" scope="col">Physician</th>
+                    <th class="reqtableHeader text-center" scope="col">Physician Note</th>
+                    <th class="reqtableHeader text-center" scope="col">Canclled By Provider Note</th>
+                    <th class="reqtableHeader text-center" scope="col">Admin Note</th>
+                    <th class="reqtableHeader text-center" scope="col">Patient Note</th>
+                    <th class="reqtableHeader text-center" scope="col">Delete Permanently</th>
+                </tr>
+            </thead>
+            <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
 
 
+                @for (int i = 0; i < Model.SearchRecords.Count; i++)
+                {
+
+
+
+
+                    <tr class="align-middle">
+                        <td class="align-middle text-center">@Model.SearchRecords[i].PatientName</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].RequestorType</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].DateOfService</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].CloseCaseDate</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].Email</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].PatientPhone</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].Address</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].Zip</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].RequestStatus</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].Physician</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].PhysicianNote</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].CanclledByProviderNote</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].Adminnote</td>
+                        <td class="align-middle text-center">@Model.SearchRecords[i].PatientNote</td>
+                        <td class="align-middle text-center">
+                            <a asp-action="DeleteRecord" asp-controller="Provider" asp-route-requestId="@Model.SearchRecords[k].RequestId" class="btn btn-outline-info text-info lightInfo-btn">
+                                Delete
+                            </a>
+                        </td>
+
+
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+        <div class="ProviderAccordian accordion" id="accordionExample mt-3">
             @for (int i = 0; i < Model.SearchRecords.Count; i++)
             {
 
+                <div class="accordion-item" style="background:var(--pi-form-back-color);">
+                    <h2 class="accordion-header" id="heading@(k)">
+                        <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(
+                k
+                )" aria-expanded="true" aria-controls="collapse@(k)">
+                            <div class="row" style="row-gap:1rem;">
+
+                                <div class="col-12 d-flex" style="align-items:center;">
+                                    <h4>@Model.SearchRecords[k].PatientName</h4>
+                                </div>
+                                <div class="col-12">
+                                    @Model.SearchRecords[k].Address
+                                </div>
 
 
-
-                <tr class="align-middle">
-                    <td class="align-middle text-center">@Model.SearchRecords[i].PatientName</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].RequestorType</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].DateOfService</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].CloseCaseDate</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].Email</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].PatientPhone</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].Address</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].Zip</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].RequestStatus</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].Physician</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].PhysicianNote</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].CanclledByProviderNote</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].Adminnote</td>
-                    <td class="align-middle text-center">@Model.SearchRecords[i].PatientNote</td>
-                    <td class="align-middle text-center">
-                        <a asp-action="DeleteRecord" asp-controller="Provider" asp-route-requestId="@Model.SearchRecords[k].RequestId" class="btn btn-outline-info text-info lightInfo-btn">
-                            Delete
-                        </a>
-                    </td>
-                    
-                  
-
-                </tr>
-            }
-        </tbody>
-
-    </table>
-
-    <div class="ProviderAccordian accordion" id="accordionExample mt-3">
-        @for (int i = 0; i < Model.SearchRecords.Count; i++)
-        {
-
-            <div class="accordion-item" style="background:var(--pi-form-back-color);">
-                <h2 class="accordion-header" id="heading@(k)">
-                    <button class="accordion-button container-fluid" type="button" style="background:var(--accordian-btn-color);color:var(--pi-label-color);" data-bs-toggle="collapse" data-bs-target="#collapse@(k)" aria-expanded="true" aria-controls="collapse@(k)">
-                        <div class="row" style="row-gap:1rem;">
-
-                            <div class="col-12 d-flex" style="align-items:center;">
-                                <h4>@Model.SearchRecords[k].PatientName</h4>
                             </div>
-                            <div class="col-12">
-                                @Model.SearchRecords[k].Address
+
+                        </button>
+                    </h2>
+                    <div id="collapse@(k)" class="accordion-collapse collapse" aria-labelledby="heading@(k)" data-bs-parent="#accordionExample">
+                        <div class="accordion-body container-fluid">
+
+
+                            <div class="row" style="row-gap:1rem;color:var(--pi-label-color);">
+
+                                <div class="col-12">
+
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  Requestor: <span>@Model.SearchRecords[k].RequestorType</span>
+
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Date Of Service: <span>@Model.SearchRecords[k].DateOfService</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Case Closed Date: <span>@Model.SearchRecords[k].CloseCaseDate</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Email: <span>@Model.SearchRecords[k].Email</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Phone: <span>@Model.SearchRecords[k].PatientPhone</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Address: <span>@Model.SearchRecords[k].Address</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  ZipCode: <span>@Model.SearchRecords[k].Zip</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Request Status: <span>@Model.SearchRecords[k].RequestStatus</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Provider: <span>@Model.SearchRecords[k].Physician</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Provider Note: <span>@Model.SearchRecords[k].PhysicianNote</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Cancelled By Provider Note: <span>@Model.SearchRecords[k].CanclledByProviderNote</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Admin Note: <span>@Model.SearchRecords[k].Adminnote</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Cancellation Reason: <span>@Model.SearchRecords[k].CanclledByProviderNote</span>
+                                </div>
+                                <div class="col-12">
+                                    <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Patient Note: <span>@Model.SearchRecords[k].PatientNote</span>
+                                </div>
+
+                                <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
+                                    <a asp-action="DeleteRecord" asp-controller="Provider" asp-route-requestId="@Model.SearchRecords[k].RequestId" class="btn btn-outline-info text-info lightInfo-btn">
+                                        Delete Permanently
+                                    </a>
+                                    <a asp-action="ViewRequest" asp-route-requestid="@Model.SearchRecords[k].RequestId" asp-controller="Admindashboard" class="btn btn-outline-info text-info lightInfo-btn">
+                                        View Case
+                                    </a>
+                                </div>
+
                             </div>
-                          
+
+
+
+
+
+
+
 
                         </div>
-
-                    </button>
-                </h2>
-                <div id="collapse@(k)" class="accordion-collapse collapse" aria-labelledby="heading@(k)" data-bs-parent="#accordionExample">
-                    <div class="accordion-body container-fluid">
-
-
-                        <div class="row" style="row-gap:1rem;color:var(--pi-label-color);">
-
-                            <div class="col-12">
-
-                                <span class="AccordianIcons mx-1"><i class="bi bi-person mx-1"></i></span>  Requestor: <span>@Model.SearchRecords[k].RequestorType</span>
-
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Date Of Service: <span>@Model.SearchRecords[k].DateOfService</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Case Closed Date: <span>@Model.SearchRecords[k].CloseCaseDate</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Email: <span>@Model.SearchRecords[k].Email</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Phone: <span>@Model.SearchRecords[k].PatientPhone</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Address: <span>@Model.SearchRecords[k].Address</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  ZipCode: <span>@Model.SearchRecords[k].Zip</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Request Status: <span>@Model.SearchRecords[k].RequestStatus</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Provider: <span>@Model.SearchRecords[k].Physician</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span>  Provider Note: <span>@Model.SearchRecords[k].PhysicianNote</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Cancelled By Provider Note: <span>@Model.SearchRecords[k].CanclledByProviderNote</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Admin Note: <span>@Model.SearchRecords[k].Adminnote</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Cancellation Reason: <span>@Model.SearchRecords[k].CanclledByProviderNote</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="AccordianIcons mx-1"><i class="bi bi-check-lg mx-1"></i></span> Patient Note: <span>@Model.SearchRecords[k].PatientNote</span>
-                            </div>
-
-                            <div class="col-12 d-flex justify-content-end" style="column-gap:1rem;">
-                                <a asp-action="DeleteRecord" asp-controller="Provider" asp-route-requestId="@Model.SearchRecords[k].RequestId" class="btn btn-outline-info text-info lightInfo-btn">
-                                    Delete Permanently
-                                </a>
-                                <a asp-action="ViewRequest" asp-route-requestid="@Model.SearchRecords[k].RequestId" asp-controller="Admindashboard" class="btn btn-outline-info text-info lightInfo-btn">
-                                    View Case
-                                </a>
-                            </div>
-
-                        </div>
-
-
-
-
-
-
-
-
                     </div>
                 </div>
-            </div>
-            k++;
-        }
-    </div>
+                k++;
+            }
+        </div>
 
 
-    <div class="row p-3">
-        <nav aria-label="Page navigation example mt-3">
+        <div class="row p-3">
+            <nav aria-label="Page navigation example mt-3">
             <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
                 <li class="page-item" onclick="GetSearchRecordsTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-left"></i></li>
                 <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
@@ -172,5 +177,17 @@
             </ul>
         </nav>
     </div>
+
+    }
+    else
+    {
+        <div class="row justify-content-center">
+        <div class="col-7">
+        <h4 class="alert alert-info fs-3  d-flex" role="alert" style="margin-top:7rem;justify-content:center;">
+            No Records Found!
+        </h4>
+        </div>
+        </div>
+    }
 }
 
