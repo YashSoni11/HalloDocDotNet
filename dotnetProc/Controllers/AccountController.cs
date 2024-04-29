@@ -23,7 +23,7 @@ namespace dotnetProc.Controllers
         private readonly IEmailService _emailService;
         private readonly IPatientReq _patientReq;
         public readonly IJwtServices _jwtServices;
-        public AccountController(IAccount account, IEmailService emailService,IPatientReq patientReq,IJwtServices jwtServices)
+        public AccountController(IAccount account, IEmailService emailService, IPatientReq patientReq, IJwtServices jwtServices)
         {
 
 
@@ -42,26 +42,26 @@ namespace dotnetProc.Controllers
             ViewData["RequestId"] = createid;
 
 
-          
 
-            if(_account.IsRequestBelongsToUser(createid))
+
+            if (_account.IsRequestBelongsToUser(createid))
             {
                 TempData["IsValidResetLink"] = "Not a Valid Link.";
 
                 return RedirectToAction("Error", "Account");
             }
-        
+
             return View();
-            
+
         }
 
 
         [HttpPost]
         [Route("Createaccount/{createid}")]
-        public IActionResult Createaccount(UserCred user ,int RequestId)
+        public IActionResult Createaccount(UserCred user, int RequestId)
         {
 
-            if(RequestId == 0)
+            if (RequestId == 0)
             {
                 TempData["ShowNegativeNotification"] = "No Record Found!";
                 return RedirectToAction("Createaccount", "Account");
@@ -77,12 +77,12 @@ namespace dotnetProc.Controllers
                 if (IsEmailExists)
                 {
                     TempData["ShowNegativeNotification"] = "Account is in use!";
-                    return RedirectToAction("Createaccount", "Account", new { createid = RequestId});
+                    return RedirectToAction("Createaccount", "Account", new { createid = RequestId });
                 }
 
                 if (user.Password == user.Confirmpassword)
                 {
-                    Requestclient requestclient = _patientReq.GetRequestByIdAndEmail(RequestId,user.Email );
+                    Requestclient requestclient = _patientReq.GetRequestByIdAndEmail(RequestId, user.Email);
 
                     if (requestclient == null)
                     {
@@ -91,7 +91,7 @@ namespace dotnetProc.Controllers
                     }
 
 
-                        PatientReq patientReq = new PatientReq
+                    PatientReq patientReq = new PatientReq
                     {
 
                         FirstName = requestclient.Firstname,
@@ -148,14 +148,14 @@ namespace dotnetProc.Controllers
         public IActionResult Login(string message)
         {
 
-            if(!string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 TempData["ShowNegativeNotification"] = message;
             }
 
             string LoginMsg = HttpContext.Request.Cookies["LoginMsg"];
 
-            if(!string.IsNullOrEmpty(LoginMsg) && LoginMsg == "true")
+            if (!string.IsNullOrEmpty(LoginMsg) && LoginMsg == "true")
             {
                 TempData["ShowNegativeNotification"] = "You need to login!";
                 HttpContext.Response.Cookies.Delete("LoginMsg");
@@ -172,80 +172,80 @@ namespace dotnetProc.Controllers
         {
 
 
-                Aspnetuser aspuser = _account.ValidateLogin(um);
-               
+            Aspnetuser aspuser = _account.ValidateLogin(um);
 
 
-                if (aspuser == null)
-                {
 
-                    TempData["ShowNegativeNotification"] = "Invalid Credentialse!";
+            if (aspuser == null)
+            {
 
-                    return View();
+                TempData["ShowNegativeNotification"] = "Invalid Credentialse!";
 
-                }
-                else
-                {
-                        string userRole = _account.GetAspNetRolesByAspNetId(aspuser.Id); ;
+                return View();
+
+            }
+            else
+            {
+                string userRole = _account.GetAspNetRolesByAspNetId(aspuser.Id); ;
                 //int userRole = _account.GetAspNetUserRoleById(aspuser.Id);
 
                 User user = _account.GetUserByAspNetId(aspuser.Id);
 
 
-                     if (user != null)
-                     {
+                if (user != null)
+                {
 
 
-                        LoggedInUser loggedInUser = new LoggedInUser();
+                    LoggedInUser loggedInUser = new LoggedInUser();
 
-                       loggedInUser.UserId = user.Userid;
-                       loggedInUser.Firstname = user.Firstname;
-                    
+                    loggedInUser.UserId = user.Userid;
+                    loggedInUser.Firstname = user.Firstname;
+
                     loggedInUser.Role = userRole;
 
 
-                         var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
+                    var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
 
-                         Response.Cookies.Append("jwt", jwtToken);
+                    Response.Cookies.Append("jwt", jwtToken);
 
-                        TempData["UserName"] = loggedInUser.Firstname;
-                        TempData["ShowPositiveNotification"] = "Logged In Successfully";
+                    TempData["UserName"] = loggedInUser.Firstname;
+                    TempData["ShowPositiveNotification"] = "Logged In Successfully";
                     return RedirectToAction("DashBoard", "Account");
-                     }
-                     else
-                     {
-                         Admin admin = _account.GetAdminByAspNetId(aspuser.Id);
+                }
+                else
+                {
+                    Admin admin = _account.GetAdminByAspNetId(aspuser.Id);
 
-                         if(admin != null)
-                         {
+                    if (admin != null)
+                    {
 
-                           LoggedInUser loggedInUser = new LoggedInUser();
+                        LoggedInUser loggedInUser = new LoggedInUser();
 
-                           loggedInUser.UserId = admin.Adminid;
-                           loggedInUser.Firstname = admin.Firstname;
+                        loggedInUser.UserId = admin.Adminid;
+                        loggedInUser.Firstname = admin.Firstname;
                         loggedInUser.AspnetRole = (int)admin.Roleid;
                         loggedInUser.Role = userRole;
 
 
                         var jwtToken = _jwtServices.GenerateJWTAuthetication(loggedInUser);
 
-                             Response.Cookies.Append("jwt", jwtToken);
+                        Response.Cookies.Append("jwt", jwtToken);
 
 
 
 
-                         
-                           TempData["UserName"] = loggedInUser.Firstname;
-                           TempData["ShowPositiveNotification"] = "Logged In Successfully";
-                           return RedirectToAction("Dashboard", "Admindashboard");
 
-                         }
-                         else
-                         {
+                        TempData["UserName"] = loggedInUser.Firstname;
+                        TempData["ShowPositiveNotification"] = "Logged In Successfully";
+                        return RedirectToAction("Dashboard", "Admindashboard");
+
+                    }
+                    else
+                    {
 
 
-                            Physician physician = _account.GetPhysicianByAspNetId(aspuser.Id);
-                          if(physician != null)
+                        Physician physician = _account.GetPhysicianByAspNetId(aspuser.Id);
+                        if (physician != null)
                         {
                             LoggedInUser loggedInUser = new LoggedInUser();
 
@@ -270,21 +270,21 @@ namespace dotnetProc.Controllers
                         else
                         {
 
-                          TempData["ShowNegativeNotification"] = "Something went wrong!";
+                            TempData["ShowNegativeNotification"] = "Something went wrong!";
 
-                          return View();
+                            return View();
                         }
 
-                         }
-
-                     }
-                    
-
-
+                    }
 
                 }
-               
-                
+
+
+
+
+            }
+
+
 
         }
 
@@ -315,12 +315,12 @@ namespace dotnetProc.Controllers
         public IActionResult ForgotPass(UserEmail um)
         {
 
-            
-            
+
+
 
             DateTime expiretime = DateTime.Now.AddMinutes(60);
 
-           int tokenId =   _account.StoreResetid(expiretime,um.Email);
+            int tokenId = _account.StoreResetid(expiretime, um.Email);
 
 
             string subject = "Password Reset";
@@ -344,9 +344,9 @@ namespace dotnetProc.Controllers
         public IActionResult ResetPassword(int resetid)
         {
 
-           
 
-          Token ResetToken = _account.GetTokenByTokenId(resetid);
+
+            Token ResetToken = _account.GetTokenByTokenId(resetid);
 
 
 
@@ -377,9 +377,9 @@ namespace dotnetProc.Controllers
         [HttpPost]
         [Route("ResetPassword/{resetid}")]
 
-        public IActionResult ResetPassword(ForgotPassword fr,int resetid)
+        public IActionResult ResetPassword(ForgotPassword fr, int resetid)
         {
-            
+
 
             Token ResetToken = _account.GetTokenByTokenId(resetid);
 
@@ -388,7 +388,7 @@ namespace dotnetProc.Controllers
                 TempData["IsValidResetLink"] = "Not a Valid Link!";
                 return RedirectToAction("Error", "Account");
             }
-            else if(fr.NewPassword != fr.ConfirmPassword)
+            else if (fr.NewPassword != fr.ConfirmPassword)
             {
                 TempData["ShowNegativeNotification"] = "Passwords Do Not Match!";
 
@@ -398,7 +398,7 @@ namespace dotnetProc.Controllers
             }
             else
             {
-                   Aspnetuser user = _account.UpdateAspnetuserPassByEmail(ResetToken.Userid, fr.NewPassword,ResetToken.Tokenid);
+                Aspnetuser user = _account.UpdateAspnetuserPassByEmail(ResetToken.Userid, fr.NewPassword, ResetToken.Tokenid);
                 TempData["ShowPositiveNotification"] = "Passwords Updated Successfully!";
 
             }
@@ -435,7 +435,7 @@ namespace dotnetProc.Controllers
 
             AddressModel address = new AddressModel
             {
-                State = user.Regionid == null?0:(int)user.Regionid,
+                State = user.Regionid == null ? 0 : (int)user.Regionid,
                 City = user.City,
                 Street = user.Street,
                 ZipCode = user.Zipcode
@@ -466,7 +466,7 @@ namespace dotnetProc.Controllers
                 StateName = user.State
             };
 
-          
+
 
 
 
@@ -481,14 +481,14 @@ namespace dotnetProc.Controllers
 
 
             var token = Request.Cookies["jwt"];
-          
+
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
 
-            bool response  = _account.UpdateUserByUserId(Um, loggedInUser.UserId);
+            bool response = _account.UpdateUserByUserId(Um, loggedInUser.UserId);
 
 
-             if(response)
+            if (response)
             {
 
                 TempData["ShowPositiveNotification"] = "User Updated Successfully.";
@@ -524,25 +524,25 @@ namespace dotnetProc.Controllers
 
 
         [HttpPost]
-        public IActionResult PostViewDocuments(Documents docs,int id)
+        public IActionResult PostViewDocuments(Documents docs, int id)
         {
 
             var token = Request.Cookies["jwt"];
 
             LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-            foreach(IFormFile file in docs.FormFile)
+            foreach (IFormFile file in docs.FormFile)
             {
 
-            bool response = _account.UploadFile(file, id,loggedInUser.Role,loggedInUser.UserId);
+                bool response = _account.UploadFile(file, id, loggedInUser.Role, loggedInUser.UserId);
             }
 
 
 
 
-            return RedirectToAction("ViewDocuments", new {id=id});
+            return RedirectToAction("ViewDocuments", new { id = id });
 
-             
+
         }
         #endregion
 

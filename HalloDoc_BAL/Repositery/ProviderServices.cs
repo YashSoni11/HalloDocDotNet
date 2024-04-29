@@ -1924,7 +1924,7 @@ namespace HalloDoc_BAL.Repositery
 
                     searchRecord.RequestorType = _context.Requesttypes.Where(q => q.Requesttypeid == _context.Requests.Where(m => m.Requestid == rc.Requestid).Select(q => q.Requesttypeid).FirstOrDefault()).Select(q => q.Name).FirstOrDefault();
 
-                    //DateTime? serviceDate = _context.Encounterforms.Where(q => q.Requestid == rc.Requestid).Select(q => q.Createdat).FirstOrDefault();
+                    DateTime? serviceDate = _context.Encounterforms.Where(q => q.Requestid == rc.Requestid).Select(q => q.Createdat).FirstOrDefault();
 
                     searchRecord.RequestId = rc.Requestid;
                     //searchRecord.DateOfService = serviceDate == null ? null : serviceDate;

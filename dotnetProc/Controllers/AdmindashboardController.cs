@@ -51,7 +51,7 @@ namespace dotnetProc.Controllers
 
         #region AdminDashboardActions
         [HttpGet]
-        [Route("Admindashboard/Dashboard")]
+        [Route("Admin/Dashboard")]
         public IActionResult Dashboard()
         {
             if (_authManager.Authorize(HttpContext, 6) == false)
@@ -184,7 +184,7 @@ namespace dotnetProc.Controllers
 
         #region ProviderLocationsAction
         [HttpGet]
-        [Route("providerlocation")]
+        [Route("Admin/providerlocation")]
         public IActionResult ProviderLocations()
         {
             if (_authManager.Authorize(HttpContext, 17) == false)
@@ -298,8 +298,8 @@ namespace dotnetProc.Controllers
 
         #region ViewCaseActions
         [HttpGet]
-        [Route("Admindashboard/Viewrequest/{requestid}", Name = "AdminViewCase")]
-        [Route("ProviderDashboard/Viewrequest/{requestid}", Name = "ProviderViewCase")]
+        [Route("Admin/Viewrequest/{requestid}", Name = "AdminViewCase")]
+        [Route("Provider/Viewrequest/{requestid}", Name = "ProviderViewCase")]
         public IActionResult ViewRequest(int requestid)
         {
 
@@ -436,7 +436,7 @@ namespace dotnetProc.Controllers
 
         #region AdminProfile
         [HttpGet]
-        [Route("myprofile")]
+        [Route("Admin/myprofile")]
         public IActionResult AdminProfile()
         {
 
@@ -459,7 +459,7 @@ namespace dotnetProc.Controllers
         }
 
         [HttpGet]
-        [Route("editadmin/{id}")]
+        [Route("Admin/editadmin/{id}")]
         public IActionResult EditAdminProfile(int id)
         {
             AdminProfile adminProfile = _dashboard.GetAdminProfileData(id);
@@ -552,6 +552,8 @@ namespace dotnetProc.Controllers
             else
             {
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+
 
                 if (TryValidateModel(ap.accountInfo))
                 {
@@ -653,7 +655,7 @@ namespace dotnetProc.Controllers
 
         #region ProviderMenuActions
         [HttpGet]
-        [Route("providers")]
+        [Route("Admin/providers")]
         public IActionResult ProviderMenu()
         {
             if (_authManager.Authorize(HttpContext, 8) == false)
@@ -1579,7 +1581,7 @@ namespace dotnetProc.Controllers
 
         #region CloseCaseActions
         [HttpGet]
-        [Route("closecase/{id}")]
+        [Route("Admin/closecase/{id}")]
         public IActionResult CloseCase(string id)
         {
 

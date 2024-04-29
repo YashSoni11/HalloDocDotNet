@@ -74,10 +74,11 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<Casetag> casetag = _context.Casetags.ToList();
+                List<Casetag> casetag = _context.Casetags.ToList();
 
-            return casetag;
-            }catch(Exception ex)
+                return casetag;
+            }
+            catch (Exception ex)
             {
                 return new List<Casetag>();
             }
@@ -88,7 +89,7 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            return _context.Requests.Where(q => q.Requestid == id).Select(r => r.Confirmationnumber).FirstOrDefault();
+                return _context.Requests.Where(q => q.Requestid == id).Select(r => r.Confirmationnumber).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -101,7 +102,7 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-            return _context.Requests.Where(q=>q.Requestid == requestId).Select(q=>q.Status).FirstOrDefault();
+                return _context.Requests.Where(q => q.Requestid == requestId).Select(q => q.Status).FirstOrDefault();
 
             }
             catch (Exception ex)
@@ -117,7 +118,7 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            return _context.Requests.Any(q => q.Requestid == requestId && q.Isdeleted == new BitArray(1,false));
+                return _context.Requests.Any(q => q.Requestid == requestId && q.Isdeleted == new BitArray(1, false));
             }
             catch (Exception ex)
             {
@@ -131,34 +132,34 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-            List<DashboardRequests> requests = _context.Requests.Where(q=>q.Isdeleted == new BitArray(1,false)).Select(r => new DashboardRequests
-            {
-                Requestid = r.Requestid,
-                Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
-                Requestor = r.Firstname + " " + r.Lastname,
-                Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
-                Requestdate = r.Createddate,
-                Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
-                status = r.Status,
-                Requesttype = r.Requesttypeid,
-                PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
-                Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
-                RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
-                CallType = r.Calltype == null?0: (int)r.Calltype,
-                Notes  = _context.Requeststatuslogs.Where(q=>q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
-              {
-                AdminId = r.Adminid,
-                PhysicianId = r.Transtophysicianid,
-                PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
-                TransferedDate = r.Createddate,
-                Description = r.Notes
-                
-                
-            }).ToList(),
+                List<DashboardRequests> requests = _context.Requests.Where(q => q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
+                {
+                    Requestid = r.Requestid,
+                    Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
+                    Requestor = r.Firstname + " " + r.Lastname,
+                    Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
+                    Requestdate = r.Createddate,
+                    Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
+                    status = r.Status,
+                    Requesttype = r.Requesttypeid,
+                    PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
+                    Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
+                    RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
+                    CallType = r.Calltype == null ? 0 : (int)r.Calltype,
+                    Notes = _context.Requeststatuslogs.Where(q => q.Requestid == r.Requestid && (q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                    {
+                        AdminId = r.Adminid,
+                        PhysicianId = r.Transtophysicianid,
+                        PhysicinName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                        TransferedDate = r.Createddate,
+                        Description = r.Notes
 
-            }).ToList();
 
-            return requests;
+                    }).ToList(),
+
+                }).ToList();
+
+                return requests;
             }
             catch (Exception ex)
             {
@@ -169,27 +170,28 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
-        public string GetAdminUsername(int id,string Role)
+        public string GetAdminUsername(int id, string Role)
         {
 
             try
             {
 
-            string? aspId = null;
+                string? aspId = null;
 
-            if(Role == "Admin")
-            {
-             aspId = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
+                if (Role == "Admin")
+                {
+                    aspId = _context.Admins.Where(q => q.Adminid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
 
-            }else if(Role == "Physician")
-            {
-                 aspId = _context.Physicians.Where(q => q.Physicianid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
+                }
+                else if (Role == "Physician")
+                {
+                    aspId = _context.Physicians.Where(q => q.Physicianid == id).Select(r => r.Aspnetuserid).FirstOrDefault();
 
-            }
+                }
 
-            string userName = _context.Aspnetusers.Where(q=>q.Id == aspId).Select(r=>r.Username).FirstOrDefault();
+                string userName = _context.Aspnetusers.Where(q => q.Id == aspId).Select(r => r.Username).FirstOrDefault();
 
-            return userName;
+                return userName;
             }
             catch (Exception ex)
             {
@@ -203,9 +205,9 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<Region> regions = _context.Regions.ToList();
+                List<Region> regions = _context.Regions.ToList();
 
-            return regions;
+                return regions;
             }
             catch (Exception ex)
             {
@@ -220,9 +222,9 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<Physician> physicians = _context.Physicians.Where(q=>q.Isdeleted == false).ToList();
+                List<Physician> physicians = _context.Physicians.Where(q => q.Isdeleted == false).ToList();
 
-            return physicians;
+                return physicians;
             }
             catch (Exception ex)
             {
@@ -235,26 +237,26 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-            List<Physicianregion> physiciansregions = _context.Physicianregions.Where(q => q.Regionid == regionid).ToList();
+                List<Physicianregion> physiciansregions = _context.Physicianregions.Where(q => q.Regionid == regionid).ToList();
 
-            List<Physician> physicians = new List<Physician>();
+                List<Physician> physicians = new List<Physician>();
 
-            Dictionary<int,int> phyicianId = new Dictionary<int,int>(); 
+                Dictionary<int, int> phyicianId = new Dictionary<int, int>();
 
 
-            foreach(Physicianregion physicianregion in physiciansregions)
-            {
-                Physician physician = _context.Physicians.FirstOrDefault(q=>q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false);
-
-                if (physician != null &&  !phyicianId.ContainsKey(physician.Physicianid))
+                foreach (Physicianregion physicianregion in physiciansregions)
                 {
-                    phyicianId[physician.Physicianid] = 1;
-                   physicians.Add(physician);
+                    Physician physician = _context.Physicians.FirstOrDefault(q => q.Physicianid == physicianregion.Physicianid && q.Isdeleted == false);
+
+                    if (physician != null && !phyicianId.ContainsKey(physician.Physicianid))
+                    {
+                        phyicianId[physician.Physicianid] = 1;
+                        physicians.Add(physician);
+                    }
+
                 }
 
-            }
-
-            return physicians;
+                return physicians;
 
             }
             catch (Exception ex)
@@ -339,7 +341,8 @@ namespace HalloDoc_BAL.Repositery
 
 
                 return physicians;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new List<ProviderMenu>();
             }
@@ -347,77 +350,78 @@ namespace HalloDoc_BAL.Repositery
 
         public bool IsRequestAssigned(int RequestId)
         {
-            return _context.Requests.Any(q=>q.Requestid == RequestId && q.Physicianid != null);
+            return _context.Requests.Any(q => q.Requestid == RequestId && q.Physicianid != null);
         }
 
-        public bool AssignRequest(AdminAssignCase assignCase, int requestId,int adminId)
+        public bool AssignRequest(AdminAssignCase assignCase, int requestId, int adminId)
         {
             try
             {
-            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
 
-            if (request != null)
-            {
-
-                request.Physicianid = int.Parse(assignCase.SelectedPhycisianId);
-                request.Modifieddate = DateTime.Now;
-                request.Status = 1;
-
-
-                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                if (request != null)
                 {
-                    Requestid = requestId,
-                    Status = request.Status,
-                    Adminid = adminId,
-                    Transtophysicianid = int.Parse(assignCase.SelectedPhycisianId),
-                    Notes = assignCase.Description,
-                    Createddate = DateTime.Now,
-                };
 
-                _context.Requests.Update(request);
+                    request.Physicianid = int.Parse(assignCase.SelectedPhycisianId);
+                    request.Modifieddate = DateTime.Now;
+                    request.Status = 1;
+
+
+                    Requeststatuslog requeststatuslog = new Requeststatuslog()
+                    {
+                        Requestid = requestId,
+                        Status = request.Status,
+                        Adminid = adminId,
+                        Transtophysicianid = int.Parse(assignCase.SelectedPhycisianId),
+                        Notes = assignCase.Description,
+                        Createddate = DateTime.Now,
+                    };
+
+                    _context.Requests.Update(request);
                     _context.Requeststatuslogs.Add(requeststatuslog);
 
                     _context.SaveChanges();
+                }
+
+
+                return true;
+
             }
-
-
-            return true;
-
-            }catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
 
-        public Request BlockRequest(AdminBlockCase blockRequest, int requestId,int UserId)
+        public Request BlockRequest(AdminBlockCase blockRequest, int requestId, int UserId)
         {
 
             try
             {
 
-            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
 
-            if (request != null)
-            {
-                request.Modifieddate = DateTime.Now;
-                request.Status = 11;
-
-
-
-                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                if (request != null)
                 {
-                    Requestid = requestId,
-                    Status = request.Status,
-                    Notes = blockRequest.ReasonForBlocking,
-                    Createddate = DateTime.Now,
-                    Adminid = UserId
-                };
+                    request.Modifieddate = DateTime.Now;
+                    request.Status = 11;
+
+
+
+                    Requeststatuslog requeststatuslog = new Requeststatuslog()
+                    {
+                        Requestid = requestId,
+                        Status = request.Status,
+                        Notes = blockRequest.ReasonForBlocking,
+                        Createddate = DateTime.Now,
+                        Adminid = UserId
+                    };
 
 
                     Blockrequest blockRequest1 = _context.Blockrequests.FirstOrDefault(q => q.Requestid == requestId.ToString());
 
-                    if(blockRequest1 == null)
+                    if (blockRequest1 == null)
                     {
                         Blockrequest blockrequest = new Blockrequest()
                         {
@@ -429,7 +433,7 @@ namespace HalloDoc_BAL.Repositery
                             Isactive = new BitArray(1, false),
 
                         };
-                         _context.Blockrequests.Add(blockrequest);
+                        _context.Blockrequests.Add(blockrequest);
                     }
                     else
                     {
@@ -440,13 +444,13 @@ namespace HalloDoc_BAL.Repositery
                         _context.Blockrequests.Update(blockRequest1);
                     }
 
-                _context.Requeststatuslogs.Add(requeststatuslog);
-                _context.Requests.Update(request);
-                _context.SaveChanges();
+                    _context.Requeststatuslogs.Add(requeststatuslog);
+                    _context.Requests.Update(request);
+                    _context.SaveChanges();
 
-            }
+                }
 
-            return request;
+                return request;
             }
             catch (Exception ex)
             {
@@ -493,7 +497,8 @@ namespace HalloDoc_BAL.Repositery
                 _context.SaveChanges();
 
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -537,36 +542,37 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Dictionary<string, int> reqCount = new Dictionary<string, int>();
+                Dictionary<string, int> reqCount = new Dictionary<string, int>();
 
-            foreach (DashboardRequests req in dashboardRequests)
-            {
-                string reqstatus = @Enum.GetName(typeof(Status), req.status);
-
-                if (reqCount.ContainsKey(reqstatus))
+                foreach (DashboardRequests req in dashboardRequests)
                 {
-                    reqCount[reqstatus]++;
-                }
-                else
-                {
-                    reqCount[reqstatus] = 1;
+                    string reqstatus = @Enum.GetName(typeof(Status), req.status);
+
+                    if (reqCount.ContainsKey(reqstatus))
+                    {
+                        reqCount[reqstatus]++;
+                    }
+                    else
+                    {
+                        reqCount[reqstatus] = 1;
+                    }
+
                 }
 
+                RequestTypeCounts requestTypeCounts = new RequestTypeCounts
+                {
+                    Newrequestcount = reqCount.ContainsKey("Unassigned") ? reqCount["Unassigned"] : 0,
+                    Pendingrequestcount = reqCount.ContainsKey("Accepted") ? reqCount["Accepted"] : 0,
+                    Activerequestcount = (reqCount.ContainsKey("MDEnRoute") ? reqCount["MDEnRoute"] : 0) + (reqCount.ContainsKey("MDOnSite") ? reqCount["MDOnSite"] : 0),
+                    Concluderequestcount = reqCount.ContainsKey("Conclude") ? reqCount["Conclude"] : 0,
+                    Tocloserequestcount = (reqCount.ContainsKey("Cancelled") ? reqCount["Cancelled"] : 0) + (reqCount.ContainsKey("CancelledByPatient") ? reqCount["CancelledByPatient"] : 0) + (reqCount.ContainsKey("Closed") ? reqCount["Closed"] : 0),
+                    Unpaidrequestcount = reqCount.ContainsKey("Unpaid") ? reqCount["Unpaid"] : 0,
+
+                };
+
+                return requestTypeCounts;
             }
-
-            RequestTypeCounts requestTypeCounts = new RequestTypeCounts
-            {
-                Newrequestcount = reqCount.ContainsKey("Unassigned") ? reqCount["Unassigned"] : 0,
-                Pendingrequestcount = reqCount.ContainsKey("Accepted") ? reqCount["Accepted"] : 0,
-                Activerequestcount = (reqCount.ContainsKey("MDEnRoute") ? reqCount["MDEnRoute"] : 0) + (reqCount.ContainsKey("MDOnSite") ? reqCount["MDOnSite"] : 0),
-                Concluderequestcount = reqCount.ContainsKey("Conclude") ? reqCount["Conclude"] : 0,
-                Tocloserequestcount = (reqCount.ContainsKey("Cancelled") ? reqCount["Cancelled"] : 0) + (reqCount.ContainsKey("CancelledByPatient") ? reqCount["CancelledByPatient"] : 0) + (reqCount.ContainsKey("Closed") ? reqCount["Closed"] : 0),
-                Unpaidrequestcount = reqCount.ContainsKey("Unpaid") ? reqCount["Unpaid"] : 0,
-
-            };
-
-            return requestTypeCounts;
-            }catch(Exception ex)
+            catch (Exception ex)
             {
                 return new RequestTypeCounts();
             }
@@ -579,47 +585,47 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Dictionary<int, int> status = new Dictionary<int, int>();
+                Dictionary<int, int> status = new Dictionary<int, int>();
 
-            for (int i = 0; i < statusArray.Length; i++)
-            {
-                status.Add(int.Parse(statusArray[i]), 1);
-            }
-
-
-            var statuskey = status.Keys.ToList();
-
-            List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false) ).Select(r => new DashboardRequests
-            {
-                Requestid = r.Requestid,
-                Email = r.Email,
-     
-                Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
-                Requestor = r.Firstname + " " + r.Lastname,
-                CallType = r.Calltype == null ? 0 : (int)r.Calltype,
-                Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
-                Requestdate = r.Createddate,
-                Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
-                status = r.Status,
-                Requesttype = r.Requesttypeid,
-                PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
-                Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
-                RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
-                Notes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && ((q.Status == 1 && (q.Transtoadmin == new BitArray(new[] { true }) || q.Transtophysicianid != null)) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                for (int i = 0; i < statusArray.Length; i++)
                 {
-                    AdminId = r.Adminid,
-                    PhysicianId = r.Physicianid,
-                    PhysicinName = r.Status == 1 ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
-                    TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
-                    TransferedDate = r.Createddate,
-                    Description = r.Notes
-                }).ToList(),
-                CancleNotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && q.Status == 7).Select(q=>q.Notes).FirstOrDefault(),
+                    status.Add(int.Parse(statusArray[i]), 1);
+                }
 
 
-            }).ToList();
+                var statuskey = status.Keys.ToList();
 
-            return dashboardRequests;
+                List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
+                {
+                    Requestid = r.Requestid,
+                    Email = r.Email,
+
+                    Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
+                    Requestor = r.Firstname + " " + r.Lastname,
+                    CallType = r.Calltype == null ? 0 : (int)r.Calltype,
+                    Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
+                    Requestdate = r.Createddate,
+                    Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
+                    status = r.Status,
+                    Requesttype = r.Requesttypeid,
+                    PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
+                    Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
+                    RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
+                    Notes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && ((q.Status == 1 && (q.Transtoadmin == new BitArray(new[] { true }) || q.Transtophysicianid != null)) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                    {
+                        AdminId = r.Adminid,
+                        PhysicianId = r.Physicianid,
+                        PhysicinName = r.Status == 1 ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
+                        TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                        TransferedDate = r.Createddate,
+                        Description = r.Notes
+                    }).ToList(),
+                    CancleNotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && q.Status == 7).Select(q => q.Notes).FirstOrDefault(),
+
+
+                }).ToList();
+
+                return dashboardRequests;
             }
             catch (Exception ex)
             {
@@ -632,71 +638,71 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Dictionary<int, int> status = new Dictionary<int, int>();
+                Dictionary<int, int> status = new Dictionary<int, int>();
 
 
-            for (int i = 0; i < statusArray.Length; i++)
-            {
-                status.Add(int.Parse(statusArray[i]), 1);
-            }
-
-
-            var statuskey = status.Keys.ToList();
-
-
-            List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1,false)).Select(r => new DashboardRequests
-            {
-                Requestid = r.Requestid,
-                Email = r.Email,
-                Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
-                Requestor = r.Firstname + " " + r.Lastname,
-                Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
-                Requestdate = r.Createddate,
-                Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
-                status = r.Status,
-                CallType = r.Calltype == null ? 0 : (int)r.Calltype,
-                Requesttype = r.Requesttypeid,
-                Requestortype = _context.Requesttypes.Where(q => q.Requesttypeid == r.Requesttypeid).Select(q => q.Name).FirstOrDefault(),
-                PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
-                Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
-                RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
-                RegionId = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(q => q.Regionid).FirstOrDefault(),
-                RequestTypeId = r.Requesttypeid,
-                Notes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && ((q.Status == 1 && (q.Transtoadmin == new BitArray(new[] { true }) || q.Transtophysicianid != null)) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                for (int i = 0; i < statusArray.Length; i++)
                 {
-                    AdminId = r.Adminid,
-                    PhysicianId = r.Physicianid,
-                    PhysicinName = r.Status == 1 ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
-                    TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
-                    TransferedDate = r.Createddate,
-                    Description = r.Notes
-                }).ToList(),
-                CancleNotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && (q.Status == 7 || (q.Status == 6 && q.Adminid != null))).Select(q => q.Notes).FirstOrDefault(),
-            }).ToList();
+                    status.Add(int.Parse(statusArray[i]), 1);
+                }
 
-            if (type != 0)
-            {
-                dashboardRequests = dashboardRequests.Where(q => q.RequestTypeId == type).ToList();
+
+                var statuskey = status.Keys.ToList();
+
+
+                List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
+                {
+                    Requestid = r.Requestid,
+                    Email = r.Email,
+                    Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
+                    Requestor = r.Firstname + " " + r.Lastname,
+                    Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
+                    Requestdate = r.Createddate,
+                    Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
+                    status = r.Status,
+                    CallType = r.Calltype == null ? 0 : (int)r.Calltype,
+                    Requesttype = r.Requesttypeid,
+                    Requestortype = _context.Requesttypes.Where(q => q.Requesttypeid == r.Requesttypeid).Select(q => q.Name).FirstOrDefault(),
+                    PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
+                    Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
+                    RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
+                    RegionId = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(q => q.Regionid).FirstOrDefault(),
+                    RequestTypeId = r.Requesttypeid,
+                    Notes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && ((q.Status == 1 && (q.Transtoadmin == new BitArray(new[] { true }) || q.Transtophysicianid != null)) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                    {
+                        AdminId = r.Adminid,
+                        PhysicianId = r.Physicianid,
+                        PhysicinName = r.Status == 1 ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
+                        TrasferPhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault(),
+                        TransferedDate = r.Createddate,
+                        Description = r.Notes
+                    }).ToList(),
+                    CancleNotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == r.Requestid && (q.Status == 7 || (q.Status == 6 && q.Adminid != null))).Select(q => q.Notes).FirstOrDefault(),
+                }).ToList();
+
+                if (type != 0)
+                {
+                    dashboardRequests = dashboardRequests.Where(q => q.RequestTypeId == type).ToList();
+                }
+
+
+                if (region != null)
+                {
+                    int newregionid = int.Parse(region);
+                    bool isAllRegion = newregionid == 0 ? true : false;
+                    dashboardRequests = dashboardRequests.Where(q => q.RegionId == newregionid || isAllRegion).ToList();
+
+                }
+
+                if (name != null)
+                {
+                    dashboardRequests = dashboardRequests.Where(q => q.Username.ToLower().Contains(name.ToLower())).ToList();
+                }
+
+
+                return dashboardRequests;
             }
-
-
-            if (region != null)
-            {
-                int newregionid = int.Parse(region);
-                bool isAllRegion = newregionid == 0 ? true : false;
-                dashboardRequests = dashboardRequests.Where(q => q.RegionId == newregionid || isAllRegion).ToList();
-
-            }
-
-            if (name != null)
-            {
-                dashboardRequests = dashboardRequests.Where(q => q.Username.ToLower().Contains(name.ToLower())).ToList();
-            }
-
-
-            return dashboardRequests;
-            }
-        catch (Exception ex)
+            catch (Exception ex)
             {
                 return new List<DashboardRequests>();
             }
@@ -710,24 +716,24 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            ClientRequest? requestclient = _context.Requestclients.Where(q => q.Requestid == requestId).Select(r => new ClientRequest
-            {
-                Firstname = r.Firstname,
-                Lastname = r.Lastname,
-                Email = r.Email,
-                Phonenumber = r.Phonenumber,
-                State = r.State,
-                Street = r.Street,
-                City = r.City,
-                Zipcode = r.Zipcode,
-                Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0)),
-                Notes = r.Notes,
-                RequestTypeId = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Requesttypeid).FirstOrDefault(),
-                ConfirmationNumber = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Confirmationnumber).FirstOrDefault(),
-                Status = _context.Requests.Where(q=>q.Requestid == requestId).Select(r=>r.Status).FirstOrDefault(),
-            }).FirstOrDefault();
+                ClientRequest? requestclient = _context.Requestclients.Where(q => q.Requestid == requestId).Select(r => new ClientRequest
+                {
+                    Firstname = r.Firstname,
+                    Lastname = r.Lastname,
+                    Email = r.Email,
+                    Phonenumber = r.Phonenumber,
+                    State = r.State,
+                    Street = r.Street,
+                    City = r.City,
+                    Zipcode = r.Zipcode,
+                    Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0)),
+                    Notes = r.Notes,
+                    RequestTypeId = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Requesttypeid).FirstOrDefault(),
+                    ConfirmationNumber = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Confirmationnumber).FirstOrDefault(),
+                    Status = _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Status).FirstOrDefault(),
+                }).FirstOrDefault();
 
-            return requestclient;
+                return requestclient;
 
             }
             catch (Exception ex)
@@ -742,73 +748,74 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            RequestNotes? requestNotes = _context.Requestnotes.Where(q => q.Requestid == requestId).Select(r => new RequestNotes
-            {
-              
-                AdminNotes = r.Adminnotes,
-                PhysicianNotes = r.Physiciannotes
+                RequestNotes? requestNotes = _context.Requestnotes.Where(q => q.Requestid == requestId).Select(r => new RequestNotes
+                {
+
+                    AdminNotes = r.Adminnotes,
+                    PhysicianNotes = r.Physiciannotes
 
 
-            }).FirstOrDefault();
+                }).FirstOrDefault();
 
 
 
-            if(requestNotes == null)
-            {
-                requestNotes = new RequestNotes();
-            }
-   
+                if (requestNotes == null)
+                {
+                    requestNotes = new RequestNotes();
+                }
+
 
                 Requeststatuslog requeststatuslog = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == requestId).FirstOrDefault();
 
-                if(requeststatuslog!= null && requeststatuslog.Status == 7)
+                if (requeststatuslog != null && requeststatuslog.Status == 7)
                 {
                     requestNotes.CanclledByPatientNote = requeststatuslog.Notes;
                 }
-                else if(requeststatuslog != null &&  requeststatuslog.Status == 6 && requeststatuslog.Adminid != null)
+                else if (requeststatuslog != null && requeststatuslog.Status == 6 && requeststatuslog.Adminid != null)
                 {
                     requestNotes.CanclledByAdminNotes = requeststatuslog.Notes;
                 }
 
-            List<TransferNotes> transfernotes = new List<TransferNotes>();
+                List<TransferNotes> transfernotes = new List<TransferNotes>();
 
-             transfernotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == requestId && ((q.Status == 1 && (q.Transtoadmin == new BitArray(new[] { true })) || q.Transtophysician != null) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
-             {
-                 AdminId = r.Adminid,
-                 PhysicianId = r.Physicianid,
-                 PhysicinName = r.Status == 1 && r.Physicianid != null  ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
-                 TrasferPhysicianName =r.Transtophysicianid!= null? _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault():null,
-                 TransferedDate = r.Createddate,
-                 Description = r.Notes,
-                 IsTransferToAdmin = r.Status == 1 && r.Transtoadmin == new BitArray(1, true) ? true : false,
-             }).ToList();
+                transfernotes = _context.Requeststatuslogs.OrderByDescending(q => q.Createddate).Where(q => q.Requestid == requestId && ((q.Status == 1 && (q.Transtoadmin == new BitArray(new[] { true })) || q.Transtophysician != null) || q.Status == 3 || q.Status == 4 || q.Status == 9)).Select(r => new TransferNotes
+                {
+                    AdminId = r.Adminid,
+                    PhysicianId = r.Physicianid,
+                    PhysicinName = r.Status == 1 && r.Physicianid != null ? _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Businessname).FirstOrDefault() : null,
+                    TrasferPhysicianName = r.Transtophysicianid != null ? _context.Physicians.Where(q => q.Physicianid == r.Transtophysicianid).Select(r => r.Businessname).FirstOrDefault() : null,
+                    TransferedDate = r.Createddate,
+                    Description = r.Notes,
+                    IsTransferToAdmin = r.Status == 1 && r.Transtoadmin == new BitArray(1, true) ? true : false,
+                }).ToList();
 
-            
-            requestNotes.TranferNotes = transfernotes;
 
-            return requestNotes;
+                requestNotes.TranferNotes = transfernotes;
+
+                return requestNotes;
             }
             catch (Exception ex)
             {
                 return new RequestNotes();
             }
-            
+
         }
 
-        public bool SaveNotesChanges(string notes, int requestId,string Role,int UserId)
+        public bool SaveNotesChanges(string notes, int requestId, string Role, int UserId)
         {
             try
             {
-            Requestnote requestNotes = _context.Requestnotes.FirstOrDefault(q => q.Requestid == requestId);
+                Requestnote requestNotes = _context.Requestnotes.FirstOrDefault(q => q.Requestid == requestId);
 
-                if(requestNotes == null) {
+                if (requestNotes == null)
+                {
                     Requestnote requestnote = new Requestnote();
                     requestnote.Requestid = requestId;
                     requestnote.Createddate = DateTime.Now;
 
-                    if(Role == "Admin")
+                    if (Role == "Admin")
                     {
-                       requestnote.Adminnotes = notes;
+                        requestnote.Adminnotes = notes;
                         requestnote.Createdby = _context.Admins.Where(q => q.Adminid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
 
                     }
@@ -841,9 +848,10 @@ namespace HalloDoc_BAL.Repositery
                 }
 
 
-            _context.SaveChanges();
+                _context.SaveChanges();
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -856,22 +864,22 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Requestclient requestclient = _context.Requestclients.Where(q => q.Requestid == RequestId).FirstOrDefault();
+                Requestclient requestclient = _context.Requestclients.Where(q => q.Requestid == RequestId).FirstOrDefault();
 
 
-            if (requestclient != null)
-            {
+                if (requestclient != null)
+                {
 
-                requestclient.Email = clientRequest.Email;
-                requestclient.Phonenumber = clientRequest.Phonenumber;
+                    requestclient.Email = clientRequest.Email;
+                    requestclient.Phonenumber = clientRequest.Phonenumber;
 
-            }
+                }
 
-            _context.Requestclients.Update(requestclient);
+                _context.Requestclients.Update(requestclient);
 
-            _context.SaveChanges();
+                _context.SaveChanges();
 
-            return clientRequest;
+                return clientRequest;
             }
             catch (Exception ex)
             {
@@ -880,17 +888,17 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
-        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id,int userId)
+        public bool UpdateRequestToClose(AdminCancleCase adminCancleCase, int id, int userId)
         {
             try
             {
 
-            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == id);
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == id);
 
-            request.Casetag = adminCancleCase.Reason;
-            request.Modifieddate = DateTime.Now;
-            request.Status = 6;
-            request.Declinedby = _context.Admins.Where(q => q.Adminid == userId).Select(q => q.Aspnetuserid).FirstOrDefault();
+                request.Casetag = adminCancleCase.Reason;
+                request.Modifieddate = DateTime.Now;
+                request.Status = 6;
+                request.Declinedby = _context.Admins.Where(q => q.Adminid == userId).Select(q => q.Aspnetuserid).FirstOrDefault();
 
 
                 Requeststatuslog requeststatuslog = new Requeststatuslog
@@ -905,14 +913,15 @@ namespace HalloDoc_BAL.Repositery
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.Requests.Update(request);
 
-            _context.SaveChanges();
+                _context.SaveChanges();
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
 
-           
+
         }
 
         public bool CancleByPatientService(AdminCancleCase adminCancleCase, int id, int userId)
@@ -932,7 +941,7 @@ namespace HalloDoc_BAL.Repositery
                     Status = 7,
                     Createddate = DateTime.Now,
                     Notes = adminCancleCase.AdditionalNotes,
-                    
+
                 };
 
                 _context.Requeststatuslogs.Add(requeststatuslog);
@@ -956,16 +965,17 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId && u.Isdeleted != true).Select(r => new ViewDocument
-            {
-                FileId = r.Requestwisefileid,
-                filename = r.Filename,
-                uploader = _context.Requests.FirstOrDefault(u => u.Requestid == requestId).Firstname,
-                uploadDate = r.Createddate
-            }).ToList();
+                List<ViewDocument> documents = _context.Requestwisefiles.Where(u => u.Requestid == requestId && u.Isdeleted != true).Select(r => new ViewDocument
+                {
+                    FileId = r.Requestwisefileid,
+                    filename = r.Filename,
+                    uploader = _context.Requests.FirstOrDefault(u => u.Requestid == requestId).Firstname,
+                    uploadDate = r.Createddate
+                }).ToList();
 
-            return documents;
-            }catch(Exception ex)
+                return documents;
+            }
+            catch (Exception ex)
             {
                 return new List<ViewDocument>();
             }
@@ -978,20 +988,21 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Requestwisefile requestwisefile = _context.Requestwisefiles.FirstOrDefault(q => q.Requestwisefileid == id);
+                Requestwisefile requestwisefile = _context.Requestwisefiles.FirstOrDefault(q => q.Requestwisefileid == id);
 
 
 
-            if (requestwisefile != null)
-            {
-                requestwisefile.Isdeleted = true;
+                if (requestwisefile != null)
+                {
+                    requestwisefile.Isdeleted = true;
 
-                _context.Requestwisefiles.Update(requestwisefile);
-                _context.SaveChanges();
+                    _context.Requestwisefiles.Update(requestwisefile);
+                    _context.SaveChanges();
+                }
+
+                return;
             }
-
-            return;
-            }catch(Exception ex)
+            catch (Exception ex)
             {
                 return;
             }
@@ -1003,12 +1014,12 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            for (int i = 0; i < IdArray.Length; i++)
-            {
-                DeleteFile(IdArray[i]);
-            }
+                for (int i = 0; i < IdArray.Length; i++)
+                {
+                    DeleteFile(IdArray[i]);
+                }
 
-            return;
+                return;
             }
             catch (Exception ex)
             {
@@ -1022,10 +1033,10 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<Healthprofessionaltype> healthprofessionaltypes = _context.Healthprofessionaltypes.ToList();
+                List<Healthprofessionaltype> healthprofessionaltypes = _context.Healthprofessionaltypes.ToList();
 
 
-            return healthprofessionaltypes;
+                return healthprofessionaltypes;
             }
             catch (Exception ex)
             {
@@ -1037,11 +1048,12 @@ namespace HalloDoc_BAL.Repositery
         {
             try
             {
-            List<Healthprofessional> healthprofessionals = _context.Healthprofessionals.Where(q => q.Profession == id).ToList();
+                List<Healthprofessional> healthprofessionals = _context.Healthprofessionals.Where(q => q.Profession == id).ToList();
 
-            return healthprofessionals;
+                return healthprofessionals;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new List<Healthprofessional>();
             }
@@ -1054,9 +1066,9 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
+                Healthprofessional healthprofessional = _context.Healthprofessionals.FirstOrDefault(q => q.Vendorid == id);
 
-            return healthprofessional;
+                return healthprofessional;
             }
             catch (Exception ex)
             {
@@ -1066,7 +1078,7 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-        public bool PostOrderById(int id, Order order,string Role,int UserId)
+        public bool PostOrderById(int id, Order order, string Role, int UserId)
         {
 
 
@@ -1077,10 +1089,11 @@ namespace HalloDoc_BAL.Repositery
                 Orderdetail orderdetail = new Orderdetail();
 
 
-                if(Role == "Admin")
+                if (Role == "Admin")
                 {
                     orderdetail.Createdby = _context.Admins.Where(q => q.Adminid == UserId).Select(r => r.Aspnetuserid).FirstOrDefault();
-                }else if(Role == "Physician")
+                }
+                else if (Role == "Physician")
                 {
                     orderdetail.Createdby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(r => r.Aspnetuserid).FirstOrDefault();
 
@@ -1113,28 +1126,28 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
+                Request request = _context.Requests.FirstOrDefault(q => q.Requestid == requestId);
 
-            if (request != null)
-            {
-                request.Physicianid = int.Parse(adminAssignCase.SelectedPhycisianId);
-                request.Modifieddate = DateTime.Now;
+                if (request != null)
+                {
+                    request.Physicianid = int.Parse(adminAssignCase.SelectedPhycisianId);
+                    request.Modifieddate = DateTime.Now;
                     request.Status = 1;
 
-            }
+                }
 
 
-            Requeststatuslog requeststatuslog = new Requeststatuslog()
-            {
-                Requestid = requestId,
-                Status = 1,
-                Transtophysicianid = int.Parse(adminAssignCase.SelectedPhycisianId),
-                Notes = adminAssignCase.Description,
-                Createddate = DateTime.Now,
-                Adminid = adminId
-            };
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = requestId,
+                    Status = 1,
+                    Transtophysicianid = int.Parse(adminAssignCase.SelectedPhycisianId),
+                    Notes = adminAssignCase.Description,
+                    Createddate = DateTime.Now,
+                    Adminid = adminId
+                };
 
-            
+
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.Requests.Update(request);
                 _context.SaveChanges();
@@ -1197,9 +1210,10 @@ namespace HalloDoc_BAL.Repositery
         {
             try
             {
-            return _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Confirmationnumber).FirstOrDefault();
+                return _context.Requests.Where(q => q.Requestid == requestId).Select(r => r.Confirmationnumber).FirstOrDefault();
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return "";
 
@@ -1295,7 +1309,7 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public bool CancleAgrrementByRequstId(CancleAgreement cancleAgreement, string requestId,int userId)
+        public bool CancleAgrrementByRequstId(CancleAgreement cancleAgreement, string requestId, int userId)
         {
 
 
@@ -1392,7 +1406,7 @@ namespace HalloDoc_BAL.Repositery
                 y += lineHeight;
 
 
-                gfx.DrawString("Last Name :-", font, XBrushes.Black, new XPoint(x, y));    
+                gfx.DrawString("Last Name :-", font, XBrushes.Black, new XPoint(x, y));
                 gfx.DrawString(encounterform.Lastname != null ? encounterform.Lastname : "Not Available", font, XBrushes.Black, new XPoint(x + 80, y));
 
                 y += lineHeight;
@@ -1614,8 +1628,9 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            return _context.Encounterforms.FirstOrDefault(q => q.Requestid == id);
-            }catch(Exception ex)
+                return _context.Encounterforms.FirstOrDefault(q => q.Requestid == id);
+            }
+            catch (Exception ex)
             {
                 return new Encounterform();
             }
@@ -1627,8 +1642,9 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            return _context.Encounterforms.Where(q => q.Requestid == id).Select(r => r.IsFinelized).FirstOrDefault();
-            }catch(Exception ex)
+                return _context.Encounterforms.Where(q => q.Requestid == id).Select(r => r.IsFinelized).FirstOrDefault();
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -1641,41 +1657,41 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            int newid = int.Parse(id);
+                int newid = int.Parse(id);
 
-            if (newid == 0)
-            {
-                return new CLoseCase();
-            }
+                if (newid == 0)
+                {
+                    return new CLoseCase();
+                }
 
-            CLoseCase? cLoseCase = _context.Requestclients.Where(q => q.Requestid == newid).Select(r => new CLoseCase
-            {
-                Firstname = r.Firstname,
-                Lastname = r.Lastname,
-                Phone = r.Phonenumber,
-                Email = r.Email,
-                Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))
-            }).FirstOrDefault();
+                CLoseCase? cLoseCase = _context.Requestclients.Where(q => q.Requestid == newid).Select(r => new CLoseCase
+                {
+                    Firstname = r.Firstname,
+                    Lastname = r.Lastname,
+                    Phone = r.Phonenumber,
+                    Email = r.Email,
+                    Birthdate = new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))
+                }).FirstOrDefault();
 
-            string confirmationnum = _context.Requests.Where(q => q.Requestid == newid).Select(r => r.Confirmationnumber).FirstOrDefault();
+                string confirmationnum = _context.Requests.Where(q => q.Requestid == newid).Select(r => r.Confirmationnumber).FirstOrDefault();
 
-            if (confirmationnum.IsNullOrEmpty())
-            {
-                confirmationnum = "MD98098908";
-            }
+                if (confirmationnum.IsNullOrEmpty())
+                {
+                    confirmationnum = "MD98098908";
+                }
 
-            List<ViewDocument> viewDocuments = _context.Requestwisefiles.Where(q => q.Requestid == newid).Select(r => new ViewDocument
-            {
-                FileId = r.Requestwisefileid,
-                filename = r.Filename,
-                uploadDate = r.Createddate,
-            }).ToList();
+                List<ViewDocument> viewDocuments = _context.Requestwisefiles.Where(q => q.Requestid == newid).Select(r => new ViewDocument
+                {
+                    FileId = r.Requestwisefileid,
+                    filename = r.Filename,
+                    uploadDate = r.Createddate,
+                }).ToList();
 
 
-            cLoseCase.ViewDocuments = viewDocuments;
-            cLoseCase.ConfirmationNumber = confirmationnum;
+                cLoseCase.ViewDocuments = viewDocuments;
+                cLoseCase.ConfirmationNumber = confirmationnum;
 
-            return cLoseCase;
+                return cLoseCase;
 
             }
             catch (Exception ex)
@@ -1687,7 +1703,7 @@ namespace HalloDoc_BAL.Repositery
         public bool SaveDataForCloseState(CLoseCase cLoseCase)
         {
 
-          
+
             int newid = int.Parse(cLoseCase.requestId);
 
             if (newid == 0)
@@ -1770,84 +1786,89 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminid);
+                Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminid);
 
-            if (admin != null)
-            {
-
-                AccountAndAdministratorInfo ai = new AccountAndAdministratorInfo()
+                if (admin != null)
                 {
-                    Firstname = admin.Firstname,
-                    Lastname = admin.Lastname,
-                    Confirmationemail = admin.Email,
-                    Role = _context.Roles.Where(q => q.Roleid == admin.Roleid).Select(r => r.Name).FirstOrDefault(),
-                    Phone = admin.Mobile,
-                    Status = admin.Status == null?0: (int)(admin.Status),
-                    AspnetAdminid = admin.Aspnetuserid
 
-                };
-                MailingAndBillingInfo mi = new MailingAndBillingInfo()
-                {
-                    State = _context.Regions.Where(q => q.Regionid == admin.Regionid).Select(r => r.Name).FirstOrDefault(),
-                    AltPhone = admin.Altphone,
-                    Address1 = admin.Address1,
-                    Address2 = admin.Address2,
-                    City = admin.City,
-                    Zip = admin.Zip,
+                    AccountAndAdministratorInfo ai = new AccountAndAdministratorInfo()
+                    {
+                        Firstname = admin.Firstname,
+                        Lastname = admin.Lastname,
+                        Confirmationemail = admin.Email,
+                        Phone = admin.Mobile,
+                        Status = admin.Status == null ? 0 : (int)(admin.Status),
+                        AspnetAdminid = admin.Aspnetuserid
 
-                };
-                AdminProfile ap = new AdminProfile()
-                {
-                    accountInfo = ai,
-                    mailingAndBillingInfo = mi
-                };
+                    };
+                    Role SelectedRole = _context.Roles.Where(q => q.Roleid == admin.Roleid).FirstOrDefault();
+
+                    ai.SelectedRoleId = SelectedRole.Roleid;
+                    ai.RoleName = SelectedRole.Name;
+
+                    MailingAndBillingInfo mi = new MailingAndBillingInfo()
+                    {
+                        State = _context.Regions.Where(q => q.Regionid == admin.Regionid).Select(r => r.Name).FirstOrDefault(),
+                        AltPhone = admin.Altphone,
+                        Address1 = admin.Address1,
+                        Address2 = admin.Address2,
+                        City = admin.City,
+                        Zip = admin.Zip,
+
+                    };
+                    AdminProfile ap = new AdminProfile()
+                    {
+                        accountInfo = ai,
+                        mailingAndBillingInfo = mi
+                    };
 
 
-                Aspnetuser aspnetuser = _context.Aspnetusers.Where(q=>q.Id == ap.accountInfo.AspnetAdminid).FirstOrDefault();
+                    Aspnetuser aspnetuser = _context.Aspnetusers.Where(q => q.Id == ap.accountInfo.AspnetAdminid).FirstOrDefault();
 
 
-                   ap.accountInfo.Email = aspnetuser.Email;
-                  ap.accountInfo.Username = aspnetuser.Username;
-                List<Role> roles = _context.Roles.ToList();
-                List<Region> regions = _context.Regions.ToList();
+                    ap.accountInfo.Email = aspnetuser.Email;
+                    ap.accountInfo.Username = aspnetuser.Username;
+                    List<Role> roles = _context.Roles.Where(q => q.Isdeleted == false).ToList();
+                    List<Region> regions = _context.Regions.ToList();
 
-                List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
+                    List<SelectedRegions> selectedRegions = new List<SelectedRegions>();
 
-                List<Adminregion> adminregion = _context.Adminregions.Where(q => q.Adminid == adminid).ToList();
+                    List<Adminregion> adminregion = _context.Adminregions.Where(q => q.Adminid == adminid).ToList();
 
-                 for(int i = 0; i < regions.Count; i++)
-                {
+                    for (int i = 0; i < regions.Count; i++)
+                    {
                         SelectedRegions selectedRegions1 = new SelectedRegions();
                         selectedRegions1.regionId = regions[i].Regionid;
                         selectedRegions1.regionName = regions[i].Name;
 
-                    if(adminregion != null && adminregion.Any(q=>q.Regionid == regions[i].Regionid))
-                    {
-                        selectedRegions1.IsSelected = true;
+                        if (adminregion != null && adminregion.Any(q => q.Regionid == regions[i].Regionid))
+                        {
+                            selectedRegions1.IsSelected = true;
+                        }
+                        else
+                        {
+                            selectedRegions1.IsSelected = false;
+                        }
+                        selectedRegions.Add(selectedRegions1);
                     }
-                    else
-                    {
-                        selectedRegions1.IsSelected = false;
-                    }
-                    selectedRegions.Add(selectedRegions1);
+
+                    ap.accountInfo.SelectedRegions = selectedRegions;
+                    ap.accountInfo.roles = roles;
+                    ap.mailingAndBillingInfo.regions = regions;
+
+                    return ap;
                 }
 
-                ap.accountInfo.SelectedRegions = selectedRegions;
-                ap.accountInfo.roles = roles;
-                ap.mailingAndBillingInfo.regions = regions;
-
-                return ap;
+                return new AdminProfile();
             }
-
-            return new AdminProfile();
-            }catch(Exception ex)
+            catch (Exception ex)
             {
                 return new AdminProfile();
             }
 
         }
 
-        public bool ResetAdminPassword(int adminId,string password)
+        public bool ResetAdminPassword(int adminId, string password)
         {
             string aspnetId = _context.Admins.Where(q => q.Adminid == adminId).Select(r => r.Aspnetuserid).FirstOrDefault();
 
@@ -1861,22 +1882,22 @@ namespace HalloDoc_BAL.Repositery
                 _context.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
-     
 
 
-        public bool SaveAdminAccountInfo(AdminProfile ap,int adminId)
+
+        public bool SaveAdminAccountInfo(AdminProfile ap, int adminId)
         {
             try
             {
 
-                 Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminId);
-                Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q=>q.Id == admin.Aspnetuserid);
+                Admin admin = _context.Admins.FirstOrDefault(q => q.Adminid == adminId);
+                Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(q => q.Id == admin.Aspnetuserid);
 
                 aspnetuser.Username = ap.accountInfo.Username;
                 aspnetuser.Email = ap.accountInfo.Email;
@@ -1885,20 +1906,21 @@ namespace HalloDoc_BAL.Repositery
                 admin.Mobile = ap.accountInfo.Phone;
                 admin.Status = (short)ap.accountInfo.Status;
                 admin.Email = ap.accountInfo.Confirmationemail;
-                admin.Roleid = _context.Roles.Where(q => q.Name == ap.accountInfo.Role).Select(r => r.Roleid).FirstOrDefault();
+                admin.Roleid = ap.accountInfo.SelectedRoleId;
 
 
-                for(int i = 0; i < ap.accountInfo.SelectedRegions.Count; i++)
+                for (int i = 0; i < ap.accountInfo.SelectedRegions.Count; i++)
                 {
                     SelectedRegions selectedRegion = ap.accountInfo.SelectedRegions[i];
 
-                    if (selectedRegion.IsSelected == true && (_context.Adminregions.Any(q=>q.Adminid == adminId && q.Regionid == selectedRegion.regionId) == false))
+                    if (selectedRegion.IsSelected == true && (_context.Adminregions.Any(q => q.Adminid == adminId && q.Regionid == selectedRegion.regionId) == false))
                     {
                         Adminregion adminregion = new Adminregion();
                         adminregion.Regionid = (int)selectedRegion.regionId;
                         adminregion.Adminid = adminId;
                         _context.Adminregions.Add(adminregion);
-                    }else if(selectedRegion.IsSelected == false && (_context.Adminregions.Any(q => q.Adminid == adminId && q.Regionid == selectedRegion.regionId) == true))
+                    }
+                    else if (selectedRegion.IsSelected == false && (_context.Adminregions.Any(q => q.Adminid == adminId && q.Regionid == selectedRegion.regionId) == true))
                     {
                         Adminregion adminregion = _context.Adminregions.FirstOrDefault(q => q.Adminid == adminId && q.Regionid == selectedRegion.regionId);
                         _context.Adminregions.Remove(adminregion);
@@ -1909,7 +1931,8 @@ namespace HalloDoc_BAL.Repositery
                 _context.Admins.Update(admin);
                 _context.SaveChanges();
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -1925,7 +1948,7 @@ namespace HalloDoc_BAL.Repositery
                 admin.Address1 = ap.mailingAndBillingInfo.Address1;
                 admin.Address2 = ap.mailingAndBillingInfo.Address2;
                 admin.City = ap.mailingAndBillingInfo.City;
-                admin.Regionid = _context.Regions.Where(q=>q.Name == ap.mailingAndBillingInfo.State).Select(r=>r.Regionid).FirstOrDefault();
+                admin.Regionid = _context.Regions.Where(q => q.Name == ap.mailingAndBillingInfo.State).Select(r => r.Regionid).FirstOrDefault();
                 admin.Zip = ap.mailingAndBillingInfo.Zip;
                 admin.Altphone = ap.mailingAndBillingInfo.AltPhone;
 
@@ -1946,18 +1969,19 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            List<ProviderMenu> providers = _context.Physicians.Select(r => new ProviderMenu()
-            {
-                Name = r.Firstname + " " + r.Lastname,
-                IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
-                Role = _context.Roles.Where(q=>q.Roleid == r.Roleid).Select(r=>r.Name).FirstOrDefault(),
-                status = (int)r.Status,
-                ProviderId = r.Physicianid
-            }).ToList();
+                List<ProviderMenu> providers = _context.Physicians.Select(r => new ProviderMenu()
+                {
+                    Name = r.Firstname + " " + r.Lastname,
+                    IsNoificationOn = (bool)_context.Physiciannotifications.Where(q => q.Physicianid == r.Physicianid).Select(r => r.Isnotificationstopped).FirstOrDefault(),
+                    Role = _context.Roles.Where(q => q.Roleid == r.Roleid).Select(r => r.Name).FirstOrDefault(),
+                    status = (int)r.Status,
+                    ProviderId = r.Physicianid
+                }).ToList();
 
-            return providers;
+                return providers;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new List<ProviderMenu>();
             }
@@ -1969,12 +1993,12 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-                foreach(ProviderMenu provider in providers)
+                foreach (ProviderMenu provider in providers)
                 {
 
                     Physiciannotification physiciannotification = _context.Physiciannotifications.Where(q => q.Physicianid == provider.ProviderId).FirstOrDefault();
 
-                    if(physiciannotification == null)
+                    if (physiciannotification == null)
                     {
                         Physiciannotification physiciannotification1 = new Physiciannotification();
 
@@ -1987,9 +2011,9 @@ namespace HalloDoc_BAL.Repositery
                     else
                     {
 
-                    physiciannotification.Isnotificationstopped = provider.IsNoificationOn;
+                        physiciannotification.Isnotificationstopped = provider.IsNoificationOn;
 
-                    _context.Physiciannotifications.Update(physiciannotification);
+                        _context.Physiciannotifications.Update(physiciannotification);
 
                     }
 
@@ -1998,8 +2022,8 @@ namespace HalloDoc_BAL.Repositery
                 _context.SaveChanges();
 
                 return true;
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -2009,11 +2033,12 @@ namespace HalloDoc_BAL.Repositery
         {
             try
             {
-            List<Physicianlocation> physicianlocations = _context.Physicianlocations.ToList();
+                List<Physicianlocation> physicianlocations = _context.Physicianlocations.ToList();
 
-            return physicianlocations;
+                return physicianlocations;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new List<Physicianlocation>();
             }
@@ -2026,68 +2051,69 @@ namespace HalloDoc_BAL.Repositery
             try
             {
 
-            string[] header = { "Name", "Date of Birth", "Requestor", "Phonenumber", "Address", "Notes" };
+                string[] header = { "Name", "Date of Birth", "Requestor", "Phonenumber", "Address", "Notes" };
 
-            using (var package = new XLWorkbook())
-            {
-
-                var worksheet = package.Worksheets.Add("Sheet1");
-                int row = 1;
-                for (int i = 0; i < header.Length; i++)
-                {
-                    worksheet.Cell(row, i + 1).Value = header[i];
-                }
-
-                row++;
-                int j = 0;
-                foreach (DashboardRequests req in dashboardRequests)
+                using (var package = new XLWorkbook())
                 {
 
-                    worksheet.Cell(row, j + 1).Value = req.Username;
+                    var worksheet = package.Worksheets.Add("Sheet1");
+                    int row = 1;
+                    for (int i = 0; i < header.Length; i++)
+                    {
+                        worksheet.Cell(row, i + 1).Value = header[i];
+                    }
 
-                    j++;
-
-                    worksheet.Cell(row, j + 1).Value = req.Birthdate;
-
-                    j++;
-
-                    worksheet.Cell(row, j + 1).Value = req.Requestor;
-                    j++;
-                    worksheet.Cell(row, j + 1).Value = req.Phone + "/" + req.RequestorPhone;
-                    j++;
-                    worksheet.Cell(row, j + 1).Value = req.Address;
-                    j++;
-                    //worksheet.Cell(row, j + 1).Value = req.Notes;
-
-                    j = 0;
                     row++;
+                    int j = 0;
+                    foreach (DashboardRequests req in dashboardRequests)
+                    {
+
+                        worksheet.Cell(row, j + 1).Value = req.Username;
+
+                        j++;
+
+                        worksheet.Cell(row, j + 1).Value = req.Birthdate;
+
+                        j++;
+
+                        worksheet.Cell(row, j + 1).Value = req.Requestor;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Phone + "/" + req.RequestorPhone;
+                        j++;
+                        worksheet.Cell(row, j + 1).Value = req.Address;
+                        j++;
+                        //worksheet.Cell(row, j + 1).Value = req.Notes;
+
+                        j = 0;
+                        row++;
 
 
 
 
-                }
+                    }
 
-                byte[] fileBytes;
-                using (var stream = new MemoryStream())
-                {
-                    package.SaveAs(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
+                    byte[] fileBytes;
+                    using (var stream = new MemoryStream())
+                    {
+                        package.SaveAs(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
 
-                    fileBytes = stream.ToArray();
-                    string fileName = Guid.NewGuid().ToString() + ".xlsx";
-                    string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
+                        fileBytes = stream.ToArray();
+                        string fileName = Guid.NewGuid().ToString() + ".xlsx";
+                        string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
 
-                    string path = Path.Combine(filePath, fileName);
+                        string path = Path.Combine(filePath, fileName);
 
-                   System.IO.File.WriteAllBytes(path, fileBytes);
+                        System.IO.File.WriteAllBytes(path, fileBytes);
 
-                    string fileUrl = path;
+                        string fileUrl = path;
 
-                    return  "https://localhost:7008/Upload/" + fileName ;
+                        return "https://localhost:7008/Upload/" + fileName;
 
+                    }
                 }
             }
-            }catch(Exception ex)
+            catch (Exception ex)
             {
                 return "";
             }

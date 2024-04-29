@@ -35,8 +35,9 @@ namespace HalloDoc_DAL.AdminViewModels
         public int? Status { get; set; }
 
         [Required(ErrorMessage = "Role is Required.")]
+        public int SelectedRoleId { get; set; }
 
-        public string? Role { get; set; }
+        public string? RoleName { get; set; }
 
         public List<Role>? roles { get; set; }
 

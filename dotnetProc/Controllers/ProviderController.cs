@@ -923,6 +923,13 @@ namespace dotnetProc.Controllers
             viewShift.regions = regions;
             viewShift.physicians = physicians;
 
+            
+
+            if(viewShift.ShiftDate <new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))
+            {
+                return Json(new { IsPastShift = true });
+            }
+
 
             return PartialView("_ViewShiftModel", viewShift);
         }

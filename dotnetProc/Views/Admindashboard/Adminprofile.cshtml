@@ -72,14 +72,20 @@
                         </div>
                         <div class="col-xl-6 col-sm-6 col-12">
                             <div class="form-floating mb-3">
-                                <select asp-for="accountInfo.Role" value="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
+                                <select asp-for="accountInfo.SelectedRoleId" value="Role" class="form-select tbDisabled form-control" aria-label="Default select example">
+                                        <option value="@Model.accountInfo.SelectedRoleId" selected>@Model.accountInfo.RoleName</option>
                                     @foreach(Role role in Model.accountInfo.roles)
                                     {
-                                    <option value="@role.Name">@role.Name</option>                                    
+
+                                        if(role.Roleid != Model.accountInfo.SelectedRoleId)
+                                        {
+                                            
+                                        <option value="@role.Roleid">@role.Name</option>                                    
+                                        }
                                     }
                                 </select>
                                 <label for="floatingInput">Role</label>
-                                 <span asp-validation-for="accountInfo.Role" class="text-danger"></span> 
+                                 <span asp-validation-for="accountInfo.SelectedRoleId" class="text-danger"></span> 
 
                             </div>
                         </div>

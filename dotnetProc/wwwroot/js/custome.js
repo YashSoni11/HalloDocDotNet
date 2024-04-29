@@ -1440,7 +1440,17 @@ const GetShiftModalView = () => {
                 
                 $("#ShiftModalContainer").html(response);
 
+                var currentDate = new Date().toISOString().split('T')[0];
+
+
+                document.getElementById('ShiftDateInput').setAttribute('max', currentDate);
+
                 $.validator.unobtrusive.parse($("#CreateShiftForm"));
+
+
+
+
+
                 $("#ShiftModal").modal("show")
 
             }
@@ -1494,7 +1504,10 @@ const GetViewShiftModel = (shiftDetailId) => {
             if (response.code == 401) {
 
                 location.reload();
-            } else {
+            } else if (response.IsPastShift) {
+                return;
+            }
+            else {
 
                 $("#ShiftModalContainer").html(response);
                 $.validator.unobtrusive.parse($("#EditShiftModalForm")); 
