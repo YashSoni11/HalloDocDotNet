@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -547,7 +549,13 @@ namespace HalloDoc_BAL.Repositery
                 if (file.Length > 0)
                 {
                     string filename = file.FileName;
-                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload";
+                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory())) + "\\wwwroot\\Upload\\"+requestid.ToString() ;
+
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
                     using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
                     {
                         file.CopyTo(filestream);
@@ -569,6 +577,19 @@ namespace HalloDoc_BAL.Repositery
 
 
 
+        }
+
+
+        public  bool ValidatePassword(string password)
+        {
+          
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$";
+
+          
+            Regex regex = new Regex(pattern);
+
+           
+            return regex.IsMatch(password);
         }
 
     }

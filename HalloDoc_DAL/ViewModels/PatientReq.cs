@@ -17,6 +17,8 @@ namespace HalloDoc_DAL.ViewModels
 
 
         [Required(ErrorMessage = "Password is required.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$", ErrorMessage = "Not Valid Password!")]
+
         public string Password { get; set; }
 
         [Compare("Password", ErrorMessage = "The password and confirm password do not match.")]

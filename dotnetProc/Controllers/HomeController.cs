@@ -8,6 +8,8 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using MailKit.Net.Smtp;
 using dotnetProc.Utils;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 
 namespace dotnetProc.Controllers
 {
@@ -128,14 +130,23 @@ namespace dotnetProc.Controllers
             bool isemailblocked = _patientReq.IsEmailBlocked(pr.patientReq.Email);
             bool IsPhoneBlocked = _patientReq.IsPhoneBlocked(pr.patientReq.Phonenumber);
             bool IsregionAvailable = _patientReq.IsRegionAvailable(pr.patientReq.Location.State);
+            //bool IsVaildPassword = _account.ValidatePassword(pr.Password);
             pr.patientReq.Relation = "Patient";
            
             
-            if(isemailblocked == true || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false)
+            if( isemailexist || isemailblocked == true || IsPhoneBlocked || IsregionAvailable == false )
             {
+
+                //if (IsVaildPassword == false)
+                //{
+                //    TempData["ShowNegativeNotification"] = "Enter Valid Password";
+                //    return RedirectToAction("FormByPatient");
+
+                //}
 
                 TempData["ShowNegativeNotification"] = isemailexist == true?  "Account with this email already created.": TempData["ShowNegativeNotification"] = "Account with this email is blocked.";
 
+                
 
 
                 if (IsPhoneBlocked)
@@ -150,7 +161,7 @@ namespace dotnetProc.Controllers
 
                 return RedirectToAction("FormByPatient");
             }
-            else  if (!ModelState.IsValid)
+            else  if (ModelState.IsValid)
             {
 
 

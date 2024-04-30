@@ -1440,10 +1440,7 @@ const GetShiftModalView = () => {
                 
                 $("#ShiftModalContainer").html(response);
 
-                var currentDate = new Date().toISOString().split('T')[0];
-
-
-                document.getElementById('ShiftDateInput').setAttribute('max', currentDate);
+               
 
                 $.validator.unobtrusive.parse($("#CreateShiftForm"));
 
@@ -1630,6 +1627,25 @@ const handleRepeatAction = () => {
 
 }
 
+const SubmitShiftForm = () => {
+
+
+    let start = $("#StartTime").val();
+    let end = $("#EndTime").val();
+
+
+   
+
+    if (end < start) {
+        console.log(0)
+        toastr.warning("Please Enter Valid Time");
+    }  else {
+        console.log(2);
+        $("#CreateShiftForm").submit();
+    }
+
+}
+
 const CreateShift = () => {
 
     if ($("#RepeatSwitch")[0].checked == true) {
@@ -1639,7 +1655,9 @@ const CreateShift = () => {
             $("#dayValidation").text("Please Select Minimum 1 Day.")
         } else {
             console.log("9")
-            $("#CreateShiftForm").submit();
+
+            SubmitShiftForm()
+            //$("#CreateShiftForm").submit();
             $("#dayValidation").text("")
 
 
@@ -1648,9 +1666,13 @@ const CreateShift = () => {
 
         $("#dayValidation").text("")
 
-        $("#CreateShiftForm").submit();
+        SubmitShiftForm()
+
+        //$("#CreateShiftForm").submit();
     }
 }
+
+
 
 const ProviderCreatShift = () => {
 

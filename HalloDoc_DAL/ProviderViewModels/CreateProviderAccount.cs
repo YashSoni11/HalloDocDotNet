@@ -131,4 +131,12 @@ namespace HalloDoc_DAL.ProviderViewModels
         public bool IsNonDisClouser { get; set; }
 
     }
+
+
+    public class LatLang
+    {
+        public double? Lat { get; set; }
+
+        public double? Lang { get; set; }
+    }
 }

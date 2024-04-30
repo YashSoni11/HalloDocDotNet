@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
@@ -2456,6 +2457,33 @@ namespace HalloDoc_BAL.Repositery
                 return "";
             }
         }
+
+
+        //public LatLang GetLatLangFromZipCode(string ZipCode)
+        //{
+        //    var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={zipcode}&key={_apiKey}";
+
+        //    var response = await _httpClient.GetAsync(url);
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        throw new HttpRequestException($"Failed to fetch data from the Geocoding API. Status code: {response.StatusCode}");
+        //    }
+
+        //    var contentStream = await response.Content.ReadAsStreamAsync();
+        //    var json = await JsonSerializer.DeserializeAsync<GeocodingResponse>(contentStream);
+
+        //    if (json is not null && json.Status == "OK" && json.Results.Length > 0)
+        //    {
+        //        var location = json.Results[0].Geometry.Location;
+        //        return (location.Lat, location.Lng);
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("Failed to fetch latitude and longitude.");
+        //    }
+        //}
+
 
 
     }

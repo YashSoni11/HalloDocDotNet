@@ -13,6 +13,9 @@ namespace HalloDoc_BAL.Interface
     {
 
         public string GetHashedPassword(string password);
+
+        public  bool ValidatePassword(string password);
+
         public Aspnetuser ValidateLogin(UserCred um);
 
         #region Get User,Admin,PhysicianByAspNetId Services

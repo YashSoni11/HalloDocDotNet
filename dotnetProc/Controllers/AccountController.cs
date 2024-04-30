@@ -82,6 +82,13 @@ namespace dotnetProc.Controllers
 
                 if (user.Password == user.Confirmpassword)
                 {
+
+                    //if(_account.ValidatePassword(user.Password) == false)
+                    //{
+                    //    TempData["ShowNegativeNotification"] = "Enter Valid Password";
+                    //    return RedirectToAction("Createaccount", "Account", new { createid = RequestId });
+                    //}
+
                     Requestclient requestclient = _patientReq.GetRequestByIdAndEmail(RequestId, user.Email);
 
                     if (requestclient == null)

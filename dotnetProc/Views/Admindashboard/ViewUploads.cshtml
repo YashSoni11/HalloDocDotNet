@@ -132,11 +132,11 @@ else if (ViewData["RoleName"] == "Adm")
                             {
 
                                 <tr>
-                                    <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.filename.Replace(" ","")"></th>
+                                    <th scope="row"><input class="form-check-input fileCheckBox" type="checkbox" value="" id="@doc.FileId"></th>
                                     <td class="@doc.filename.Replace(" ","")" id="@doc.FileId">@doc.filename</td>
                                     <td>@doc.uploadDate</td>
                                     <td class="d-flex" style="column-gap:10px;">
-                                        <a class="nav-link lg-@doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                        <a class="nav-link lg-@doc.FileId" href="~/Upload/@Model.requestId/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
                                             <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
                                         </a>
                                         <form method="post" asp-action="DeleteFileById" asp-controller="Admindashboard" asp-route-id="@doc.FileId">
@@ -305,10 +305,9 @@ else if (ViewData["RoleName"] == "Adm")
 
                 let ide = chkecks[i].id;
 
-                let deleteId = document.getElementsByClassName(`${ide}`)[0].id;
-                console.log(deleteId,"ii")
+              
 
-                DeleteFileIdArray.push(deleteId);
+                DeleteFileIdArray.push(ide);
 
 
 
