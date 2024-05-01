@@ -112,7 +112,9 @@ namespace HalloDoc_DAL.ProviderViewModels
         [Required(ErrorMessage = "Businesswensite is Required.")]
         public string? BusinessWebsite { get; set; }
         public IFormFile? Photo { get; set; }
+        public  bool? IsPhotoUploaded { get; set; }
         public IFormFile? Signature { get; set; }
+        public bool? IsSignatureUploaded { get; set; }
 
         public byte[]? SignatureImage { get; set; }
 
@@ -124,17 +126,23 @@ namespace HalloDoc_DAL.ProviderViewModels
     {
         public IFormFile ContractAgrrement { get; set; }
         public bool IsContractAggreeMent { get; set; }
+         public string ContractAgreementExtension { get; set; }
 
         public IFormFile BackgroundCheck { get; set; }
         public bool IsBackGroundCheck { get; set; }
+        public string BackgroundCheckExtension { get; set; }
 
 
 
         public IFormFile HIPAA { get; set; }
         public bool IsHipaa { get; set; }
+        public string HIPAAExtension { get; set; }
+
 
         public IFormFile NonDisclouser { get; set; }
         public bool IsNonDisClouser { get; set; }
+        public string NonDisclouseExtension { get; set; }
+
     }
- 
+
 }

@@ -10,6 +10,7 @@ using HalloDoc_DAL.ProviderViewModels;
 using HalloDoc_DAL.ViewModels;
 using ICSharpCode.SharpZipLib.GZip;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SixLabors.ImageSharp;
 using System;
@@ -60,7 +61,7 @@ namespace HalloDoc_BAL.Repositery
 
         }
 
-        public string UploadProviderFiles(IFormFile file)
+        public string UploadProviderSignatureFile(IFormFile file)
         {
 
             string path = "";
@@ -80,6 +81,64 @@ namespace HalloDoc_BAL.Repositery
                     }
 
                     return filename;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+
+
+
+        }
+
+        public string UploadProviderFiles(IFormFile file,int PhysicianId,string FileName)
+        {
+
+      
+
+
+
+            try
+            {
+                if (file.Length > 0)
+                {
+
+
+
+
+                    string directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Documents", PhysicianId.ToString());
+
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                   
+                        string path = Path.Combine(directory, FileName + Path.GetExtension(file.FileName));
+
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                           file.CopyTo(fileStream);
+                        }
+
+
+
+
+                    return FileName;
+
+
+                   
                 }
                 else
                 {
@@ -187,6 +246,7 @@ namespace HalloDoc_BAL.Repositery
                     BusinessWebsite = physician.Businesswebsite,
                     SignatureImage = GetImageBytesFromFile(physician.Signature),
                     AdminNotes = physician.Adminnotes,
+                    IsSignatureUploaded = physician.Signature != null ? true : false
                 };
 
 
@@ -197,6 +257,7 @@ namespace HalloDoc_BAL.Repositery
                     IsBackGroundCheck = physician.Isbackgrounddoc[0],
                     IsHipaa = physician.Istrainingdoc[0],
                     IsNonDisClouser = physician.Isnondisclosuredoc[0],
+
                 };
 
 
@@ -358,7 +419,7 @@ namespace HalloDoc_BAL.Repositery
 
                 if (pp.Photo != null)
                 {
-                    string? file = UploadProviderFiles(pp.Photo);
+                    string? file = UploadProviderFiles(pp.Photo, provideId,"Photo");
                     if (file == null)
                     {
                         return false;
@@ -367,7 +428,7 @@ namespace HalloDoc_BAL.Repositery
                 }
                 if (pp.Signature != null)
                 {
-                    string? file = UploadProviderFiles(pp.Signature);
+                    string? file = UploadProviderSignatureFile(pp.Signature);
                     if (file == null)
                     {
                         return false;
@@ -551,21 +612,23 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-                if (createProviderAccount.Photo != null)
-                {
-                    string fileName = UploadProviderFiles(createProviderAccount.Photo);
-                    if (!fileName.IsNullOrEmpty())
-                    {
-                        physician.Photo = fileName;
-                    }
-                }
-
 
 
                 _context.Physicians.Add(physician);
                 _context.SaveChanges();
 
                int PhySicianId = _context.Physicians.OrderByDescending(q=>q.Physicianid).First().Physicianid;
+
+                if (createProviderAccount.Photo != null)
+                {
+                    string fileName = UploadProviderFiles(createProviderAccount.Photo, PhySicianId, "Photo");
+                    if (!fileName.IsNullOrEmpty())
+                    {
+                        Physician physician1 = _context.Physicians.FirstOrDefault(q => q.Physicianid == PhySicianId);
+                        physician1.Photo = fileName;
+                        _context.Physicians.Update(physician1);
+                    }
+                }
 
                 for (int i = 0; i < createProviderAccount.Regions.Count; i++)
                 {
@@ -1928,7 +1991,7 @@ namespace HalloDoc_BAL.Repositery
                     DateTime? serviceDate = _context.Encounterforms.Where(q => q.Requestid == rc.Requestid).Select(q => q.Createdat).FirstOrDefault();
 
                     searchRecord.RequestId = rc.Requestid;
-                    //searchRecord.DateOfService = serviceDate == null ? null : serviceDate;
+                    searchRecord.DateOfService = serviceDate == null ? null : serviceDate;
                     searchRecord.CloseCaseDate = _context.Requeststatuslogs.Where(q => q.Requestid == rc.Requestid && (q.Status == 6 || q.Status == 7 || q.Status == 8)).Select(q => q.Createddate).FirstOrDefault();
                     searchRecord.Email = rc.Email;
                     searchRecord.PatientPhone = rc.Phonenumber;
@@ -1944,10 +2007,10 @@ namespace HalloDoc_BAL.Repositery
                     searchRecords.Add(searchRecord);
 
                 }
-                   
+                  
 
 
-                searchRecords = searchRecords.Where(q=>(IsAllStatus || q.RequestStatus == null || q.RequestStatus == Enum.GetName(typeof(Status),Status)) && (IsAllPatientName  || q.PatientName == PatientName) && (IsAllRequestTypes  || q.RequestorType == null || q.RequestorType == Enum.GetName(typeof(RequestorType),RequestType))   && (IsAllEmail || q.Email == Email) && (IsAllProviderName || q.Physician == null || q.Physician.ToLower().Contains(ProviderName.ToLower()) ) && (IsAllPhone || q.PatientPhone == Phone)   ).ToList();
+                searchRecords = searchRecords.Where(q=>(IsAllFromDate ||  q.DateOfService.GetValueOrDefault().Date == FromDate.Date) && (IsAllToDate || q.CloseCaseDate.GetValueOrDefault().Date == ToDate.Date)  &&   (IsAllStatus || q.RequestStatus == null || q.RequestStatus == Enum.GetName(typeof(Status),Status)) && (IsAllPatientName  || q.PatientName == PatientName) && (IsAllRequestTypes  || q.RequestorType == null || q.RequestorType == Enum.GetName(typeof(RequestorType),RequestType))   && (IsAllEmail || q.Email == Email) && (IsAllProviderName || q.Physician == null || q.Physician.ToLower().Contains(ProviderName.ToLower()) ) && (IsAllPhone || q.PatientPhone == Phone)   ).ToList();
              
 
                 return searchRecords;
@@ -2042,7 +2105,7 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-                EmailLogs = EmailLogs.Where(q => (IsAllReciver || q.Recipient.ToLower().Contains(ReciverName.ToLower()) ) && (IsAllRole || q.RoleName == _context.Roles.Where(q => q.Roleid == RoleId).Select(q => q.Name).FirstOrDefault())  && (IsAllEmail || q.Email == EmailId)).ToList();
+                EmailLogs = EmailLogs.Where(q => (IsAllCreateDate || CreateDate.Date == q.CreateDate.Date) && (IsAllSentDate  || SentDate.Date == q.SentDate.Date) &&  (IsAllReciver || (q.Recipient != null && q.Recipient.ToLower().Contains(ReciverName.ToLower())) ) && (IsAllRole || q.RoleName == _context.Roles.Where(q => q.Roleid == RoleId).Select(q => q.Name).FirstOrDefault())  && (IsAllEmail || q.Email == EmailId)).ToList();
 
 
                 return EmailLogs;
@@ -2457,6 +2520,81 @@ namespace HalloDoc_BAL.Repositery
                 return "";
             }
         }
+
+
+        public MDsOnCallModel GetProviderOnCallData(int regionId)
+        {
+
+
+            var currentTime = new TimeOnly(DateTime.Now.Hour, DateTime.Now.Minute);
+            BitArray deletedBit = new BitArray(new[] { false });
+
+
+            List<Physician> physicians = GetPhysicinForShiftsByRegionService(regionId);
+
+            Dictionary<int, int> AvailablePhysician = new Dictionary<int, int>();
+
+            foreach(Physician p in physicians)
+            {
+                AvailablePhysician[p.Physicianid] = 1;
+            }
+
+
+            Dictionary<int, int> PhysicianId = new Dictionary<int, int>();
+
+            List<Physician> OnCallPhysicians = new List<Physician>();
+
+            List<Shiftdetail> shiftdetsils = _context.Shiftdetails.Where(sd => sd.Shiftdate.Date == DateTime.Today && currentTime >= sd.Starttime && currentTime <= sd.Endtime && sd.Isdeleted == false).ToList();
+
+
+            foreach(Shiftdetail shiftdetail in shiftdetsils)
+            {
+
+                int physicianId = _context.Shifts.Where(q => q.Shiftid == shiftdetail.Shiftid).Select(q => q.Physicianid).FirstOrDefault();
+
+                if (!AvailablePhysician.ContainsKey(physicianId))
+                {
+                    continue;
+                }
+
+                Physician physician = _context.Physicians.Where(q => q.Physicianid == physicianId).FirstOrDefault();
+
+                OnCallPhysicians.Add(physician);
+                 
+                if(!PhysicianId.ContainsKey(physicianId))
+                {
+                    PhysicianId[physicianId] = 1;
+                }
+                else
+                {
+                    PhysicianId[physicianId]++;
+                }
+            }
+
+           List<Physician> OffDutyPhysician = new List<Physician>();
+
+            foreach(Physician physician in physicians)
+            {
+                if (!PhysicianId.ContainsKey(physician.Physicianid))
+                {
+                    OffDutyPhysician.Add(physician) ;
+                }
+            }
+
+
+
+            MDsOnCallModel mdOnCall = new MDsOnCallModel
+            {
+                OnCall = OnCallPhysicians,
+                OffDuty = OffDutyPhysician,
+               
+            };
+
+            return mdOnCall;
+
+
+        }
+
 
 
         //public LatLang GetLatLangFromZipCode(string ZipCode)

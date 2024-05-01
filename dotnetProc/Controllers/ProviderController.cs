@@ -1531,8 +1531,34 @@ namespace dotnetProc.Controllers
         #endregion
 
 
+        #region ProviderOnCall
+        public IActionResult ProviderOnCallView()
+        {
 
 
+
+            ProvidersOnCallModel providersOnCallModel = new ProvidersOnCallModel();
+
+
+            providersOnCallModel.regions = _account.GetAllRegions();
+
+
+            return View("ProvidersOnCall" ,providersOnCallModel);
+        }
+
+
+        public IActionResult GetProvidersOnCallData(int RegionId)
+        {
+            MDsOnCallModel mDsOnCallModel = new MDsOnCallModel();
+
+
+            mDsOnCallModel = _provider.GetProviderOnCallData(RegionId);
+
+
+            return PartialView("_ProviderOnCallsTable", mDsOnCallModel);
+
+        }
+        #endregion
 
 
 

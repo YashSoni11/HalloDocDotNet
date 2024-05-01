@@ -84,6 +84,23 @@
     color: white !important;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+   
+}
+
+#PageNumberInput {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 16px;
+}
+
+#PageNumberInput:focus{
+    outline:none;
+}
 /*
 .ActiveStauts:after{
      

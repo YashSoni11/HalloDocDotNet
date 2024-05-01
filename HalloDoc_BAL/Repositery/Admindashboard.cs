@@ -132,7 +132,7 @@ namespace HalloDoc_BAL.Repositery
 
             try
             {
-                List<DashboardRequests> requests = _context.Requests.Where(q => q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
+                List<DashboardRequests> requests = _context.Requests.OrderByDescending(q=>q.Createddate).Where(q => q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
                 {
                     Requestid = r.Requestid,
                     Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
@@ -595,7 +595,7 @@ namespace HalloDoc_BAL.Repositery
 
                 var statuskey = status.Keys.ToList();
 
-                List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
+                List<DashboardRequests> dashboardRequests = _context.Requests.OrderByDescending(q => q.Createddate).Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
                 {
                     Requestid = r.Requestid,
                     Email = r.Email,
@@ -650,7 +650,7 @@ namespace HalloDoc_BAL.Repositery
                 var statuskey = status.Keys.ToList();
 
 
-                List<DashboardRequests> dashboardRequests = _context.Requests.Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
+                List<DashboardRequests> dashboardRequests = _context.Requests.OrderByDescending(q => q.Createddate).Where(q => statuskey.Contains(q.Status) && q.Isdeleted == new BitArray(1, false)).Select(r => new DashboardRequests
                 {
                     Requestid = r.Requestid,
                     Email = r.Email,

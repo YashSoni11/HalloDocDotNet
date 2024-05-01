@@ -18,7 +18,7 @@
                     <th class="reqtableHeader text-center" scope="col">Provider Name</th>
                     <th class="reqtableHeader text-center" scope="col">Conclude Date</th>
                     <th class="reqtableHeader text-center" scope="col">Status</th>
-                    <th class="reqtableHeader text-center" scope="col">Final Report</th>
+              
                     <th class="reqtableHeader text-center" scope="col">Actions</th>
 
 
@@ -47,23 +47,7 @@
                     )</td>
                         <td class="align-middle text-center">@(
                     Model.patientRecords[i].status == null ? "-" : Model.patientRecords[i].status
-                    )</td>
-                        <td class="align-middle text-center">
-
-                            @if (Model.patientRecords[i].IsFinalized == null || Model.patientRecords[i].IsFinalized == false)
-                            {
-                                <text>-</text>
-                            }
-                            else
-                            {
-                                <a  class="btn btn-outline-info text-info lightInfo-btn">
-                                    View
-                                </a>
-                            }
-
-
-
-                        </td>
+                    )
 
                         <td class="align-middle text-center">
 

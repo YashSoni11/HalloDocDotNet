@@ -374,9 +374,10 @@
                 }
            
                 <div class="col-12 d-flex justify-content-center">
-                    @if (Model.ProviderProfileInfo?.SignatureImage != null)
+                    @if (  Model.ProviderProfileInfo?.SignatureImage != null)
                     {
                         <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProviderProfileInfo.SignatureImage)" id="signImage"/>
+                        
                     }
                     <canvas class="canvasGroup" id="signatureCanvas" width="400" height="200" style="border: 1px solid black;"></canvas>
                 </div>
@@ -474,7 +475,7 @@
                     }
 
                     <div class="col-2 mx-2">
-                        <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Independent_Contractor.png" target="_blank">View</a>
+                        <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Background.png" target="_blank">View</a>
 
                     </div>
 
@@ -533,7 +534,7 @@
                     {
 
                         <div class="col-2 mx-2">
-                            <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Non_Disclouser.png" target="_blank">View</a>
+                            <a class="btn btn-info  text-white darkInfo-btn" href="~/Documents/@Model.PhysicianId/Non_Disclosure.png" target="_blank">View</a>
 
                         </div>
                     }

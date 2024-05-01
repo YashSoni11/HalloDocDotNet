@@ -1,0 +1,32 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.MDsOnCallModel
+
+<div class="row my-2">
+    <h5 class="fw-bold">
+        MD's On Call
+    </h5>
+    <div id="matched-events" class="row my-2">
+        @foreach (var oncall in Model.OnCall)
+        {
+            <div class="col-4 my-2 fw-bolder d-flex align-items-center">
+                <div class="me-2 text-center" style="width:40px;height:40px"><img class="w-100 h-100 border rounded-5" src="~/Documents/@oncall.Physicianid/Photo.png" /></div>
+
+                <div>Dr @oncall.Firstname</div>
+            </div>
+        }
+    </div>
+</div>
+<div class="row my-2">
+    <h5 class="fw-bold">
+        Physicians Off Duty
+    </h5>
+    <div id="unmatched-events" class="row">
+        @foreach (var offduty in Model.OffDuty)
+        {
+
+            <div class="col-4 my-2 fw-bolder d-flex align-items-center">
+                <div class="me-2 text-center" style="width:40px;height:40px"><img class="w-100 h-100 border rounded-5" src="~/Documents/@offduty.Physicianid/Photo.png" /></div>
+                <div>Dr @offduty.Firstname</div>
+            </div>
+        }
+    </div>
+</div>

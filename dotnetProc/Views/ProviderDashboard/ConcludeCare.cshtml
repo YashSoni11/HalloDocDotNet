@@ -94,7 +94,7 @@
                                 <td class="@doc.filename.Replace(" ","")  text-start" id="@doc.FileId">@doc.filename</td>
                                 
                                 <td class="d-flex text-end" style="justify-content:flex-end;">
-                                    <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
+                                    <a class="nav-link @doc.filename.Replace(" ","")" href="~/Upload/@Model.RequestId/@doc.filename" download style="width:2rem;height:2rem;border:1px solid #0dcaf0;border-radius:5px;display:flex;justify-content:center;align-items:center;">
                                         <i id='themeIcon' class="bi bi-cloud-upload text-info"></i>
                                     </a>
                                 </td>

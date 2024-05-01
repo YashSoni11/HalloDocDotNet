@@ -1,0 +1,79 @@
+﻿@model HalloDoc_DAL.ProviderViewModels.ProvidersOnCallModel
+
+
+
+
+
+@{
+    Layout = "_Layout";
+}
+
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+
+<div class="container-fluid">
+    <div class="row d-flex justify-content-center mb-5">
+        <div class=" col-lg-8 col-md-10 col-sm-12 px-0 d-flex justify-content-between mb-2">
+            <h4 class="fw-bolder">MDs On Call</h4>
+            <button class="btn btn-outline-info back text-info fw-bold border-2 rounded bg-transparent" onclick="Scheduling(1)">
+                <i class="bi bi-chevron-left d-none d-sm-inline"></i>
+                Back
+            </button>
+        </div>
+
+        <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12 px-0 my-2">
+            <div class="row d-flex mt-2">
+                <div class="col-lg-4 col-md-4 col-12 mt-1">
+                    <select class="form-select" aria-label="Large select example" onchange="GetProviderOnCallData(event.target.value)">
+                        <option value="0">All Regions</option>
+                        @foreach (var obj in Model.regions)
+                        {
+                            <option value="@obj.Regionid">
+                                @obj.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-8 col-md-8 col-12 d-flex justify-content-end gap-2 mt-1">
+                    <a asp-action="ProviderScheduling" asp-controller="Provider" class="btn btn-info text-white me-2" onclick="Scheduling(1)">Calendar View</a>
+                    <a asp-action="RequestedShiftView" asp-controller="Provider" class="btn btn-info text-white me-2" onclick="RequestedShifts(0)">Shifts For Review</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="ProviderOnCallTableContainer" class="col-xl-8 col-lg-8 col-md-10 col-sm-12 shadow border rounded mb-5">
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+
+
+    $(document).ready(function () {
+
+        handleNavChange('provider-menu-tab')
+        GetProviderOnCallData(0);
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+</script>

@@ -558,6 +558,8 @@ const GetAllCurrentStatusRequests = () => {
 
 const GetFiltteredRequests = (currentPage,totalPages,isPageAction, type) => {
 
+
+
     console.log(currentPage, totalPages, isPageAction)
     if (isPageAction && (currentPage <= 0 || currentPage > totalPages)) {
         console.log(isPageAction)
@@ -1828,13 +1830,13 @@ const GetSearchRecordsTableView = (currentPage, isPageAction, totalPages = 0) =>
     let Email = $("#sr-Email").val();
     let phonumber = $("#sr-phoneNumber").val();
 
-    
+    console.log(Email)
     $.ajax({
 
         url: "/Provider/GetSearchRecordsTableView",
         method: "post",
         data: {
-            currentPage: currentPage,   Status: Status, PatientName: patientname, RequestType: RequestType, FromDate: FromDate, ToDate: toDate, ProviderName: ProviderName, Emai
+            currentPage: currentPage,   Status: Status, PatientName: patientname, RequestType: RequestType, FromDate: FromDate, ToDate: toDate, ProviderName: ProviderName, Email
                 : Email, Phone: phonumber
         },
         success: function (response) {
@@ -2265,6 +2267,31 @@ const GetBlockHistoryTableView = (currentPage, isPageAction, totalPages = 0 ) =>
         success: function (response) {
 
             $("#BlockHistoryTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+}
+
+const GetProviderOnCallData = (regionId) => {
+
+
+ 
+
+
+    $.ajax({
+
+        url: "/Provider/GetProvidersOnCallData",
+        method: "post",
+        data: { RegionId: regionId },
+        success: function (response) {
+
+            $("#ProviderOnCallTableContainer").html(response);
 
 
         },

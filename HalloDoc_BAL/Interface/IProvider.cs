@@ -104,6 +104,8 @@ namespace HalloDoc_BAL.Interface
 
         public string GetSearchRecordsExcelFIle(List<SearchRecords> sr);
 
+        public MDsOnCallModel GetProviderOnCallData(int RegionId);
+
 
         //public LatLang GetLatLangFromZipCode(string ZipCode);
 
