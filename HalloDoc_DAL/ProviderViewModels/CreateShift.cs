@@ -43,6 +43,7 @@ namespace HalloDoc_DAL.ProviderViewModels
 
         public int RepeatUpto { get; set; }
 
+        public int? ShiftDetailId { get; set; }
     }
 
     public class SelectedDays

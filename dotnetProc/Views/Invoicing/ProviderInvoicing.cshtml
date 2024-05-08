@@ -1,0 +1,142 @@
+﻿
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+
+<partial name="_Dashtabs" />
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+
+
+        <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between">
+            <h3>TimeSheets</h3>
+            <button class="btn btn-outline-info text-info lightInfo-btn" onclick="changeTab()">
+                <i class="bi bi-chevron-left text-info lightInfo-btn "></i>Back
+            </button>
+        </div>
+
+
+        <div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 mt-3 ProviderMenuHeader">
+
+            <form asp-action="GetTimeSheetView" asp-controller="Invoicing" method="post">
+
+
+            <div class="row  justify-content-lg-between justify-content-sm-center  justify-content-center p-sm-3 p-3" style="row-gap:1rem;align-items: center;background:var(--pi-form-back-color);border-radius:10px 10px 0px 0px;">
+
+                <div class="col-lg-4 col-sm-10">
+                    <div class="form-floating ">
+
+                        <select id="" name="TimeSheetDate" class="form-select form-control" aria-label="Default select example" onchange="GetVendorsTableView('1',false)">
+
+                            @for(int i = 2; i > 0; i--)
+                            {
+                                <option value="@(new DateTime(DateTime.Now.Year,DateTime.Now.AddMonths(-i).Month,1).Date)" >@(new DateTime(DateTime.Now.Year, DateTime.Now.AddMonths(-i).Month, 1).ToString("yyyy/MM/dd"))-@(new DateTime(DateTime.Now.Year, DateTime.Now.AddMonths(-i).Month, 1).AddDays(13).ToString("yyyy/MM/dd"))</option>
+
+                                int currentMonth = DateTime.Now.AddMonths(-i).Month;
+                                int daysToAdd = 0;
+
+                                if(new DateTime(DateTime.Now.Year,currentMonth,15).AddDays(16).Month == currentMonth)
+                                {
+                                    daysToAdd = 16;
+                                }
+                                else if (new DateTime(DateTime.Now.Year, currentMonth, 15).AddDays(15).Month == currentMonth)
+                                {
+                                    daysToAdd = 15;
+
+                                }
+                                else if (new DateTime(DateTime.Now.Year, currentMonth, 15).AddDays(14).Month == currentMonth)
+                                {
+                                    daysToAdd = 14;
+
+                                }
+                                else if (new DateTime(DateTime.Now.Year, currentMonth, 15).AddDays(13).Month == currentMonth)
+                                {
+                                    daysToAdd = 13;
+
+                                }
+
+                               <option value="@(new DateTime(DateTime.Now.Year,DateTime.Now.AddMonths(-i).Month,15).Date)">@(new DateTime(DateTime.Now.Year, DateTime.Now.AddMonths(-i).Month, 15).ToString("yyyy/MM/dd"))-@(new DateTime(DateTime.Now.Year, DateTime.Now.AddMonths(-i).Month, 15).AddDays(daysToAdd).ToString("yyyy/MM/dd"))</option>
+
+                            }
+
+
+                          
+                        </select>
+                        <label for="PreosfessionId">Search By TimeSheetPeriod</label>
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+                <div class="col-lg-3 col-md-4 col-sm-12 d-sm-flex justify-content-sm-end d-flex justify-content-end ">
+                    <button class="btn btn-outline-info text-info lightInfo-btn " type="submit">Finalize TimeSheets</button>
+                </div>
+
+            </div>
+            </form>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-5" style="justify-content:center">
+        <div id="VendorTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between " style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+
+           
+                             <h4>TimeSheet Reinbursment</h4>
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        GetVendorsTableView('1', false);
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+        handleNavChange('pills-partners-tab');
+    })
+
+
+
+
+
+
+
+</script>

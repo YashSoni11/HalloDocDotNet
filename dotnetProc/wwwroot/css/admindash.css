@@ -273,6 +273,10 @@ input[type="checkbox"]:checked {
     border-style:solid;
 }
 
+.RecipientsDisPlay{
+    display:none !important;
+}
+
 .MobileDayCells {
     position: relative;
     top: -9px;

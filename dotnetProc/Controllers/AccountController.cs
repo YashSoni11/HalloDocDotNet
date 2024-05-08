@@ -58,7 +58,7 @@ namespace dotnetProc.Controllers
 
         [HttpPost]
         [Route("Createaccount/{createid}")]
-        public IActionResult Createaccount(UserCred user, int RequestId)
+        public IActionResult Createaccount(CreateAccountModel user, int RequestId)
         {
 
             if (RequestId == 0)

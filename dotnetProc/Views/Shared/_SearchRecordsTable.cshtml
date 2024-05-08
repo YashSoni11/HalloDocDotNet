@@ -169,13 +169,24 @@
 
 
         <div class="row p-3">
+            <div class="col-3 d-flex" style="align-items:center;">
+                <h6>
+                    Showing @Model.currentPage Of @Model.TotalPages Pages
+                </h6>
+            </div>
+
+            <div class="col-9">
+
             <nav aria-label="Page navigation example mt-3">
             <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
                 <li class="page-item" onclick="GetSearchRecordsTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-left"></i></li>
-                <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
+
+                    <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;"><input id="PageNumberInput" asp-for="@Model.currentPage" onchange="GetSearchRecordsTableView(@Model.currentPage-1,true,@Model.TotalPages)" /></li>
+
                 <li class="page-item" onclick="GetSearchRecordsTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;background-color:var(--pi-form-back-color);color:var(--pi-label-color);"><i class="bi bi-chevron-right"></i></li>
             </ul>
         </nav>
+        </div>
     </div>
 
     }

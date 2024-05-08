@@ -144,7 +144,7 @@
                             </div>
                             <div class="col-xl-4 col-sm-5 col-8">
                                 <div class="form-floating mb-3">
-                                    <input value="@Model.Street,@Model.City,@Model.State,@Model.Zipcode" type="text" class="form-control " disabled id="city"
+                                    <input value="@Model.Street,@Model.City,@Model.State,@Model.Zipcode" type="text" class="form-control " disabled id="BusinessLocation"
                                            placeholder="name@example.com">
                                     <label for="floatingInput">Business Name/Address</label>
                                 </div>
@@ -152,7 +152,7 @@
 
                             <div class="col-xl-2 col-sm-4 col-4 d-flex  align-content-center">
                                 <div class="form-floating mb-3 d-flex justify-content-center align-content-center">
-                                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="showLocation()">
+                                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn " style="width:6rem;" onclick="ShowBusinessLocation()">
                                         <i id='themeIcon' class="bi bi-geo-alt text-info fs-3"></i>
                                     </button>
                                 </div>
@@ -268,6 +268,14 @@
         }
     })
 
+    const ShowBusinessLocation = () =>{
 
+        let address = $("#BusinessLocation").val();
+
+        var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
+
+
+        window.open(mapsUrl, "_blank");
+    }
 
 </script>

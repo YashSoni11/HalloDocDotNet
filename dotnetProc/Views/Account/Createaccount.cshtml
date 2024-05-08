@@ -8,7 +8,7 @@
 
 
 
-@model HalloDoc_DAL.ViewModels.UserCred;
+@model HalloDoc_DAL.ViewModels.CreateAccountModel;
 
 
 
@@ -58,16 +58,21 @@
                                 <label id="userLabel" for="floatingInput">Email address </label>
                                 <span class="" id="userLabelIcon"><i class='fs-3 bi bi-person' style="color: var( --pi-label-color);"></i></span>
                             </div>
+                                <span asp-validation-for="Email" class="text-danger mb-3"></span>
                             <div id='yvy' class="d-flex form-floating bg-transparent">
                                 <input type="password" asp-for="Password" class="form-control bg-transparent" id="floatingPassword"
                                        placeholder="Password">
                                 <label id='passLabel' for="floatingPassword">Password</label>
+
                             </div>
+                                <span asp-validation-for="Password" class="text-danger mb-3"></span>
                             <div class="d-flex form-floating bg-transparent mt-3">
                                 <input type="password" asp-for="Confirmpassword" class="form-control bg-transparent" id="floatingPassword"
                                        placeholder="Password">
                                 <label id='passLabel' for="floatingPassword">Confirmpassword</label>
+
                             </div>
+                                <span asp-validation-for="Confirmpassword" class="text-danger"></span>
 
                             @if (TempData["Error"] != null)
                             {
@@ -94,6 +99,15 @@
 
 
 </div>
+
+
+
+@section Scripts{
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
 
 
 <script>

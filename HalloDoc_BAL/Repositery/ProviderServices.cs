@@ -1283,6 +1283,9 @@ namespace HalloDoc_BAL.Repositery
 
                 DateTime endTime = createShift.EndTime;
 
+                TimeOnly CurrentShiftStartTime = new TimeOnly(createShift.StartTime.Hour, createShift.StartTime.Minute);
+                TimeOnly CurrentShiftEndTime = new TimeOnly(createShift.EndTime.Hour, createShift.EndTime.Minute);
+
                 List<Shift> shifts = _context.Shifts.Where(q => q.Physicianid == createShift.PhysicianId).ToList();
 
                 List<Shiftdetail> shiftdetails = new List<Shiftdetail>();
@@ -1290,7 +1293,7 @@ namespace HalloDoc_BAL.Repositery
                 foreach(Shift shift in shifts)
                 {
 
-                    List<Shiftdetail> shiftdetails1 = _context.Shiftdetails.Where(q => q.Shiftid == shift.Shiftid && q.Isdeleted == false).ToList();
+                    List<Shiftdetail> shiftdetails1 = _context.Shiftdetails.Where(q => q.Shiftid == shift.Shiftid && q.Shiftdetailid != createShift.ShiftDetailId && q.Isdeleted == false ).ToList();
                     shiftdetails = shiftdetails.Concat(shiftdetails1).ToList();
                 }
 
@@ -1305,30 +1308,27 @@ namespace HalloDoc_BAL.Repositery
                     }
                     if(shiftdetail.Shiftdate == date)
                     {
-                        if((startTime.Hour>shiftdetail.Starttime.Hour && startTime.Hour < shiftdetail.Endtime.Hour) || (endTime.Hour > shiftdetail.Starttime.Hour && endTime.Hour < shiftdetail.Endtime.Hour))
-                        {
-                            isExists = true;
-                            break;
-                        }else if(shiftdetail.Starttime.Hour == endTime.Hour)
-                        {
-                            if (endTime.Minute >= shiftdetail.Starttime.Minute)
-                            {
-                                isExists = true;
-                                break;
-                            }
-                        }
-                        else if(shiftdetail.Endtime.Hour == startTime.Hour)
-                        {
-                            if(startTime.Minute <= shiftdetail.Endtime.Minute)
-                            {
-                                isExists = true;
-                                break;
-                            }
-                        }else if(shiftdetail.Starttime.Hour == startTime.Hour && shiftdetail.Endtime.Hour  == endTime.Hour)
+
+
+                       
+                        TimeOnly shiftStartTime = new TimeOnly(shiftdetail.Starttime.Hour, shiftdetail.Starttime.Minute);
+                        TimeOnly shiftEndTime = new TimeOnly(shiftdetail.Endtime.Hour, shiftdetail.Endtime.Minute);
+
+
+                        if(CurrentShiftStartTime >= shiftStartTime && CurrentShiftStartTime<=shiftEndTime || (CurrentShiftEndTime>=shiftStartTime && CurrentShiftEndTime <= shiftEndTime))
                         {
                             isExists = true;
                             break;
                         }
+
+                        if(CurrentShiftStartTime<shiftStartTime && CurrentShiftEndTime>shiftEndTime)
+                        {
+                            isExists = true;
+                            break;
+                        }
+
+
+                      
 
                     }
 
@@ -1980,6 +1980,10 @@ namespace HalloDoc_BAL.Repositery
 
                 foreach(Requestclient rc in requestclients)
                 {
+                    if(_context.Requests.Any(q=>q.Requestid == rc.Requestid && q.Isdeleted == new BitArray(1, true)))
+                    {
+                        continue;
+                    }
 
                     SearchRecords searchRecord = new SearchRecords();
 
@@ -2010,7 +2014,7 @@ namespace HalloDoc_BAL.Repositery
                   
 
 
-                searchRecords = searchRecords.Where(q=>(IsAllFromDate ||  q.DateOfService.GetValueOrDefault().Date == FromDate.Date) && (IsAllToDate || q.CloseCaseDate.GetValueOrDefault().Date == ToDate.Date)  &&   (IsAllStatus || q.RequestStatus == null || q.RequestStatus == Enum.GetName(typeof(Status),Status)) && (IsAllPatientName  || q.PatientName == PatientName) && (IsAllRequestTypes  || q.RequestorType == null || q.RequestorType == Enum.GetName(typeof(RequestorType),RequestType))   && (IsAllEmail || q.Email == Email) && (IsAllProviderName || q.Physician == null || q.Physician.ToLower().Contains(ProviderName.ToLower()) ) && (IsAllPhone || q.PatientPhone == Phone)   ).ToList();
+                searchRecords = searchRecords.OrderByDescending(q=>q.RequestId).Where(q=>(IsAllFromDate ||  q.DateOfService.GetValueOrDefault().Date == FromDate.Date) && (IsAllToDate || q.CloseCaseDate.GetValueOrDefault().Date == ToDate.Date)  &&   (IsAllStatus || q.RequestStatus == null || q.RequestStatus == Enum.GetName(typeof(Status),Status)) && (IsAllPatientName  || q.PatientName == PatientName) && (IsAllRequestTypes  || q.RequestorType == null || q.RequestorType == Enum.GetName(typeof(RequestorType),RequestType))   && (IsAllEmail || q.Email == Email) && (IsAllProviderName || q.Physician == null || q.Physician.ToLower().Contains(ProviderName.ToLower()) ) && (IsAllPhone || q.PatientPhone == Phone)   ).ToList();
              
 
                 return searchRecords;

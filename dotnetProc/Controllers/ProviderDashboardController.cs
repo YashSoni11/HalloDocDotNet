@@ -531,12 +531,24 @@ namespace dotnetProc.Controllers
             else if (ModelState.IsValid)
             {
 
+
+                if (new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) == createShift.ShiftDate && DateTime.Now.Hour > createShift.StartTime.Hour)
+                {
+                    TempData["ShowNegativeNotification"] = "Please Enter Valid Time!";
+                    return RedirectToAction("ProviderScheduling");
+                }
+
+
+
                 if (_provider.IsValidShift(createShift))
                 {
                     TempData["ShowNegativeNotification"] = "Shift Already Exists!";
                     return RedirectToAction("ProviderScheduling");
 
                 }
+
+
+
 
                 LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 bool response = _provider.CreateShiftService(createShift, loggedInUser.UserId,loggedInUser.Role);

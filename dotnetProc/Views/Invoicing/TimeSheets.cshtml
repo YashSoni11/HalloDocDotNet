@@ -1,0 +1,186 @@
+﻿@model HalloDoc_DAL.InvoicingViewModels.TimeSheet
+
+
+
+@{
+    Layout = "_Layout";
+}
+
+<partial name="_DashNavbar" />
+
+<partial name="_ProviderDashTabs" />
+
+<div class="container-fluid">
+    <div class="row" style="justify-content:center">
+        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+
+        <form asp-action="SaveTimeSheetDetails" asp-controller="Invoicing" method="post">
+
+            <table class="table ReqtableContainer table-responsive">
+                <thead>
+                    <tr style="background-color:#f1f1f1;">
+                        <th class="reqtableHeader" scope="col">Date</th>
+                        <th class="reqtableHeader" scope="col">On Call Hours</th>
+                        <th class="reqtableHeader" scope="col">Total Hours</th>
+                        <th class="reqtableHeader" scope="col">Weekend/Holiday</th>
+                        <th class="reqtableHeader" scope="col">Number Of HouseCalls</th>
+                        <th class="reqtableHeader" scope="col">Number Of Consults</th>
+
+                    </tr>
+                </thead>
+                <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+                    @{
+                        int endDay = 0;
+                        int startDay = 0;
+
+                        int currentMonth = Model.TimeSheetStartDate.Month;
+
+
+
+
+                        @if (Model.TimeSheetStartDate.Day == 1)
+                        {
+                            endDay = 14;
+                            startDay = 1;
+                        }
+                        else
+                        {
+                            startDay = 15;
+
+                            if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(16).Month == currentMonth)
+                            {
+                                endDay = 31;
+                            }
+                            else if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(15).Month == currentMonth)
+                            {
+                                endDay = 30;
+
+                            }
+                            else if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(14).Month == currentMonth)
+                            {
+                                endDay = 29;
+
+                            }
+                            else if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(13).Month == currentMonth)
+                            {
+                                endDay = 28;
+
+                            }
+                        }
+
+                    }
+
+
+                    @for (int i = startDay; i <= endDay; i++)
+                    {
+                       
+                        <tr>
+                            <th style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetdetailid"/></th>     
+                            <th style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetid"/></th>     
+                            <th>@Model.TimeSheetStartDate.AddDays(i-1).ToString("MM/dd/yyyy")</th>
+                            <th>0</th>
+                            <th><input asp-for="@Model.TimeSheetDetails[i].Totalhours" type="number" value="0" /></th>
+                            <th><input asp-for="@Model.TimeSheetDetails[i].Isweekend" type="checkbox" /></th>
+                            <th><input asp-for="@Model.TimeSheetDetails[i].Numberofhousecall" type="number" /></th>
+                            <th><input asp-for="@Model.TimeSheetDetails[i].Numberofphonecall" type="number" /></th>
+                        </tr>
+                    }
+
+                  
+
+               
+
+
+
+                </tbody>
+
+            </table>
+
+            <div class="d-flex justify-content-end p-1">
+
+                <button class="btn btn-info  text-white darkInfo-btn mb-2" type="submit">Submit</button>
+            </div>
+        </form>
+
+
+        </div>
+
+        <div class="col-8 mt-3">
+
+            <button class="btn btn-info  text-white darkInfo-btn mb-2 " type="button" onclick="$('#RecepientsContainer').toggleClass('RecipientsDisPlay')">Add Reciepts</button>
+
+
+        </div>
+
+
+        <div id="RecepientsContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 RecipientsDisPlay" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+
+            <table class="table ReqtableContainer table-responsive">
+                <thead>
+                    <tr style="background-color:#f1f1f1;">
+                        <th class="reqtableHeader" scope="col">Date</th>
+                        <th class="reqtableHeader" scope="col">Item</th>
+                        <th class="reqtableHeader" scope="col">Amount</th>
+                        <th class="reqtableHeader" scope="col">Bill</th>
+                        <th class="reqtableHeader" scope="col">Actions</th>
+                        
+
+                    </tr>
+                </thead>
+                <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+                 
+
+                    @for (int i = startDay; i <= endDay; i++)
+                    {
+                        <tr>
+                            <th>@Model.TimeSheetStartDate.AddDays(i-1).ToString("MM/dd/yyyy")</th>
+                         
+                            <th><input type="text" /></th>
+                           
+                            <th><input type="number" /></th>
+                          
+                            <th>
+
+
+                            <div class="input-group mb-3">
+
+
+                                <input type="file"  class="form-control" id="inputGroupFile02">
+
+                                <label class="input-group-text bg-info text-white" for="inputGroupFile02">
+                                    <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
+                                </label>
+                            </div>
+
+                            </th>
+                        </tr>
+                    }
+
+
+
+
+
+
+
+                </tbody>
+
+            </table>
+
+            </div>
+
+
+        <div class="col-8 d-flex justify-content-end mt-3">
+
+            <button class="btn btn-info  text-white darkInfo-btn  " type="button" onclick="()">Finalize</button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+

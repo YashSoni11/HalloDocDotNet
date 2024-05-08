@@ -857,7 +857,11 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Session timed out!";
                 return RedirectToAction("Login", "Account");
             }
-            else if (ModelState.IsValid)
+
+
+                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+             if (ModelState.IsValid)
             {
                 CreateShift shift = new CreateShift();
                 shift.ShiftDate = viewShift.ShiftDate;
@@ -866,15 +870,15 @@ namespace dotnetProc.Controllers
                 shift.StartTime += new TimeOnly(viewShift.startTime.Hour, viewShift.startTime.Minute).ToTimeSpan();
                 shift.EndTime = new DateTime(1,1,1);
                 shift.EndTime += new TimeOnly(viewShift.endTime.Hour, viewShift.endTime.Minute).ToTimeSpan();
+                shift.ShiftDetailId = viewShift.ShiftDetailId;
 
                 if (_provider.IsValidShift(shift))
                 {
                     TempData["ShowNegativeNotification"] = "Shift Already Exists!";
-                    return RedirectToAction("ProviderScheduling");
+                    return loggedInUser.Role == "Admin" ? RedirectToAction("ProviderScheduling") : RedirectToAction("ProviderScheduling", "ProviderDashboard");
 
                 }
 
-                LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
                 bool response = _provider.EditShiftService(viewShift, loggedInUser.UserId);
 
                 if (response)
@@ -888,13 +892,15 @@ namespace dotnetProc.Controllers
 
                 }
 
-                return RedirectToAction("ProviderScheduling");
+                return loggedInUser.Role == "Admin" ? RedirectToAction("ProviderScheduling") : RedirectToAction("ProviderScheduling", "ProviderDashboard");
+
             }
             else
             {
                 TempData["ShowNegativeNotification"] = "Not Valid Data!";
 
-                return RedirectToAction("ProviderScheduling");
+                return loggedInUser.Role == "Admin" ? RedirectToAction("ProviderScheduling") : RedirectToAction("ProviderScheduling", "ProviderDashboard");
+
             }
         }
 
@@ -1075,7 +1081,8 @@ namespace dotnetProc.Controllers
                 TempData["ShowNegativeNotification"] = "Something went wrong!";
             }
 
-            return RedirectToAction("ProviderScheduling");
+            return loggedInUser.Role == "Admin" ? RedirectToAction("ProviderScheduling") : RedirectToAction("ProviderScheduling", "ProviderDashboard");
+
         }
         #endregion
 
@@ -1307,7 +1314,10 @@ namespace dotnetProc.Controllers
         }
         #endregion
 
-
+        /// <summary>
+        /// SearchRecordsActions
+        /// </summary>
+        /// <returns></returns>
         #region SearchRecordsActions
         public IActionResult SearchRecordsView()
         {
