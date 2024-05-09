@@ -29,6 +29,7 @@ builder.Services.AddScoped<IProviderDashboard, ProviderDashboardServices>();
 builder.Services.AddScoped<IPatientReq,PatientRequest>();
 builder.Services.AddScoped<IProvider,ProviderServices>();
 builder.Services.AddScoped<IAuthManager,AuthManager>();
+builder.Services.AddScoped<IInvoice,InvoicingServices>();
 builder.Services.AddTransient<IEmailService,EmailService>();
 builder.Services.AddTransient<IJwtServices, JwtServices>();
 

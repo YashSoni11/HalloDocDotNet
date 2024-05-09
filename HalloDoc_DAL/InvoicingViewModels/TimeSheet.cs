@@ -14,6 +14,8 @@ namespace HalloDoc_DAL.InvoicingViewModels
 
         public List<Timesheetdetail>? TimeSheetDetails { get; set; }
 
+        public List<Timesheetdetailreimbursement>? timesheetdetailreimbursements { get; set; }
+
 
 
     }

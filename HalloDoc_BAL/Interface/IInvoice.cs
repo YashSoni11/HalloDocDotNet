@@ -1,4 +1,5 @@
 ﻿using HalloDoc_DAL.InvoicingViewModels;
+using HalloDoc_DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,9 @@ namespace HalloDoc_BAL.Interface
     public interface IInvoice
     {
 
-        public bool SaveTimeSheetDetails(TimeSheet timeSheetDetails);
+        public bool SaveTimeSheetDetails(TimeSheet timeSheetDetails,int UserId);
+
+        public TimeSheet GetTimeSheetDetailsList(int Physicianid, DateTime StartDate);
+
     }
 }

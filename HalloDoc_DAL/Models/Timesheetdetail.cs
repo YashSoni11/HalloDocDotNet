@@ -23,7 +23,7 @@ public partial class Timesheetdetail
     public decimal? Totalhours { get; set; }
 
     [Column("isweekend")]
-    public bool? Isweekend { get; set; }
+    public bool Isweekend { get; set; }
 
     [Column("numberofhousecall")]
     public int? Numberofhousecall { get; set; }
