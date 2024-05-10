@@ -92,5 +92,42 @@ namespace dotnetProc.Controllers
 
         }
 
+
+        public IActionResult SaveReimbursementDetails(TimeSheet timeSheet)
+        {
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            bool response = _invoice.SaveTimeSheetReimbursmentDetails(timeSheet, loggedInUser.UserId);
+
+            if (response)
+            {
+                TempData["ShowPositiveNotification"] = "Reimbursmentdetails saved successfully.";
+            }
+            else
+            {
+                TempData["ShowNegativeNotification"] = "Somthing went wrong!";
+            }
+
+            TempData["TimeSheetTime"] = timeSheet.TimeSheetStartDate;
+
+            return RedirectToAction("GetTimeSheetView");
+
+        }
+
+
+        public IActionResult GetShiftTimeSheetsDetails(DateTime StartDate)
+        {
+
+
+
+            List<ShiftTimeSheets> shiftTimeSheets = _invoice.GetShiftTimeSheetsDetails(StartDate);
+
+
+            return PartialView("_TimeSheetDetailsTable", shiftTimeSheets);
+
+
+        }
+
     }
 }

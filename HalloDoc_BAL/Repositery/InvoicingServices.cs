@@ -24,7 +24,7 @@ namespace HalloDoc_BAL.Repositery
             _context = context;
         }
 
-        public bool UploadBill(IFormFile file, int TimeSheetId)
+        public bool UploadBill(IFormFile? file, int TimeSheetId)
         {
 
             string path = "";
@@ -79,7 +79,7 @@ namespace HalloDoc_BAL.Repositery
             int timeSheetId = _context.Timesheets.Where(q => q.Physicianid == Physicianid && q.Startdate == date).Select(q=>q.Timesheetid).FirstOrDefault();
 
             List<Timesheetdetail> timesheetdetails = _context.Timesheetdetails.OrderBy(q=>q.Timesheetdate).Where(q => q.Timesheetid == timeSheetId).ToList();
-            List<Timesheetdetailreimbursement> timesheetdetailreimbursements = new List<Timesheetdetailreimbursement>();
+            List<TimeSheetDetailReimbursement> timesheetdetailreimbursements = new List<TimeSheetDetailReimbursement>();
 
             
 
@@ -141,12 +141,24 @@ namespace HalloDoc_BAL.Repositery
 
             foreach(Timesheetdetail timesheetdetail in timesheetdetails)
             {
-                Timesheetdetailreimbursement timesheetdetailreimbursement = _context.Timesheetdetailreimbursements.FirstOrDefault(q => q.Timesheetdetailid == timesheetdetail.Timesheetdetailid);
+                TimeSheetDetailReimbursement? timesheetdetailreimbursement = _context.Timesheetdetailreimbursements.Where(q => q.Timesheetdetailid == timesheetdetail.Timesheetdetailid).Select(r => new TimeSheetDetailReimbursement { 
+                 
+                    Timesheetdetailid = r.Timesheetdetailid,    
+                    Timesheetdetailreimbursementid = r.Timesheetdetailreimbursementid,
+                    Itemname = r.Itemname,
+                    Amount = r.Amount,
+                    BillName = r.Bill,
+                    TimeSheetId = _context.Timesheetdetails.Where(q=>q.Timesheetdetailid == r.Timesheetdetailid).Select(q=>q.Timesheetid).FirstOrDefault(),
 
-                if(timesheetdetailreimbursement == null)
+
+                }).FirstOrDefault();
+
+
+                if (timesheetdetailreimbursement == null)
                 {
-                    timesheetdetailreimbursement= new Timesheetdetailreimbursement();
+                    timesheetdetailreimbursement= new TimeSheetDetailReimbursement();
                     timesheetdetailreimbursement.Timesheetdetailid = timesheetdetail.Timesheetdetailid;
+                    timesheetdetailreimbursement.TimeSheetId = timesheetdetail.Timesheetid;
 
                 }
 
@@ -185,18 +197,7 @@ namespace HalloDoc_BAL.Repositery
                         timesheetdetails[i].Numberofphonecall = timeSheetDetails.TimeSheetDetails[i].Numberofphonecall;
                         timesheetdetails[i].Isweekend = timeSheetDetails.TimeSheetDetails[i].Isweekend;
 
-                        Timesheetdetailreimbursement timesheetdetailreimbursement = _context.Timesheetdetailreimbursements.FirstOrDefault(q => q.Timesheetdetailid == timeSheetDetails.TimeSheetDetails[i].Timesheetdetailid);
-
-                        if(timesheetdetailreimbursement == null)
-                        {
-                            timesheetdetailreimbursement= new Timesheetdetailreimbursement();
-                            timesheetdetailreimbursement.Timesheetdetailid = timeSheetDetails.timesheetdetailreimbursements[i].Timesheetdetailid;
-                            timesheetdetailreimbursement.Itemname = timeSheetDetails.timesheetdetailreimbursements[i].Itemname;
-                            timesheetdetailreimbursement.Amount = timeSheetDetails.timesheetdetailreimbursements[i].Amount;
-                            timesheetdetailreimbursement.Bill = timeSheetDetails.timesheetdetailreimbursements[i].Bill;
-     
-
-                        }
+                       
 
                     }
 
@@ -292,5 +293,143 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
+        public List<ShiftTimeSheets> GetShiftTimeSheetsDetails(DateTime StartDate)
+        {
+
+            DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
+
+            int currentMonth = StartDate.Month;
+
+            DateTime endDate;
+
+
+            if (StartDate.Day == 1)
+            {
+                endDate = new DateTime(StartDate.Year, StartDate.Month, 14);
+
+            }
+            else
+            {
+
+
+                if (new DateTime(StartDate.Year, currentMonth, 15).AddDays(16).Month == currentMonth)
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 31);
+
+                }
+                else if (new DateTime(StartDate.Year, currentMonth, 15).AddDays(15).Month == currentMonth)
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 30);
+
+
+                }
+                else if (new DateTime(StartDate.Year, currentMonth, 15).AddDays(14).Month == currentMonth)
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 29);
+
+
+                }
+                else 
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 28);
+
+
+                }
+            }
+
+
+                List<ShiftTimeSheets> ShiftTimeSheets = new List<ShiftTimeSheets>();    
+            Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date);
+
+            if (timeSheet != null)
+            {
+
+
+                for(int i = StartDate.Day; i <= endDate.Day; i++)
+                {
+                    ShiftTimeSheets shiftTimeSheets = new ShiftTimeSheets();
+
+                    shiftTimeSheets.ShiftNo = _context.Shiftdetails.Where(q => q.Shiftdate.Day == i && q.Shiftdate.Month == StartDate.Month && q.Shiftdate.Year == StartDate.Year).Count();
+                    shiftTimeSheets.ShiftDate = new DateTime(StartDate.Year, StartDate.Month, i);
+                    shiftTimeSheets.NightShiftWeekend = 0;
+                    shiftTimeSheets.PhoneConsultNightsWeekend = 0;
+                    shiftTimeSheets.HouseCallNightsWeekend = 0;
+                    shiftTimeSheets.HouseCall = 0;
+                    shiftTimeSheets.BatchTesing = 0;
+                    shiftTimeSheets.PhoneConsults = 0;
+
+
+                    ShiftTimeSheets.Add(shiftTimeSheets);
+                   
+                }
+
+                
+
+
+
+            }
+
+            return ShiftTimeSheets;
+        }
+
+
+        public bool SaveTimeSheetReimbursmentDetails(TimeSheet timeSheetDetails, int UserId)
+        {
+
+            try
+            {
+                Timesheetdetailreimbursement timesheetdetailreimbursement = _context.Timesheetdetailreimbursements.FirstOrDefault(q => q.Timesheetdetailreimbursementid == timeSheetDetails.timesheetdetailreimbursements[0].Timesheetdetailreimbursementid);
+
+                if (timesheetdetailreimbursement == null)
+                {
+                    timesheetdetailreimbursement = new Timesheetdetailreimbursement();
+                    timesheetdetailreimbursement.Timesheetdetailid = (int)timeSheetDetails.timesheetdetailreimbursements[0].Timesheetdetailid;
+                    timesheetdetailreimbursement.Itemname = timeSheetDetails.timesheetdetailreimbursements[0].Itemname;
+                    timesheetdetailreimbursement.Amount = (int)timeSheetDetails.timesheetdetailreimbursements[0].Amount;
+                    timesheetdetailreimbursement.Bill = timeSheetDetails.timesheetdetailreimbursements[0].Bill.FileName;
+
+                    timesheetdetailreimbursement.Createdby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+                    timesheetdetailreimbursement.Createddate = DateTime.Now;
+
+                    bool IsUploaded = UploadBill(timeSheetDetails.timesheetdetailreimbursements[0].Bill, timeSheetDetails.TimeSheetDetails[0].Timesheetid);
+
+                    if (!IsUploaded)
+                        return false;
+
+                    _context.Timesheetdetailreimbursements.Add(timesheetdetailreimbursement);
+
+                }
+                else
+                {
+                    timesheetdetailreimbursement.Timesheetdetailid = (int)timeSheetDetails.timesheetdetailreimbursements[0].Timesheetdetailid;
+                    timesheetdetailreimbursement.Itemname = timeSheetDetails.timesheetdetailreimbursements[0].Itemname;
+                    timesheetdetailreimbursement.Amount = (int)timeSheetDetails.timesheetdetailreimbursements[0].Amount;
+                    timesheetdetailreimbursement.Modifiedby = _context.Physicians.Where(q => q.Physicianid == UserId).Select(q => q.Aspnetuserid).FirstOrDefault();
+                    timesheetdetailreimbursement.Modifieddate = DateTime.Now;
+
+                    
+                    if(timeSheetDetails.timesheetdetailreimbursements[0].Bill!= null)
+                    {
+
+                    timesheetdetailreimbursement.Bill = timeSheetDetails.timesheetdetailreimbursements[0].Bill != null? timeSheetDetails.timesheetdetailreimbursements[0].Bill.FileName:null;
+                    bool IsUploaded = UploadBill(timeSheetDetails.timesheetdetailreimbursements[0].Bill, (int)timeSheetDetails.timesheetdetailreimbursements[0].TimeSheetId);
+                    if (!IsUploaded)
+                        return false;
+                    }
+
+
+                    _context.Timesheetdetailreimbursements.Update(timesheetdetailreimbursement);
+
+
+                }
+
+                _context.SaveChanges();
+
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

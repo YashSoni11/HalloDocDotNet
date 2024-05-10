@@ -54,8 +54,8 @@
 <div class="container-fluid">
     <div class="row" style="justify-content:center">
         <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
-
             <form asp-action="SaveTimeSheetDetails" asp-controller="Invoicing" method="post" enctype="multipart/form-data">
+
 
 
                 <input type="date" hidden style="display:none" asp-for="TimeSheetStartDate" />
@@ -80,14 +80,14 @@
                         {
 
                             <tr>
-                                <th style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetdetailid" /></th>
-                                <th style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetid" /></th>
-                                <th>@Model.TimeSheetStartDate.AddDays(i).ToString("MM/dd/yyyy")</th>
-                                <th>0</th>
-                                <th><input asp-for="@Model.TimeSheetDetails[i].Totalhours" type="number" /></th>
-                                <th><input asp-for="@Model.TimeSheetDetails[i].Isweekend" type="checkbox" /></th>
-                                <th><input asp-for="@Model.TimeSheetDetails[i].Numberofhousecall" type="number" /></th>
-                                <th><input asp-for="@Model.TimeSheetDetails[i].Numberofphonecall" type="number" /></th>
+                                <td style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetdetailid" /></td>
+                                <td style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetid" /></td>
+                                <td>@Model.TimeSheetStartDate.AddDays(i).ToString("MM/dd/yyyy")</td>
+                                <td>0</td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Totalhours" type="number" /></td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Isweekend" type="checkbox" /></td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Numberofhousecall" type="number" /></td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Numberofphonecall" type="number" /></td>
                             </tr>
                         }
 
@@ -105,8 +105,8 @@
 
                     <button class="btn btn-info  text-white darkInfo-btn mb-2" type="submit">Submit</button>
                 </div>
-            </form>
 
+            </form>
 
         </div>
 
@@ -119,6 +119,7 @@
 
 
         <div id="RecepientsContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 RecipientsDisPlay" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+                <input type="date" hidden style="display:none" asp-for="TimeSheetStartDate" />
 
             <table class="table ReqtableContainer table-responsive">
                 <thead>
@@ -138,58 +139,64 @@
 
                     @for (int i = startDay - 1; i < endDay; i++)
                     {
+        <form id="TimeSheetReimbursmentForm" asp-action="SaveReimbursementDetails" asp-controller="Invoicing"  method="post" enctype="multipart/form-data">
+                            <input hidden  asp-for="@Model.timesheetdetailreimbursements[i].TimeSheetId" style="display:none;" />
+                            <input type="date" hidden style="display:none" asp-for="TimeSheetStartDate" />
+
+
                         <tr>
-                            <input hidden  asp-for="@Model.timesheetdetailreimbursements[i].Timesheetdetailreimbursementid" style="display:none;"/>
-                            <input hidden asp-for="@Model.timesheetdetailreimbursements[i].Timesheetdetailid" style="display:none;"/>
+                            <input hidden id="TimeSheetReimbursementIdInp"  asp-for="@Model.timesheetdetailreimbursements[i].Timesheetdetailreimbursementid" style="display:none;"/>
+                            <input hidden id="TimeSheetDeatilIdInp" asp-for="@Model.timesheetdetailreimbursements[i].Timesheetdetailid" style="display:none;"/>
 
-                            <th>@Model.TimeSheetStartDate.AddDays(i).ToString("MM/dd/yyyy")</th>
+                            <td>@Model.TimeSheetStartDate.AddDays(i).ToString("MM/dd/yyyy")</td>
 
-                            <th><input asp-for="@Model.timesheetdetailreimbursements[i].Itemname" type="text" /></th>
+                            <td><input id="ItemNameInp(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" asp-for="@Model.timesheetdetailreimbursements[i].Itemname" type="text" onkeydown="DisPlaySaveBtn(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" /></td>
 
-                            <th><input asp-for="@Model.timesheetdetailreimbursements[i].Amount" type="number" /></th>
+                            <td><input id="AmountInp(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" asp-for="@Model.timesheetdetailreimbursements[i].Amount" type="number" onkeydown="DisPlaySaveBtn(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" /></td>
 
-                            <th>
+                            <td>
 
 
                                 <div class="input-group mb-3">
 
 
-                                    <input asp-for="@Model.timesheetdetailreimbursements[i].Bill" type="file" class="form-control" id="inputGroupFile02">
+                                    <input id="BillInp(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" asp-for="@Model.timesheetdetailreimbursements[i].Bill" type="file" class="form-control" id="inputGroupFile02" onchange="DisPlaySaveBtn(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)">
 
                                     <label class="input-group-text bg-info text-white" for="inputGroupFile02">
                                         <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
                                     </label>
                                 </div>
 
-                            </th>
+                            </td>
 
 
+                                <td>
                             @if (Model.timesheetdetailreimbursements[i].Timesheetdetailreimbursementid != null)
                             {
-                                <th>
-                                    <button class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn" onclick="EditSheetMode()">
+                                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn@(Model.timesheetdetailreimbursements[i].Timesheetdetailid)" onclick="EditSheetMode(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)">
                                         Edit
                                     </button>
-                                    <button class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn">
+                                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn@(Model.timesheetdetailreimbursements[i].Timesheetdetailid)">
                                         Delete
                                     </button>
-                                    <button class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn">
+                                    <a href="~/Bills/@Model.timesheetdetailreimbursements[i].TimeSheetId/@Model.timesheetdetailreimbursements[i].BillName" target="_blank" type="button" class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn@(Model.timesheetdetailreimbursements[i].Timesheetdetailid)">
                                         View
-                                    </button>
-                                    <button class="btn btn-outline-info text-info lightInfo-btn  SheetSaveBtn" style="display:none;">
+                                    </a>
+                            }
+                                    <button type="submit" class="btn btn-outline-info text-info lightInfo-btn  SheetSaveBtn@(Model.timesheetdetailreimbursements[i].Timesheetdetailid)" style="display:none;">
                                         Save
                                     </button>
-                                    <button class="btn btn-outline-info text-info lightInfo-btn  SheetSaveBtn" style="display:none;" onclick="CancleEditSheetMode()">
+                                    <button type="button" class="btn btn-outline-info text-info lightInfo-btn  SheetSaveBtn@(Model.timesheetdetailreimbursements[i].Timesheetdetailid)" style="display:none;" onclick="CancleEditSheetMode(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)">
                                         Cancle
                                     </button>
 
 
 
-                                </th>
+                                </td>
 
-                            }
 
                         </tr>
+                </form>
                     }
 
 
@@ -214,6 +221,14 @@
 
     </div>
 
+
+        <input type="number" id="TimeSheetDetailId" name="TimeSheetDetailId" style="display:none" hidden />
+        <input type="number" id="TimeSheetReimbursementid" name="TimeSheetReimbursementid" style="display:none" hidden />
+        <input type="text" id="ItemName" name="ItemName" style="display:none" hidden />
+        <input type="number" id="Amount" name="Amount" style="display:none" hidden />
+        <input type="file" id="Bill" name="Bill" style="display:none" hidden />
+
+
 </div>
 
 
@@ -235,12 +250,12 @@
     })
 
 
-    const EditSheetMode = () =>{
+    const EditSheetMode = (id) =>{
 
+        console.log(id)
+        $(`.SheetSaveBtn${id}`).css("display","block");
 
-        $(".SheetSaveBtn").css("display","block");
-
-        $(".EditSheetModeBtn").css("display","none");
+        $(`.EditSheetModeBtn${id}`).css("display","none");
 
 
 
@@ -248,10 +263,25 @@
     }
 
 
-    const CancleEditSheetMode = () =>{
-        $(".SheetSaveBtn").css("display", "none");
+    const CancleEditSheetMode = (id) =>{
 
-        $(".EditSheetModeBtn").css("display", "block");
+        console.log(id)
+
+        $(`.SheetSaveBtn${id}`).css("display", "none");
+
+        $(`.EditSheetModeBtn${id}`).css("display", "block");
+    }
+
+
+ 
+    const DisPlaySaveBtn =(id) =>{
+
+        console.log("ooi",id)
+
+        if ($(`.SheetSaveBtn${id}`).css("display") == "none"){
+
+            $(`.SheetSaveBtn${id}`).css("display", "block");
+        }
     }
 
 
