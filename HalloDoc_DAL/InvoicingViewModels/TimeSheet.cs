@@ -34,6 +34,8 @@ namespace HalloDoc_DAL.InvoicingViewModels
        
         public int? Timesheetdetailid { get; set; }
 
+        public DateOnly Date { get; set; }
+
      
         public string? Itemname { get; set; } = null!;
 
@@ -50,10 +52,37 @@ namespace HalloDoc_DAL.InvoicingViewModels
     }
 
 
-
-    public class ShiftTimeSheets
+    public class ShiftTimeSheetsModel
     {
-        public DateTime? ShiftDate { get; set; }
+        public DateTime StartDate { get; set; }
+
+
+        public List<ShiftTimeSheet> ShiftTimeSheets { get; set; }
+
+
+    }
+
+
+    public class TimeSheetReibursmentModel
+    {
+        public DateTime StartDate { get; set; }
+
+        public int TimeSheetId { get; set; }
+        public int currentPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public List<TimeSheetDetailReimbursement> timeSheetDetailReimbursements { get; set; }
+
+    }
+
+
+
+    public class ShiftTimeSheet
+    {
+        public DateTime ShiftDate { get; set; }
+
+        public int TimeSheetDetailId { get; set; }
 
         public int ShiftNo { get; set; }
 
@@ -69,6 +98,35 @@ namespace HalloDoc_DAL.InvoicingViewModels
 
 
         public int BatchTesing { get; set; }
+    }
+
+
+
+    public class AdminTimeSheetModel
+    {
+
+        public List<Physician> physicians { get; set; }
+
+         
+
+    }
+
+
+
+    public class PendingTimeSheetModel
+    {
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndTime { get; set; }
+
+        public int TimeSheetId { get; set; }
+
+        public bool IsFinelized { get; set; }
+
+        public bool IsApproved { get; set; }
+
+        public string PhysicianName { get;set; }
     }
 
 }

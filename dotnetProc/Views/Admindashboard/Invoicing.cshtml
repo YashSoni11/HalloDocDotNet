@@ -1,4 +1,7 @@
-﻿@{
+﻿@model HalloDoc_DAL.InvoicingViewModels.AdminTimeSheetModel;
+
+
+@{
     Layout = "_Layout";
 }
 
@@ -29,7 +32,21 @@
                     <div class="col-lg-4 col-sm-10">
                         <div class="form-floating ">
 
-                            <select id="" name="TimeSheetDate" class="form-select form-control" aria-label="Default select example" onchange="GetShiftTimeSheetsDetails(event.target.value)">
+                            <select id="" name="TimeSheetDate" class="form-select form-control" aria-label="Default select example" onchange="()">
+
+                                @for(int i = 0; i < Model.physicians.Count; i++)
+                                {
+                                 <option value="@Model.physicians[i].Physicianid">@Model.physicians[i].Firstname @Model.physicians[i].Lastname</option>
+                                    
+                                }
+
+                            </select>
+                            <label for="PreosfessionId">Search By Physicians</label>
+                        </div>
+
+                        <div class="form-floating ">
+
+                            <select id="" name="TimeSheetDate" class="form-select form-control" aria-label="Default select example" onchange="()">
 
                                 @for (int i = 2; i > 0; i--)
                                 {
@@ -76,11 +93,6 @@
 
 
 
-
-                    <div class="col-lg-3 col-md-4 col-sm-12 d-sm-flex justify-content-sm-end d-flex justify-content-end ">
-                        <button class="btn btn-outline-info text-info lightInfo-btn " type="submit">Finalize TimeSheets</button>
-                    </div>
-
                 </div>
             </form>
 
@@ -90,7 +102,7 @@
 
         </div>
 
-        <div id="TimeSheetDetailsContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+        <div id="PendingTimeSheetContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
         </div>
 
 
@@ -102,13 +114,10 @@
         <div class="d-flex col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 justify-content-between ProviderMenuHeader" style="padding:2rem;">
             <h4>TimeSheet Reinbursment</h4>
 
-           
+
         </div>
 
         <div id="VendorTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
-
-
-
         </div>
 
 
@@ -126,8 +135,8 @@
 
     $(document).ready(function () {
 
-        GetShiftTimeSheetsDetails('@(new DateTime(2024, 3, 1))');
-        
+        //GetShiftTimeSheetsDetails('@(new DateTime(2024, 3, 1))');
+
 
         toastr.remove();
         if ('@TempData["ShowPositiveNotification"]' != '') {

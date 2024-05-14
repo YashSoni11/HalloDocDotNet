@@ -116,17 +116,77 @@ namespace dotnetProc.Controllers
         }
 
 
+  
+
         public IActionResult GetShiftTimeSheetsDetails(DateTime StartDate)
         {
 
 
+            ShiftTimeSheetsModel model = _invoice.GetShiftTimeSheetsDetails(StartDate);
+            model.StartDate = StartDate;    
+          
 
-            List<ShiftTimeSheets> shiftTimeSheets = _invoice.GetShiftTimeSheetsDetails(StartDate);
+            return PartialView("_TimeSheetDetailsTable", model);
 
 
-            return PartialView("_TimeSheetDetailsTable", shiftTimeSheets);
+        }
 
 
+        public IActionResult GetTimeSheetReibursmentDetails(int currentPage,DateTime StartDate)
+        {
+
+
+            TimeSheetReibursmentModel model = _invoice.GetTimeSheetReimbursmentDetails(StartDate);
+
+            if(model.timeSheetDetailReimbursements == null)
+            {
+                model.TotalPages = 0;
+
+            }
+            else
+            {
+
+
+            model.TotalPages = (int)Math.Ceiling((double)model.timeSheetDetailReimbursements.Count / 1);
+            model.timeSheetDetailReimbursements = model.timeSheetDetailReimbursements.Skip(1 * (currentPage - 1)).Take(1).ToList();
+            }
+            model.currentPage = currentPage;
+       
+
+            return PartialView("_TimeSheetReibursmentTable", model);
+        }
+
+
+
+        public IActionResult GetAdminSiteTimeSheetView()
+        {
+
+            List<Physician> physicians = _dashboard.GetAllPhysician();
+
+            AdminTimeSheetModel adminTimeSheetModel = new AdminTimeSheetModel();
+
+            adminTimeSheetModel.physicians = physicians;
+
+            return View("Invoicing", "Admindashboard");
+        }
+
+
+        public IActionResult GetAdminTimeSheetTableView(int physicianId,DateTime StatDate)
+        {
+
+
+             PendingTimeSheetModel pendingTimeSheetModels = _invoice.GetPendingTimeSheets(physicianId,StatDate);
+
+
+            if(pendingTimeSheetModels != null && pendingTimeSheetModels.IsApproved == true && pendingTimeSheetModels.IsFinelized == true)
+            {
+
+                return Json(new { IsApproved = true });
+            }else 
+            {
+                return PartialView("_PendingTimeSheetTable", pendingTimeSheetModels);
+            }
+           
         }
 
     }

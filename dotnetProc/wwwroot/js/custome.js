@@ -2302,3 +2302,104 @@ const GetProviderOnCallData = (regionId) => {
     })
 
 }
+
+
+
+const GetShiftTimeSheetsDetails = (date) => {
+
+
+
+    $.ajax({
+
+        url: "/Invoicing/GetShiftTimeSheetsDetails",
+        method: "post",
+        data: { StartDate: date },
+        success: function (response) {
+
+            $("#TimeSheetDetailsContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+    GetTimeReibursmentDetails(date);
+
+
+}
+
+
+const GetTimeReibursmentDetails = (date) => {
+
+
+
+    $.ajax({
+
+        url: "/Invoicing/GetTimeSheetReibursmentDetails",
+        method: "post",
+        data: { currentPage:1, StartDate: date },
+        success: function (response) {
+
+            $("#VendorTableContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+
+
+}
+
+
+const GetAdminTimeSheetView = () => {
+
+
+
+    let physicianId = $("#TimeSheetPhysicianInp").Val();
+    let startDate = $("#TimeSheetStartDate").val();
+
+
+
+    $.ajax({
+
+        url: "/Invoicing/GetAdminTimeSheetTableView",
+        method: "post",
+        data: { physicianId: physicianId, StartDate: startDate },
+        success: function (response) {
+
+
+            if (response.IsApproved) {
+
+            } else {
+                $("#PendingTimeSheetContainer").html(response);
+
+            }
+
+
+
+
+
+
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+
+}
+
+

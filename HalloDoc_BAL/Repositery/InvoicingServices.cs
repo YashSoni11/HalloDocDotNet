@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_BAL.Repositery
 {
@@ -293,7 +294,7 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public List<ShiftTimeSheets> GetShiftTimeSheetsDetails(DateTime StartDate)
+        public ShiftTimeSheetsModel GetShiftTimeSheetsDetails(DateTime StartDate)
         {
 
             DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
@@ -338,8 +339,11 @@ namespace HalloDoc_BAL.Repositery
             }
 
 
-                List<ShiftTimeSheets> ShiftTimeSheets = new List<ShiftTimeSheets>();    
+                List<ShiftTimeSheet> ShiftTimeSheets = new List<ShiftTimeSheet>();    
             Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date);
+
+             List<Timesheetdetail> timesheetdetails = _context.Timesheetdetails.OrderBy(q=>q.Timesheetdate).ToList();
+           
 
             if (timeSheet != null)
             {
@@ -347,8 +351,9 @@ namespace HalloDoc_BAL.Repositery
 
                 for(int i = StartDate.Day; i <= endDate.Day; i++)
                 {
-                    ShiftTimeSheets shiftTimeSheets = new ShiftTimeSheets();
+                    ShiftTimeSheet shiftTimeSheets = new ShiftTimeSheet();
 
+                    shiftTimeSheets.TimeSheetDetailId = timesheetdetails[i-1].Timesheetdetailid;
                     shiftTimeSheets.ShiftNo = _context.Shiftdetails.Where(q => q.Shiftdate.Day == i && q.Shiftdate.Month == StartDate.Month && q.Shiftdate.Year == StartDate.Year).Count();
                     shiftTimeSheets.ShiftDate = new DateTime(StartDate.Year, StartDate.Month, i);
                     shiftTimeSheets.NightShiftWeekend = 0;
@@ -363,13 +368,18 @@ namespace HalloDoc_BAL.Repositery
                    
                 }
 
-                
 
+               
 
 
             }
 
-            return ShiftTimeSheets;
+
+            ShiftTimeSheetsModel model = new ShiftTimeSheetsModel();
+            model.ShiftTimeSheets = ShiftTimeSheets;
+           
+
+            return model;
         }
 
 
@@ -431,5 +441,131 @@ namespace HalloDoc_BAL.Repositery
                 return false;
             }
         }
+
+
+
+        public TimeSheetReibursmentModel GetTimeSheetReimbursmentDetails(DateTime StartDate)
+        {
+
+
+            DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
+
+
+            Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date);
+
+
+
+            TimeSheetReibursmentModel model = new TimeSheetReibursmentModel();
+
+            if(timeSheet != null)
+
+
+            {
+            model.TimeSheetId = timeSheet.Timesheetid;
+
+            List<Timesheetdetail> timesheetdetails = _context.Timesheetdetails.OrderBy(q=>q.Timesheetdate).Where(q => q.Timesheetid == timeSheet.Timesheetid).ToList();
+
+            List<TimeSheetDetailReimbursement> timeSheetDetailReimbursements = new List<TimeSheetDetailReimbursement>();
+
+            foreach(Timesheetdetail timesheetdetail in timesheetdetails)
+            {
+
+                TimeSheetDetailReimbursement? timesheetdetailreimbursement = _context.Timesheetdetailreimbursements.Where(q => q.Timesheetdetailid == timesheetdetail.Timesheetdetailid).Select(q => new TimeSheetDetailReimbursement
+                {
+                    Timesheetdetailid = q.Timesheetdetailid,
+                    Timesheetdetailreimbursementid = q.Timesheetdetailreimbursementid,
+                    Itemname = q.Itemname,
+                    Date = timesheetdetail.Timesheetdate,
+                    Amount = q.Amount,
+                    BillName = q.Bill
+                }).FirstOrDefault();
+
+                timeSheetDetailReimbursements.Add(timesheetdetailreimbursement);
+
+
+            }
+
+            model.timeSheetDetailReimbursements = timeSheetDetailReimbursements;
+
+            }
+
+            return model;
+        }
+
+
+        public  PendingTimeSheetModel GetPendingTimeSheets(int PhysicianId, DateTime StartDate)
+        {
+            DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
+            int currentMonth = StartDate.Month;
+
+            DateTime endDate;
+
+
+            if (StartDate.Day == 1)
+            {
+                endDate = new DateTime(StartDate.Year, StartDate.Month, 14);
+
+            }
+            else
+            {
+
+
+                if (new DateTime(StartDate.Year, currentMonth, 15).AddDays(16).Month == currentMonth)
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 31);
+
+                }
+                else if (new DateTime(StartDate.Year, currentMonth, 15).AddDays(15).Month == currentMonth)
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 30);
+
+
+                }
+                else if (new DateTime(StartDate.Year, currentMonth, 15).AddDays(14).Month == currentMonth)
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 29);
+
+
+                }
+                else
+                {
+                    endDate = new DateTime(StartDate.Year, StartDate.Month, 28);
+
+
+                }
+            }
+
+            Timesheet?  timesheet = _context.Timesheets.Where(q=>q.Physicianid == PhysicianId && q.Startdate == date).FirstOrDefault();
+
+                PendingTimeSheetModel pendingTimeSheetModel = new PendingTimeSheetModel();
+
+            if(timesheet != null && timesheet.Isfinalize == true && timesheet.Isapproved == false)
+            {
+
+
+                pendingTimeSheetModel.StartDate = StartDate;
+                pendingTimeSheetModel.EndTime = endDate;
+                pendingTimeSheetModel.IsFinelized = true;
+                pendingTimeSheetModel.IsApproved = false;
+                pendingTimeSheetModel.TimeSheetId = timesheet.Timesheetid;
+                pendingTimeSheetModel.PhysicianName = _context.Physicians.Where(q => q.Physicianid == timesheet.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();
+
+            }else if(timesheet != null && timesheet.Isfinalize == false)
+            {
+                pendingTimeSheetModel.IsFinelized = false;
+                pendingTimeSheetModel.IsApproved = false;
+            }
+            else
+            {
+                pendingTimeSheetModel.IsApproved= true;
+                pendingTimeSheetModel.IsFinelized = true;
+            }
+
+
+            return pendingTimeSheetModel;
+
+        }
+
+
     }
 }

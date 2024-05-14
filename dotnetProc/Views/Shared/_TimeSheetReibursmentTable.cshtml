@@ -1,0 +1,73 @@
+﻿@model HalloDoc_DAL.InvoicingViewModels.TimeSheetReibursmentModel;
+
+
+@{
+
+
+    if (Model.timeSheetDetailReimbursements!= null && Model.timeSheetDetailReimbursements?.Count != 0)
+    {
+
+        <table class="table ReqtableContainer">
+            <thead>
+                <tr style="background-color:#f1f1f1;">
+                    <th class="reqtableHeader text-center" scope="col">Date</th>
+                    <th class="reqtableHeader text-center" scope="col">Item</th>
+                    <th class="reqtableHeader text-center" scope="col">Amount</th>
+                    <th class="reqtableHeader text-center" scope="col">Bill</th>
+                    <th class="reqtableHeader text-center" scope="col">Action</th>
+                   
+                </tr>
+            </thead>
+            <tbody style="color:var(--pi-label-color);background: var(--pi-form-back-color);">
+
+
+                @for (int i = 0; i < Model.timeSheetDetailReimbursements.Count; i++)
+                {
+
+
+
+
+                    <tr class="align-middle">
+                        <td>@Model.timeSheetDetailReimbursements[i].Date.ToString("MMM d,yyyy")</td>
+                        <td>@Model.timeSheetDetailReimbursements[i].Itemname</td>
+                        <td>@Model.timeSheetDetailReimbursements[i].Amount</td>
+                        <td>@Model.timeSheetDetailReimbursements[i].BillName</td>
+                        <td>
+                            <a href="~/Bills/@Model.TimeSheetId/@Model.timeSheetDetailReimbursements[i].BillName" class="btn btn-outline-info text-info lightInfo-btn" target="_blank">
+                                 View
+                            </a>
+                        </td>
+                       
+
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+        <div class="row p-3">
+            <nav aria-label="Page navigation example mt-3">
+                <ul class="pagination justify-content-end PageNumbers" style="column-gap:1rem;">
+                    <li class="page-item" onclick="GetVendorsTableView(@Model.currentPage-1,true,@Model.TotalPages)" style="cursor:pointer"><i class="bi bi-chevron-left"></i></li>
+                    <li class="page-item text-white" style="padding-left: 1rem;padding-right: 1rem;background-color:#0dcaf0;cursor:pointer;">@Model.currentPage</li>
+                    <li class="page-item" onclick="GetVendorsTableView(@Model.currentPage+1,true,@Model.TotalPages)" style="cursor:pointer;"><i class="bi bi-chevron-right"></i></li>
+                </ul>
+            </nav>
+        </div>
+
+
+
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <div class="col-7">
+                <h4 class="alert alert-info fs-3  d-flex" role="alert" style="margin-top:7rem;justify-content:center;">
+                    No Records Found!
+                </h4>
+            </div>
+        </div>
+    }
+}
+
