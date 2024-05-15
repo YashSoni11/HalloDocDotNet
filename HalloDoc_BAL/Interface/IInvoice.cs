@@ -17,11 +17,15 @@ namespace HalloDoc_BAL.Interface
 
         public bool SaveTimeSheetReimbursmentDetails(TimeSheet timeSheetDetails, int UserId);
 
-        public ShiftTimeSheetsModel GetShiftTimeSheetsDetails(DateTime StartDate);
+        public ShiftTimeSheetsModel GetShiftTimeSheetsDetails(int physicianId, DateTime StartDate);
 
-        public TimeSheetReibursmentModel GetTimeSheetReimbursmentDetails(DateTime StartDate);
+        public TimeSheetReibursmentModel GetTimeSheetReimbursmentDetails(int physicianId, DateTime StartDate);
 
 
         public  PendingTimeSheetModel GetPendingTimeSheets(int PhysicianId,DateTime StartDate);
+
+
+        public AdminTimeSheet GetAdminTimeSheetDetailsList(int Physicianid, DateTime StartDate);
+
     }
 }

@@ -24,6 +24,36 @@ namespace HalloDoc_DAL.InvoicingViewModels
 
     }
 
+
+    public class AdminTimeSheet
+    {
+        public DateTime TimeSheetStartDate { get; set; }
+
+        public List<Timesheetdetail>? TimeSheetDetails { get; set; }
+
+        public List<TimeSheetDetailReimbursement> timesheetdetailreimbursements { get; set; }
+
+        public int hoursPayrate { get; set; }    
+
+        public int WeekendPayrate { get; set; }
+
+        public int HouseCallPayrate { get; set; }   
+
+        public int phoneConsultPayrate { get; set; }    
+
+        public int TotalHoursPay { get; set; }
+
+        public int TotalWeekendPay { get; set; }
+
+        public int TotalHouseCallPay { get; set; }
+
+        public int TotalPhoneCallPay { get; set; }  
+
+        public int TotalAmount { get; set; }    
+
+        
+    }
+
     public class TimeSheetDetailReimbursement
     {
      

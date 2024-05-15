@@ -71,6 +71,139 @@ namespace HalloDoc_BAL.Repositery
 
 
         }
+        public AdminTimeSheet GetAdminTimeSheetDetailsList(int Physicianid, DateTime StartDate)
+        {
+
+            DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
+
+            int timeSheetId = _context.Timesheets.Where(q => q.Physicianid == Physicianid && q.Startdate == date).Select(q => q.Timesheetid).FirstOrDefault();
+
+            List<Timesheetdetail> timesheetdetails = _context.Timesheetdetails.OrderBy(q => q.Timesheetdate).Where(q => q.Timesheetid == timeSheetId).ToList();
+            List<TimeSheetDetailReimbursement> timesheetdetailreimbursements = new List<TimeSheetDetailReimbursement>();
+
+
+
+            if (timesheetdetails.Count == 0)
+            {
+
+                int currentMonth = StartDate.Month;
+
+                int count = 0;
+
+
+
+                 if (StartDate.Day == 1)
+                {
+                    count = 14;
+                }
+                else
+                {
+
+
+                    if (new DateTime(StartDate.Year, currentMonth,StartDate.Day).AddDays(16).Month == currentMonth)
+                    {
+                        count = 16;
+                    }
+                    else if (new DateTime(StartDate.Year, currentMonth, StartDate.Day).AddDays(15).Month == currentMonth)
+                    {
+                        count = 15;
+
+
+                    }
+                    else if (new DateTime(StartDate.Year, currentMonth, StartDate.Day).AddDays(14).Month == currentMonth)
+                    {
+                        count = 14;
+
+
+                    }
+                    else if (new DateTime(StartDate.Year, currentMonth, StartDate.Day).AddDays(13).Month == currentMonth)
+                    {
+                        count = 13;
+
+                    }
+                }
+
+
+
+
+
+
+                for (int i = 1; i <= count; i++)
+                {
+                    Timesheetdetail detail = new Timesheetdetail();
+                    detail.Totalhours = 0;
+                    timesheetdetails.Add(detail);
+                }
+
+            }
+
+
+
+            foreach (Timesheetdetail timesheetdetail in timesheetdetails)
+            {
+                TimeSheetDetailReimbursement? timesheetdetailreimbursement = _context.Timesheetdetailreimbursements.Where(q => q.Timesheetdetailid == timesheetdetail.Timesheetdetailid).Select(r => new TimeSheetDetailReimbursement
+                {
+
+                    Timesheetdetailid = r.Timesheetdetailid,
+                    Timesheetdetailreimbursementid = r.Timesheetdetailreimbursementid,
+                    Itemname = r.Itemname,
+                    Amount = r.Amount,
+                    BillName = r.Bill,
+                    TimeSheetId = _context.Timesheetdetails.Where(q => q.Timesheetdetailid == r.Timesheetdetailid).Select(q => q.Timesheetid).FirstOrDefault(),
+
+
+                }).FirstOrDefault();
+
+
+                if (timesheetdetailreimbursement == null)
+                {
+                    timesheetdetailreimbursement = new TimeSheetDetailReimbursement();
+                    timesheetdetailreimbursement.Timesheetdetailid = timesheetdetail.Timesheetdetailid;
+                    timesheetdetailreimbursement.TimeSheetId = timesheetdetail.Timesheetid;
+
+                }
+
+                timesheetdetailreimbursements.Add(timesheetdetailreimbursement);
+            }
+
+            AdminTimeSheet timeSheet = new AdminTimeSheet();
+            timeSheet.TimeSheetDetails = timesheetdetails;
+            timeSheet.timesheetdetailreimbursements = timesheetdetailreimbursements;
+            timeSheet.TimeSheetStartDate = StartDate;
+
+
+
+
+            timeSheet.hoursPayrate = (int)_context.Payratebyproviders.Where(q => q.Payratecategoryid == 2).Select(q => q.Payrate).FirstOrDefault();
+            timeSheet.WeekendPayrate = (int)_context.Payratebyproviders.Where(q => q.Payratecategoryid == 1).Select(q => q.Payrate).FirstOrDefault();
+            timeSheet.HouseCallPayrate = (int)_context.Payratebyproviders.Where(q => q.Payratecategoryid == 7).Select(q => q.Payrate).FirstOrDefault();
+            timeSheet.phoneConsultPayrate = (int)_context.Payratebyproviders.Where(q => q.Payratecategoryid == 4).Select(q => q.Payrate).FirstOrDefault();
+
+
+
+            foreach(Timesheetdetail timesheetdetail1 in timeSheet.TimeSheetDetails)
+            {
+
+
+                timeSheet.TotalHoursPay += (int)timesheetdetail1.Totalhours * timeSheet.hoursPayrate;
+
+                if(timesheetdetail1.Numberofhousecall != null)
+                timeSheet.TotalHouseCallPay += (int)timesheetdetail1.Numberofhousecall * timeSheet.HouseCallPayrate;
+
+                if(timesheetdetail1.Numberofphonecall != null)
+                timeSheet.TotalPhoneCallPay += (int)timesheetdetail1.Numberofphonecall * timeSheet.phoneConsultPayrate;
+
+                if (timesheetdetail1.Isweekend)
+                {
+                    timeSheet.TotalWeekendPay += timeSheet.WeekendPayrate;
+                }
+            }
+
+            timeSheet.TotalAmount = timeSheet.TotalHoursPay+timeSheet.TotalPhoneCallPay+timeSheet.TotalHouseCallPay+timeSheet.TotalWeekendPay;
+
+            return timeSheet;
+
+        }
 
         public TimeSheet GetTimeSheetDetailsList(int Physicianid,DateTime StartDate)
         {
@@ -294,7 +427,7 @@ namespace HalloDoc_BAL.Repositery
             }
         }
 
-        public ShiftTimeSheetsModel GetShiftTimeSheetsDetails(DateTime StartDate)
+        public ShiftTimeSheetsModel GetShiftTimeSheetsDetails(int physicianId, DateTime StartDate)
         {
 
             DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
@@ -340,7 +473,7 @@ namespace HalloDoc_BAL.Repositery
 
 
                 List<ShiftTimeSheet> ShiftTimeSheets = new List<ShiftTimeSheet>();    
-            Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date);
+            Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date && q.Physicianid == physicianId);
 
              List<Timesheetdetail> timesheetdetails = _context.Timesheetdetails.OrderBy(q=>q.Timesheetdate).ToList();
            
@@ -444,14 +577,14 @@ namespace HalloDoc_BAL.Repositery
 
 
 
-        public TimeSheetReibursmentModel GetTimeSheetReimbursmentDetails(DateTime StartDate)
+        public TimeSheetReibursmentModel GetTimeSheetReimbursmentDetails(int physicianId, DateTime StartDate)
         {
 
 
             DateOnly date = new DateOnly(StartDate.Year, StartDate.Month, StartDate.Day);
 
 
-            Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date);
+            Timesheet? timeSheet = _context.Timesheets.FirstOrDefault(q => q.Startdate == date && q.Physicianid == physicianId);
 
 
 
@@ -554,11 +687,17 @@ namespace HalloDoc_BAL.Repositery
             {
                 pendingTimeSheetModel.IsFinelized = false;
                 pendingTimeSheetModel.IsApproved = false;
+                pendingTimeSheetModel.StartDate = StartDate;
+                pendingTimeSheetModel.EndTime = endDate;
+                pendingTimeSheetModel.PhysicianName = _context.Physicians.Where(q => q.Physicianid == timesheet.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault();
+
             }
             else
             {
                 pendingTimeSheetModel.IsApproved= true;
                 pendingTimeSheetModel.IsFinelized = true;
+                pendingTimeSheetModel.StartDate = StartDate;
+                pendingTimeSheetModel.EndTime = endDate;
             }
 
 

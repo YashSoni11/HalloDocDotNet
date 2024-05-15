@@ -88,7 +88,10 @@ namespace dotnetProc.Controllers
 
             TempData["TimeSheetTime"] = timeSheet.TimeSheetStartDate;
 
-            return RedirectToAction("GetTimeSheetView");
+
+
+
+            return loggedInUser.Role == "Admin" ? RedirectToAction("GetAdminTimeSheetView", "Admindashboard", new { TimeSheetDate = timeSheet.TimeSheetStartDate}): RedirectToAction("GetTimeSheetView");
 
         }
 
@@ -120,9 +123,11 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetShiftTimeSheetsDetails(DateTime StartDate)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
 
-            ShiftTimeSheetsModel model = _invoice.GetShiftTimeSheetsDetails(StartDate);
+            ShiftTimeSheetsModel model = _invoice.GetShiftTimeSheetsDetails(loggedInUser.UserId,StartDate);
             model.StartDate = StartDate;    
           
 
@@ -134,9 +139,10 @@ namespace dotnetProc.Controllers
 
         public IActionResult GetTimeSheetReibursmentDetails(int currentPage,DateTime StartDate)
         {
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
-
-            TimeSheetReibursmentModel model = _invoice.GetTimeSheetReimbursmentDetails(StartDate);
+            TimeSheetReibursmentModel model = _invoice.GetTimeSheetReimbursmentDetails(loggedInUser.UserId, StartDate);
 
             if(model.timeSheetDetailReimbursements == null)
             {
@@ -158,31 +164,22 @@ namespace dotnetProc.Controllers
 
 
 
-        public IActionResult GetAdminSiteTimeSheetView()
-        {
-
-            List<Physician> physicians = _dashboard.GetAllPhysician();
-
-            AdminTimeSheetModel adminTimeSheetModel = new AdminTimeSheetModel();
-
-            adminTimeSheetModel.physicians = physicians;
-
-            return View("Invoicing", "Admindashboard");
-        }
+   
 
 
-        public IActionResult GetAdminTimeSheetTableView(int physicianId,DateTime StatDate)
+        public IActionResult GetAdminTimeSheetTableView(int physicianId,DateTime StartDate)
         {
 
 
-             PendingTimeSheetModel pendingTimeSheetModels = _invoice.GetPendingTimeSheets(physicianId,StatDate);
+             PendingTimeSheetModel pendingTimeSheetModels = _invoice.GetPendingTimeSheets(physicianId, StartDate);
 
 
             if(pendingTimeSheetModels != null && pendingTimeSheetModels.IsApproved == true && pendingTimeSheetModels.IsFinelized == true)
             {
 
                 return Json(new { IsApproved = true });
-            }else 
+            }
+            else 
             {
                 return PartialView("_PendingTimeSheetTable", pendingTimeSheetModels);
             }

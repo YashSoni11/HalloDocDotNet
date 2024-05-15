@@ -1,0 +1,300 @@
+﻿@model HalloDoc_DAL.InvoicingViewModels.AdminTimeSheet
+
+
+
+@{
+    Layout = "_Layout";
+}
+@{
+    int endDay = 0;
+    int startDay = 0;
+
+    int currentMonth = Model.TimeSheetStartDate.Month;
+
+
+
+
+    @if (Model.TimeSheetStartDate.Day == 1)
+    {
+        endDay = 14;
+        startDay = 1;
+    }
+    else
+    {
+        startDay = 15;
+
+        if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(16).Month == currentMonth)
+        {
+            endDay = 31;
+        }
+        else if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(15).Month == currentMonth)
+        {
+            endDay = 30;
+
+        }
+        else if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(14).Month == currentMonth)
+        {
+            endDay = 29;
+
+        }
+        else if (new DateTime(Model.TimeSheetStartDate.Year, currentMonth, 15).AddDays(13).Month == currentMonth)
+        {
+            endDay = 28;
+
+        }
+    }
+
+}
+
+
+<partial name="_DashNavbar" />
+<partial name="_Dashtabs" />
+
+<div class="container-fluid">
+    <div class="row" style="justify-content:center">
+        <div id="UserAccessTableContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 " style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+            <form asp-action="SaveTimeSheetDetails" asp-controller="Invoicing" method="post" enctype="multipart/form-data">
+
+
+
+                <input type="date" hidden style="display:none" asp-for="TimeSheetStartDate" />
+
+                <table class="table ReqtableContainer table-responsive">
+                    <thead>
+                        <tr style="background-color:#f1f1f1;">
+                            <th class="reqtableHeader" scope="col">Date</th>
+                            <th class="reqtableHeader" scope="col">On Call Hours</th>
+                            <th class="reqtableHeader" scope="col">Total Hours</th>
+                            <th class="reqtableHeader" scope="col">Weekend/Holiday</th>
+                            <th class="reqtableHeader" scope="col">Number Of HouseCalls</th>
+                            <th class="reqtableHeader" scope="col">Number Of Consults</th>
+                            <th class="reqtableHeader" scope="col">Total</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+
+
+                        @for (int i = startDay - 1; i < endDay; i++)
+                        {
+
+                            <tr>
+                                <td style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetdetailid" /></td>
+                                <td style="display:none" hidden><input asp-for="@Model.TimeSheetDetails[i].Timesheetid" /></td>
+                                <td>@Model.TimeSheetStartDate.AddDays(i).ToString("MM/dd/yyyy")</td>
+                                <td>0</td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Totalhours" type="number" /></td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Isweekend" type="checkbox" /></td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Numberofhousecall" type="number" /></td>
+                                <td><input asp-for="@Model.TimeSheetDetails[i].Numberofphonecall" type="number" /></td>
+                            </tr>
+                        }
+
+
+                        <tr>
+                            <td>
+                                Payrate
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <input asp-for="hoursPayrate" type="number" disabled/>
+                            </td>
+                            <td>
+                                <input asp-for="WeekendPayrate" type="number" disabled />
+                            </td>
+                            <td>
+                                <input asp-for="HouseCallPayrate" type="number" disabled />
+                            </td>
+                            <td>
+                                <input asp-for="phoneConsultPayrate" type="number" disabled />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Invoice Total
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <input asp-for="TotalHoursPay" type="number" disabled />
+
+                            </td>
+                            <td>
+                                <input asp-for="TotalWeekendPay" type="number" disabled />
+
+                            </td>
+                            <td>
+                                <input asp-for="TotalHouseCallPay" type="number" disabled />
+
+                            </td>
+                            <td>
+                                <input asp-for="TotalPhoneCallPay" type="number" disabled />
+
+                            </td>
+                            <td>
+                                <input asp-for="TotalAmount" type="number" disabled />
+
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+                <div class="d-flex justify-content-end p-1">
+
+                    <button class="btn btn-info  text-white darkInfo-btn mb-2" type="submit">Submit</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-8 mt-3">
+
+            <button class="btn btn-info  text-white darkInfo-btn mb-2 " type="button" onclick="$('#RecepientsContainer').toggleClass('RecipientsDisPlay')">Add Reciepts</button>
+
+
+        </div>
+
+
+        <div id="RecepientsContainer" class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-11 justify-content-between p-0 RecipientsDisPlay" style="box-shadow: rgb(0 0 0 / 15%) 0px 5px 15px 0px;border-radius: 0px 0px 10px 10px;">
+            <input type="date" hidden style="display:none" asp-for="TimeSheetStartDate" />
+
+            <table class="table ReqtableContainer table-responsive">
+                <thead>
+                    <tr style="background-color:#f1f1f1;">
+                        <th class="reqtableHeader" scope="col">Date</th>
+                        <th class="reqtableHeader" scope="col">Item</th>
+                        <th class="reqtableHeader" scope="col">Amount</th>
+                        <th class="reqtableHeader" scope="col">Bill</th>
+                        <th class="reqtableHeader" scope="col">Actions</th>
+
+
+                    </tr>
+                </thead>
+                <tbody style="color: var(--pi-label-color);background: var(--pi-form-back-color);">
+
+
+
+                    @for (int i = startDay - 1; i < endDay; i++)
+                    {
+                        <form id="TimeSheetReimbursmentForm" asp-action="SaveReimbursementDetails" asp-controller="Invoicing" method="post" enctype="multipart/form-data">
+                            <input hidden asp-for="@Model.timesheetdetailreimbursements[i].TimeSheetId" style="display:none;" />
+                            <input type="date" hidden style="display:none" asp-for="TimeSheetStartDate" />
+
+
+                        <tr>
+                            <input hidden id="TimeSheetReimbursementIdInp" asp-for="@Model.timesheetdetailreimbursements[i].Timesheetdetailreimbursementid" style="display:none;" />
+                            <input hidden id="TimeSheetDeatilIdInp" asp-for="@Model.timesheetdetailreimbursements[i].Timesheetdetailid" style="display:none;" />
+
+                            <td>@Model.TimeSheetStartDate.AddDays(i).ToString("MM/dd/yyyy")</td>
+
+                            <td><input id="ItemNameInp(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" asp-for="@Model.timesheetdetailreimbursements[i].Itemname" type="text"  /></td>
+
+                            <td><input id="AmountInp(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" asp-for="@Model.timesheetdetailreimbursements[i].Amount" type="number"/></td>
+
+                            <td>
+
+
+                                <div class="input-group mb-3">
+
+
+                                    <input id="BillInp(@Model.timesheetdetailreimbursements[i].Timesheetdetailid)" asp-for="@Model.timesheetdetailreimbursements[i].Bill" type="file" class="form-control" id="inputGroupFile02" >
+
+                                    <label class="input-group-text bg-info text-white" for="inputGroupFile02">
+                                        <i class='bi bi-cloud-upload text-white mx-1'></i>Upload
+                                    </label>
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                    @if (Model.timesheetdetailreimbursements[i].Timesheetdetailreimbursementid != null)
+                                    {
+                                  
+                                    <a href="~/Bills/@Model.timesheetdetailreimbursements[i].TimeSheetId/@Model.timesheetdetailreimbursements[i].BillName" target="_blank" type="button" class="btn btn-outline-info text-info lightInfo-btn EditSheetModeBtn@(Model.timesheetdetailreimbursements[i].Timesheetdetailid)">
+                                        View
+                                    </a>
+                                    }
+                             
+
+
+
+                            </td>
+
+
+                        </tr>
+                        </form>
+                    }
+
+
+
+
+
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="col-8 d-flex justify-content-end mt-3 mb-5" style="column-gap:2rem;">
+
+            <div class="form-floating ">
+                <input type="number" class="form-control" id="floatingInput"
+                       placeholder="name@example.com">
+                <label for="floatingInput">Bonus Amount</label>
+             
+
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInput"
+                       placeholder="name@example.com">
+                <label for="floatingInput">Admin Description</label>
+              
+
+            </div>
+            <button class="btn btn-info  text-white darkInfo-btn  " type="button" onclick="()">Approve</button>
+
+
+        </div>
+
+    </div>
+
+
+   
+
+</div>
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+        toastr.remove();
+        if ('@TempData["ShowPositiveNotification"]' != '') {
+
+            toastr.success('@TempData["ShowPositiveNotification"]');
+        }
+        else if ('@TempData["ShowNegativeNotification"]' != '') {
+            toastr.error('@TempData["ShowNegativeNotification"]')
+        }
+    })
+
+
+    
+
+</script>

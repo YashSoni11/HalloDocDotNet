@@ -2317,6 +2317,7 @@ const GetShiftTimeSheetsDetails = (date) => {
         success: function (response) {
 
             $("#TimeSheetDetailsContainer").html(response);
+           
 
 
         },
@@ -2345,6 +2346,7 @@ const GetTimeReibursmentDetails = (date) => {
         success: function (response) {
 
             $("#VendorTableContainer").html(response);
+            $("#AdminTimeSheetReibursmentTable").html(response);
 
 
         },
@@ -2364,11 +2366,13 @@ const GetAdminTimeSheetView = () => {
 
 
 
-    let physicianId = $("#TimeSheetPhysicianInp").Val();
+    let physicianId = $("#TimeSheetPhysicianInp").val();
+   
     let startDate = $("#TimeSheetStartDate").val();
 
 
 
+   
     $.ajax({
 
         url: "/Invoicing/GetAdminTimeSheetTableView",
@@ -2376,8 +2380,12 @@ const GetAdminTimeSheetView = () => {
         data: { physicianId: physicianId, StartDate: startDate },
         success: function (response) {
 
+               
 
-            if (response.IsApproved) {
+            if (response.isApproved) {
+
+
+                GetAdminShiftTimeSheetsDetails(startDate, physicianId);
 
             } else {
                 $("#PendingTimeSheetContainer").html(response);
@@ -2402,4 +2410,55 @@ const GetAdminTimeSheetView = () => {
 
 }
 
+const GetAdminShiftTimeSheetsDetails = (startDate, physicianId) => {
 
+
+
+    $.ajax({
+
+        url: "/Admindashboard/GetAdminShiftTimeSheetsDetails",
+        method: "post",
+        data: { physicianId: physicianId, StartDate: startDate },
+        success: function (response) {
+
+         
+            $("#PendingTimeSheetContainer").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+    GetAdminTimeReibursmentDetails(startDate, physicianId);
+}
+
+
+const GetAdminTimeReibursmentDetails = (startDate, physicianId) => {
+
+
+
+    $.ajax({
+
+        url: "/Admindashboard/GetAdminTimeSheetReibursmentDetails",
+        method: "post",
+        data: { currentPage: 1, physicianId: physicianId, StartDate: startDate },
+        success: function (response) {
+
+          
+            $("#AdminTimeSheetReibursmentTable").html(response);
+
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+
+    })
+
+
+
+
+}

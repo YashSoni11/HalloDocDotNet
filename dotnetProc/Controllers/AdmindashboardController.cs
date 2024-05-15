@@ -3,6 +3,7 @@ using HalloDoc_BAL.Interface;
 using HalloDoc_DAL.Models;
 using HalloDoc_DAL.ViewModels;
 using HalloDoc_DAL.AdminViewModels;
+using HalloDoc_DAL.InvoicingViewModels;
 using Newtonsoft.Json;
 using HalloDoc_BAL.Repositery;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,8 +31,10 @@ namespace dotnetProc.Controllers
         private readonly IPatientReq _patientReq;
         private readonly IProvider _provider;
         private readonly IAuthManager _authManager;
+        private readonly IInvoice _invoice;
 
-        public AdmindashboardController(IProvider provider, IAdmindashboard dashboard, IAccount account, IEmailService emailService, IPatientReq patientReq, IAuthManager authManager)
+
+        public AdmindashboardController(IInvoice invoice,IProvider provider, IAdmindashboard dashboard, IAccount account, IEmailService emailService, IPatientReq patientReq, IAuthManager authManager)
         {
             _dashboard = dashboard;
             _account = account;
@@ -39,6 +42,8 @@ namespace dotnetProc.Controllers
             _patientReq = patientReq;
             _authManager = authManager;
             _provider = provider;
+            _invoice = invoice;
+
         }
 
 
@@ -2056,9 +2061,76 @@ namespace dotnetProc.Controllers
 
         #endregion
 
+        public IActionResult GetAdminSiteTimeSheetView()
+        {
+
+            List<Physician> physicians = _dashboard.GetAllPhysician();
+
+            AdminTimeSheetModel adminTimeSheetModel = new AdminTimeSheetModel();
+
+            adminTimeSheetModel.physicians = physicians;
+
+            return View("Invoicing", adminTimeSheetModel);
+        }
+
+        public IActionResult GetAdminShiftTimeSheetsDetails(int physicianId,DateTime StartDate)
+        {
+
+
+            ShiftTimeSheetsModel model = _invoice.GetShiftTimeSheetsDetails(physicianId,StartDate);
+            model.StartDate = StartDate;
+
+
+            return PartialView("_TimeSheetDetailsTable", model);
+
+
+        }
+
+
+        public IActionResult GetAdminTimeSheetReibursmentDetails(int currentPage, int physicianId, DateTime StartDate)
+        {
+
+
+            TimeSheetReibursmentModel model = _invoice.GetTimeSheetReimbursmentDetails(physicianId,StartDate);
+
+            if (model.timeSheetDetailReimbursements == null)
+            {
+                model.TotalPages = 0;
+
+            }
+            else
+            {
+
+
+                model.TotalPages = (int)Math.Ceiling((double)model.timeSheetDetailReimbursements.Count / 1);
+                model.timeSheetDetailReimbursements = model.timeSheetDetailReimbursements.Skip(1 * (currentPage - 1)).Take(1).ToList();
+            }
+            model.currentPage = currentPage;
+
+
+            return PartialView("_TimeSheetReibursmentTable", model);
+        }
 
 
 
+        public IActionResult GetAdminTimeSheetView(DateTime TimeSheetDate)
+        {
+
+           
+
+            string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
+
+            AdminTimeSheet timeSheet = new AdminTimeSheet();
+
+           
+
+
+            timeSheet = _invoice.GetAdminTimeSheetDetailsList(loggedInUser.UserId, TimeSheetDate);
+
+            return View("ApproveTimeSheets", timeSheet);
+
+        }
 
     }
 }

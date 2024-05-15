@@ -4,7 +4,7 @@
 @{
 
 
-    if (Model.TimeSheetId != null)
+    if (Model.TimeSheetId != 0)
     {
 
         <table class="table ReqtableContainer">
@@ -29,9 +29,9 @@
                         <td>@Model.EndTime.ToString("MMM d,yyyy")</td>
                         <td>Pending</td>
                     <td>
-                        <button class="btn btn-outline-info text-info lightInfo-btn">
+                        <a asp-action="GetAdminTimeSheetView" asp-controller="Admindashboard" asp-route-TimeSheetDate="@(Model.StartDate.ToString("yyyy-MM-dd"))" class="btn btn-outline-info text-info lightInfo-btn">
                             Approve
-                        </button>
+                        </a>
                     </td>
                        
 

@@ -33,7 +33,7 @@ builder.Services.AddScoped<IInvoice,InvoicingServices>();
 builder.Services.AddTransient<IEmailService,EmailService>();
 builder.Services.AddTransient<IJwtServices, JwtServices>();
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddSignalR();
 
 
 var app = builder.Build();
