@@ -1,0 +1,186 @@
+﻿
+@model HalloDoc_DAL.ViewModels.ChatModel;
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="chatpageForadmin" aria-labelledby="offcanvasRightLabel" style="color:black!important">
+    <section style="background-color: #eee;height:100%;">
+        <div style="height:100%;">
+
+            <div class="d-flex justify-content-center" style="height:100%;width:100%;">
+                <div class="col-12">
+
+                    <div class="card" id="chat1" style="border-radius: 15px;height:100%;">
+                        <div class="card-header d-flex justify-content-between align-items-center p-3 bg-info text-white border-bottom-0">
+                            @if (Model.GroupFlag == 5)
+                            {
+                                <div>
+                                    <h4>Group Chat</h4>
+                                    <p class="mb-0" style="font-size:14px;">(@Model.RecieverName)</p>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <p class="mb-0 fw-bold">@Model.RecieverName</p>
+                            }
+                            <button class="fas fa-times btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="card-body" id="cardBodyScroll" style="overflow:scroll;">
+                            @foreach (var item in Model.Chats)
+                            {
+                                @if (item.ChatBoxClass == "Sender")
+                                {
+                                    <div class="d-flex flex-row justify-content-end mb-4">
+                                        <div class="p-3 me-3 border" style="border-radius: 15px; background-color: #fbfbfb;">
+                                            <p class="small mb-0" style="font-size:large;">@item.Message</p>
+                                            <div class="chatDate" style="font-size:12px;text-align:end;">@item.ChatDate</div>
+                                        </div>
+                                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp" alt="avatar 1"
+                                             style="width: 45px; height: 100%;">
+                                    </div>
+                                }
+                                else
+                                {
+                                    @if (item.GroupFlag != 5)
+                                    {
+                                        <div class="d-flex flex-row justify-content-start mb-4">
+                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="avatar 1"
+                                                 style="width: 45px; height: 100%;">
+                                            <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                                                <p class="small mb-0" style="font-size:large;">@item.Message</p>
+                                                <div class="chatDate" style="font-size:12px;">@item.ChatDate</div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @if (item.Reciever1 != 0)
+                                        {
+                                            <div class="d-flex flex-row justify-content-start mb-4">
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="avatar 1"
+                                                     style="width: 45px; height: 100%;">
+                                                <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                                                    <p class="small mb-0" style="font-size:large;">@item.Message</p>
+                                                    <div class="chatDate" style="font-size:12px;">@item.ChatDate</div>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (item.Receiver2 != 0)
+                                        {
+                                            <div class="d-flex flex-row justify-content-start mb-4">
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp" alt="avatar 1"
+                                                     style="width: 45px; height: 100%;">
+                                                <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                                                    <p class="small mb-0" style="font-size:large;">@item.Message</p>
+                                                    <div class="chatDate" style="font-size:12px;">@item.ChatDate</div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+
+                                }
+                            }
+                            <form id="chatFormMain">
+                                <div class="form-outline mb-3" style="position: fixed;width: -webkit-fill-available;bottom: 0;">
+                                    <input type="text" asp-for="Message" style="width:84%;height:35px;" id="Message" placeholder="Send Message" />
+                                    <button type="button" style="background-color: #0d6efd;border: none;border-radius: 5px;height:35px;width:35px;" placeholder="Message" class="chatInput" id="chatInputSubmit">
+                                        <i class="bi bi-send" style="color:white;"></i>
+                                    </button>
+                                </div>
+                                <input type="hidden" asp-for="RequestId" id="RequestID" />
+                                <input type="hidden" asp-for="ProviderId" id="ProviderID" />
+                                <input type="hidden" asp-for="AdminId" id="AdminID" />
+                                <input type="hidden" asp-for="RoleId" id="RoleID" />
+                                @if (Model.GroupFlag != 5)
+                                {
+                                    <input type="hidden" asp-for="GroupFlag" id="GroupFlagID" value="1" />
+                                }
+                                else
+                                {
+                                    <input type="hidden" asp-for="GroupFlag" id="GroupFlagID" value="2" />
+                                }
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<script>
+
+    // Your custom script here
+    const GetChatView = (requestid, adminid, providerid, flag) => {
+
+        console.log("ooo")
+
+
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/Chat",
+            data: {
+                RequestId: requestid,
+                AdminID: adminid,
+                ProviderId: providerid,
+                FlagId: flag,
+            },
+            success: function (data) {
+                $('#ChatViewContainer').html(data);
+                $('#chatpageForadmin').offcanvas("show");
+            },
+            error: function () {
+
+            }
+
+        });
+
+    }
+
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chat")
+        .build();
+
+    connection.start().then(function () {
+        console.log('SignalR connected');
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("chatInputSubmit").addEventListener("click", function (event) {
+        var message = document.getElementById("Message").value;
+        var RequestID = $('#RequestID').val();
+        var ProviderID = $('#ProviderID').val();
+        var AdminID = $('#AdminID').val();
+        var RoleID = $('#RoleID').val();
+        var GroupFlagID = $('#GroupFlagID').val();
+
+        connection.invoke("SendMessage", message, RequestID, ProviderID, AdminID, RoleID, GroupFlagID).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        event.preventDefault();
+    });
+
+    connection.on("ReceiveMessage", function (message) {
+
+        console.log(message)
+        var RequestID = $('#RequestID').val();
+        var ProviderID = $('#ProviderID').val();
+        var AdminID = $('#AdminID').val();
+        var GroupFlagID = $('#GroupFlagID').val();
+        var flagMain = 0;
+        if (GroupFlagID == 2) {
+            flagMain = 5;
+        }
+        event.preventDefault();
+        console.log("uuu")
+        GetChatView(RequestID, ProviderID, AdminID, flagMain);
+        event.preventDefault();
+    });
+
+  
+</script>

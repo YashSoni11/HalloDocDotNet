@@ -12,14 +12,17 @@ namespace HalloDoc_DAL.AdminViewModels
         public RequestTypeCounts RequestTypeCounts { get; set; }
 
 
-      
 
-       
+
+
     }
 
 
     public class RequestTable
     {
+
+
+       public int adminid { get; set; }
         public List<DashboardRequests> Requests { get; set; }
 
         public List<Region> Regions { get; set; }

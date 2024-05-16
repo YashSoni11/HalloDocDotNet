@@ -126,6 +126,8 @@ namespace HalloDoc_BAL.Interface
 
         public int GetRequestStatusByRequestId(int requestId);
 
+        public ChatModel GetChats(int RequestId, int AdminID, int ProviderId, int RoleId, int FlagId);
+
 
         //public bool IsRequestIsForReviewAggreeMent(int requestid);
 

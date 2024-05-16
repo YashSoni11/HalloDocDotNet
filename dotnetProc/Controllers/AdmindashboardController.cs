@@ -106,6 +106,7 @@ namespace dotnetProc.Controllers
             }
 
             string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
             bool istokenExpired = _account.IsTokenExpired(token);
 
@@ -130,8 +131,10 @@ namespace dotnetProc.Controllers
                     Regions = regions,
                     regionId = 0,
                     RequestType = 0,
-
+                    adminid = loggedInUser.UserId,
                 };
+
+
 
                 return PartialView("_Requeststable", adminDashboard);
 
@@ -148,6 +151,7 @@ namespace dotnetProc.Controllers
             }
 
             string token = HttpContext.Request.Cookies["jwt"];
+            LoggedInUser loggedInUser = _account.GetLoggedInUserFromJwt(token);
 
             bool istokenExpired = _account.IsTokenExpired(token);
 
@@ -178,6 +182,7 @@ namespace dotnetProc.Controllers
                     Regions = regions,
                     Searchstring = Name,
                     RequestType = IntType,
+                    adminid = loggedInUser.UserId,
 
 
                 };
@@ -2130,6 +2135,18 @@ namespace dotnetProc.Controllers
 
             return View("ApproveTimeSheets", timeSheet);
 
+        }
+
+
+
+        public IActionResult Chat(int RequestId, int AdminID, int ProviderId, int FlagId)
+        {
+            var roleMain = HttpContext.Session.GetInt32("roleId");
+
+
+
+            ChatModel model = _dashboard.GetChats(RequestId, AdminID, ProviderId, 2, FlagId);
+            return PartialView("_ChatView", model);
         }
 
     }

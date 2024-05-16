@@ -2462,3 +2462,30 @@ const GetAdminTimeReibursmentDetails = (startDate, physicianId) => {
 
 
 }
+
+
+const GetChatView = (requestid,adminid,providerid,flag) => {
+
+    console.log("ooo")
+   
+   
+        $.ajax({
+            method: "post",
+            url: "/Admindashboard/Chat",
+            data: {
+                RequestId: requestid,
+                AdminID: adminid,
+                ProviderId: providerid,
+                FlagId: flag,
+            },
+            success: function (data) {
+                $('#ChatViewContainer').html(data);
+                $('#chatpageForadmin').offcanvas("show");
+            },
+            error: function () {
+               
+            }
+
+        });
+    
+}

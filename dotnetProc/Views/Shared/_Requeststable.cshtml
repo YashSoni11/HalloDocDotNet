@@ -103,7 +103,7 @@
                         <th class="reqtableHeader" scope="col">Phone</th>
                         <th class="reqtableHeader" scope="col">Address</th>
                         <th class="reqtableHeader" scope="col">Notes</th>
-                        
+                        <th class="reqtableHeader" scope="col">Chat With</th>                       
                         <th class="reqtableHeader" scope="col">Active</th>
                     </tr>
                 </thead>
@@ -170,6 +170,15 @@
                                 }
 
 
+                            </td>
+
+                            <td>
+
+                                <button class="btn bg-transparent action-btn" type="button" onclick="GetChatView(@dr.Requestid,@Model.adminid,@dr.ProviderId,1)">
+                                    <i class="bi bi-person mx-1"></i> Provider
+                                </button>
+                            
+                            
                             </td>
                           
 
@@ -477,7 +486,7 @@
                                             </div>
                                         </a>
                                         <a href="#" class="btn p-0">
-                                            <div class="linkTypeBtn" style="background-color:var(--pi-form-back-color);color:#0dcaf0;border:1px solid #0dcaf0;border-radius:10px;width:7rem;">
+                                            <div class="linkTypeBtn" style="background-color:var(--pi-form-back-color);color:#0dcaf0;border:1px solid #0dcaf0;border-radius:10px;width:7rem;" onclick="()=>$('#chatpageForadmin').offcanvas('show')">
                                                 <i class="bi bi-file-medical fs-4"></i>  Provider
                                             </div>
                                         </a>

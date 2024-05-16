@@ -5,7 +5,9 @@ using dotnetProc.Controllers;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using HalloDoc_BAL.Interface;
 using HalloDoc_BAL.Repositery;
+
 using AutoMapper;
+using dotnetProc.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,7 @@ builder.Services.AddSession(options =>
 
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 var con = builder.Configuration.GetConnectionString("PSSQL");
 
 builder.Services.AddDbContext<HalloDocContext>(q => q.UseNpgsql(con));
@@ -32,9 +35,9 @@ builder.Services.AddScoped<IAuthManager,AuthManager>();
 builder.Services.AddScoped<IInvoice,InvoicingServices>();
 builder.Services.AddTransient<IEmailService,EmailService>();
 builder.Services.AddTransient<IJwtServices, JwtServices>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-builder.Services.AddSignalR();
-
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
@@ -80,5 +83,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/chat");
+});
 
 app.Run();

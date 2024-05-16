@@ -34,11 +34,13 @@ namespace HalloDoc_BAL.Repositery
 
         private readonly HalloDocContext _context;
         private readonly IMapper _mapper;
+        private readonly IGenericRepository<Chat> _chatRepo;
 
-        public Admindashboard(HalloDocContext context, IMapper mapper)
+        public Admindashboard(HalloDocContext context, IMapper mapper, IGenericRepository<Chat> chatRepo)
         {
             _context = context;
             _mapper = mapper;
+            _chatRepo = chatRepo;
         }
 
 
@@ -142,6 +144,7 @@ namespace HalloDoc_BAL.Repositery
                     Phone = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(m => m.Phonenumber).FirstOrDefault(),
                     status = r.Status,
                     Requesttype = r.Requesttypeid,
+                    ProviderId = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Physicianid).FirstOrDefault(),
                     PhysicianName = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Firstname + " " + q.Lastname).FirstOrDefault(),
                     Birthdate = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => new DateTime((r.Intyear ?? 0) == 0 ? 1 : (int)(r.Intyear ?? 0), DateTime.ParseExact(r.Strmonth, "MMMM", CultureInfo.InvariantCulture).Month, (r.Intdate ?? 0) == 0 ? 1 : (int)(r.Intdate ?? 0))).FirstOrDefault(),
                     RequestorPhone = r.Requesttypeid != 1 ? r.Phonenumber : null,
@@ -518,6 +521,7 @@ namespace HalloDoc_BAL.Repositery
                 Address = r.Street + "," + r.City + "," + r.State + "," + r.Zipcode,
                 Requestdate = _context.Requests.Where(q => r.Requestid == q.Requestid).Select(q => q.Createddate).FirstOrDefault(),
                 Phone = r.Phonenumber,
+                //ProviderId = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Physicianid).FirstOrDefault(),
 
                 status = _context.Requests.Where(q => q.Requestid == r.Requestid).Select(r => r.Status).FirstOrDefault(),
                 Requesttype = _context.Requests.Where(q => q.Requestid == r.Requestid).Select(r => r.Requesttypeid).FirstOrDefault(),
@@ -599,6 +603,7 @@ namespace HalloDoc_BAL.Repositery
                 {
                     Requestid = r.Requestid,
                     Email = r.Email,
+                    ProviderId = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Physicianid).FirstOrDefault(),
 
                     Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                     Requestor = r.Firstname + " " + r.Lastname,
@@ -654,6 +659,8 @@ namespace HalloDoc_BAL.Repositery
                 {
                     Requestid = r.Requestid,
                     Email = r.Email,
+                    ProviderId = _context.Physicians.Where(q => q.Physicianid == r.Physicianid).Select(q => q.Physicianid).FirstOrDefault(),
+
                     Username = _context.Requestclients.Where(q => q.Requestid == r.Requestid).Select(r => r.Firstname + " " + r.Lastname).FirstOrDefault(),
                     Requestor = r.Firstname + " " + r.Lastname,
                     Address = _context.Users.Where(q => q.Userid == r.Userid).Select(r => r.Street + "," + r.City + "," + r.State + "," + r.Zipcode).FirstOrDefault(),
@@ -2120,6 +2127,120 @@ namespace HalloDoc_BAL.Repositery
         }
 
 
+        public ChatModel GetChats(int RequestId, int AdminID, int ProviderId, int RoleId, int FlagId)
+        {
+            var requestClient = _context.Requestclients.FirstOrDefault(u => u.Requestid == RequestId);
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == ProviderId);
+            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == AdminID);
+            ChatModel model = new ChatModel();
+
+            if (FlagId != 5)
+            {
+                var chats = _chatRepo.SelectWhereOrderBy(x => new ChatModel
+                {
+                    ChatId = (int)x.Chatid,
+                    Message = x.Message ?? "",
+                    ChatDate = x.Sentdate!.Value.ToString("hh:mm tt"),
+                    SentBy = x.Sentby ?? 0,
+                    GroupFlag = FlagId,
+                }, x => x.Adminid == AdminID && x.Requestid == RequestId && x.Physicianid == ProviderId && x.Chattype == 1, x => x.Sentdate!);
+
+                List<ChatModel> list = new List<ChatModel>();
+                foreach (ChatModel item in chats)
+                {
+                    item.ChatBoxClass = (item.SentBy == Convert.ToInt32(RoleId) ? "Sender" : "Reciever");
+                    list.Add(item);
+                }
+                if (ProviderId == 0)
+                {
+                    model.RecieverName = (RoleId == 1 ? requestClient.Firstname + " " + requestClient.Lastname : admin.Firstname + " " + admin.Lastname);
+                }
+                if (RequestId == 0)
+                {
+                    model.RecieverName = (RoleId == 1 ? physician.Firstname + " " + physician.Lastname : admin.Firstname + " " + admin.Lastname);
+                }
+                if (AdminID == 0)
+                {
+                    model.RecieverName = (RoleId == 2 ? physician.Firstname + " " + physician.Lastname : requestClient.Firstname + " " + requestClient.Lastname);
+                }
+                if (ProviderId != 0 && RequestId != 0 && AdminID != 0)
+                {
+                    model.RecieverName = (RoleId == 1 ? physician.Firstname + " " + physician.Lastname : admin.Firstname + " " + admin.Lastname);
+                }
+
+                model.Chats = list;
+                model.RequestId = RequestId;
+                model.ProviderId = ProviderId;
+                model.AdminId = AdminID;
+                model.RoleId = RoleId;
+                model.GroupFlag = FlagId;
+                return model;
+            }
+            else
+            {
+                var chats = _chatRepo.SelectWhereOrderBy(x => new ChatModel
+                {
+                    ChatId = (int)x.Chatid,
+                    Message = x.Message ?? "",
+                    ChatDate = x.Sentdate!.Value.ToString("hh:mm tt"),
+                    SentBy = x.Sentby ?? 0,
+                    GroupFlag = FlagId,
+                }, x => x.Adminid == AdminID && x.Requestid == RequestId && x.Physicianid == ProviderId && x.Chattype == 2, x => x.Sentdate!);
+
+                List<ChatModel> list = new List<ChatModel>();
+
+                List<int> arr = new List<int>();
+
+                foreach (ChatModel item in chats)
+                {
+                    item.ChatBoxClass = (item.SentBy == Convert.ToInt32(RoleId) ? "Sender" : "Reciever");
+                    if (item.ChatBoxClass == "Reciever")
+                    {
+                        if (!arr.Contains(item.SentBy))
+                        {
+                            arr.Add(item.SentBy);
+                        }
+
+                        if (arr[0] == arr[arr.IndexOf(item.SentBy)])
+                        {
+                            item.Reciever1 = 1;
+                        }
+                        else
+                        {
+                            item.Receiver2 = 2;
+                        }
+
+                    }
+                    list.Add(item);
+                }
+                if (ProviderId == 0)
+                {
+                    model.RecieverName = (RoleId == 1 ? requestClient.Firstname + " " + requestClient.Lastname : admin.Firstname + " " + admin.Lastname);
+                }
+                if (RequestId == 0)
+                {
+                    model.RecieverName = (RoleId == 1 ? physician.Firstname + " " + physician.Lastname : admin.Firstname + " " + admin.Lastname);
+                }
+                if (AdminID == 0)
+                {
+                    model.RecieverName = (RoleId == 2 ? physician.Firstname + " " + physician.Lastname : requestClient.Firstname + " " + requestClient.Lastname);
+                }
+                if (ProviderId != 0 && RequestId != 0 && AdminID != 0)
+                {
+                    model.RecieverName = "Physician:  " + physician.Firstname + ",    Admin:  " + admin.Firstname + ",    Patient:  " + requestClient.Firstname;
+                }
+
+                model.Chats = list;
+                model.RequestId = RequestId;
+                model.ProviderId = ProviderId;
+                model.AdminId = AdminID;
+                model.RoleId = RoleId;
+                model.GroupFlag = FlagId;
+                return model;
+            }
+
+
+        }
 
 
 

@@ -43,6 +43,7 @@ namespace HalloDoc_DAL.AdminViewModels
         public string Requestortype { get; set; }
 
         public string PhysicianName { get; set; }
+        public int ProviderId { get; set; }
 
         public int? RegionId { get; set; }
 
